@@ -1,14 +1,17 @@
 @import "tailwindcss";
 
 :root {
-  --background: #0f172a;
-  --foreground: #e2e8f0;
-  --accent: #6366f1;
-  --accent-hover: #818cf8;
-  --surface: #1e293b;
-  --surface-hover: #334155;
-  --border: #334155;
-  --muted: #94a3b8;
+  --background: #f8f7f4;
+  --foreground: #2d2d2d;
+  --accent: #7c6b9a;
+  --accent-hover: #6b5a89;
+  --accent-light: #f0ecf5;
+  --surface: #ffffff;
+  --surface-hover: #f3f1ee;
+  --border: #e8e4df;
+  --muted: #8a8580;
+  --user-bubble: #7c6b9a;
+  --assistant-bubble: #f3f1ee;
 }
 
 @theme inline {
@@ -35,10 +38,13 @@ body {
   background: var(--border);
   border-radius: 3px;
 }
+::-webkit-scrollbar-thumb:hover {
+  background: var(--muted);
+}
 
 /* Markdown content styling */
 .prose h1, .prose h2, .prose h3 {
-  color: #f1f5f9;
+  color: #2d2d2d;
   font-weight: 600;
   margin-top: 1em;
   margin-bottom: 0.5em;
@@ -49,17 +55,18 @@ body {
 .prose p { margin-bottom: 0.75em; line-height: 1.7; }
 .prose ul, .prose ol { margin-left: 1.25em; margin-bottom: 0.75em; }
 .prose li { margin-bottom: 0.25em; line-height: 1.6; }
-.prose strong { color: #f1f5f9; font-weight: 600; }
-.prose em { color: #c4b5fd; }
+.prose strong { color: #2d2d2d; font-weight: 600; }
+.prose em { color: #7c6b9a; }
 .prose code {
-  background: #1e293b;
+  background: #f0ecf5;
   padding: 0.15em 0.4em;
   border-radius: 4px;
   font-size: 0.875em;
+  color: #5a4a78;
 }
 .prose blockquote {
-  border-left: 3px solid #6366f1;
+  border-left: 3px solid #c4b8d9;
   padding-left: 1em;
   margin: 0.75em 0;
-  color: #94a3b8;
+  color: #6b6560;
 }

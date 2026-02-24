@@ -108,7 +108,7 @@ export default function Home() {
       {/* Sidebar overlay for mobile */}
       {sidebarOpen && (
         <div
-          className="fixed inset-0 z-20 bg-black/50 md:hidden"
+          className="fixed inset-0 z-20 bg-black/20 md:hidden"
           onClick={() => setSidebarOpen(false)}
         />
       )}
@@ -132,7 +132,7 @@ export default function Home() {
           </h2>
           <button
             onClick={() => setSidebarOpen(false)}
-            className="md:hidden p-1 rounded hover:bg-white/10"
+            className="md:hidden p-1 rounded hover:opacity-60"
             style={{ color: "var(--muted)" }}
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -140,13 +140,19 @@ export default function Home() {
             </svg>
           </button>
         </div>
-        <div className="flex-1 overflow-y-auto p-2 space-y-1">
+        <div className="flex-1 overflow-y-auto p-2 space-y-0.5">
           {questions.map((q) => (
             <button
               key={q.id}
               onClick={() => selectQuestion(q)}
-              className="w-full text-left p-3 rounded-lg text-sm transition-colors hover:bg-white/5"
+              className="w-full text-left p-3 rounded-lg text-sm transition-colors"
               style={{ color: "var(--muted)" }}
+              onMouseEnter={(e) =>
+                (e.currentTarget.style.background = "var(--surface-hover)")
+              }
+              onMouseLeave={(e) =>
+                (e.currentTarget.style.background = "transparent")
+              }
             >
               <span className="font-medium" style={{ color: "var(--foreground)" }}>
                 Q{q.id}.
@@ -156,10 +162,10 @@ export default function Home() {
                 {q.topics.map((t) => (
                   <span
                     key={t}
-                    className="text-xs px-1.5 py-0.5 rounded"
+                    className="text-xs px-1.5 py-0.5 rounded-full"
                     style={{
-                      background: "rgba(99, 102, 241, 0.15)",
-                      color: "var(--accent-hover)",
+                      background: "var(--accent-light)",
+                      color: "var(--accent)",
                     }}
                   >
                     {t}
@@ -184,7 +190,7 @@ export default function Home() {
           <div className="flex items-center gap-3">
             <button
               onClick={() => setSidebarOpen(true)}
-              className="md:hidden p-1.5 rounded-lg hover:bg-white/10"
+              className="md:hidden p-1.5 rounded-lg hover:opacity-60"
               style={{ color: "var(--muted)" }}
             >
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -203,12 +209,15 @@ export default function Home() {
           <div className="flex items-center gap-2">
             {/* Mode toggle */}
             <div
-              className="flex rounded-lg overflow-hidden text-xs font-medium"
-              style={{ border: "1px solid var(--border)" }}
+              className="flex rounded-full overflow-hidden text-xs font-medium"
+              style={{
+                border: "1px solid var(--border)",
+                background: "var(--background)",
+              }}
             >
               <button
                 onClick={() => setMode("study")}
-                className="px-3 py-1.5 transition-colors"
+                className="px-3.5 py-1.5 transition-all rounded-full"
                 style={{
                   background: mode === "study" ? "var(--accent)" : "transparent",
                   color: mode === "study" ? "#fff" : "var(--muted)",
@@ -218,7 +227,7 @@ export default function Home() {
               </button>
               <button
                 onClick={() => setMode("quiz")}
-                className="px-3 py-1.5 transition-colors"
+                className="px-3.5 py-1.5 transition-all rounded-full"
                 style={{
                   background: mode === "quiz" ? "var(--accent)" : "transparent",
                   color: mode === "quiz" ? "#fff" : "var(--muted)",
@@ -229,7 +238,7 @@ export default function Home() {
             </div>
             <button
               onClick={clearChat}
-              className="p-1.5 rounded-lg hover:bg-white/10 transition-colors"
+              className="p-1.5 rounded-lg hover:opacity-60 transition-opacity"
               style={{ color: "var(--muted)" }}
               title="Clear chat"
             >
@@ -246,7 +255,7 @@ export default function Home() {
             <div className="flex flex-col items-center justify-center h-full px-4 text-center">
               <div
                 className="w-14 h-14 rounded-2xl flex items-center justify-center mb-4"
-                style={{ background: "rgba(99, 102, 241, 0.15)" }}
+                style={{ background: "var(--accent-light)" }}
               >
                 <svg
                   width="28"
@@ -267,7 +276,7 @@ export default function Home() {
                 Pick a question from the sidebar or type your own. Toggle between
                 Study mode (explanations) and Quiz mode (tests your understanding).
               </p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 w-full max-w-lg">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 w-full max-w-lg">
                 {[
                   "Explain the Divided Line in simple terms",
                   "What's the difference between form and matter?",
@@ -277,11 +286,18 @@ export default function Home() {
                   <button
                     key={prompt}
                     onClick={() => sendMessage(prompt)}
-                    className="text-left text-sm p-3 rounded-lg transition-colors hover:bg-white/5"
+                    className="text-left text-sm p-3.5 rounded-xl transition-colors"
                     style={{
                       border: "1px solid var(--border)",
-                      color: "var(--muted)",
+                      color: "var(--foreground)",
+                      background: "var(--surface)",
                     }}
+                    onMouseEnter={(e) =>
+                      (e.currentTarget.style.background = "var(--surface-hover)")
+                    }
+                    onMouseLeave={(e) =>
+                      (e.currentTarget.style.background = "var(--surface)")
+                    }
                   >
                     {prompt}
                   </button>
@@ -302,8 +318,8 @@ export default function Home() {
                     style={{
                       background:
                         m.role === "user"
-                          ? "var(--accent)"
-                          : "var(--surface)",
+                          ? "var(--user-bubble)"
+                          : "var(--assistant-bubble)",
                       color: m.role === "user" ? "#fff" : "var(--foreground)",
                     }}
                   >
@@ -324,12 +340,12 @@ export default function Home() {
                 <div className="flex justify-start">
                   <div
                     className="rounded-2xl rounded-bl-md px-4 py-3"
-                    style={{ background: "var(--surface)" }}
+                    style={{ background: "var(--assistant-bubble)" }}
                   >
-                    <div className="flex gap-1">
-                      <span className="w-2 h-2 rounded-full bg-indigo-400 animate-bounce" style={{ animationDelay: "0ms" }} />
-                      <span className="w-2 h-2 rounded-full bg-indigo-400 animate-bounce" style={{ animationDelay: "150ms" }} />
-                      <span className="w-2 h-2 rounded-full bg-indigo-400 animate-bounce" style={{ animationDelay: "300ms" }} />
+                    <div className="flex gap-1.5">
+                      <span className="w-2 h-2 rounded-full animate-bounce" style={{ background: "var(--accent)", animationDelay: "0ms" }} />
+                      <span className="w-2 h-2 rounded-full animate-bounce" style={{ background: "var(--accent)", animationDelay: "150ms" }} />
+                      <span className="w-2 h-2 rounded-full animate-bounce" style={{ background: "var(--accent)", animationDelay: "300ms" }} />
                     </div>
                   </div>
                 </div>
@@ -367,7 +383,7 @@ export default function Home() {
                   : "Ask about any metaphysics topic..."
               }
               rows={1}
-              className="flex-1 resize-none rounded-xl px-4 py-3 text-sm outline-none placeholder:text-slate-500"
+              className="flex-1 resize-none rounded-xl px-4 py-3 text-sm outline-none"
               style={{
                 background: "var(--background)",
                 color: "var(--foreground)",
@@ -377,7 +393,7 @@ export default function Home() {
             <button
               type="submit"
               disabled={loading || !input.trim()}
-              className="self-end rounded-xl px-4 py-3 text-sm font-medium transition-colors disabled:opacity-40"
+              className="self-end rounded-xl px-4 py-3 text-sm font-medium transition-opacity disabled:opacity-30"
               style={{
                 background: "var(--accent)",
                 color: "#fff",
