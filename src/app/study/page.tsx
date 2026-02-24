@@ -5,10 +5,23 @@ import Flashcards from "@/components/study/Flashcards";
 import Practice from "@/components/study/Practice";
 import Match from "@/components/study/Match";
 import MultipleChoice from "@/components/study/MultipleChoice";
+import Learn from "@/components/study/Learn";
 
-type Mode = "hub" | "flashcards" | "practice" | "match" | "mc";
+type Mode = "hub" | "learn" | "flashcards" | "practice" | "match" | "mc";
 
 const modes = [
+  {
+    id: "learn" as Mode,
+    title: "Learn",
+    description: "Quizlet-style learning. Multiple choice first, then type. Master every term.",
+    icon: (
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+        <path d="M4.26 10.147a60.438 60.438 0 00-.491 6.347A48.627 48.627 0 0112 20.904a48.627 48.627 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.57 50.57 0 00-2.658-.813A59.905 59.905 0 0112 3.493a59.902 59.902 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.697 50.697 0 0112 13.489a50.702 50.702 0 017.74-3.342" />
+      </svg>
+    ),
+    color: "#e07c4f",
+    featured: true,
+  },
   {
     id: "flashcards" as Mode,
     title: "Flashcards",
@@ -20,6 +33,7 @@ const modes = [
       </svg>
     ),
     color: "#6b8fbf",
+    featured: false,
   },
   {
     id: "practice" as Mode,
@@ -32,6 +46,7 @@ const modes = [
       </svg>
     ),
     color: "#7c6b9a",
+    featured: false,
   },
   {
     id: "match" as Mode,
@@ -43,11 +58,12 @@ const modes = [
       </svg>
     ),
     color: "#bf8f6b",
+    featured: false,
   },
   {
     id: "mc" as Mode,
     title: "Multiple Choice",
-    description: "Test your knowledge with auto-generated questions from the glossary.",
+    description: "Quick quiz with auto-generated questions from the glossary.",
     icon: (
       <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
         <path d="M9 12l2 2 4-4" />
@@ -55,16 +71,21 @@ const modes = [
       </svg>
     ),
     color: "#6ab070",
+    featured: false,
   },
 ];
 
 export default function StudyPage() {
   const [mode, setMode] = useState<Mode>("hub");
 
+  if (mode === "learn") return <Learn onBack={() => setMode("hub")} />;
   if (mode === "flashcards") return <Flashcards onBack={() => setMode("hub")} />;
   if (mode === "practice") return <Practice onBack={() => setMode("hub")} />;
   if (mode === "match") return <Match onBack={() => setMode("hub")} />;
   if (mode === "mc") return <MultipleChoice onBack={() => setMode("hub")} />;
+
+  const featured = modes.find((m) => m.featured)!;
+  const rest = modes.filter((m) => !m.featured);
 
   return (
     <div className="h-full overflow-y-auto">
@@ -76,12 +97,68 @@ export default function StudyPage() {
           Pick a study mode. Your progress is saved automatically.
         </p>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          {modes.map((m) => (
+        {/* Featured: Learn mode */}
+        <button
+          onClick={() => setMode(featured.id)}
+          className="w-full text-left rounded-xl p-5 mb-4 transition-all"
+          style={{
+            background: "var(--surface)",
+            border: `2px solid ${featured.color}40`,
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.borderColor = featured.color;
+            e.currentTarget.style.transform = "translateY(-1px)";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.borderColor = featured.color + "40";
+            e.currentTarget.style.transform = "translateY(0)";
+          }}
+        >
+          <div className="flex items-center gap-4">
+            <div
+              className="w-14 h-14 rounded-xl flex items-center justify-center shrink-0"
+              style={{ background: featured.color + "18", color: featured.color }}
+            >
+              {featured.icon}
+            </div>
+            <div className="flex-1">
+              <div className="flex items-center gap-2 mb-0.5">
+                <h3 className="font-semibold text-base" style={{ color: "var(--foreground)" }}>
+                  {featured.title}
+                </h3>
+                <span
+                  className="text-xs px-2 py-0.5 rounded-full font-medium"
+                  style={{ background: featured.color + "20", color: featured.color }}
+                >
+                  Recommended
+                </span>
+              </div>
+              <p className="text-sm" style={{ color: "var(--muted)" }}>
+                {featured.description}
+              </p>
+            </div>
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              className="shrink-0"
+              style={{ color: "var(--muted)" }}
+            >
+              <path d="M5 12h14M12 5l7 7-7 7" />
+            </svg>
+          </div>
+        </button>
+
+        {/* Other modes */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+          {rest.map((m) => (
             <button
               key={m.id}
               onClick={() => setMode(m.id)}
-              className="text-left rounded-xl p-5 transition-all group"
+              className="text-left rounded-xl p-4 transition-all"
               style={{
                 background: "var(--surface)",
                 border: "1px solid var(--border)",
@@ -96,12 +173,12 @@ export default function StudyPage() {
               }}
             >
               <div
-                className="w-12 h-12 rounded-xl flex items-center justify-center mb-3"
+                className="w-10 h-10 rounded-lg flex items-center justify-center mb-2.5"
                 style={{ background: m.color + "18", color: m.color }}
               >
                 {m.icon}
               </div>
-              <h3 className="font-semibold text-sm mb-1" style={{ color: "var(--foreground)" }}>
+              <h3 className="font-semibold text-sm mb-0.5" style={{ color: "var(--foreground)" }}>
                 {m.title}
               </h3>
               <p className="text-xs leading-relaxed" style={{ color: "var(--muted)" }}>
