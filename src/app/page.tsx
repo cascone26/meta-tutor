@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 import { questions } from "@/lib/questions";
 
 type Message = {
@@ -11,13 +13,53 @@ type Message = {
 type Mode = "study" | "quiz";
 
 export default function Home() {
+  return (
+    <Suspense>
+      <ChatPage />
+    </Suspense>
+  );
+}
+
+function ChatPage() {
+  const searchParams = useSearchParams();
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [mode, setMode] = useState<Mode>("study");
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [confidence, setConfidence] = useState<Record<number, "got-it" | "shaky" | "no-clue">>({});
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  // Handle ?q= param from glossary links
+  useEffect(() => {
+    const q = searchParams.get("q");
+    if (q && messages.length === 0) {
+      sendMessage(q);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Load confidence from localStorage
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("meta-tutor-confidence");
+      if (saved) setConfidence(JSON.parse(saved));
+    } catch {}
+  }, []);
+
+  function setConfidenceLevel(qId: number, level: "got-it" | "shaky" | "no-clue") {
+    setConfidence((prev) => {
+      const next = { ...prev };
+      if (next[qId] === level) {
+        delete next[qId];
+      } else {
+        next[qId] = level;
+      }
+      localStorage.setItem("meta-tutor-confidence", JSON.stringify(next));
+      return next;
+    });
+  }
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -41,10 +83,22 @@ export default function Home() {
     setLoading(true);
 
     try {
+      // Include user-added notes for context
+      let userNotes: { title: string; content: string }[] = [];
+      try {
+        const saved = localStorage.getItem("meta-tutor-user-notes");
+        if (saved) {
+          userNotes = JSON.parse(saved).map((n: { title: string; content: string }) => ({
+            title: n.title,
+            content: n.content,
+          }));
+        }
+      } catch {}
+
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: newMessages, mode }),
+        body: JSON.stringify({ messages: newMessages, mode, userNotes }),
       });
 
       const reader = res.body?.getReader();
@@ -104,7 +158,7 @@ export default function Home() {
   }
 
   return (
-    <div className="flex h-dvh overflow-hidden">
+    <div className="flex h-full overflow-hidden">
       {/* Sidebar overlay for mobile */}
       {sidebarOpen && (
         <div
@@ -141,73 +195,129 @@ export default function Home() {
           </button>
         </div>
         <div className="flex-1 overflow-y-auto p-2 space-y-0.5">
-          {questions.map((q) => (
-            <button
-              key={q.id}
-              onClick={() => selectQuestion(q)}
-              className="w-full text-left p-3 rounded-lg text-sm transition-colors"
-              style={{ color: "var(--muted)" }}
-              onMouseEnter={(e) =>
-                (e.currentTarget.style.background = "var(--surface-hover)")
-              }
-              onMouseLeave={(e) =>
-                (e.currentTarget.style.background = "transparent")
-              }
-            >
-              <span className="font-medium" style={{ color: "var(--foreground)" }}>
-                Q{q.id}.
-              </span>{" "}
-              {q.text.length > 80 ? q.text.slice(0, 80) + "..." : q.text}
-              <div className="flex gap-1.5 mt-1.5 flex-wrap">
-                {q.topics.map((t) => (
-                  <span
-                    key={t}
-                    className="text-xs px-1.5 py-0.5 rounded-full"
-                    style={{
-                      background: "var(--accent-light)",
-                      color: "var(--accent)",
-                    }}
-                  >
-                    {t}
-                  </span>
-                ))}
+          {questions.map((q) => {
+            const conf = confidence[q.id];
+            return (
+              <div key={q.id} className="group">
+                <button
+                  onClick={() => selectQuestion(q)}
+                  className="w-full text-left p-3 rounded-lg text-sm transition-colors"
+                  style={{ color: "var(--muted)" }}
+                  onMouseEnter={(e) =>
+                    (e.currentTarget.style.background = "var(--surface-hover)")
+                  }
+                  onMouseLeave={(e) =>
+                    (e.currentTarget.style.background = "transparent")
+                  }
+                >
+                  <div className="flex items-start gap-2">
+                    <span className="font-medium shrink-0" style={{ color: "var(--foreground)" }}>
+                      Q{q.id}.
+                    </span>
+                    <span className="flex-1">
+                      {q.text.length > 80 ? q.text.slice(0, 80) + "..." : q.text}
+                    </span>
+                    {conf && (
+                      <span
+                        className="shrink-0 w-2.5 h-2.5 rounded-full mt-1"
+                        style={{
+                          background:
+                            conf === "got-it" ? "#6ab070" : conf === "shaky" ? "#d4a843" : "#c96b6b",
+                        }}
+                      />
+                    )}
+                  </div>
+                  <div className="flex gap-1.5 mt-1.5 flex-wrap">
+                    {q.topics.map((t) => (
+                      <span
+                        key={t}
+                        className="text-xs px-1.5 py-0.5 rounded-full"
+                        style={{
+                          background: "var(--accent-light)",
+                          color: "var(--accent)",
+                        }}
+                      >
+                        {t}
+                      </span>
+                    ))}
+                  </div>
+                </button>
+                {/* Confidence buttons */}
+                <div className="flex gap-1 px-3 pb-2">
+                  {(["got-it", "shaky", "no-clue"] as const).map((level) => (
+                    <button
+                      key={level}
+                      onClick={() => setConfidenceLevel(q.id, level)}
+                      className="text-xs px-2 py-0.5 rounded-full transition-all"
+                      style={{
+                        background:
+                          conf === level
+                            ? level === "got-it"
+                              ? "#6ab070"
+                              : level === "shaky"
+                              ? "#d4a843"
+                              : "#c96b6b"
+                            : "var(--background)",
+                        color:
+                          conf === level
+                            ? "#fff"
+                            : "var(--muted)",
+                        border: `1px solid ${
+                          conf === level
+                            ? "transparent"
+                            : "var(--border)"
+                        }`,
+                      }}
+                    >
+                      {level === "got-it" ? "Got it" : level === "shaky" ? "Shaky" : "No clue"}
+                    </button>
+                  ))}
+                </div>
               </div>
-            </button>
-          ))}
+            );
+          })}
         </div>
+        {/* Confidence summary */}
+        {Object.keys(confidence).length > 0 && (
+          <div
+            className="p-3 border-t text-xs"
+            style={{ borderColor: "var(--border)", color: "var(--muted)" }}
+          >
+            <div className="flex justify-between">
+              <span style={{ color: "#6ab070" }}>
+                {Object.values(confidence).filter((v) => v === "got-it").length} got it
+              </span>
+              <span style={{ color: "#d4a843" }}>
+                {Object.values(confidence).filter((v) => v === "shaky").length} shaky
+              </span>
+              <span style={{ color: "#c96b6b" }}>
+                {Object.values(confidence).filter((v) => v === "no-clue").length} no clue
+              </span>
+            </div>
+          </div>
+        )}
       </aside>
 
       {/* Main chat area */}
       <main className="flex flex-col flex-1 min-w-0">
-        {/* Header */}
-        <header
-          className="flex items-center justify-between px-4 py-3 border-b shrink-0"
+        {/* Chat toolbar */}
+        <div
+          className="flex items-center justify-between px-4 py-2 border-b shrink-0"
           style={{
             background: "var(--surface)",
             borderColor: "var(--border)",
           }}
         >
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => setSidebarOpen(true)}
-              className="md:hidden p-1.5 rounded-lg hover:opacity-60"
-              style={{ color: "var(--muted)" }}
-            >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M3 12h18M3 6h18M3 18h18" />
-              </svg>
-            </button>
-            <div>
-              <h1 className="font-semibold text-base" style={{ color: "var(--foreground)" }}>
-                Meta Tutor
-              </h1>
-              <p className="text-xs" style={{ color: "var(--muted)" }}>
-                Metaphysics Study Assistant
-              </p>
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            {/* Mode toggle */}
+          <button
+            onClick={() => setSidebarOpen(true)}
+            className="md:hidden p-1.5 rounded-lg hover:opacity-60"
+            style={{ color: "var(--muted)" }}
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M3 12h18M3 6h18M3 18h18" />
+            </svg>
+          </button>
+          <div className="flex items-center gap-2 ml-auto">
             <div
               className="flex rounded-full overflow-hidden text-xs font-medium"
               style={{
@@ -247,7 +357,7 @@ export default function Home() {
               </svg>
             </button>
           </div>
-        </header>
+        </div>
 
         {/* Messages */}
         <div className="flex-1 overflow-y-auto">

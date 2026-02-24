@@ -28,17 +28,25 @@ COURSE NOTES:
 ${notes}`;
 
 export async function POST(req: NextRequest) {
-  const { messages, mode } = await req.json();
+  const { messages, mode, userNotes } = await req.json();
 
   const modeInstruction =
     mode === "quiz"
       ? "\n\n[QUIZ MODE ACTIVE] Instead of explaining directly, ask the student targeted questions to test their understanding. Guide them with hints if they struggle. Be encouraging but push them to think critically."
       : "\n\n[STUDY MODE ACTIVE] Help the student understand the material thoroughly. Explain concepts clearly, reference the notes, and provide examples.";
 
+  const userNotesSection =
+    userNotes && userNotes.length > 0
+      ? "\n\nADDITIONAL STUDENT NOTES:\n" +
+        userNotes
+          .map((n: { title: string; content: string }) => `--- ${n.title} ---\n${n.content}`)
+          .join("\n\n")
+      : "";
+
   const stream = anthropic.messages.stream({
     model: "claude-sonnet-4-5-20250514",
     max_tokens: 2048,
-    system: systemPrompt + modeInstruction,
+    system: systemPrompt + userNotesSection + modeInstruction,
     messages: messages.map((m: { role: string; content: string }) => ({
       role: m.role as "user" | "assistant",
       content: m.content,
