@@ -1,8 +1,10 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { glossary } from "@/lib/glossary";
 import { categories } from "@/lib/glossary";
+import { getSRData, saveSRData, reviewTerm } from "@/lib/spaced-repetition";
+import { saveResult } from "@/lib/study-history";
 
 function shuffle<T>(arr: T[]): T[] {
   const a = [...arr];
@@ -46,6 +48,8 @@ export default function MultipleChoice({ onBack }: { onBack: () => void }) {
   const [score, setScore] = useState(0);
   const [answered, setAnswered] = useState(0);
   const [showResult, setShowResult] = useState(false);
+  const [wrongTerms, setWrongTerms] = useState<{ term: string; category: string }[]>([]);
+  const savedRef = useRef(false);
 
   const startQuiz = useCallback((cat: string | null) => {
     setCategory(cat);
@@ -55,6 +59,8 @@ export default function MultipleChoice({ onBack }: { onBack: () => void }) {
     setScore(0);
     setAnswered(0);
     setShowResult(false);
+    setWrongTerms([]);
+    savedRef.current = false;
   }, []);
 
   useEffect(() => {
@@ -70,6 +76,8 @@ export default function MultipleChoice({ onBack }: { onBack: () => void }) {
     setAnswered(answered + 1);
     if (option === question.correct) {
       setScore(score + 1);
+    } else {
+      setWrongTerms((prev) => [...prev, { term: question.term, category: question.category }]);
     }
   }
 
@@ -81,6 +89,33 @@ export default function MultipleChoice({ onBack }: { onBack: () => void }) {
 
   if (isComplete) {
     const pct = Math.round((score / questions.length) * 100);
+    const uniqueWrongTerms = [...new Set(wrongTerms.map((w) => w.term))];
+    const uniqueWrongCats = [...new Set(wrongTerms.map((w) => w.category))];
+
+    // Save results once
+    if (!savedRef.current) {
+      savedRef.current = true;
+      saveResult({
+        mode: "Multiple Choice",
+        date: new Date().toLocaleDateString(),
+        timestamp: Date.now(),
+        score,
+        total: questions.length,
+        percentage: pct,
+        weakTerms: uniqueWrongTerms,
+        weakCategories: uniqueWrongCats,
+      });
+
+      // Update SR data
+      const srData = getSRData();
+      const wrongSet = new Set(uniqueWrongTerms);
+      for (const q of questions) {
+        const quality = wrongSet.has(q.term) ? 1 : 4;
+        srData[q.term] = reviewTerm(srData[q.term], q.term, quality);
+      }
+      saveSRData(srData);
+    }
+
     return (
       <div className="flex flex-col h-full">
         <div className="flex items-center px-4 py-3 shrink-0">
@@ -89,31 +124,65 @@ export default function MultipleChoice({ onBack }: { onBack: () => void }) {
             Back
           </button>
         </div>
-        <div className="flex-1 flex flex-col items-center justify-center px-4 text-center">
-          <h2 className="text-lg font-semibold mb-2" style={{ color: "var(--foreground)" }}>
-            Quiz Complete!
-          </h2>
-          <p className="text-4xl font-bold mb-1" style={{ color: pct >= 80 ? "#6ab070" : pct >= 60 ? "#d4a843" : "#c96b6b" }}>
-            {pct}%
-          </p>
-          <p className="text-sm mb-6" style={{ color: "var(--muted)" }}>
-            {score} out of {questions.length} correct
-          </p>
-          <div className="flex gap-3">
-            <button
-              onClick={() => startQuiz(category)}
-              className="px-5 py-2.5 rounded-xl text-sm font-medium"
-              style={{ background: "var(--accent)", color: "#fff" }}
-            >
-              Try again
-            </button>
-            <button
-              onClick={onBack}
-              className="px-5 py-2.5 rounded-xl text-sm font-medium"
-              style={{ background: "var(--surface)", color: "var(--muted)", border: "1px solid var(--border)" }}
-            >
-              Back to study
-            </button>
+        <div className="flex-1 overflow-y-auto px-4">
+          <div className="max-w-md mx-auto text-center py-8">
+            <h2 className="text-lg font-semibold mb-2" style={{ color: "var(--foreground)" }}>
+              Quiz Complete!
+            </h2>
+            <p className="text-4xl font-bold mb-1" style={{ color: pct >= 80 ? "#6ab070" : pct >= 60 ? "#d4a843" : "#c96b6b" }}>
+              {pct}%
+            </p>
+            <p className="text-sm mb-4" style={{ color: "var(--muted)" }}>
+              {score} out of {questions.length} correct
+            </p>
+
+            {/* Feedback */}
+            {pct >= 90 ? (
+              <div className="rounded-xl p-4 mb-4 text-left" style={{ background: "#e8f5e9", border: "1px solid #c8e6c9" }}>
+                <p className="text-sm font-medium mb-1" style={{ color: "#2d5a30" }}>Excellent!</p>
+                <p className="text-xs" style={{ color: "#4a7a4d" }}>Outstanding performance. Try filtering to a specific category for focused review.</p>
+              </div>
+            ) : pct >= 70 ? (
+              <div className="rounded-xl p-4 mb-4 text-left" style={{ background: "#fff8e1", border: "1px solid #ffecb3" }}>
+                <p className="text-sm font-medium mb-1" style={{ color: "#8d6e0f" }}>Good job!</p>
+                <p className="text-xs" style={{ color: "#a68612" }}>Solid foundation. Review the missed terms below to improve further.</p>
+              </div>
+            ) : (
+              <div className="rounded-xl p-4 mb-4 text-left" style={{ background: "#fce4ec", border: "1px solid #f8bbd0" }}>
+                <p className="text-sm font-medium mb-1" style={{ color: "#8b3a3a" }}>Keep going!</p>
+                <p className="text-xs" style={{ color: "#a04848" }}>Try Learn mode for a more guided approach, or filter to one category at a time.</p>
+              </div>
+            )}
+
+            {uniqueWrongTerms.length > 0 && (
+              <div className="rounded-xl p-4 mb-4 text-left" style={{ background: "var(--surface)", border: "1px solid var(--border)" }}>
+                <p className="text-xs font-medium mb-2" style={{ color: "var(--muted)" }}>Missed terms:</p>
+                <div className="flex flex-wrap gap-1.5">
+                  {uniqueWrongTerms.map((t) => (
+                    <span key={t} className="text-xs px-2 py-0.5 rounded-full" style={{ background: "#fce4ec", color: "#8b3a3a" }}>
+                      {t}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <div className="flex gap-3 justify-center">
+              <button
+                onClick={() => startQuiz(category)}
+                className="px-5 py-2.5 rounded-xl text-sm font-medium"
+                style={{ background: "var(--accent)", color: "#fff" }}
+              >
+                Try again
+              </button>
+              <button
+                onClick={onBack}
+                className="px-5 py-2.5 rounded-xl text-sm font-medium"
+                style={{ background: "var(--surface)", color: "var(--muted)", border: "1px solid var(--border)" }}
+              >
+                Back to study
+              </button>
+            </div>
           </div>
         </div>
       </div>

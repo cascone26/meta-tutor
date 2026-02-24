@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import CustomQuestions from "@/components/CustomQuestions";
 
 type UserNote = {
   id: string;
@@ -12,7 +13,7 @@ type UserNote = {
 export default function NotesPage() {
   const [builtInNotes, setBuiltInNotes] = useState("");
   const [userNotes, setUserNotes] = useState<UserNote[]>([]);
-  const [activeTab, setActiveTab] = useState<"course" | "my-notes">("course");
+  const [activeTab, setActiveTab] = useState<"course" | "my-notes" | "questions">("course");
   const [search, setSearch] = useState("");
   const [adding, setAdding] = useState(false);
   const [newTitle, setNewTitle] = useState("");
@@ -190,6 +191,17 @@ export default function NotesPage() {
           >
             My Notes {userNotes.length > 0 && `(${userNotes.length})`}
           </button>
+          <button
+            onClick={() => setActiveTab("questions")}
+            className="text-xs px-3 py-1.5 rounded-full transition-all font-medium"
+            style={{
+              background: activeTab === "questions" ? "var(--accent)" : "var(--surface)",
+              color: activeTab === "questions" ? "#fff" : "var(--muted)",
+              border: `1px solid ${activeTab === "questions" ? "transparent" : "var(--border)"}`,
+            }}
+          >
+            Questions
+          </button>
         </div>
 
         {/* Add/Edit form */}
@@ -337,6 +349,11 @@ export default function NotesPage() {
               </div>
             ))}
           </div>
+        )}
+
+        {/* Custom questions tab */}
+        {activeTab === "questions" && (
+          <CustomQuestions />
         )}
       </div>
     </div>

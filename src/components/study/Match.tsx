@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { glossary } from "@/lib/glossary";
+import { saveResult } from "@/lib/study-history";
 
 function shuffle<T>(arr: T[]): T[] {
   const a = [...arr];
@@ -29,7 +30,9 @@ export default function Match({ onBack }: { onBack: () => void }) {
   const [complete, setComplete] = useState(false);
   const [bestTime, setBestTime] = useState<number | null>(null);
   const [roundSize, setRoundSize] = useState(6);
+  const [wrongCount, setWrongCount] = useState(0);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const savedRef = useRef(false);
 
   useEffect(() => {
     try {
@@ -60,6 +63,8 @@ export default function Match({ onBack }: { onBack: () => void }) {
     setComplete(false);
     setStarted(true);
     setRoundSize(size);
+    setWrongCount(0);
+    savedRef.current = false;
 
     if (timerRef.current) clearInterval(timerRef.current);
     timerRef.current = setInterval(() => setTime((t) => t + 1), 1000);
@@ -102,6 +107,7 @@ export default function Match({ onBack }: { onBack: () => void }) {
     } else {
       // Wrong
       setWrong(card.id);
+      setWrongCount((c) => c + 1);
       setTimeout(() => {
         setSelected(null);
         setWrong(null);
@@ -150,6 +156,24 @@ export default function Match({ onBack }: { onBack: () => void }) {
   }
 
   if (complete) {
+    const totalAttempts = roundSize + wrongCount;
+    const pct = Math.round((roundSize / totalAttempts) * 100);
+
+    // Save once
+    if (!savedRef.current) {
+      savedRef.current = true;
+      saveResult({
+        mode: "Match",
+        date: new Date().toLocaleDateString(),
+        timestamp: Date.now(),
+        score: roundSize,
+        total: totalAttempts,
+        percentage: pct,
+        weakTerms: [],
+        weakCategories: [],
+      });
+    }
+
     return (
       <div className="flex flex-col h-full">
         <div className="flex items-center px-4 py-3 shrink-0">
@@ -165,9 +189,27 @@ export default function Match({ onBack }: { onBack: () => void }) {
           <p className="text-2xl font-bold mb-1" style={{ color: "var(--accent)" }}>
             {formatTime(time)}
           </p>
-          <p className="text-sm mb-6" style={{ color: "var(--muted)" }}>
+          <p className="text-sm mb-1" style={{ color: "var(--muted)" }}>
             {bestTime === time ? "New best time!" : bestTime !== null ? `Best: ${formatTime(bestTime)}` : ""}
           </p>
+          <p className="text-sm mb-4" style={{ color: "var(--muted)" }}>
+            {wrongCount === 0 ? "Perfect — no wrong matches!" : `${wrongCount} wrong ${wrongCount === 1 ? "match" : "matches"}`}
+          </p>
+
+          {wrongCount === 0 ? (
+            <div className="rounded-xl p-3 mb-4 max-w-xs" style={{ background: "#e8f5e9", border: "1px solid #c8e6c9" }}>
+              <p className="text-xs" style={{ color: "#2d5a30" }}>Flawless! Try a bigger set or beat your time.</p>
+            </div>
+          ) : wrongCount <= 3 ? (
+            <div className="rounded-xl p-3 mb-4 max-w-xs" style={{ background: "#fff8e1", border: "1px solid #ffecb3" }}>
+              <p className="text-xs" style={{ color: "#8d6e0f" }}>Good job! A few mix-ups — use Flashcards to review tricky definitions.</p>
+            </div>
+          ) : (
+            <div className="rounded-xl p-3 mb-4 max-w-xs" style={{ background: "#fce4ec", border: "1px solid #f8bbd0" }}>
+              <p className="text-xs" style={{ color: "#8b3a3a" }}>Try studying with Learn mode first to build familiarity, then come back.</p>
+            </div>
+          )}
+
           <div className="flex gap-3">
             <button
               onClick={() => startGame(roundSize)}

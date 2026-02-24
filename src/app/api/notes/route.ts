@@ -1,11 +1,6 @@
-import { readFileSync } from "fs";
-import { join } from "path";
 import { NextResponse } from "next/server";
+import { courseNotes } from "@/lib/course-notes";
 
 export async function GET() {
-  const notes = readFileSync(
-    join(process.cwd(), "src/lib/notes.txt"),
-    "utf-8"
-  );
-  return NextResponse.json({ notes });
+  return NextResponse.json({ notes: courseNotes });
 }

@@ -2,6 +2,8 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import { glossary, categories } from "@/lib/glossary";
+import { getSRData, saveSRData, reviewTerm } from "@/lib/spaced-repetition";
+import { saveResult } from "@/lib/study-history";
 
 function shuffle<T>(arr: T[]): T[] {
   const a = [...arr];
@@ -49,6 +51,7 @@ export default function Learn({ onBack }: { onBack: () => void }) {
   const [roundCorrect, setRoundCorrect] = useState(0);
   const [roundTotal, setRoundTotal] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
+  const savedRef = useRef(false);
 
   // Load saved settings
   useEffect(() => {
@@ -86,6 +89,7 @@ export default function Learn({ onBack }: { onBack: () => void }) {
     setRoundCorrect(0);
     setRoundTotal(0);
     setShowSettings(false);
+    savedRef.current = false;
     generateMcOptions(termStates, 0, settings);
   }
 
@@ -406,6 +410,40 @@ export default function Learn({ onBack }: { onBack: () => void }) {
   // Done screen
   if (remaining.length === 0 && totalTerms > 0) {
     const pct = totalTerms > 0 ? Math.round((roundCorrect / Math.max(roundTotal, 1)) * 100) : 0;
+
+    // Find weak terms (ones that had wrong answers)
+    const weakTerms = terms
+      .filter((t) => t.correctStreak < settings.masteryThreshold + 1) // had to retry
+      .map((t) => t.term)
+      .slice(0, 10);
+    const weakCats = [...new Set(
+      terms
+        .filter((t) => t.correctStreak < settings.masteryThreshold + 1)
+        .map((t) => t.category)
+    )];
+
+    // Save results & SR data once
+    if (!savedRef.current) {
+      savedRef.current = true;
+      saveResult({
+        mode: "Learn",
+        date: new Date().toLocaleDateString(),
+        timestamp: Date.now(),
+        score: roundCorrect,
+        total: roundTotal,
+        percentage: pct,
+        weakTerms,
+        weakCategories: weakCats,
+      });
+
+      const srData = getSRData();
+      for (const t of terms) {
+        const quality = t.correctStreak >= settings.masteryThreshold ? 5 : t.correctStreak >= 1 ? 3 : 1;
+        srData[t.term] = reviewTerm(srData[t.term], t.term, quality);
+      }
+      saveSRData(srData);
+    }
+
     return (
       <div className="flex flex-col h-full">
         <div className="flex items-center px-4 py-3 shrink-0">
@@ -420,40 +458,74 @@ export default function Learn({ onBack }: { onBack: () => void }) {
             Back
           </button>
         </div>
-        <div className="flex-1 flex flex-col items-center justify-center px-4 text-center">
-          <div
-            className="w-16 h-16 rounded-full flex items-center justify-center mb-4"
-            style={{ background: "#e8f5e9" }}
-          >
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#6ab070" strokeWidth="2">
-              <path d="M9 12l2 2 4-4" />
-              <circle cx="12" cy="12" r="10" />
-            </svg>
-          </div>
-          <h2 className="text-xl font-semibold mb-2" style={{ color: "var(--foreground)" }}>
-            All terms mastered!
-          </h2>
-          <p className="text-sm mb-1" style={{ color: "var(--muted)" }}>
-            {totalTerms} terms learned &middot; {pct}% accuracy
-          </p>
-          <p className="text-sm mb-6" style={{ color: "var(--muted)" }}>
-            {roundCorrect} correct / {roundTotal} attempts
-          </p>
-          <div className="flex gap-3">
-            <button
-              onClick={startLearning}
-              className="px-5 py-2.5 rounded-xl text-sm font-medium"
-              style={{ background: "var(--accent)", color: "#fff" }}
+        <div className="flex-1 overflow-y-auto px-4">
+          <div className="max-w-md mx-auto text-center py-8">
+            <div
+              className="w-16 h-16 rounded-full flex items-center justify-center mb-4 mx-auto"
+              style={{ background: "#e8f5e9" }}
             >
-              Learn again
-            </button>
-            <button
-              onClick={() => setShowSettings(true)}
-              className="px-5 py-2.5 rounded-xl text-sm font-medium"
-              style={{ background: "var(--surface)", color: "var(--muted)", border: "1px solid var(--border)" }}
-            >
-              Change settings
-            </button>
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#6ab070" strokeWidth="2">
+                <path d="M9 12l2 2 4-4" />
+                <circle cx="12" cy="12" r="10" />
+              </svg>
+            </div>
+            <h2 className="text-xl font-semibold mb-2" style={{ color: "var(--foreground)" }}>
+              All terms mastered!
+            </h2>
+            <p className="text-sm mb-1" style={{ color: "var(--muted)" }}>
+              {totalTerms} terms learned &middot; {pct}% accuracy
+            </p>
+            <p className="text-sm mb-6" style={{ color: "var(--muted)" }}>
+              {roundCorrect} correct / {roundTotal} attempts
+            </p>
+
+            {/* Feedback */}
+            {pct >= 90 ? (
+              <div className="rounded-xl p-4 mb-4 text-left" style={{ background: "#e8f5e9", border: "1px solid #c8e6c9" }}>
+                <p className="text-sm font-medium mb-1" style={{ color: "#2d5a30" }}>Excellent work!</p>
+                <p className="text-xs" style={{ color: "#4a7a4d" }}>You&apos;ve got a strong grasp on these terms. Try adding more categories or increasing the mastery threshold for a challenge.</p>
+              </div>
+            ) : pct >= 70 ? (
+              <div className="rounded-xl p-4 mb-4 text-left" style={{ background: "#fff8e1", border: "1px solid #ffecb3" }}>
+                <p className="text-sm font-medium mb-1" style={{ color: "#8d6e0f" }}>Good progress!</p>
+                <p className="text-xs" style={{ color: "#a68612" }}>You&apos;re getting there. Focus on the terms below to solidify your understanding.</p>
+              </div>
+            ) : (
+              <div className="rounded-xl p-4 mb-4 text-left" style={{ background: "#fce4ec", border: "1px solid #f8bbd0" }}>
+                <p className="text-sm font-medium mb-1" style={{ color: "#8b3a3a" }}>Keep practicing!</p>
+                <p className="text-xs" style={{ color: "#a04848" }}>These terms need more review. Try learning in smaller batches by filtering to one category at a time.</p>
+              </div>
+            )}
+
+            {weakTerms.length > 0 && (
+              <div className="rounded-xl p-4 mb-4 text-left" style={{ background: "var(--surface)", border: "1px solid var(--border)" }}>
+                <p className="text-xs font-medium mb-2" style={{ color: "var(--muted)" }}>Terms to review:</p>
+                <div className="flex flex-wrap gap-1.5">
+                  {weakTerms.map((t) => (
+                    <span key={t} className="text-xs px-2 py-0.5 rounded-full" style={{ background: "var(--accent-light)", color: "var(--accent)" }}>
+                      {t}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <div className="flex gap-3 justify-center">
+              <button
+                onClick={startLearning}
+                className="px-5 py-2.5 rounded-xl text-sm font-medium"
+                style={{ background: "var(--accent)", color: "#fff" }}
+              >
+                Learn again
+              </button>
+              <button
+                onClick={() => setShowSettings(true)}
+                className="px-5 py-2.5 rounded-xl text-sm font-medium"
+                style={{ background: "var(--surface)", color: "var(--muted)", border: "1px solid var(--border)" }}
+              >
+                Change settings
+              </button>
+            </div>
           </div>
         </div>
       </div>

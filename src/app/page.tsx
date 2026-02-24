@@ -95,10 +95,23 @@ function ChatPage() {
         }
       } catch {}
 
+      // Include primary source texts
+      let sources: { title: string; author: string; content: string }[] = [];
+      try {
+        const savedSources = localStorage.getItem("meta-tutor-sources");
+        if (savedSources) {
+          sources = JSON.parse(savedSources).map((s: { title: string; author: string; content: string }) => ({
+            title: s.title,
+            author: s.author,
+            content: s.content,
+          }));
+        }
+      } catch {}
+
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: newMessages, mode, userNotes }),
+        body: JSON.stringify({ messages: newMessages, mode, userNotes, sources }),
       });
 
       const reader = res.body?.getReader();

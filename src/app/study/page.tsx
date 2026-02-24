@@ -6,8 +6,9 @@ import Practice from "@/components/study/Practice";
 import Match from "@/components/study/Match";
 import MultipleChoice from "@/components/study/MultipleChoice";
 import Learn from "@/components/study/Learn";
+import EssayOutliner from "@/components/study/EssayOutliner";
 
-type Mode = "hub" | "learn" | "flashcards" | "practice" | "match" | "mc";
+type Mode = "hub" | "learn" | "flashcards" | "practice" | "match" | "mc" | "outline";
 
 const modes = [
   {
@@ -73,6 +74,18 @@ const modes = [
     color: "#6ab070",
     featured: false,
   },
+  {
+    id: "outline" as Mode,
+    title: "Essay Outliner",
+    description: "Build structured outlines for essay questions before writing.",
+    icon: (
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+        <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+      </svg>
+    ),
+    color: "#8b6ba7",
+    featured: false,
+  },
 ];
 
 export default function StudyPage() {
@@ -83,6 +96,7 @@ export default function StudyPage() {
   if (mode === "practice") return <Practice onBack={() => setMode("hub")} />;
   if (mode === "match") return <Match onBack={() => setMode("hub")} />;
   if (mode === "mc") return <MultipleChoice onBack={() => setMode("hub")} />;
+  if (mode === "outline") return <EssayOutliner onBack={() => setMode("hub")} />;
 
   const featured = modes.find((m) => m.featured)!;
   const rest = modes.filter((m) => !m.featured);
