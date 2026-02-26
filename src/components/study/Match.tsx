@@ -3,6 +3,8 @@
 import { useState, useEffect, useRef } from "react";
 import { glossary } from "@/lib/glossary";
 import { saveResult } from "@/lib/study-history";
+import { logWrongAnswer } from "@/lib/wrong-answers";
+import { recordStudySession } from "@/lib/streaks";
 
 function shuffle<T>(arr: T[]): T[] {
   const a = [...arr];
@@ -162,6 +164,7 @@ export default function Match({ onBack }: { onBack: () => void }) {
     // Save once
     if (!savedRef.current) {
       savedRef.current = true;
+      recordStudySession();
       saveResult({
         mode: "Match",
         date: new Date().toLocaleDateString(),

@@ -4,6 +4,8 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { glossary, categories } from "@/lib/glossary";
 import { getSRData, saveSRData, reviewTerm } from "@/lib/spaced-repetition";
 import { saveResult } from "@/lib/study-history";
+import { logWrongAnswer } from "@/lib/wrong-answers";
+import { recordStudySession } from "@/lib/streaks";
 
 function shuffle<T>(arr: T[]): T[] {
   const a = [...arr];
@@ -160,6 +162,7 @@ export default function Learn({ onBack }: { onBack: () => void }) {
       const t = newTerms[currentIndex];
       t.correctStreak = 0;
       t.lastWrong = true;
+      logWrongAnswer(t.term, t.definition, t.category, "Learn");
       setTerms(newTerms);
     }
   }
@@ -189,6 +192,7 @@ export default function Learn({ onBack }: { onBack: () => void }) {
       t.correctStreak = 0;
       t.phase = "mc"; // demote back to MC
       t.lastWrong = true;
+      logWrongAnswer(t.term, t.definition, t.category, "Learn");
       setTerms(newTerms);
     }
   }
@@ -425,6 +429,7 @@ export default function Learn({ onBack }: { onBack: () => void }) {
     // Save results & SR data once
     if (!savedRef.current) {
       savedRef.current = true;
+      recordStudySession();
       saveResult({
         mode: "Learn",
         date: new Date().toLocaleDateString(),

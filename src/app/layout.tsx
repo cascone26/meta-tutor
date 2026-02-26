@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Nav from "@/components/Nav";
+import KeyboardShortcuts from "@/components/KeyboardShortcuts";
+import Onboarding from "@/components/Onboarding";
+import SessionTimer from "@/components/SessionTimer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,6 +35,9 @@ export default function RootLayout({
           <Nav />
           <div className="flex-1 overflow-hidden">{children}</div>
         </div>
+        <KeyboardShortcuts />
+        <Onboarding />
+        <SessionTimer />
       </body>
     </html>
   );

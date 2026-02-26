@@ -7,8 +7,12 @@ import Match from "@/components/study/Match";
 import MultipleChoice from "@/components/study/MultipleChoice";
 import Learn from "@/components/study/Learn";
 import EssayOutliner from "@/components/study/EssayOutliner";
+import TeachBack from "@/components/study/TeachBack";
+import FillInBlank from "@/components/study/FillInBlank";
+import ArgumentReconstruction from "@/components/study/ArgumentReconstruction";
+import TimedExam from "@/components/study/TimedExam";
 
-type Mode = "hub" | "learn" | "flashcards" | "practice" | "match" | "mc" | "outline";
+type Mode = "hub" | "learn" | "flashcards" | "practice" | "match" | "mc" | "outline" | "teachback" | "fillinblank" | "argument" | "exam";
 
 const modes = [
   {
@@ -86,6 +90,57 @@ const modes = [
     color: "#8b6ba7",
     featured: false,
   },
+  {
+    id: "teachback" as Mode,
+    title: "Teach Back",
+    description: "Explain concepts in your own words. AI evaluates your understanding.",
+    icon: (
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+        <path d="M12 14l9-5-9-5-9 5 9 5zM12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
+      </svg>
+    ),
+    color: "#c67db7",
+    featured: false,
+  },
+  {
+    id: "fillinblank" as Mode,
+    title: "Fill in Blank",
+    description: "Key terms blanked from definitions. Fill them in from memory.",
+    icon: (
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+        <path d="M4 7h16M4 12h8M4 17h12" />
+        <rect x="14" y="10" width="6" height="4" rx="1" strokeDasharray="2 2" />
+      </svg>
+    ),
+    color: "#6b9fbf",
+    featured: false,
+  },
+  {
+    id: "argument" as Mode,
+    title: "Arguments",
+    description: "Reconstruct a philosopher's argument from the conclusion.",
+    icon: (
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+        <path d="M9 12h6M9 16h6M13 4H6a2 2 0 00-2 2v14a2 2 0 002 2h12a2 2 0 002-2V9l-7-5z" />
+        <path d="M13 4v5h5" />
+      </svg>
+    ),
+    color: "#9a7c6b",
+    featured: false,
+  },
+  {
+    id: "exam" as Mode,
+    title: "Timed Exam",
+    description: "Full mock exam. 30 minutes, no AI, no glossary. Real pressure.",
+    icon: (
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+        <circle cx="12" cy="12" r="10" />
+        <path d="M12 6v6l4 2" />
+      </svg>
+    ),
+    color: "#c96b6b",
+    featured: false,
+  },
 ];
 
 export default function StudyPage() {
@@ -97,6 +152,10 @@ export default function StudyPage() {
   if (mode === "match") return <Match onBack={() => setMode("hub")} />;
   if (mode === "mc") return <MultipleChoice onBack={() => setMode("hub")} />;
   if (mode === "outline") return <EssayOutliner onBack={() => setMode("hub")} />;
+  if (mode === "teachback") return <TeachBack onBack={() => setMode("hub")} />;
+  if (mode === "fillinblank") return <FillInBlank onBack={() => setMode("hub")} />;
+  if (mode === "argument") return <ArgumentReconstruction onBack={() => setMode("hub")} />;
+  if (mode === "exam") return <TimedExam onBack={() => setMode("hub")} />;
 
   const featured = modes.find((m) => m.featured)!;
   const rest = modes.filter((m) => !m.featured);
@@ -167,7 +226,7 @@ export default function StudyPage() {
         </button>
 
         {/* Other modes */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+        <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5">
           {rest.map((m) => (
             <button
               key={m.id}

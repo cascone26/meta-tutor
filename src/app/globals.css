@@ -70,3 +70,26 @@ body {
   margin: 0.75em 0;
   color: #6b6560;
 }
+
+/* Dark mode */
+html.dark {
+  --background: #1a1a1e;
+  --foreground: #e4e2de;
+  --accent: #a594c0;
+  --accent-hover: #b8a8d4;
+  --accent-light: #2a2640;
+  --surface: #242428;
+  --surface-hover: #2e2e34;
+  --border: #3a3a40;
+  --muted: #8a8580;
+  --user-bubble: #7c6b9a;
+  --assistant-bubble: #2a2a30;
+}
+
+html.dark .prose h1,
+html.dark .prose h2,
+html.dark .prose h3 { color: #e4e2de; }
+html.dark .prose strong { color: #e4e2de; }
+html.dark .prose em { color: #a594c0; }
+html.dark .prose code { background: #2a2640; color: #c4b8d9; }
+html.dark .prose blockquote { border-left-color: #5a4a78; color: #9a9590; }

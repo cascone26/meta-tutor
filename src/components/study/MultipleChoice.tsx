@@ -5,6 +5,8 @@ import { glossary } from "@/lib/glossary";
 import { categories } from "@/lib/glossary";
 import { getSRData, saveSRData, reviewTerm } from "@/lib/spaced-repetition";
 import { saveResult } from "@/lib/study-history";
+import { logWrongAnswer } from "@/lib/wrong-answers";
+import { recordStudySession } from "@/lib/streaks";
 
 function shuffle<T>(arr: T[]): T[] {
   const a = [...arr];
@@ -78,6 +80,8 @@ export default function MultipleChoice({ onBack }: { onBack: () => void }) {
       setScore(score + 1);
     } else {
       setWrongTerms((prev) => [...prev, { term: question.term, category: question.category }]);
+      const g = glossary.find((x) => x.term === question.term);
+      if (g) logWrongAnswer(g.term, g.definition, g.category, "Multiple Choice");
     }
   }
 
@@ -95,6 +99,7 @@ export default function MultipleChoice({ onBack }: { onBack: () => void }) {
     // Save results once
     if (!savedRef.current) {
       savedRef.current = true;
+      recordStudySession();
       saveResult({
         mode: "Multiple Choice",
         date: new Date().toLocaleDateString(),
