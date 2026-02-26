@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { glossary } from "@/lib/glossary";
 import { categories } from "@/lib/glossary";
 
@@ -14,18 +14,57 @@ function shuffle<T>(arr: T[]): T[] {
 }
 
 export default function Flashcards({ onBack }: { onBack: () => void }) {
-  const [category, setCategory] = useState<string | null>(null);
-  const [cards, setCards] = useState(glossary);
-  const [index, setIndex] = useState(0);
+  const [category, setCategory] = useState<string | null>(() => {
+    try { const s = localStorage.getItem("meta-tutor-fc-progress"); return s ? JSON.parse(s).category ?? null : null; } catch { return null; }
+  });
+  const [shuffled, setShuffled] = useState<boolean>(() => {
+    try { const s = localStorage.getItem("meta-tutor-fc-progress"); return s ? JSON.parse(s).shuffled ?? true : true; } catch { return true; }
+  });
+  const [cards, setCards] = useState(() => {
+    try {
+      const s = localStorage.getItem("meta-tutor-fc-progress");
+      if (s) {
+        const p = JSON.parse(s);
+        if (p.cardTerms?.length) {
+          const termMap = Object.fromEntries(glossary.map((g) => [g.term, g]));
+          const restored = p.cardTerms.map((t: string) => termMap[t]).filter(Boolean);
+          if (restored.length) return restored;
+        }
+      }
+    } catch {}
+    return glossary;
+  });
+  const [index, setIndex] = useState<number>(() => {
+    try { const s = localStorage.getItem("meta-tutor-fc-progress"); return s ? JSON.parse(s).index ?? 0 : 0; } catch { return 0; }
+  });
   const [flipped, setFlipped] = useState(false);
-  const [known, setKnown] = useState<Set<string>>(new Set());
+  const [known, setKnown] = useState<Set<string>>(() => {
+    try { const s = localStorage.getItem("meta-tutor-fc-progress"); return s ? new Set(JSON.parse(s).knownTerms ?? []) : new Set(); } catch { return new Set(); }
+  });
 
+  const restoredRef = useRef(typeof window !== "undefined" && !!localStorage.getItem("meta-tutor-fc-progress"));
+
+  // Save progress
   useEffect(() => {
+    try {
+      localStorage.setItem("meta-tutor-fc-progress", JSON.stringify({
+        category,
+        shuffled,
+        cardTerms: cards.map((c: { term: string }) => c.term),
+        index,
+        knownTerms: [...known],
+      }));
+    } catch {}
+  }, [category, shuffled, cards, index, known]);
+
+  // Reset cards when category/shuffle changes — skip on initial mount if restored
+  useEffect(() => {
+    if (restoredRef.current) { restoredRef.current = false; return; }
     const filtered = category ? glossary.filter((g) => g.category === category) : glossary;
-    setCards(shuffle(filtered));
+    setCards(shuffled ? shuffle(filtered) : [...filtered]);
     setIndex(0);
     setFlipped(false);
-  }, [category]);
+  }, [category, shuffled]);
 
   const card = cards[index];
 
@@ -84,7 +123,7 @@ export default function Flashcards({ onBack }: { onBack: () => void }) {
         <p className="text-sm mb-4" style={{ color: "var(--muted)" }}>
           You marked all {known.size} terms as known.
         </p>
-        <button onClick={() => { setKnown(new Set()); reshuffleRemaining(); }} className="text-sm px-4 py-2 rounded-full font-medium" style={{ background: "var(--accent)", color: "#fff" }}>
+        <button onClick={() => { setKnown(new Set()); reshuffleRemaining(); try { localStorage.removeItem("meta-tutor-fc-progress"); } catch {} }} className="text-sm px-4 py-2 rounded-full font-medium" style={{ background: "var(--accent)", color: "#fff" }}>
           Start over
         </button>
       </div>
@@ -104,7 +143,7 @@ export default function Flashcards({ onBack }: { onBack: () => void }) {
         </span>
       </div>
 
-      {/* Category filter */}
+      {/* Category filter + order toggle */}
       <div className="flex gap-2 flex-wrap px-4 pb-3 shrink-0">
         <button
           onClick={() => setCategory(null)}
@@ -131,6 +170,28 @@ export default function Flashcards({ onBack }: { onBack: () => void }) {
             {cat}
           </button>
         ))}
+        <div className="ml-auto flex rounded-full overflow-hidden" style={{ border: "1px solid var(--border)" }}>
+          <button
+            onClick={() => setShuffled(true)}
+            className="text-xs px-2.5 py-1 font-medium"
+            style={{
+              background: shuffled ? "var(--accent)" : "var(--surface)",
+              color: shuffled ? "#fff" : "var(--muted)",
+            }}
+          >
+            Shuffle
+          </button>
+          <button
+            onClick={() => setShuffled(false)}
+            className="text-xs px-2.5 py-1 font-medium"
+            style={{
+              background: !shuffled ? "var(--accent)" : "var(--surface)",
+              color: !shuffled ? "#fff" : "var(--muted)",
+            }}
+          >
+            In Order
+          </button>
+        </div>
       </div>
 
       {/* Card */}

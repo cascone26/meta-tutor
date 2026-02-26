@@ -24,11 +24,12 @@ type Question = {
   category: string;
 };
 
-function generateQuestions(cat: string | null): Question[] {
+function generateQuestions(cat: string | null, shuffled: boolean): Question[] {
   const pool = cat ? glossary.filter((g) => g.category === cat) : glossary;
   if (pool.length < 4) return [];
 
-  return shuffle(pool).map((item) => {
+  const ordered = shuffled ? shuffle(pool) : [...pool];
+  return ordered.map((item) => {
     const wrong = shuffle(pool.filter((g) => g.term !== item.term))
       .slice(0, 3)
       .map((g) => g.definition);
@@ -43,19 +44,43 @@ function generateQuestions(cat: string | null): Question[] {
 }
 
 export default function MultipleChoice({ onBack }: { onBack: () => void }) {
-  const [category, setCategory] = useState<string | null>(null);
-  const [questions, setQuestions] = useState<Question[]>([]);
-  const [index, setIndex] = useState(0);
+  const [category, setCategory] = useState<string | null>(() => {
+    try { const s = localStorage.getItem("meta-tutor-mc-progress"); return s ? JSON.parse(s).category ?? null : null; } catch { return null; }
+  });
+  const [shuffled, setShuffled] = useState<boolean>(() => {
+    try { const s = localStorage.getItem("meta-tutor-mc-progress"); return s ? JSON.parse(s).shuffled ?? true : true; } catch { return true; }
+  });
+  const [questions, setQuestions] = useState<Question[]>(() => {
+    try { const s = localStorage.getItem("meta-tutor-mc-progress"); return s ? JSON.parse(s).questions ?? [] : []; } catch { return []; }
+  });
+  const [index, setIndex] = useState<number>(() => {
+    try { const s = localStorage.getItem("meta-tutor-mc-progress"); return s ? JSON.parse(s).index ?? 0 : 0; } catch { return 0; }
+  });
   const [selected, setSelected] = useState<string | null>(null);
-  const [score, setScore] = useState(0);
-  const [answered, setAnswered] = useState(0);
+  const [score, setScore] = useState<number>(() => {
+    try { const s = localStorage.getItem("meta-tutor-mc-progress"); return s ? JSON.parse(s).score ?? 0 : 0; } catch { return 0; }
+  });
+  const [answered, setAnswered] = useState<number>(() => {
+    try { const s = localStorage.getItem("meta-tutor-mc-progress"); return s ? JSON.parse(s).answered ?? 0 : 0; } catch { return 0; }
+  });
   const [showResult, setShowResult] = useState(false);
-  const [wrongTerms, setWrongTerms] = useState<{ term: string; category: string }[]>([]);
+  const [wrongTerms, setWrongTerms] = useState<{ term: string; category: string }[]>(() => {
+    try { const s = localStorage.getItem("meta-tutor-mc-progress"); return s ? JSON.parse(s).wrongTerms ?? [] : []; } catch { return []; }
+  });
   const savedRef = useRef(false);
 
-  const startQuiz = useCallback((cat: string | null) => {
+  // Save progress whenever it changes
+  useEffect(() => {
+    if (questions.length === 0) return;
+    try {
+      localStorage.setItem("meta-tutor-mc-progress", JSON.stringify({ category, shuffled, questions, index, score, answered, wrongTerms }));
+    } catch {}
+  }, [category, shuffled, questions, index, score, answered, wrongTerms]);
+
+  const startQuiz = useCallback((cat: string | null, sh: boolean = shuffled) => {
+    try { localStorage.removeItem("meta-tutor-mc-progress"); } catch {}
     setCategory(cat);
-    setQuestions(generateQuestions(cat));
+    setQuestions(generateQuestions(cat, sh));
     setIndex(0);
     setSelected(null);
     setScore(0);
@@ -66,8 +91,9 @@ export default function MultipleChoice({ onBack }: { onBack: () => void }) {
   }, []);
 
   useEffect(() => {
-    startQuiz(null);
-  }, [startQuiz]);
+    if (questions.length > 0) return; // restored from storage
+    startQuiz(null, true);
+  }, [startQuiz]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const question = questions[index];
   const isComplete = index >= questions.length && questions.length > 0;
@@ -210,7 +236,7 @@ export default function MultipleChoice({ onBack }: { onBack: () => void }) {
         </div>
       </div>
 
-      {/* Category filter */}
+      {/* Category filter + order toggle */}
       <div className="flex gap-2 flex-wrap px-4 pb-3 shrink-0">
         <button
           onClick={() => startQuiz(null)}
@@ -237,6 +263,28 @@ export default function MultipleChoice({ onBack }: { onBack: () => void }) {
             {cat}
           </button>
         ))}
+        <div className="ml-auto flex rounded-full overflow-hidden" style={{ border: "1px solid var(--border)" }}>
+          <button
+            onClick={() => { setShuffled(true); startQuiz(category, true); }}
+            className="text-xs px-2.5 py-1 font-medium"
+            style={{
+              background: shuffled ? "var(--accent)" : "var(--surface)",
+              color: shuffled ? "#fff" : "var(--muted)",
+            }}
+          >
+            Shuffle
+          </button>
+          <button
+            onClick={() => { setShuffled(false); startQuiz(category, false); }}
+            className="text-xs px-2.5 py-1 font-medium"
+            style={{
+              background: !shuffled ? "var(--accent)" : "var(--surface)",
+              color: !shuffled ? "#fff" : "var(--muted)",
+            }}
+          >
+            In Order
+          </button>
+        </div>
       </div>
 
       {/* Question */}

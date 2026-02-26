@@ -129,4 +129,29 @@ export const questions = [
     text: "What are the main categories of being for Aristotle? Why do you think that categories are important for metaphysics?",
     topics: ["Categories", "Aristotle", "Being"],
   },
+  {
+    id: 27,
+    text: "Explain the real distinction between essence and existence in Thomistic metaphysics. Why is this distinction important, and in what being are essence and existence identical?",
+    topics: ["Essence", "Existence", "Real Distinction", "Thomism"],
+  },
+  {
+    id: 28,
+    text: "What does the principle 'agere sequitur esse' (operation follows being) mean? How does action reveal the nature of a being, and why is action considered a key principle of existence?",
+    topics: ["Action", "Agere Sequitur Esse", "Principles of Existence"],
+  },
+  {
+    id: 29,
+    text: "State and explain the Principles of Identity, Non-Contradiction, and Excluded Middle. How do these three logical laws relate to one another, and why are they foundational to all metaphysical reasoning?",
+    topics: ["First Principles", "Identity", "Non-Contradiction", "Excluded Middle"],
+  },
+  {
+    id: 30,
+    text: "Explain the Principle of Sufficient Reason and the Principle of Causality. How do these principles differ from each other, and how do they support metaphysical arguments about the existence of God?",
+    topics: ["Sufficient Reason", "Causality", "First Principles"],
+  },
+  {
+    id: 31,
+    text: "List and briefly explain all six principles of existence (act/potency, essence/existence, form/matter, analogy, action, intrinsic unity). How do these principles work together to give a complete account of real being?",
+    topics: ["Principles of Existence", "Act", "Potency", "Essence", "Existence", "Form", "Matter", "Analogy", "Action", "Unity"],
+  },
 ];

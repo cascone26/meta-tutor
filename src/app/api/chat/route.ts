@@ -70,7 +70,7 @@ export async function POST(req: NextRequest) {
     const fullSystem = baseSystemPrompt + sourcesSection + userNotesSection + modeInstruction;
 
     const stream = anthropic.messages.stream({
-      model: "claude-sonnet-4-5-20250514",
+      model: "claude-sonnet-4-6",
       max_tokens: 2048,
       system: fullSystem,
       messages: messages.map((m: { role: string; content: string }) => ({
@@ -83,22 +83,31 @@ export async function POST(req: NextRequest) {
 
     const readable = new ReadableStream({
       async start(controller) {
+        let closed = false;
+
+        const safeEnqueue = (data: Uint8Array) => {
+          if (!closed) controller.enqueue(data);
+        };
+
+        const safeClose = () => {
+          if (!closed) {
+            closed = true;
+            controller.close();
+          }
+        };
+
         stream.on("text", (text) => {
-          controller.enqueue(
-            encoder.encode(`data: ${JSON.stringify({ text })}\n\n`)
-          );
+          safeEnqueue(encoder.encode(`data: ${JSON.stringify({ text })}\n\n`));
         });
         stream.on("end", () => {
-          controller.enqueue(encoder.encode("data: [DONE]\n\n"));
-          controller.close();
+          safeEnqueue(encoder.encode("data: [DONE]\n\n"));
+          safeClose();
         });
         stream.on("error", (err) => {
-          controller.enqueue(
-            encoder.encode(
-              `data: ${JSON.stringify({ error: err.message })}\n\n`
-            )
+          safeEnqueue(
+            encoder.encode(`data: ${JSON.stringify({ error: err.message })}\n\n`)
           );
-          controller.close();
+          safeClose();
         });
       },
     });

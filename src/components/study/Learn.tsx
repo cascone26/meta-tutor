@@ -1,11 +1,27 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useRef } from "react";
 import { glossary, categories } from "@/lib/glossary";
 import { getSRData, saveSRData, reviewTerm } from "@/lib/spaced-repetition";
 import { saveResult } from "@/lib/study-history";
-import { logWrongAnswer } from "@/lib/wrong-answers";
-import { recordStudySession } from "@/lib/streaks";
+
+// ─── Types ────────────────────────────────────────────────────────────────────
+
+type StudyTerm = {
+  term: string;
+  definition: string;
+  category: string;
+};
+
+type Settings = {
+  answerWith: "definitions" | "terms";
+  shuffleOrder: boolean;
+  categories: string[];
+};
+
+type Phase = "settings" | "mc" | "typed" | "round-summary" | "done";
+
+// ─── Helpers ──────────────────────────────────────────────────────────────────
 
 function shuffle<T>(arr: T[]): T[] {
   const a = [...arr];
@@ -16,57 +32,92 @@ function shuffle<T>(arr: T[]): T[] {
   return a;
 }
 
-type TermState = {
-  term: string;
-  definition: string;
-  category: string;
-  correctStreak: number; // 0 = new, 1 = got MC right, 2+ = mastered
-  phase: "mc" | "typed" | "mastered";
-  lastWrong: boolean;
-};
+function normalize(s: string): string {
+  return s
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9\s]/g, "")
+    .replace(/\s+/g, " ");
+}
 
-type Settings = {
-  answerWith: "definitions" | "terms";
-  shuffleOrder: boolean;
-  categories: string[];
-  masteryThreshold: number; // how many correct in a row to master
-};
+const BATCH_SIZE = 7;
 
 const defaultSettings: Settings = {
   answerWith: "definitions",
   shuffleOrder: true,
   categories: [],
-  masteryThreshold: 2,
 };
 
+// ─── Component ────────────────────────────────────────────────────────────────
+
 export default function Learn({ onBack }: { onBack: () => void }) {
-  const [settings, setSettings] = useState<Settings>(defaultSettings);
-  const [showSettings, setShowSettings] = useState(true);
-  const [terms, setTerms] = useState<TermState[]>([]);
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [settings, setSettings] = useState<Settings>(() => {
+    try {
+      const s = localStorage.getItem("meta-tutor-learn-settings");
+      return s ? JSON.parse(s) : defaultSettings;
+    } catch {
+      return defaultSettings;
+    }
+  });
+
+  const [phase, setPhase] = useState<Phase>("settings");
+
+  // Term pools
+  const [allTerms, setAllTerms] = useState<StudyTerm[]>([]);
+  const [remainingTerms, setRemainingTerms] = useState<StudyTerm[]>([]);
+  const [masteredCount, setMasteredCount] = useState(0);
+  const [currentBatch, setCurrentBatch] = useState<StudyTerm[]>([]);
+  const [batchIndex, setBatchIndex] = useState(0);
+
+  // MC state
   const [mcOptions, setMcOptions] = useState<string[]>([]);
   const [selectedMc, setSelectedMc] = useState<string | null>(null);
+
+  // Typed state
   const [typedAnswer, setTypedAnswer] = useState("");
   const [typedSubmitted, setTypedSubmitted] = useState(false);
   const [typedCorrect, setTypedCorrect] = useState(false);
-  const [round, setRound] = useState(1);
-  const [roundCorrect, setRoundCorrect] = useState(0);
-  const [roundTotal, setRoundTotal] = useState(0);
+  // typedResults is passed as arg to advanceTyped() to avoid stale-closure bugs
+  const [typedResults, setTypedResults] = useState<boolean[]>([]);
+
+  // Summary / Done stats
+  const [roundStats, setRoundStats] = useState({ correct: 0, total: 0 });
+  const [totalCorrect, setTotalCorrect] = useState(0);
+  const [totalAttempts, setTotalAttempts] = useState(0);
+  const [allWrongTerms, setAllWrongTerms] = useState<string[]>([]);
+
   const inputRef = useRef<HTMLInputElement>(null);
   const savedRef = useRef(false);
 
-  // Load saved settings
-  useEffect(() => {
-    try {
-      const saved = localStorage.getItem("meta-tutor-learn-settings");
-      if (saved) setSettings(JSON.parse(saved));
-    } catch {}
-  }, []);
+  // ─── Settings ───────────────────────────────────────────────────────────────
 
   function saveSettings(s: Settings) {
     setSettings(s);
-    localStorage.setItem("meta-tutor-learn-settings", JSON.stringify(s));
+    try {
+      localStorage.setItem("meta-tutor-learn-settings", JSON.stringify(s));
+    } catch {}
   }
+
+  // ─── MC helpers ─────────────────────────────────────────────────────────────
+
+  function buildMcOptions(term: StudyTerm, pool: StudyTerm[], s: Settings): string[] {
+    const correctAnswer = s.answerWith === "definitions" ? term.definition : term.term;
+    const wrongPool = pool
+      .filter((t) => t.term !== term.term)
+      .map((t) => (s.answerWith === "definitions" ? t.definition : t.term));
+    const wrongs = shuffle(wrongPool).slice(0, 3);
+    return shuffle([correctAnswer, ...wrongs]);
+  }
+
+  function getPrompt(t: StudyTerm): string {
+    return settings.answerWith === "definitions" ? t.term : t.definition;
+  }
+
+  function getAnswer(t: StudyTerm): string {
+    return settings.answerWith === "definitions" ? t.definition : t.term;
+  }
+
+  // ─── Start ──────────────────────────────────────────────────────────────────
 
   function startLearning() {
     const pool =
@@ -74,196 +125,205 @@ export default function Learn({ onBack }: { onBack: () => void }) {
         ? glossary.filter((g) => settings.categories.includes(g.category))
         : glossary;
 
-    const ordered = settings.shuffleOrder ? shuffle(pool) : pool;
-
-    const termStates: TermState[] = ordered.map((g) => ({
+    const ordered: StudyTerm[] = (settings.shuffleOrder ? shuffle(pool) : pool).map((g) => ({
       term: g.term,
       definition: g.definition,
       category: g.category,
-      correctStreak: 0,
-      phase: "mc",
-      lastWrong: false,
     }));
 
-    setTerms(termStates);
-    setCurrentIndex(0);
-    setRound(1);
-    setRoundCorrect(0);
-    setRoundTotal(0);
-    setShowSettings(false);
+    const batch = ordered.slice(0, BATCH_SIZE);
+
+    setAllTerms(ordered);
+    setRemainingTerms(ordered);
+    setMasteredCount(0);
+    setCurrentBatch(batch);
+    setBatchIndex(0);
+    setTotalCorrect(0);
+    setTotalAttempts(0);
+    setAllWrongTerms([]);
+    setTypedResults([]);
     savedRef.current = false;
-    generateMcOptions(termStates, 0, settings);
-  }
 
-  function generateMcOptions(
-    pool: TermState[],
-    idx: number,
-    s: Settings
-  ) {
-    const current = pool[idx];
-    if (!current) return;
-
-    const correctAnswer =
-      s.answerWith === "definitions" ? current.definition : current.term;
-
-    const wrongPool = pool
-      .filter((t) => t.term !== current.term)
-      .map((t) => (s.answerWith === "definitions" ? t.definition : t.term));
-
-    const wrongs = shuffle(wrongPool).slice(0, 3);
-    setMcOptions(shuffle([correctAnswer, ...wrongs]));
-    setSelectedMc(null);
-    setTypedAnswer("");
-    setTypedSubmitted(false);
-    setTypedCorrect(false);
-  }
-
-  const getPrompt = useCallback(
-    (t: TermState) => {
-      return settings.answerWith === "definitions" ? t.term : t.definition;
-    },
-    [settings.answerWith]
-  );
-
-  const getAnswer = useCallback(
-    (t: TermState) => {
-      return settings.answerWith === "definitions" ? t.definition : t.term;
-    },
-    [settings.answerWith]
-  );
-
-  function getUnmastered(): TermState[] {
-    return terms.filter((t) => t.phase !== "mastered");
-  }
-
-  const current = terms[currentIndex];
-  const mastered = terms.filter((t) => t.phase === "mastered").length;
-  const totalTerms = terms.length;
-  const remaining = getUnmastered();
-
-  function handleMcSelect(option: string) {
-    if (selectedMc) return;
-    setSelectedMc(option);
-    const correct = getAnswer(current) === option;
-    setRoundTotal(roundTotal + 1);
-
-    if (correct) {
-      setRoundCorrect(roundCorrect + 1);
-      const newTerms = [...terms];
-      const t = newTerms[currentIndex];
-      t.correctStreak += 1;
-      t.lastWrong = false;
-      if (t.correctStreak >= 1) {
-        t.phase = "typed"; // promote to typed
-      }
-      setTerms(newTerms);
+    if (ordered.length >= 4) {
+      // Enter MC phase
+      setMcOptions(buildMcOptions(batch[0], ordered, settings));
+      setSelectedMc(null);
+      setPhase("mc");
     } else {
-      const newTerms = [...terms];
-      const t = newTerms[currentIndex];
-      t.correctStreak = 0;
-      t.lastWrong = true;
-      logWrongAnswer(t.term, t.definition, t.category, "Learn");
-      setTerms(newTerms);
-    }
-  }
-
-  function handleTypedSubmit() {
-    if (typedSubmitted) return;
-    setTypedSubmitted(true);
-
-    const answer = getAnswer(current);
-    const correct = normalize(typedAnswer) === normalize(answer);
-    setTypedCorrect(correct);
-    setRoundTotal(roundTotal + 1);
-
-    if (correct) {
-      setRoundCorrect(roundCorrect + 1);
-      const newTerms = [...terms];
-      const t = newTerms[currentIndex];
-      t.correctStreak += 1;
-      t.lastWrong = false;
-      if (t.correctStreak >= settings.masteryThreshold) {
-        t.phase = "mastered";
-      }
-      setTerms(newTerms);
-    } else {
-      const newTerms = [...terms];
-      const t = newTerms[currentIndex];
-      t.correctStreak = 0;
-      // Don't demote to MC yet — keep phase as "typed" so feedback UI stays visible.
-      // advance() will handle the demotion when user clicks Continue.
-      t.lastWrong = true;
-      logWrongAnswer(t.term, t.definition, t.category, "Learn");
-      setTerms(newTerms);
-    }
-  }
-
-  function normalize(s: string): string {
-    return s
-      .toLowerCase()
-      .trim()
-      .replace(/[^a-z0-9\s]/g, "")
-      .replace(/\s+/g, " ");
-  }
-
-  function advance() {
-    // Demote current term to MC if it was wrong in typed phase
-    const newTerms = [...terms];
-    const curr = newTerms[currentIndex];
-    if (curr && curr.phase === "typed" && curr.correctStreak === 0) {
-      curr.phase = "mc";
-    }
-
-    // Find next unmastered term
-    const unmastered = newTerms
-      .map((t, i) => ({ t, i }))
-      .filter(({ t }) => t.phase !== "mastered");
-
-    if (unmastered.length === 0) {
-      setTerms(newTerms);
-      return; // all done
-    }
-
-    // Pick next one that isn't the current (if possible)
-    let nextIdx: number;
-    if (unmastered.length === 1) {
-      nextIdx = unmastered[0].i;
-    } else {
-      const others = unmastered.filter(({ i }) => i !== currentIndex);
-      // Prioritize ones that were last wrong
-      const wrongOnes = others.filter(({ t }) => t.lastWrong);
-      if (wrongOnes.length > 0) {
-        nextIdx = wrongOnes[0].i;
-      } else {
-        nextIdx = others[0].i;
-      }
-    }
-
-    setTerms(newTerms);
-    setCurrentIndex(nextIdx);
-    generateMcOptions(newTerms, nextIdx, settings);
-
-    if (newTerms[nextIdx].phase === "typed") {
+      // Skip MC — not enough terms for 4 options
+      setTypedAnswer("");
+      setTypedSubmitted(false);
+      setTypedCorrect(false);
+      setPhase("typed");
       setTimeout(() => inputRef.current?.focus(), 100);
     }
   }
 
-  function overrideCorrect() {
-    const newTerms = [...terms];
-    const t = newTerms[currentIndex];
-    t.correctStreak += 1;
-    t.lastWrong = false;
-    if (t.phase === "typed" && t.correctStreak >= settings.masteryThreshold) {
-      t.phase = "mastered";
-    } else if (t.phase === "mc" && t.correctStreak >= 1) {
-      t.phase = "typed";
-    }
-    setTerms(newTerms);
-    setRoundCorrect(roundCorrect + 1);
+  // ─── MC Phase ───────────────────────────────────────────────────────────────
+
+  function handleMcSelect(option: string) {
+    if (selectedMc !== null) return;
+    setSelectedMc(option);
   }
 
-  // Settings screen
-  if (showSettings) {
+  function advanceMc() {
+    const nextIndex = batchIndex + 1;
+    if (nextIndex < currentBatch.length) {
+      // Next MC term in batch
+      setBatchIndex(nextIndex);
+      setMcOptions(buildMcOptions(currentBatch[nextIndex], allTerms, settings));
+      setSelectedMc(null);
+    } else {
+      // MC phase done → start typed phase for same batch
+      setBatchIndex(0);
+      setTypedAnswer("");
+      setTypedSubmitted(false);
+      setTypedCorrect(false);
+      setTypedResults([]);
+      setPhase("typed");
+      setTimeout(() => inputRef.current?.focus(), 100);
+    }
+  }
+
+  // ─── Typed Phase ────────────────────────────────────────────────────────────
+
+  function handleTypedSubmit() {
+    if (typedSubmitted) return;
+    const term = currentBatch[batchIndex];
+    const correct = normalize(typedAnswer) === normalize(getAnswer(term));
+    setTypedCorrect(correct);
+    setTypedSubmitted(true);
+    // Build new array immediately — pass to advanceTyped to avoid closure bug
+    const newResults = [...typedResults, correct];
+    setTypedResults(newResults);
+  }
+
+  function handleDontKnow() {
+    setTypedAnswer("");
+    setTypedCorrect(false);
+    setTypedSubmitted(true);
+    const newResults = [...typedResults, false];
+    setTypedResults(newResults);
+  }
+
+  function handleOverride() {
+    // Flip last entry to true (user was actually right)
+    const newResults = [...typedResults];
+    newResults[newResults.length - 1] = true;
+    setTypedResults(newResults);
+    setTypedCorrect(true);
+  }
+
+  // results is passed as argument to capture the latest value, not stale closure
+  function advanceTyped(results: boolean[]) {
+    const nextIndex = batchIndex + 1;
+    if (nextIndex < currentBatch.length) {
+      // Next typed term in batch
+      setBatchIndex(nextIndex);
+      setTypedAnswer("");
+      setTypedSubmitted(false);
+      setTypedCorrect(false);
+      setTimeout(() => inputRef.current?.focus(), 100);
+    } else {
+      // Typed phase done — compute round summary
+      const correct = results.filter(Boolean).length;
+      const total = results.length;
+
+      const masteredThisRound = currentBatch.filter((_, i) => results[i] === true);
+      const failedThisRound = currentBatch.filter((_, i) => !results[i]);
+
+      // Remove mastered terms from remaining pool
+      const newRemaining = remainingTerms.filter(
+        (t) => !masteredThisRound.some((m) => m.term === t.term)
+      );
+
+      const newWrongTerms = [...allWrongTerms, ...failedThisRound.map((t) => t.term)];
+      const newTotalCorrect = totalCorrect + correct;
+      const newTotalAttempts = totalAttempts + total;
+      const newMasteredCount = masteredCount + masteredThisRound.length;
+
+      setRemainingTerms(newRemaining);
+      setMasteredCount(newMasteredCount);
+      setAllWrongTerms(newWrongTerms);
+      setTotalCorrect(newTotalCorrect);
+      setTotalAttempts(newTotalAttempts);
+      setRoundStats({ correct, total });
+      setPhase("round-summary");
+    }
+  }
+
+  // ─── Round Summary → Next Round ─────────────────────────────────────────────
+
+  function startNextRound() {
+    if (remainingTerms.length === 0) {
+      finishLearning();
+      return;
+    }
+
+    const nextBatch = remainingTerms.slice(0, BATCH_SIZE);
+    setCurrentBatch(nextBatch);
+    setBatchIndex(0);
+    setTypedResults([]);
+
+    if (allTerms.length >= 4) {
+      setMcOptions(buildMcOptions(nextBatch[0], allTerms, settings));
+      setSelectedMc(null);
+      setPhase("mc");
+    } else {
+      setTypedAnswer("");
+      setTypedSubmitted(false);
+      setTypedCorrect(false);
+      setPhase("typed");
+      setTimeout(() => inputRef.current?.focus(), 100);
+    }
+  }
+
+  // ─── Done ───────────────────────────────────────────────────────────────────
+
+  function finishLearning() {
+    if (savedRef.current) return;
+    savedRef.current = true;
+
+    const pct = totalAttempts > 0 ? Math.round((totalCorrect / totalAttempts) * 100) : 0;
+    const uniqueWrong = [...new Set(allWrongTerms)].slice(0, 10);
+    const weakCats = [
+      ...new Set(
+        allTerms.filter((t) => uniqueWrong.includes(t.term)).map((t) => t.category)
+      ),
+    ];
+
+    saveResult({
+      mode: "Learn",
+      date: new Date().toLocaleDateString(),
+      timestamp: Date.now(),
+      score: totalCorrect,
+      total: totalAttempts,
+      percentage: pct,
+      weakTerms: uniqueWrong,
+      weakCategories: weakCats,
+    });
+
+    const srData = getSRData();
+    for (const t of allTerms) {
+      const wrongCount = allWrongTerms.filter((w) => w === t.term).length;
+      const quality = wrongCount === 0 ? 5 : wrongCount === 1 ? 3 : 1;
+      srData[t.term] = reviewTerm(srData[t.term], t.term, quality);
+    }
+    saveSRData(srData);
+
+    setPhase("done");
+  }
+
+  // ─── Computed ───────────────────────────────────────────────────────────────
+
+  const poolSize =
+    settings.categories.length === 0
+      ? glossary.length
+      : glossary.filter((g) => settings.categories.includes(g.category)).length;
+
+  // ─── Settings Screen ────────────────────────────────────────────────────────
+
+  if (phase === "settings") {
     return (
       <div className="flex flex-col h-full">
         <div className="flex items-center px-4 py-3 shrink-0">
@@ -324,41 +384,14 @@ export default function Learn({ onBack }: { onBack: () => void }) {
                 <button
                   onClick={() => saveSettings({ ...settings, shuffleOrder: !settings.shuffleOrder })}
                   className="w-10 h-6 rounded-full transition-colors relative"
-                  style={{
-                    background: settings.shuffleOrder ? "var(--accent)" : "var(--border)",
-                  }}
+                  style={{ background: settings.shuffleOrder ? "var(--accent)" : "var(--border)" }}
                 >
                   <span
                     className="absolute top-1 w-4 h-4 rounded-full bg-white transition-transform"
-                    style={{
-                      left: settings.shuffleOrder ? "22px" : "4px",
-                    }}
+                    style={{ left: settings.shuffleOrder ? "22px" : "4px" }}
                   />
                 </button>
               </label>
-            </div>
-
-            {/* Mastery threshold */}
-            <div className="mb-5">
-              <label className="text-xs font-medium block mb-2" style={{ color: "var(--foreground)" }}>
-                Correct answers to master a term
-              </label>
-              <div className="flex gap-2">
-                {[2, 3, 4].map((n) => (
-                  <button
-                    key={n}
-                    onClick={() => saveSettings({ ...settings, masteryThreshold: n })}
-                    className="flex-1 text-sm py-2 rounded-xl font-medium transition-all"
-                    style={{
-                      background: settings.masteryThreshold === n ? "var(--accent)" : "var(--surface)",
-                      color: settings.masteryThreshold === n ? "#fff" : "var(--muted)",
-                      border: `1px solid ${settings.masteryThreshold === n ? "transparent" : "var(--border)"}`,
-                    }}
-                  >
-                    {n}
-                  </button>
-                ))}
-              </div>
             </div>
 
             {/* Categories */}
@@ -409,13 +442,8 @@ export default function Learn({ onBack }: { onBack: () => void }) {
               className="w-full py-3 rounded-xl text-sm font-semibold transition-opacity hover:opacity-90"
               style={{ background: "var(--accent)", color: "#fff" }}
             >
-              Start learning
-              <span className="opacity-70 ml-1">
-                ({settings.categories.length === 0
-                  ? glossary.length
-                  : glossary.filter((g) => settings.categories.includes(g.category)).length}{" "}
-                terms)
-              </span>
+              Start learning{" "}
+              <span className="opacity-70">({poolSize} terms)</span>
             </button>
           </div>
         </div>
@@ -423,43 +451,11 @@ export default function Learn({ onBack }: { onBack: () => void }) {
     );
   }
 
-  // Done screen
-  if (remaining.length === 0 && totalTerms > 0) {
-    const pct = totalTerms > 0 ? Math.round((roundCorrect / Math.max(roundTotal, 1)) * 100) : 0;
+  // ─── Done Screen ────────────────────────────────────────────────────────────
 
-    // Find weak terms (ones that had wrong answers)
-    const weakTerms = terms
-      .filter((t) => t.correctStreak < settings.masteryThreshold + 1) // had to retry
-      .map((t) => t.term)
-      .slice(0, 10);
-    const weakCats = [...new Set(
-      terms
-        .filter((t) => t.correctStreak < settings.masteryThreshold + 1)
-        .map((t) => t.category)
-    )];
-
-    // Save results & SR data once
-    if (!savedRef.current) {
-      savedRef.current = true;
-      recordStudySession();
-      saveResult({
-        mode: "Learn",
-        date: new Date().toLocaleDateString(),
-        timestamp: Date.now(),
-        score: roundCorrect,
-        total: roundTotal,
-        percentage: pct,
-        weakTerms,
-        weakCategories: weakCats,
-      });
-
-      const srData = getSRData();
-      for (const t of terms) {
-        const quality = t.correctStreak >= settings.masteryThreshold ? 5 : t.correctStreak >= 1 ? 3 : 1;
-        srData[t.term] = reviewTerm(srData[t.term], t.term, quality);
-      }
-      saveSRData(srData);
-    }
+  if (phase === "done") {
+    const pct = totalAttempts > 0 ? Math.round((totalCorrect / totalAttempts) * 100) : 0;
+    const uniqueWrong = [...new Set(allWrongTerms)].slice(0, 10);
 
     return (
       <div className="flex flex-col h-full">
@@ -479,9 +475,9 @@ export default function Learn({ onBack }: { onBack: () => void }) {
           <div className="max-w-md mx-auto text-center py-8">
             <div
               className="w-16 h-16 rounded-full flex items-center justify-center mb-4 mx-auto"
-              style={{ background: "var(--success-bg)" }}
+              style={{ background: "#e8f5e9" }}
             >
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--success)" strokeWidth="2">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#6ab070" strokeWidth="2">
                 <path d="M9 12l2 2 4-4" />
                 <circle cx="12" cy="12" r="10" />
               </svg>
@@ -490,36 +486,67 @@ export default function Learn({ onBack }: { onBack: () => void }) {
               All terms mastered!
             </h2>
             <p className="text-sm mb-1" style={{ color: "var(--muted)" }}>
-              {totalTerms} terms learned &middot; {pct}% accuracy
+              {masteredCount} terms learned &middot; {pct}% accuracy
             </p>
             <p className="text-sm mb-6" style={{ color: "var(--muted)" }}>
-              {roundCorrect} correct / {roundTotal} attempts
+              {totalCorrect} correct / {totalAttempts} attempts
             </p>
 
-            {/* Feedback */}
             {pct >= 90 ? (
-              <div className="rounded-xl p-4 mb-4 text-left" style={{ background: "var(--success-bg)", border: "1px solid #c8e6c9" }}>
-                <p className="text-sm font-medium mb-1" style={{ color: "var(--success-text)" }}>Excellent work!</p>
-                <p className="text-xs" style={{ color: "var(--success-text)" }}>You&apos;ve got a strong grasp on these terms. Try adding more categories or increasing the mastery threshold for a challenge.</p>
+              <div
+                className="rounded-xl p-4 mb-4 text-left"
+                style={{ background: "#e8f5e9", border: "1px solid #c8e6c9" }}
+              >
+                <p className="text-sm font-medium mb-1" style={{ color: "#2d5a30" }}>
+                  Excellent work!
+                </p>
+                <p className="text-xs" style={{ color: "#4a7a4d" }}>
+                  You&apos;ve got a strong grasp on these terms. Try adding more categories for a
+                  bigger challenge.
+                </p>
               </div>
             ) : pct >= 70 ? (
-              <div className="rounded-xl p-4 mb-4 text-left" style={{ background: "var(--warning-bg)", border: "1px solid #ffecb3" }}>
-                <p className="text-sm font-medium mb-1" style={{ color: "var(--warning-text)" }}>Good progress!</p>
-                <p className="text-xs" style={{ color: "var(--warning-text)" }}>You&apos;re getting there. Focus on the terms below to solidify your understanding.</p>
+              <div
+                className="rounded-xl p-4 mb-4 text-left"
+                style={{ background: "#fff8e1", border: "1px solid #ffecb3" }}
+              >
+                <p className="text-sm font-medium mb-1" style={{ color: "#8d6e0f" }}>
+                  Good progress!
+                </p>
+                <p className="text-xs" style={{ color: "#a68612" }}>
+                  You&apos;re getting there. Focus on the terms below to solidify your understanding.
+                </p>
               </div>
             ) : (
-              <div className="rounded-xl p-4 mb-4 text-left" style={{ background: "var(--error-bg)", border: "1px solid #f8bbd0" }}>
-                <p className="text-sm font-medium mb-1" style={{ color: "var(--error-text)" }}>Keep practicing!</p>
-                <p className="text-xs" style={{ color: "var(--error-text)" }}>These terms need more review. Try learning in smaller batches by filtering to one category at a time.</p>
+              <div
+                className="rounded-xl p-4 mb-4 text-left"
+                style={{ background: "#fce4ec", border: "1px solid #f8bbd0" }}
+              >
+                <p className="text-sm font-medium mb-1" style={{ color: "#8b3a3a" }}>
+                  Keep practicing!
+                </p>
+                <p className="text-xs" style={{ color: "#a04848" }}>
+                  These terms need more review. Try learning in smaller batches by filtering to one
+                  category at a time.
+                </p>
               </div>
             )}
 
-            {weakTerms.length > 0 && (
-              <div className="rounded-xl p-4 mb-4 text-left" style={{ background: "var(--surface)", border: "1px solid var(--border)" }}>
-                <p className="text-xs font-medium mb-2" style={{ color: "var(--muted)" }}>Terms to review:</p>
+            {uniqueWrong.length > 0 && (
+              <div
+                className="rounded-xl p-4 mb-4 text-left"
+                style={{ background: "var(--surface)", border: "1px solid var(--border)" }}
+              >
+                <p className="text-xs font-medium mb-2" style={{ color: "var(--muted)" }}>
+                  Terms to review:
+                </p>
                 <div className="flex flex-wrap gap-1.5">
-                  {weakTerms.map((t) => (
-                    <span key={t} className="text-xs px-2 py-0.5 rounded-full" style={{ background: "var(--accent-light)", color: "var(--accent)" }}>
+                  {uniqueWrong.map((t) => (
+                    <span
+                      key={t}
+                      className="text-xs px-2 py-0.5 rounded-full"
+                      style={{ background: "var(--accent-light)", color: "var(--accent)" }}
+                    >
                       {t}
                     </span>
                   ))}
@@ -536,9 +563,13 @@ export default function Learn({ onBack }: { onBack: () => void }) {
                 Learn again
               </button>
               <button
-                onClick={() => setShowSettings(true)}
+                onClick={() => setPhase("settings")}
                 className="px-5 py-2.5 rounded-xl text-sm font-medium"
-                style={{ background: "var(--surface)", color: "var(--muted)", border: "1px solid var(--border)" }}
+                style={{
+                  background: "var(--surface)",
+                  color: "var(--muted)",
+                  border: "1px solid var(--border)",
+                }}
               >
                 Change settings
               </button>
@@ -549,9 +580,96 @@ export default function Learn({ onBack }: { onBack: () => void }) {
     );
   }
 
-  if (!current) return null;
+  // ─── Round Summary Screen ───────────────────────────────────────────────────
 
-  const progressPct = totalTerms > 0 ? (mastered / totalTerms) * 100 : 0;
+  if (phase === "round-summary") {
+    const allDone = remainingTerms.length === 0;
+
+    return (
+      <div className="flex flex-col h-full">
+        <div className="flex items-center px-4 py-3 shrink-0">
+          <button
+            onClick={onBack}
+            className="text-sm font-medium flex items-center gap-1"
+            style={{ color: "var(--accent)" }}
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M19 12H5M12 19l-7-7 7-7" />
+            </svg>
+            Back
+          </button>
+        </div>
+        <div className="flex-1 overflow-y-auto px-4">
+          <div className="max-w-md mx-auto text-center py-8">
+            <div
+              className="w-14 h-14 rounded-full flex items-center justify-center mb-4 mx-auto"
+              style={{
+                background:
+                  roundStats.correct === roundStats.total ? "#e8f5e9" : "#fff8e1",
+              }}
+            >
+              <svg
+                width="28"
+                height="28"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke={roundStats.correct === roundStats.total ? "#6ab070" : "#d4a843"}
+                strokeWidth="2"
+              >
+                {roundStats.correct === roundStats.total ? (
+                  <>
+                    <path d="M9 12l2 2 4-4" />
+                    <circle cx="12" cy="12" r="10" />
+                  </>
+                ) : (
+                  <>
+                    <path d="M12 8v4m0 4h.01" />
+                    <circle cx="12" cy="12" r="10" />
+                  </>
+                )}
+              </svg>
+            </div>
+
+            <h2 className="text-xl font-semibold mb-2" style={{ color: "var(--foreground)" }}>
+              Round complete
+            </h2>
+            <p className="text-3xl font-bold mb-1" style={{ color: "var(--accent)" }}>
+              {roundStats.correct}/{roundStats.total}
+            </p>
+            <p className="text-sm mb-8" style={{ color: "var(--muted)" }}>
+              {masteredCount} mastered &middot; {remainingTerms.length} remaining
+            </p>
+
+            {allDone ? (
+              <button
+                onClick={finishLearning}
+                className="px-6 py-3 rounded-xl text-sm font-semibold"
+                style={{ background: "var(--accent)", color: "#fff" }}
+              >
+                See results
+              </button>
+            ) : (
+              <button
+                onClick={startNextRound}
+                className="px-6 py-3 rounded-xl text-sm font-semibold"
+                style={{ background: "var(--accent)", color: "#fff" }}
+              >
+                Continue ({remainingTerms.length} left)
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // ─── MC / Typed Study Screen ────────────────────────────────────────────────
+
+  const currentTerm = currentBatch[batchIndex];
+  if (!currentTerm) return null;
+
+  const progressPct = allTerms.length > 0 ? (masteredCount / allTerms.length) * 100 : 0;
+  const isLastInBatch = batchIndex === currentBatch.length - 1;
 
   return (
     <div className="flex flex-col h-full">
@@ -569,7 +687,7 @@ export default function Learn({ onBack }: { onBack: () => void }) {
         </button>
         <div className="flex items-center gap-3">
           <button
-            onClick={() => setShowSettings(true)}
+            onClick={() => setPhase("settings")}
             className="p-1.5 rounded-lg hover:opacity-60"
             style={{ color: "var(--muted)" }}
             title="Settings"
@@ -580,7 +698,7 @@ export default function Learn({ onBack }: { onBack: () => void }) {
             </svg>
           </button>
           <span className="text-xs" style={{ color: "var(--muted)" }}>
-            {mastered}/{totalTerms} mastered
+            {masteredCount}/{allTerms.length} mastered
           </span>
         </div>
       </div>
@@ -590,18 +708,16 @@ export default function Learn({ onBack }: { onBack: () => void }) {
         <div className="w-full h-2 rounded-full" style={{ background: "var(--border)" }}>
           <div
             className="h-full rounded-full transition-all duration-500"
-            style={{ background: "var(--success)", width: `${progressPct}%` }}
+            style={{ background: "#6ab070", width: `${progressPct}%` }}
           />
         </div>
         <div className="flex justify-between mt-1">
           <span className="text-xs" style={{ color: "var(--muted)" }}>
-            {remaining.filter((t) => t.phase === "mc").length} learning
+            {phase === "mc" ? "Multiple choice" : "Typed review"} · {batchIndex + 1}/
+            {currentBatch.length}
           </span>
-          <span className="text-xs" style={{ color: "var(--accent)" }}>
-            {remaining.filter((t) => t.phase === "typed").length} reviewing
-          </span>
-          <span className="text-xs" style={{ color: "var(--success)" }}>
-            {mastered} mastered
+          <span className="text-xs" style={{ color: "#6ab070" }}>
+            {masteredCount} mastered
           </span>
         </div>
       </div>
@@ -609,55 +725,52 @@ export default function Learn({ onBack }: { onBack: () => void }) {
       {/* Card */}
       <div className="flex-1 overflow-y-auto px-4 pb-4">
         <div className="max-w-xl mx-auto mt-4">
-          {/* Phase indicator */}
+          {/* Phase badge + category */}
           <div className="flex items-center gap-2 mb-3">
             <span
               className="text-xs px-2.5 py-1 rounded-full font-medium"
               style={{
-                background:
-                  current.phase === "mc" ? "var(--accent-light)" : "#e8f0fe",
-                color: current.phase === "mc" ? "var(--accent)" : "#4a7ab5",
+                background: phase === "mc" ? "var(--accent-light)" : "#e8f0fe",
+                color: phase === "mc" ? "var(--accent)" : "#4a7ab5",
               }}
             >
-              {current.phase === "mc" ? "Multiple choice" : "Type the answer"}
+              {phase === "mc" ? "Multiple choice" : "Type the answer"}
             </span>
-            {current.lastWrong && (
-              <span className="text-xs" style={{ color: "var(--error)" }}>
-                Let&apos;s try again
-              </span>
-            )}
             <span
               className="text-xs px-2 py-0.5 rounded-full ml-auto"
               style={{ background: "var(--accent-light)", color: "var(--accent)" }}
             >
-              {current.category}
+              {currentTerm.category}
             </span>
           </div>
 
-          {/* Prompt */}
+          {/* Prompt card */}
           <div
             className="rounded-xl p-5 mb-4"
             style={{ background: "var(--surface)", border: "1px solid var(--border)" }}
           >
-            <p className="text-xs mb-1.5 uppercase tracking-wider" style={{ color: "var(--muted)" }}>
+            <p
+              className="text-xs mb-1.5 uppercase tracking-wider"
+              style={{ color: "var(--muted)" }}
+            >
               {settings.answerWith === "definitions" ? "Term" : "Definition"}
             </p>
             <p
               className="font-semibold leading-relaxed"
               style={{
                 color: "var(--foreground)",
-                fontSize: getPrompt(current).length > 80 ? "0.9375rem" : "1.25rem",
+                fontSize: getPrompt(currentTerm).length > 80 ? "0.9375rem" : "1.25rem",
               }}
             >
-              {getPrompt(current)}
+              {getPrompt(currentTerm)}
             </p>
           </div>
 
           {/* MC mode */}
-          {current.phase === "mc" && (
+          {phase === "mc" && (
             <div className="space-y-2">
               {mcOptions.map((option, i) => {
-                const isCorrect = option === getAnswer(current);
+                const isCorrect = option === getAnswer(currentTerm);
                 const isPicked = selectedMc === option;
                 const showAnswer = selectedMc !== null;
 
@@ -667,13 +780,13 @@ export default function Learn({ onBack }: { onBack: () => void }) {
 
                 if (showAnswer) {
                   if (isCorrect) {
-                    bg = "var(--success-bg)";
-                    border = "var(--success)";
-                    textColor = "var(--success-text)";
+                    bg = "#e8f5e9";
+                    border = "#6ab070";
+                    textColor = "#2d5a30";
                   } else if (isPicked) {
-                    bg = "var(--error-bg)";
-                    border = "var(--error)";
-                    textColor = "var(--error-text)";
+                    bg = "#fce4ec";
+                    border = "#c96b6b";
+                    textColor = "#8b3a3a";
                   }
                 }
 
@@ -697,14 +810,14 @@ export default function Learn({ onBack }: { onBack: () => void }) {
                 );
               })}
 
-              {selectedMc && (
+              {selectedMc !== null && (
                 <div className="flex justify-center pt-3">
                   <button
-                    onClick={advance}
+                    onClick={advanceMc}
                     className="px-6 py-2.5 rounded-xl text-sm font-medium"
                     style={{ background: "var(--accent)", color: "#fff" }}
                   >
-                    Continue
+                    {isLastInBatch ? "Start typed review →" : "Continue"}
                   </button>
                 </div>
               )}
@@ -712,11 +825,16 @@ export default function Learn({ onBack }: { onBack: () => void }) {
           )}
 
           {/* Typed mode */}
-          {current.phase === "typed" && (
+          {phase === "typed" && (
             <div>
               <div className="mb-3">
-                <p className="text-xs mb-2 uppercase tracking-wider" style={{ color: "var(--muted)" }}>
-                  {settings.answerWith === "definitions" ? "Type the definition" : "Type the term"}
+                <p
+                  className="text-xs mb-2 uppercase tracking-wider"
+                  style={{ color: "var(--muted)" }}
+                >
+                  {settings.answerWith === "definitions"
+                    ? "Type the definition"
+                    : "Type the term"}
                 </p>
                 <input
                   ref={inputRef}
@@ -727,7 +845,7 @@ export default function Learn({ onBack }: { onBack: () => void }) {
                     if (e.key === "Enter" && !typedSubmitted && typedAnswer.trim()) {
                       handleTypedSubmit();
                     } else if (e.key === "Enter" && typedSubmitted) {
-                      advance();
+                      advanceTyped(typedResults);
                     }
                   }}
                   disabled={typedSubmitted}
@@ -737,15 +855,15 @@ export default function Learn({ onBack }: { onBack: () => void }) {
                   style={{
                     background: typedSubmitted
                       ? typedCorrect
-                        ? "var(--success-bg)"
-                        : "var(--error-bg)"
+                        ? "#e8f5e9"
+                        : "#fce4ec"
                       : "var(--surface)",
                     color: "var(--foreground)",
                     border: `2px solid ${
                       typedSubmitted
                         ? typedCorrect
-                          ? "var(--success)"
-                          : "var(--error)"
+                          ? "#6ab070"
+                          : "#c96b6b"
                         : "var(--border)"
                     }`,
                   }}
@@ -763,18 +881,7 @@ export default function Learn({ onBack }: { onBack: () => void }) {
                     Check
                   </button>
                   <button
-                    onClick={() => {
-                      setTypedAnswer("");
-                      setTypedSubmitted(true);
-                      setTypedCorrect(false);
-                      setRoundTotal(roundTotal + 1);
-                      // Mark wrong — don't demote phase yet so feedback UI shows
-                      const newTerms = [...terms];
-                      const t = newTerms[currentIndex];
-                      t.correctStreak = 0;
-                      t.lastWrong = true;
-                      setTerms(newTerms);
-                    }}
+                    onClick={handleDontKnow}
                     className="px-4 py-2.5 rounded-xl text-sm font-medium"
                     style={{
                       color: "var(--muted)",
@@ -789,32 +896,28 @@ export default function Learn({ onBack }: { onBack: () => void }) {
 
               {typedSubmitted && (
                 <div>
-                  {/* Show correct answer */}
                   <div
                     className="rounded-xl p-4 mb-3"
                     style={{
-                      background: typedCorrect ? "var(--success-bg)" : "var(--warning-bg)",
-                      border: `1px solid ${typedCorrect ? "var(--success)" : "var(--warning)"}`,
+                      background: typedCorrect ? "#e8f5e9" : "#fff8e1",
+                      border: `1px solid ${typedCorrect ? "#6ab070" : "#d4a843"}`,
                     }}
                   >
                     <p
                       className="text-xs font-medium mb-1"
-                      style={{ color: typedCorrect ? "var(--success)" : "var(--error)" }}
+                      style={{ color: typedCorrect ? "#6ab070" : "#c96b6b" }}
                     >
                       {typedCorrect ? "Correct!" : "Not quite. The answer is:"}
                     </p>
                     <p className="text-sm leading-relaxed" style={{ color: "var(--foreground)" }}>
-                      {getAnswer(current)}
+                      {getAnswer(currentTerm)}
                     </p>
                   </div>
 
                   <div className="flex gap-2">
                     {!typedCorrect && (
                       <button
-                        onClick={() => {
-                          overrideCorrect();
-                          setTypedCorrect(true);
-                        }}
+                        onClick={handleOverride}
                         className="text-xs px-3 py-1.5 rounded-full font-medium"
                         style={{
                           color: "var(--muted)",
@@ -826,11 +929,11 @@ export default function Learn({ onBack }: { onBack: () => void }) {
                       </button>
                     )}
                     <button
-                      onClick={advance}
+                      onClick={() => advanceTyped(typedResults)}
                       className="px-5 py-2.5 rounded-xl text-sm font-medium"
                       style={{ background: "var(--accent)", color: "#fff" }}
                     >
-                      Continue
+                      {isLastInBatch ? "See round results" : "Continue"}
                     </button>
                   </div>
                 </div>

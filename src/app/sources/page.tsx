@@ -31,6 +31,7 @@ export default function SourcesPage() {
   const [annotating, setAnnotating] = useState(false);
   const [annotationNote, setAnnotationNote] = useState("");
   const [selectedText, setSelectedText] = useState("");
+  const [pdfLoading, setPdfLoading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -100,19 +101,47 @@ export default function SourcesPage() {
     setViewingId(null);
   }
 
-  function handleFileUpload(e: React.ChangeEvent<HTMLInputElement>) {
+  async function handleFileUpload(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (ev) => {
-      const text = ev.target?.result as string;
-      setTitle(file.name.replace(/\.[^/.]+$/, ""));
-      setContent(text);
-      setAdding(true);
-      setViewingId(null);
-    };
-    reader.readAsText(file);
     e.target.value = "";
+
+    if (file.type === "application/pdf" || file.name.endsWith(".pdf")) {
+      setPdfLoading(true);
+      try {
+        const pdfjsLib = await import("pdfjs-dist");
+        pdfjsLib.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
+        const arrayBuffer = await file.arrayBuffer();
+        const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+        let text = "";
+        for (let i = 1; i <= pdf.numPages; i++) {
+          const page = await pdf.getPage(i);
+          const content = await page.getTextContent();
+          const pageText = content.items
+            .map((item) => ("str" in item ? item.str : ""))
+            .join(" ");
+          text += pageText + "\n\n";
+        }
+        setTitle(file.name.replace(/\.[^/.]+$/, ""));
+        setContent(text.trim());
+        setAdding(true);
+        setViewingId(null);
+      } catch {
+        alert("Failed to read PDF. Try copying and pasting the text instead.");
+      } finally {
+        setPdfLoading(false);
+      }
+    } else {
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        const text = ev.target?.result as string;
+        setTitle(file.name.replace(/\.[^/.]+$/, ""));
+        setContent(text);
+        setAdding(true);
+        setViewingId(null);
+      };
+      reader.readAsText(file);
+    }
   }
 
   function handleTextSelect() {
@@ -278,16 +307,17 @@ export default function SourcesPage() {
             <input
               ref={fileInputRef}
               type="file"
-              accept=".txt,.md,.text"
+              accept=".txt,.md,.text,.pdf"
               onChange={handleFileUpload}
               className="hidden"
             />
             <button
               onClick={() => fileInputRef.current?.click()}
-              className="text-xs px-3 py-1.5 rounded-full font-medium"
+              disabled={pdfLoading}
+              className="text-xs px-3 py-1.5 rounded-full font-medium disabled:opacity-50"
               style={{ background: "var(--surface)", color: "var(--accent)", border: "1px solid var(--border)" }}
             >
-              Upload file
+              {pdfLoading ? "Reading PDF..." : "Upload file"}
             </button>
             <button
               onClick={() => { setAdding(true); setEditingId(null); resetForm(); setAdding(true); }}

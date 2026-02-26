@@ -22,7 +22,13 @@ export default function Home() {
 
 function ChatPage() {
   const searchParams = useSearchParams();
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<Message[]>(() => {
+    if (typeof window === "undefined") return [];
+    try {
+      const saved = localStorage.getItem("meta-tutor-chat");
+      return saved ? JSON.parse(saved) : [];
+    } catch { return []; }
+  });
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [mode, setMode] = useState<Mode>("study");
@@ -63,6 +69,7 @@ function ChatPage() {
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    try { localStorage.setItem("meta-tutor-chat", JSON.stringify(messages)); } catch {}
   }, [messages]);
 
   useEffect(() => {
@@ -139,6 +146,11 @@ function ChatPage() {
                   ...newMessages,
                   { role: "assistant", content: assistantContent },
                 ]);
+              } else if (parsed.error) {
+                setMessages([
+                  ...newMessages,
+                  { role: "assistant", content: "Sorry, the chat bot servers are currently overloaded. Please try again in a few minutes." },
+                ]);
               }
             } catch {
               // skip parse errors
@@ -168,6 +180,7 @@ function ChatPage() {
 
   function clearChat() {
     setMessages([]);
+    try { localStorage.removeItem("meta-tutor-chat"); } catch {}
   }
 
   return (
