@@ -11,8 +11,13 @@ import TeachBack from "@/components/study/TeachBack";
 import FillInBlank from "@/components/study/FillInBlank";
 import ArgumentReconstruction from "@/components/study/ArgumentReconstruction";
 import TimedExam from "@/components/study/TimedExam";
+import SocraticDialogue from "@/components/study/SocraticDialogue";
+import Debate from "@/components/study/Debate";
+import ReadingComp from "@/components/study/ReadingComp";
+import AudioReview from "@/components/study/AudioReview";
+import AnalogyGenerator from "@/components/study/AnalogyGenerator";
 
-type Mode = "hub" | "learn" | "flashcards" | "practice" | "match" | "mc" | "outline" | "teachback" | "fillinblank" | "argument" | "exam";
+type Mode = "hub" | "learn" | "flashcards" | "practice" | "match" | "mc" | "outline" | "teachback" | "fillinblank" | "argument" | "exam" | "socratic" | "debate" | "reading" | "audio" | "analogy";
 
 const modes = [
   {
@@ -141,6 +146,67 @@ const modes = [
     color: "#c96b6b",
     featured: false,
   },
+  {
+    id: "socratic" as Mode,
+    title: "Socratic",
+    description: "AI only asks questions. You do the thinking.",
+    icon: (
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+        <circle cx="12" cy="12" r="10" />
+        <path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3M12 17h.01" />
+      </svg>
+    ),
+    color: "#d4a843",
+    featured: false,
+  },
+  {
+    id: "debate" as Mode,
+    title: "Debate",
+    description: "Argue a philosophical position. AI takes the other side.",
+    icon: (
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+        <path d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+      </svg>
+    ),
+    color: "#c67db7",
+    featured: false,
+  },
+  {
+    id: "reading" as Mode,
+    title: "Reading Comp",
+    description: "Read primary texts, then answer comprehension questions.",
+    icon: (
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+        <path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+      </svg>
+    ),
+    color: "#6b8fbf",
+    featured: false,
+  },
+  {
+    id: "audio" as Mode,
+    title: "Audio Review",
+    description: "Listen to terms and definitions. Study on the go.",
+    icon: (
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+        <path d="M15.536 8.464a5 5 0 010 7.072M18.364 5.636a9 9 0 010 12.728M11 5L6 9H2v6h4l5 4V5z" />
+      </svg>
+    ),
+    color: "#6ab070",
+    featured: false,
+  },
+  {
+    id: "analogy" as Mode,
+    title: "Analogies",
+    description: "Get everyday analogies for abstract concepts.",
+    icon: (
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+        <path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+      </svg>
+    ),
+    color: "#bf8f6b",
+    featured: false,
+  },
 ];
 
 export default function StudyPage() {
@@ -156,6 +222,11 @@ export default function StudyPage() {
   if (mode === "fillinblank") return <FillInBlank onBack={() => setMode("hub")} />;
   if (mode === "argument") return <ArgumentReconstruction onBack={() => setMode("hub")} />;
   if (mode === "exam") return <TimedExam onBack={() => setMode("hub")} />;
+  if (mode === "socratic") return <SocraticDialogue onBack={() => setMode("hub")} />;
+  if (mode === "debate") return <Debate onBack={() => setMode("hub")} />;
+  if (mode === "reading") return <ReadingComp onBack={() => setMode("hub")} />;
+  if (mode === "audio") return <AudioReview onBack={() => setMode("hub")} />;
+  if (mode === "analogy") return <AnalogyGenerator onBack={() => setMode("hub")} />;
 
   const featured = modes.find((m) => m.featured)!;
   const rest = modes.filter((m) => !m.featured);

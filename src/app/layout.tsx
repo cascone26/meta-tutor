@@ -5,6 +5,7 @@ import Nav from "@/components/Nav";
 import KeyboardShortcuts from "@/components/KeyboardShortcuts";
 import Onboarding from "@/components/Onboarding";
 import SessionTimer from "@/components/SessionTimer";
+import Prayer from "@/components/Prayer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -38,6 +39,7 @@ export default function RootLayout({
         <KeyboardShortcuts />
         <Onboarding />
         <SessionTimer />
+        <Prayer />
       </body>
     </html>
   );

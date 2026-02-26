@@ -30,6 +30,10 @@ const mainTabs = [
 
 const moreTabs = [
   { href: "/journal", label: "Journal" },
+  { href: "/faith", label: "Faith" },
+  { href: "/timeline", label: "Timeline" },
+  { href: "/countdown", label: "Countdown" },
+  { href: "/schedule", label: "Schedule" },
   { href: "/notes", label: "Notes" },
   { href: "/sources", label: "Sources" },
   { href: "/glossary", label: "Glossary" },
