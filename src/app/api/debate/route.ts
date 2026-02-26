@@ -8,7 +8,7 @@ export async function POST(req: NextRequest) {
     const { topic, aiSide, messages } = await req.json();
 
     const response = await anthropic.messages.create({
-      model: "claude-sonnet-4-5-20250514",
+      model: "claude-sonnet-4-6",
       max_tokens: 512,
       system: `You are a philosophy debate partner in the Thomistic/Aristotelian metaphysics tradition.
 

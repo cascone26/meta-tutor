@@ -8,7 +8,7 @@ export async function POST(req: NextRequest) {
     const { passage, source } = await req.json();
 
     const response = await anthropic.messages.create({
-      model: "claude-sonnet-4-5-20250514",
+      model: "claude-sonnet-4-6",
       max_tokens: 1024,
       system: `You are generating reading comprehension questions for a metaphysics student. The questions should test whether the student actually read and understood the passage — NOT general knowledge.
 
