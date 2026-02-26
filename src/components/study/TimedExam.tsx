@@ -41,7 +41,7 @@ export default function TimedExam({ onBack }: { onBack: () => void }) {
   const [exam, setExam] = useState<ExamQuestion[]>([]);
   const [current, setCurrent] = useState(0);
   const [answers, setAnswers] = useState<Record<number, string>>({});
-  const [timeLeft, setTimeLeft] = useState(30 * 60); // 30 minutes
+  const [timeLeft, setTimeLeft] = useState(75 * 60); // 75 minutes
   const [done, setDone] = useState(false);
   const [mcScore, setMcScore] = useState(0);
   const [wrongTerms, setWrongTerms] = useState<string[]>([]);
@@ -105,7 +105,7 @@ export default function TimedExam({ onBack }: { onBack: () => void }) {
     setExam(e);
     setCurrent(0);
     setAnswers({});
-    setTimeLeft(30 * 60);
+    setTimeLeft(75 * 60);
     setDone(false);
     setStarted(true);
     savedRef.current = false;
@@ -126,12 +126,12 @@ export default function TimedExam({ onBack }: { onBack: () => void }) {
             <h1 className="text-xl font-semibold" style={{ color: "var(--foreground)" }}>Timed Exam</h1>
           </div>
           <p className="text-sm mb-5" style={{ color: "var(--muted)" }}>
-            Simulate real exam conditions. 30 minutes. 10 multiple choice + 3 essay questions. No AI, no glossary.
+            Simulate real exam conditions. 1 hour 15 minutes. 10 multiple choice + 3 essay questions. No AI, no glossary.
           </p>
           <div className="rounded-xl p-5 mb-4" style={{ background: "var(--surface)", border: "1px solid var(--border)" }}>
             <h3 className="text-sm font-semibold mb-2" style={{ color: "var(--foreground)" }}>Exam rules:</h3>
             <ul className="text-xs space-y-1" style={{ color: "var(--muted)" }}>
-              <li>- 30-minute time limit</li>
+              <li>- 1 hour 15 minute time limit</li>
               <li>- 10 multiple choice questions (auto-graded)</li>
               <li>- 3 essay questions (self-graded)</li>
               <li>- No access to glossary, notes, or AI chat</li>
@@ -151,7 +151,7 @@ export default function TimedExam({ onBack }: { onBack: () => void }) {
     const mcTotal = exam.filter((q) => q.type === "mc").length;
     const pct = mcTotal > 0 ? Math.round((mcScore / mcTotal) * 100) : 0;
     const essayAnswers = exam.map((q, i) => q.type === "essay" ? { question: q.text, answer: answers[i] || "(no answer)" } : null).filter(Boolean);
-    const timeUsed = 30 * 60 - timeLeft;
+    const timeUsed = 75 * 60 - timeLeft;
 
     return (
       <div className="h-full overflow-y-auto">
