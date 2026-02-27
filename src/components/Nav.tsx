@@ -51,6 +51,20 @@ export default function Nav() {
       className="flex items-center justify-around md:justify-center md:gap-1 px-2 py-2 border-b shrink-0 relative"
       style={{ background: "var(--surface)", borderColor: "var(--border)" }}
     >
+      {/* Logo - hidden on mobile to save space */}
+      <Link
+        href="/"
+        className="hidden md:flex items-center gap-1.5 px-3 py-1 mr-2"
+        title="Meta Tutor"
+      >
+        <svg width="22" height="22" viewBox="0 0 32 32" fill="none">
+          <rect width="32" height="32" rx="6" fill="var(--accent)" />
+          <rect x="13.5" y="4" width="5" height="24" rx="1.5" fill="white" />
+          <rect x="6" y="12" width="20" height="5" rx="1.5" fill="white" />
+          <path d="M18.5 4 C18.5 4 26 4 26 9.5 C26 15 18.5 15 18.5 15" stroke="white" strokeWidth="4.5" strokeLinecap="round" fill="none" />
+        </svg>
+      </Link>
+
       {mainTabs.map((tab) => {
         const active = tab.href === "/" ? pathname === "/" : pathname.startsWith(tab.href);
         return (

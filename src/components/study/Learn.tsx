@@ -190,7 +190,8 @@ export default function Learn({ onBack }: { onBack: () => void }) {
       const newTerms = [...terms];
       const t = newTerms[currentIndex];
       t.correctStreak = 0;
-      t.phase = "mc"; // demote back to MC
+      // Don't demote to MC yet — keep phase as "typed" so feedback UI stays visible.
+      // advance() will handle the demotion when user clicks Continue.
       t.lastWrong = true;
       logWrongAnswer(t.term, t.definition, t.category, "Learn");
       setTerms(newTerms);
@@ -206,12 +207,22 @@ export default function Learn({ onBack }: { onBack: () => void }) {
   }
 
   function advance() {
+    // Demote current term to MC if it was wrong in typed phase
+    const newTerms = [...terms];
+    const curr = newTerms[currentIndex];
+    if (curr && curr.phase === "typed" && curr.correctStreak === 0) {
+      curr.phase = "mc";
+    }
+
     // Find next unmastered term
-    const unmastered = terms
+    const unmastered = newTerms
       .map((t, i) => ({ t, i }))
       .filter(({ t }) => t.phase !== "mastered");
 
-    if (unmastered.length === 0) return; // all done
+    if (unmastered.length === 0) {
+      setTerms(newTerms);
+      return; // all done
+    }
 
     // Pick next one that isn't the current (if possible)
     let nextIdx: number;
@@ -228,10 +239,11 @@ export default function Learn({ onBack }: { onBack: () => void }) {
       }
     }
 
+    setTerms(newTerms);
     setCurrentIndex(nextIdx);
-    generateMcOptions(terms, nextIdx, settings);
+    generateMcOptions(newTerms, nextIdx, settings);
 
-    if (terms[nextIdx].phase === "typed") {
+    if (newTerms[nextIdx].phase === "typed") {
       setTimeout(() => inputRef.current?.focus(), 100);
     }
   }
@@ -756,11 +768,10 @@ export default function Learn({ onBack }: { onBack: () => void }) {
                       setTypedSubmitted(true);
                       setTypedCorrect(false);
                       setRoundTotal(roundTotal + 1);
-                      // Mark wrong
+                      // Mark wrong — don't demote phase yet so feedback UI shows
                       const newTerms = [...terms];
                       const t = newTerms[currentIndex];
                       t.correctStreak = 0;
-                      t.phase = "mc";
                       t.lastWrong = true;
                       setTerms(newTerms);
                     }}
