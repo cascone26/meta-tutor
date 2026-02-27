@@ -12,6 +12,11 @@
   --muted: #8a8580;
   --user-bubble: #7c6b9a;
   --assistant-bubble: #f3f1ee;
+  --prayer: #b8963a;
+  --prayer-bg: #fdfaf4;
+  --prayer-border: #e8d9a0;
+  --shadow-lg: 0 20px 60px rgba(0,0,0,0.12);
+  --success: #6ab070;
 }
 
 html.dark {
@@ -26,6 +31,11 @@ html.dark {
   --muted: #8a8580;
   --user-bubble: #7c6b9a;
   --assistant-bubble: #2a2a30;
+  --prayer: #c9a84c;
+  --prayer-bg: #1e1c16;
+  --prayer-border: #3a3220;
+  --shadow-lg: 0 20px 60px rgba(0,0,0,0.4);
+  --success: #6ab070;
 }
 
 @theme inline {
