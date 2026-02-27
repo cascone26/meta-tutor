@@ -21,7 +21,8 @@ export const metadata: Metadata = {
   title: "Meta Tutor — Metaphysics Study Assistant",
   description: "AI-powered study assistant for Thomistic Metaphysics",
   icons: {
-    icon: "/favicon.svg",
+    icon: "/chi-rho.png",
+    apple: "/chi-rho.png",
   },
 };
 

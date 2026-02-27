@@ -160,7 +160,7 @@ export default function TimedExam({ onBack }: { onBack: () => void }) {
 
           <div className="grid grid-cols-3 gap-2.5 mb-5">
             <div className="rounded-xl p-4 text-center" style={{ background: "var(--surface)", border: "1px solid var(--border)" }}>
-              <p className="text-2xl font-bold" style={{ color: pct >= 80 ? "#6ab070" : pct >= 60 ? "#d4a843" : "#c96b6b" }}>{pct}%</p>
+              <p className="text-2xl font-bold" style={{ color: pct >= 80 ? "var(--success)" : pct >= 60 ? "var(--warning)" : "var(--error)" }}>{pct}%</p>
               <p className="text-xs" style={{ color: "var(--muted)" }}>MC Score</p>
             </div>
             <div className="rounded-xl p-4 text-center" style={{ background: "var(--surface)", border: "1px solid var(--border)" }}>
@@ -174,11 +174,11 @@ export default function TimedExam({ onBack }: { onBack: () => void }) {
           </div>
 
           {wrongTerms.length > 0 && (
-            <div className="rounded-xl p-4 mb-4" style={{ background: "#c96b6b10", border: "1px solid #c96b6b30" }}>
-              <p className="text-xs font-semibold mb-2" style={{ color: "#c96b6b" }}>Missed MC terms:</p>
+            <div className="rounded-xl p-4 mb-4" style={{ background: "var(--error-bg)", border: "1px solid #c96b6b30" }}>
+              <p className="text-xs font-semibold mb-2" style={{ color: "var(--error)" }}>Missed MC terms:</p>
               <div className="flex gap-1.5 flex-wrap">
                 {wrongTerms.map((t) => (
-                  <span key={t} className="text-xs px-2 py-0.5 rounded-full" style={{ background: "#fce4ec", color: "#c96b6b" }}>{t}</span>
+                  <span key={t} className="text-xs px-2 py-0.5 rounded-full" style={{ background: "var(--error-bg)", color: "var(--error)" }}>{t}</span>
                 ))}
               </div>
             </div>
@@ -224,9 +224,9 @@ export default function TimedExam({ onBack }: { onBack: () => void }) {
             <span
               className="text-sm font-mono font-bold px-3 py-1 rounded-lg"
               style={{
-                background: timeLeft < 300 ? "#c96b6b18" : "var(--surface)",
-                color: timeLeft < 300 ? "#c96b6b" : "var(--foreground)",
-                border: `1px solid ${timeLeft < 300 ? "#c96b6b40" : "var(--border)"}`,
+                background: timeLeft < 300 ? "var(--error-bg)" : "var(--surface)",
+                color: timeLeft < 300 ? "var(--error)" : "var(--foreground)",
+                border: `1px solid ${timeLeft < 300 ? "var(--error-border)" : "var(--border)"}`,
               }}
             >
               {formatTimer(timeLeft)}
@@ -234,7 +234,7 @@ export default function TimedExam({ onBack }: { onBack: () => void }) {
             <button
               onClick={finishExam}
               className="text-xs px-3 py-1.5 rounded-lg font-medium"
-              style={{ background: "#c96b6b", color: "#fff" }}
+              style={{ background: "var(--error)", color: "#fff" }}
             >
               Submit Exam
             </button>
@@ -295,7 +295,7 @@ export default function TimedExam({ onBack }: { onBack: () => void }) {
 
           {q.type === "essay" && (
             <>
-              <span className="text-xs px-2 py-0.5 rounded-full mb-2 inline-block" style={{ background: "#d4a84318", color: "#d4a843" }}>
+              <span className="text-xs px-2 py-0.5 rounded-full mb-2 inline-block" style={{ background: "var(--warning-bg)", color: "var(--warning)" }}>
                 Essay
               </span>
               <p className="text-sm mb-4" style={{ color: "var(--foreground)", lineHeight: 1.7 }}>

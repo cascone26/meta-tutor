@@ -106,7 +106,7 @@ export default function SessionTimer() {
           onClick={toggle}
           className="px-3 py-1 rounded-lg text-xs font-medium"
           style={{
-            background: running ? "#c96b6b" : "var(--accent)",
+            background: running ? "var(--error)" : "var(--accent)",
             color: "#fff",
           }}
         >

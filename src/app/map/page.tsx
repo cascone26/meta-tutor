@@ -79,7 +79,7 @@ const categoryColors: Record<string, string> = {
   core: "#7c6b9a",
   plato: "#6b8fbf",
   aristotle: "#bf8f6b",
-  thomism: "#6ab070",
+  thomism: "var(--success)",
   principles: "#c4737a",
   concepts: "#9a8a6b",
 };

@@ -92,7 +92,7 @@ export default function JournalPage() {
           <div className="rounded-xl p-5" style={{ background: "var(--surface)", border: "1px solid var(--border)" }}>
             <div className="flex items-center gap-2 mb-3">
               <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: "var(--accent-light)", color: "var(--accent)" }}>{term.category}</span>
-              <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: "#c96b6b18", color: "#c96b6b" }}>Missed {term.count}x</span>
+              <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: "var(--error-bg)", color: "var(--error)" }}>Missed {term.count}x</span>
             </div>
             <p className="text-sm mb-4" style={{ color: "var(--foreground)", lineHeight: 1.7 }}>{term.definition}</p>
             <p className="text-xs mb-2 font-medium" style={{ color: "var(--muted)" }}>What term is this?</p>
@@ -111,7 +111,7 @@ export default function JournalPage() {
                 className="flex-1 rounded-lg px-3 py-2 text-sm"
                 style={{
                   background: "var(--background)",
-                  border: `1px solid ${drill.answered ? (drill.correct ? "#6ab070" : "#c96b6b") : "var(--border)"}`,
+                  border: `1px solid ${drill.answered ? (drill.correct ? "var(--success)" : "var(--error)") : "var(--border)"}`,
                   color: "var(--foreground)",
                 }}
                 autoFocus
@@ -127,8 +127,8 @@ export default function JournalPage() {
               )}
             </div>
             {drill.answered && (
-              <div className="mt-3 p-3 rounded-lg" style={{ background: drill.correct ? "#6ab07018" : "#c96b6b18" }}>
-                <p className="text-sm font-medium" style={{ color: drill.correct ? "#6ab070" : "#c96b6b" }}>
+              <div className="mt-3 p-3 rounded-lg" style={{ background: drill.correct ? "var(--success-bg)" : "var(--error-bg)" }}>
+                <p className="text-sm font-medium" style={{ color: drill.correct ? "var(--success)" : "var(--error)" }}>
                   {drill.correct ? "Correct!" : `Answer: ${term.term}`}
                 </p>
               </div>
@@ -144,7 +144,7 @@ export default function JournalPage() {
     return (
       <div className="h-full overflow-y-auto">
         <div className="max-w-2xl mx-auto px-4 py-8 text-center">
-          <h2 className="text-2xl font-bold mb-2" style={{ color: pct >= 80 ? "#6ab070" : pct >= 60 ? "#d4a843" : "#c96b6b" }}>{pct}%</h2>
+          <h2 className="text-2xl font-bold mb-2" style={{ color: pct >= 80 ? "var(--success)" : pct >= 60 ? "var(--warning)" : "var(--error)" }}>{pct}%</h2>
           <p className="text-sm mb-4" style={{ color: "var(--muted)" }}>{drill.score} of {drill.terms.length} correct</p>
           <div className="flex gap-2 justify-center">
             <button onClick={startDrill} className="px-4 py-2 rounded-lg text-sm font-medium" style={{ background: "var(--accent)", color: "#fff" }}>Drill again</button>
@@ -188,7 +188,7 @@ export default function JournalPage() {
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">
                       <h3 className="text-sm font-semibold" style={{ color: "var(--foreground)" }}>{wa.term}</h3>
-                      <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: "#c96b6b18", color: "#c96b6b" }}>
+                      <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: "var(--error-bg)", color: "var(--error)" }}>
                         {wa.count}x wrong
                       </span>
                       <span className="text-xs px-1.5 py-0.5 rounded" style={{ background: "var(--accent-light)", color: "var(--accent)" }}>

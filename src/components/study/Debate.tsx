@@ -100,12 +100,12 @@ export default function Debate({ onBack }: { onBack: () => void }) {
                   <button
                     onClick={() => startDebate(t, "for")}
                     className="text-xs px-3 py-1.5 rounded-lg font-medium"
-                    style={{ background: "#6ab07018", color: "#6ab070", border: "1px solid #6ab07040" }}
+                    style={{ background: "var(--success-bg)", color: "var(--success)", border: "1px solid #6ab07040" }}
                   >Argue FOR</button>
                   <button
                     onClick={() => startDebate(t, "against")}
                     className="text-xs px-3 py-1.5 rounded-lg font-medium"
-                    style={{ background: "#c96b6b18", color: "#c96b6b", border: "1px solid #c96b6b40" }}
+                    style={{ background: "var(--error-bg)", color: "var(--error)", border: "1px solid #c96b6b40" }}
                   >Argue AGAINST</button>
                 </div>
               </div>
@@ -125,9 +125,9 @@ export default function Debate({ onBack }: { onBack: () => void }) {
             <div>
               <h2 className="text-sm font-semibold" style={{ color: "var(--foreground)" }}>{topic.title}</h2>
               <p className="text-xs">
-                <span style={{ color: userSide === "for" ? "#6ab070" : "#c96b6b" }}>You: {userSide}</span>
+                <span style={{ color: userSide === "for" ? "var(--success)" : "var(--error)" }}>You: {userSide}</span>
                 <span style={{ color: "var(--muted)" }}> vs </span>
-                <span style={{ color: userSide === "for" ? "#c96b6b" : "#6ab070" }}>AI: {userSide === "for" ? "against" : "for"}</span>
+                <span style={{ color: userSide === "for" ? "var(--error)" : "var(--success)" }}>AI: {userSide === "for" ? "against" : "for"}</span>
               </p>
             </div>
           </div>

@@ -101,8 +101,8 @@ export default function CountdownPage() {
         ) : (
           <>
             {/* Countdown */}
-            <div className="rounded-xl p-6 mb-5 text-center" style={{ background: daysLeft !== null && daysLeft <= 3 ? "#c96b6b10" : "var(--accent-light)", border: `1px solid ${daysLeft !== null && daysLeft <= 3 ? "#c96b6b30" : "var(--accent)"}30` }}>
-              <p className="text-5xl font-bold mb-1" style={{ color: daysLeft !== null && daysLeft <= 3 ? "#c96b6b" : "var(--accent)" }}>
+            <div className="rounded-xl p-6 mb-5 text-center" style={{ background: daysLeft !== null && daysLeft <= 3 ? "var(--error-bg)" : "var(--accent-light)", border: `1px solid ${daysLeft !== null && daysLeft <= 3 ? "var(--error-border)" : "var(--accent)"}30` }}>
+              <p className="text-5xl font-bold mb-1" style={{ color: daysLeft !== null && daysLeft <= 3 ? "var(--error)" : "var(--accent)" }}>
                 {daysLeft}
               </p>
               <p className="text-sm" style={{ color: "var(--muted)" }}>
@@ -121,7 +121,7 @@ export default function CountdownPage() {
                 <p className="text-xs" style={{ color: "var(--muted)" }}>Terms studied</p>
               </div>
               <div className="rounded-xl p-3 text-center" style={{ background: "var(--surface)", border: "1px solid var(--border)" }}>
-                <p className="text-xl font-bold" style={{ color: masteryPct >= 75 ? "#6ab070" : masteryPct >= 50 ? "#d4a843" : "#c96b6b" }}>{masteryPct}%</p>
+                <p className="text-xl font-bold" style={{ color: masteryPct >= 75 ? "var(--success)" : masteryPct >= 50 ? "var(--warning)" : "var(--error)" }}>{masteryPct}%</p>
                 <p className="text-xs" style={{ color: "var(--muted)" }}>Mastery</p>
               </div>
               <div className="rounded-xl p-3 text-center" style={{ background: "var(--surface)", border: "1px solid var(--border)" }}>
@@ -143,11 +143,11 @@ export default function CountdownPage() {
                 <div className="space-y-2">
                   {milestones.map((m, i) => (
                     <div key={i} className="flex items-center gap-2">
-                      <div className="w-5 h-5 rounded-full flex items-center justify-center shrink-0 text-xs" style={{ background: m.done ? "#6ab07020" : m.urgent ? "#c96b6b15" : "var(--background)", border: `1px solid ${m.done ? "#6ab07040" : m.urgent ? "#c96b6b30" : "var(--border)"}`, color: m.done ? "#6ab070" : m.urgent ? "#c96b6b" : "var(--muted)" }}>
+                      <div className="w-5 h-5 rounded-full flex items-center justify-center shrink-0 text-xs" style={{ background: m.done ? "var(--success-bg)" : m.urgent ? "var(--error-bg)" : "var(--background)", border: `1px solid ${m.done ? "var(--success-border)" : m.urgent ? "var(--error-border)" : "var(--border)"}`, color: m.done ? "var(--success)" : m.urgent ? "var(--error)" : "var(--muted)" }}>
                         {m.done ? "✓" : ""}
                       </div>
                       <span className="text-sm" style={{ color: m.done ? "var(--muted)" : "var(--foreground)", textDecoration: m.done ? "line-through" : "none" }}>{m.text}</span>
-                      {m.urgent && !m.done && <span className="text-xs px-1.5 py-0.5 rounded" style={{ background: "#c96b6b18", color: "#c96b6b" }}>urgent</span>}
+                      {m.urgent && !m.done && <span className="text-xs px-1.5 py-0.5 rounded" style={{ background: "var(--error-bg)", color: "var(--error)" }}>urgent</span>}
                     </div>
                   ))}
                 </div>

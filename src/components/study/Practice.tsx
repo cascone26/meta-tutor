@@ -102,7 +102,7 @@ export default function Practice({ onBack }: { onBack: () => void }) {
               background: i === currentQ
                 ? "var(--accent)"
                 : practiced.has(q.id)
-                ? "#6ab070"
+                ? "var(--success)"
                 : drafts[q.id]
                 ? "var(--accent-light)"
                 : "var(--surface)",
@@ -226,7 +226,7 @@ export default function Practice({ onBack }: { onBack: () => void }) {
                 ))}
               </div>
               {checked.size === points.length && points.length > 0 && (
-                <p className="text-xs mt-3 font-medium" style={{ color: "#6ab070" }}>
+                <p className="text-xs mt-3 font-medium" style={{ color: "var(--success)" }}>
                   You covered all key points!
                 </p>
               )}

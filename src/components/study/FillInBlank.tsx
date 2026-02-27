@@ -169,7 +169,7 @@ export default function FillInBlank({ onBack }: { onBack: () => void }) {
     return (
       <div className="h-full overflow-y-auto">
         <div className="max-w-2xl mx-auto px-4 py-8 text-center">
-          <h2 className="text-2xl font-bold mb-2" style={{ color: pct >= 80 ? "#6ab070" : pct >= 60 ? "#d4a843" : "#c96b6b" }}>
+          <h2 className="text-2xl font-bold mb-2" style={{ color: pct >= 80 ? "var(--success)" : pct >= 60 ? "var(--warning)" : "var(--error)" }}>
             {pct}%
           </h2>
           <p className="text-sm mb-1" style={{ color: "var(--foreground)" }}>
@@ -180,10 +180,10 @@ export default function FillInBlank({ onBack }: { onBack: () => void }) {
           </p>
           {wrongTerms.length > 0 && (
             <div className="mb-5">
-              <p className="text-xs font-semibold mb-2" style={{ color: "#c96b6b" }}>Missed terms:</p>
+              <p className="text-xs font-semibold mb-2" style={{ color: "var(--error)" }}>Missed terms:</p>
               <div className="flex gap-1.5 flex-wrap justify-center">
                 {wrongTerms.map((t) => (
-                  <span key={t} className="text-xs px-2 py-0.5 rounded-full" style={{ background: "#fce4ec", color: "#c96b6b" }}>{t}</span>
+                  <span key={t} className="text-xs px-2 py-0.5 rounded-full" style={{ background: "var(--error-bg)", color: "var(--error)" }}>{t}</span>
                 ))}
               </div>
             </div>
@@ -242,7 +242,7 @@ export default function FillInBlank({ onBack }: { onBack: () => void }) {
               className="flex-1 rounded-lg px-3 py-2 text-sm"
               style={{
                 background: "var(--background)",
-                border: `1px solid ${answered ? (correct ? "#6ab070" : "#c96b6b") : "var(--border)"}`,
+                border: `1px solid ${answered ? (correct ? "var(--success)" : "var(--error)") : "var(--border)"}`,
                 color: "var(--foreground)",
               }}
             />
@@ -267,8 +267,8 @@ export default function FillInBlank({ onBack }: { onBack: () => void }) {
           </div>
 
           {answered && (
-            <div className="mt-3 p-3 rounded-lg" style={{ background: correct ? "#6ab07018" : "#c96b6b18" }}>
-              <p className="text-sm font-medium" style={{ color: correct ? "#6ab070" : "#c96b6b" }}>
+            <div className="mt-3 p-3 rounded-lg" style={{ background: correct ? "var(--success-bg)" : "var(--error-bg)" }}>
+              <p className="text-sm font-medium" style={{ color: correct ? "var(--success)" : "var(--error)" }}>
                 {correct ? "Correct!" : `The answer was: ${q.answer}`}
               </p>
             </div>

@@ -7,7 +7,7 @@ export default function ComparePage() {
   const [activeId, setActiveId] = useState<string | null>(null);
   const active = comparisons.find((c) => c.id === activeId);
 
-  const colors = ["#6b8fbf", "#bf8f6b", "#6ab070", "#c4737a", "#9a8a6b"];
+  const colors = ["#6b8fbf", "#bf8f6b", "var(--success)", "#c4737a", "#9a8a6b"];
 
   return (
     <div className="h-full overflow-y-auto">

@@ -70,7 +70,7 @@ export default function ArgumentReconstruction({ onBack }: { onBack: () => void 
   }
 
   const scoreColors: Record<number, string> = {
-    1: "#c96b6b", 2: "#c96b6b", 3: "#d4a843", 4: "#6ab070", 5: "#6ab070",
+    1: "var(--error)", 2: "var(--error)", 3: "var(--warning)", 4: "var(--success)", 5: "var(--success)",
   };
 
   return (
@@ -94,17 +94,17 @@ export default function ArgumentReconstruction({ onBack }: { onBack: () => void 
                 className="w-full text-left rounded-xl p-4 transition-all"
                 style={{
                   background: "var(--surface)",
-                  border: `1px solid ${completed.includes(arg.id) ? "#6ab07040" : "var(--border)"}`,
+                  border: `1px solid ${completed.includes(arg.id) ? "var(--success-border)" : "var(--border)"}`,
                 }}
                 onMouseEnter={(e) => { e.currentTarget.style.borderColor = "var(--accent)"; }}
-                onMouseLeave={(e) => { e.currentTarget.style.borderColor = completed.includes(arg.id) ? "#6ab07040" : "var(--border)"; }}
+                onMouseLeave={(e) => { e.currentTarget.style.borderColor = completed.includes(arg.id) ? "var(--success-border)" : "var(--border)"; }}
               >
                 <div className="flex items-center gap-2 mb-1">
                   <span className="text-xs px-2 py-0.5 rounded-full font-medium" style={{ background: "var(--accent-light)", color: "var(--accent)" }}>
                     {arg.philosopher}
                   </span>
                   {completed.includes(arg.id) && (
-                    <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: "#6ab07018", color: "#6ab070" }}>
+                    <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: "var(--success-bg)", color: "var(--success)" }}>
                       Completed
                     </span>
                   )}
@@ -205,7 +205,7 @@ export default function ArgumentReconstruction({ onBack }: { onBack: () => void 
 
               {evaluation.missedPremises.length > 0 && (
                 <div className="mb-3">
-                  <p className="text-xs font-semibold mb-1" style={{ color: "#c96b6b" }}>Key premises you missed:</p>
+                  <p className="text-xs font-semibold mb-1" style={{ color: "var(--error)" }}>Key premises you missed:</p>
                   <ul className="text-xs space-y-1" style={{ color: "var(--foreground)" }}>
                     {evaluation.missedPremises.map((p, i) => (
                       <li key={i}>- {p}</li>

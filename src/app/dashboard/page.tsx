@@ -209,9 +209,9 @@ export default function DashboardPage() {
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 mb-5">
           {[
             { label: "Terms studied", value: srStats.total, sub: `of ${glossary.length}`, color: "var(--accent)" },
-            { label: "Due for review", value: dueTerms.length, sub: "today", color: dueTerms.length > 0 ? "#c96b6b" : "#6ab070" },
+            { label: "Due for review", value: dueTerms.length, sub: "today", color: dueTerms.length > 0 ? "var(--error)" : "var(--success)" },
             { label: "Questions practiced", value: practiced.size, sub: `of ${questions.length}`, color: "var(--accent)" },
-            { label: "Avg quiz score", value: `${avgScore}%`, sub: `${history.length} quizzes`, color: avgScore >= 80 ? "#6ab070" : avgScore >= 60 ? "#d4a843" : "#c96b6b" },
+            { label: "Avg quiz score", value: `${avgScore}%`, sub: `${history.length} quizzes`, color: avgScore >= 80 ? "var(--success)" : avgScore >= 60 ? "var(--warning)" : "var(--error)" },
           ].map((stat) => (
             <div
               key={stat.label}
@@ -237,7 +237,7 @@ export default function DashboardPage() {
                       className="w-full rounded-t-sm transition-all"
                       style={{
                         height: `${d.avg}%`,
-                        background: d.avg >= 80 ? "#6ab070" : d.avg >= 60 ? "#d4a843" : "#c96b6b",
+                        background: d.avg >= 80 ? "var(--success)" : d.avg >= 60 ? "var(--warning)" : "var(--error)",
                         minHeight: 4,
                       }}
                       title={`${d.date}: ${d.avg}%`}
@@ -277,9 +277,9 @@ export default function DashboardPage() {
 
         {/* Due for review */}
         {dueTerms.length > 0 && (
-          <div className="rounded-xl p-4 mb-5" style={{ background: "#fce4ec30", border: "1px solid #c96b6b30" }}>
+          <div className="rounded-xl p-4 mb-5" style={{ background: "var(--error-bg)", border: "1px solid #c96b6b30" }}>
             <div className="flex items-center justify-between mb-2">
-              <h3 className="font-semibold text-sm" style={{ color: "#c96b6b" }}>Due for review ({dueTerms.length})</h3>
+              <h3 className="font-semibold text-sm" style={{ color: "var(--error)" }}>Due for review ({dueTerms.length})</h3>
               <Link href="/study" className="text-xs font-medium" style={{ color: "var(--accent)" }}>Study now</Link>
             </div>
             <div className="flex gap-1.5 flex-wrap">
@@ -302,7 +302,7 @@ export default function DashboardPage() {
                   <span style={{ color: "var(--muted)" }}>{c.mastered}/{c.total} ({c.pct}%)</span>
                 </div>
                 <div className="w-full h-2 rounded-full" style={{ background: "var(--border)" }}>
-                  <div className="h-full rounded-full transition-all" style={{ background: c.pct >= 80 ? "#6ab070" : c.pct >= 50 ? "#d4a843" : "var(--accent)", width: `${c.pct}%` }} />
+                  <div className="h-full rounded-full transition-all" style={{ background: c.pct >= 80 ? "var(--success)" : c.pct >= 50 ? "var(--warning)" : "var(--accent)", width: `${c.pct}%` }} />
                 </div>
               </div>
             ))}
@@ -313,15 +313,15 @@ export default function DashboardPage() {
         <div className="rounded-xl p-4 mb-5" style={{ background: "var(--surface)", border: "1px solid var(--border)" }}>
           <h3 className="font-semibold text-sm mb-3" style={{ color: "var(--foreground)" }}>Exam question confidence</h3>
           <div className="flex gap-4 mb-3">
-            <div className="text-center"><p className="text-lg font-bold" style={{ color: "#6ab070" }}>{confCounts["got-it"]}</p><p className="text-xs" style={{ color: "var(--muted)" }}>Got it</p></div>
-            <div className="text-center"><p className="text-lg font-bold" style={{ color: "#d4a843" }}>{confCounts.shaky}</p><p className="text-xs" style={{ color: "var(--muted)" }}>Shaky</p></div>
-            <div className="text-center"><p className="text-lg font-bold" style={{ color: "#c96b6b" }}>{confCounts["no-clue"]}</p><p className="text-xs" style={{ color: "var(--muted)" }}>No clue</p></div>
+            <div className="text-center"><p className="text-lg font-bold" style={{ color: "var(--success)" }}>{confCounts["got-it"]}</p><p className="text-xs" style={{ color: "var(--muted)" }}>Got it</p></div>
+            <div className="text-center"><p className="text-lg font-bold" style={{ color: "var(--warning)" }}>{confCounts.shaky}</p><p className="text-xs" style={{ color: "var(--muted)" }}>Shaky</p></div>
+            <div className="text-center"><p className="text-lg font-bold" style={{ color: "var(--error)" }}>{confCounts["no-clue"]}</p><p className="text-xs" style={{ color: "var(--muted)" }}>No clue</p></div>
             <div className="text-center"><p className="text-lg font-bold" style={{ color: "var(--muted)" }}>{questions.length - Object.keys(confidence).length}</p><p className="text-xs" style={{ color: "var(--muted)" }}>Unrated</p></div>
           </div>
           <div className="w-full h-3 rounded-full flex overflow-hidden" style={{ background: "var(--border)" }}>
-            {confCounts["got-it"] > 0 && <div style={{ background: "#6ab070", width: `${(confCounts["got-it"] / questions.length) * 100}%` }} />}
-            {confCounts.shaky > 0 && <div style={{ background: "#d4a843", width: `${(confCounts.shaky / questions.length) * 100}%` }} />}
-            {confCounts["no-clue"] > 0 && <div style={{ background: "#c96b6b", width: `${(confCounts["no-clue"] / questions.length) * 100}%` }} />}
+            {confCounts["got-it"] > 0 && <div style={{ background: "var(--success)", width: `${(confCounts["got-it"] / questions.length) * 100}%` }} />}
+            {confCounts.shaky > 0 && <div style={{ background: "var(--warning)", width: `${(confCounts.shaky / questions.length) * 100}%` }} />}
+            {confCounts["no-clue"] > 0 && <div style={{ background: "var(--error)", width: `${(confCounts["no-clue"] / questions.length) * 100}%` }} />}
           </div>
         </div>
 
@@ -332,7 +332,7 @@ export default function DashboardPage() {
             <p className="text-xs mb-2" style={{ color: "var(--muted)" }}>Terms you&apos;ve gotten wrong most often recently:</p>
             <div className="flex gap-1.5 flex-wrap">
               {weakAreas.terms.map((t) => (
-                <span key={t} className="text-xs px-2 py-0.5 rounded-full" style={{ background: "#fce4ec", color: "#c96b6b" }}>{t}</span>
+                <span key={t} className="text-xs px-2 py-0.5 rounded-full" style={{ background: "var(--error-bg)", color: "var(--error)" }}>{t}</span>
               ))}
             </div>
           </div>
@@ -349,7 +349,7 @@ export default function DashboardPage() {
                     <span className="font-medium" style={{ color: "var(--foreground)" }}>{h.mode}</span>
                     <span className="text-xs ml-2" style={{ color: "var(--muted)" }}>{h.date}</span>
                   </div>
-                  <span className="text-sm font-medium" style={{ color: h.percentage >= 80 ? "#6ab070" : h.percentage >= 60 ? "#d4a843" : "#c96b6b" }}>
+                  <span className="text-sm font-medium" style={{ color: h.percentage >= 80 ? "var(--success)" : h.percentage >= 60 ? "var(--warning)" : "var(--error)" }}>
                     {h.percentage}%
                   </span>
                 </div>

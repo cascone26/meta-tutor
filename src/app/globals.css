@@ -1,19 +1,95 @@
 @import "tailwindcss";
 
+/* ============================================================
+   META TUTOR — Design System
+   Scholarly, warm, contemplative.
+   Purple = academic/liturgical. Gold = sacred/prayer.
+   ============================================================ */
+
 :root {
-  --background: #f8f7f4;
-  --foreground: #2d2d2d;
-  --accent: #7c6b9a;
-  --accent-hover: #6b5a89;
-  --accent-light: #f0ecf5;
+  /* Core palette — warm linen tones */
+  --background: #faf8f5;
+  --foreground: #2c2825;
+  --accent: #6b5a8a;
+  --accent-hover: #5a4a78;
+  --accent-light: #efe8f5;
   --surface: #ffffff;
-  --surface-hover: #f3f1ee;
-  --border: #e8e4df;
-  --muted: #8a8580;
-  --user-bubble: #7c6b9a;
-  --assistant-bubble: #f3f1ee;
+  --surface-hover: #f5f2ee;
+  --border: #e5dfd8;
+  --muted: #8a837c;
+  --user-bubble: #6b5a8a;
+  --assistant-bubble: #f5f2ee;
+
+  /* Semantic status */
+  --success: #5a9e63;
+  --success-bg: #eef6ef;
+  --success-border: #c5dfc8;
+  --success-text: #2d5a30;
+  --warning: #c49530;
+  --warning-bg: #fdf7eb;
+  --warning-border: #f0ddb0;
+  --warning-text: #7a5c12;
+  --error: #b85454;
+  --error-bg: #fbecec;
+  --error-border: #e8c4c4;
+  --error-text: #7a2d2d;
+
+  /* Sacred — gold for prayer/faith */
+  --prayer: #b8963a;
+  --prayer-bg: #fcf8ef;
+  --prayer-border: #e8d9b0;
+  --prayer-text: #6b5520;
+
+  /* Shadows */
+  --shadow-xs: 0 1px 2px rgba(44, 40, 37, 0.03);
+  --shadow-sm: 0 1px 3px rgba(44, 40, 37, 0.05), 0 1px 2px rgba(44, 40, 37, 0.03);
+  --shadow: 0 4px 12px rgba(44, 40, 37, 0.06), 0 1px 3px rgba(44, 40, 37, 0.04);
+  --shadow-lg: 0 8px 24px rgba(44, 40, 37, 0.08), 0 2px 8px rgba(44, 40, 37, 0.04);
 }
 
+/* ============================================================
+   DARK MODE — warm undertones, contemplative
+   ============================================================ */
+html.dark {
+  --background: #1c1a1f;
+  --foreground: #e8e4de;
+  --accent: #a594c0;
+  --accent-hover: #b8a8d4;
+  --accent-light: #2a2440;
+  --surface: #252329;
+  --surface-hover: #2f2c34;
+  --border: #3a3640;
+  --muted: #918b85;
+  --user-bubble: #7c6b9a;
+  --assistant-bubble: #2a2830;
+
+  --success: #6cb875;
+  --success-bg: rgba(108, 184, 117, 0.10);
+  --success-border: rgba(108, 184, 117, 0.25);
+  --success-text: #8cd495;
+  --warning: #d4a843;
+  --warning-bg: rgba(212, 168, 67, 0.10);
+  --warning-border: rgba(212, 168, 67, 0.25);
+  --warning-text: #e4c070;
+  --error: #d47070;
+  --error-bg: rgba(212, 112, 112, 0.10);
+  --error-border: rgba(212, 112, 112, 0.25);
+  --error-text: #e89090;
+
+  --prayer: #d4b85c;
+  --prayer-bg: rgba(212, 184, 92, 0.08);
+  --prayer-border: rgba(212, 184, 92, 0.20);
+  --prayer-text: #e4cc80;
+
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.15);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.2), 0 1px 2px rgba(0, 0, 0, 0.15);
+  --shadow: 0 4px 12px rgba(0, 0, 0, 0.25), 0 1px 3px rgba(0, 0, 0, 0.15);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.35), 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* ============================================================
+   TAILWIND THEME BRIDGE
+   ============================================================ */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -21,30 +97,35 @@
   --font-mono: var(--font-geist-mono);
 }
 
+/* ============================================================
+   BASE STYLES
+   ============================================================ */
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* Scrollbar */
-::-webkit-scrollbar {
-  width: 6px;
-}
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-::-webkit-scrollbar-thumb {
-  background: var(--border);
-  border-radius: 3px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: var(--muted);
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 4px;
 }
 
-/* Markdown content styling */
+/* ============================================================
+   SCROLLBAR
+   ============================================================ */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+
+/* ============================================================
+   MARKDOWN / PROSE
+   ============================================================ */
 .prose h1, .prose h2, .prose h3 {
-  color: #2d2d2d;
+  color: var(--foreground);
   font-weight: 600;
   margin-top: 1em;
   margin-bottom: 0.5em;
@@ -52,44 +133,22 @@ body {
 .prose h1 { font-size: 1.25rem; }
 .prose h2 { font-size: 1.125rem; }
 .prose h3 { font-size: 1rem; }
-.prose p { margin-bottom: 0.75em; line-height: 1.7; }
+.prose p { margin-bottom: 0.75em; line-height: 1.75; }
 .prose ul, .prose ol { margin-left: 1.25em; margin-bottom: 0.75em; }
-.prose li { margin-bottom: 0.25em; line-height: 1.6; }
-.prose strong { color: #2d2d2d; font-weight: 600; }
-.prose em { color: #7c6b9a; }
+.prose li { margin-bottom: 0.25em; line-height: 1.65; }
+.prose strong { color: var(--foreground); font-weight: 600; }
+.prose em { color: var(--accent); }
 .prose code {
-  background: #f0ecf5;
+  background: var(--accent-light);
   padding: 0.15em 0.4em;
   border-radius: 4px;
   font-size: 0.875em;
-  color: #5a4a78;
+  color: var(--accent);
 }
 .prose blockquote {
-  border-left: 3px solid #c4b8d9;
+  border-left: 3px solid var(--accent);
   padding-left: 1em;
   margin: 0.75em 0;
-  color: #6b6560;
+  color: var(--muted);
+  font-style: italic;
 }
-
-/* Dark mode */
-html.dark {
-  --background: #1a1a1e;
-  --foreground: #e4e2de;
-  --accent: #a594c0;
-  --accent-hover: #b8a8d4;
-  --accent-light: #2a2640;
-  --surface: #242428;
-  --surface-hover: #2e2e34;
-  --border: #3a3a40;
-  --muted: #8a8580;
-  --user-bubble: #7c6b9a;
-  --assistant-bubble: #2a2a30;
-}
-
-html.dark .prose h1,
-html.dark .prose h2,
-html.dark .prose h3 { color: #e4e2de; }
-html.dark .prose strong { color: #e4e2de; }
-html.dark .prose em { color: #a594c0; }
-html.dark .prose code { background: #2a2640; color: #c4b8d9; }
-html.dark .prose blockquote { border-left-color: #5a4a78; color: #9a9590; }

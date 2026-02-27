@@ -56,9 +56,9 @@ export default function TeachBack({ onBack }: { onBack: () => void }) {
   }
 
   const levelColors: Record<string, { bg: string; text: string; border: string }> = {
-    surface: { bg: "#c96b6b18", text: "#c96b6b", border: "#c96b6b40" },
-    partial: { bg: "#d4a84318", text: "#d4a843", border: "#d4a84340" },
-    deep: { bg: "#6ab07018", text: "#6ab070", border: "#6ab07040" },
+    surface: { bg: "var(--error-bg)", text: "var(--error)", border: "var(--error-border)" },
+    partial: { bg: "var(--warning-bg)", text: "var(--warning)", border: "var(--warning-border)" },
+    deep: { bg: "var(--success-bg)", text: "var(--success)", border: "var(--success-border)" },
   };
 
   const deepCount = history.filter((h) => h.level === "deep").length;
@@ -112,13 +112,13 @@ export default function TeachBack({ onBack }: { onBack: () => void }) {
         {/* Stats */}
         {history.length > 0 && (
           <div className="flex gap-3 mb-4">
-            <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: "#6ab07018", color: "#6ab070" }}>
+            <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: "var(--success-bg)", color: "var(--success)" }}>
               Deep: {deepCount}
             </span>
-            <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: "#d4a84318", color: "#d4a843" }}>
+            <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: "var(--warning-bg)", color: "var(--warning)" }}>
               Partial: {partialCount}
             </span>
-            <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: "#c96b6b18", color: "#c96b6b" }}>
+            <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: "var(--error-bg)", color: "var(--error)" }}>
               Surface: {surfaceCount}
             </span>
           </div>
@@ -228,7 +228,7 @@ export default function TeachBack({ onBack }: { onBack: () => void }) {
 
               {evaluation.strengths.length > 0 && (
                 <div className="mb-2">
-                  <p className="text-xs font-semibold mb-1" style={{ color: "#6ab070" }}>What you got right:</p>
+                  <p className="text-xs font-semibold mb-1" style={{ color: "var(--success)" }}>What you got right:</p>
                   <ul className="text-xs space-y-0.5" style={{ color: "var(--foreground)" }}>
                     {evaluation.strengths.map((s, i) => (
                       <li key={i}>+ {s}</li>
@@ -239,7 +239,7 @@ export default function TeachBack({ onBack }: { onBack: () => void }) {
 
               {evaluation.missing.length > 0 && (
                 <div>
-                  <p className="text-xs font-semibold mb-1" style={{ color: "#c96b6b" }}>What&apos;s missing:</p>
+                  <p className="text-xs font-semibold mb-1" style={{ color: "var(--error)" }}>What&apos;s missing:</p>
                   <ul className="text-xs space-y-0.5" style={{ color: "var(--foreground)" }}>
                     {evaluation.missing.map((m, i) => (
                       <li key={i}>- {m}</li>

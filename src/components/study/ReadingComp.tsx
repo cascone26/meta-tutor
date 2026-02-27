@@ -125,7 +125,7 @@ export default function ReadingComp({ onBack }: { onBack: () => void }) {
     return (
       <div className="h-full overflow-y-auto">
         <div className="max-w-2xl mx-auto px-4 py-8 text-center">
-          <h2 className="text-2xl font-bold mb-2" style={{ color: pct >= 80 ? "#6ab070" : pct >= 60 ? "#d4a843" : "#c96b6b" }}>{pct}%</h2>
+          <h2 className="text-2xl font-bold mb-2" style={{ color: pct >= 80 ? "var(--success)" : pct >= 60 ? "var(--warning)" : "var(--error)" }}>{pct}%</h2>
           <p className="text-sm mb-4" style={{ color: "var(--muted)" }}>{quiz.score} of {quiz.questions.length} correct on &quot;{passage.title}&quot;</p>
           <div className="flex gap-2 justify-center">
             <button onClick={() => startQuiz(passage)} className="px-4 py-2 rounded-lg text-sm font-medium" style={{ background: "var(--accent)", color: "#fff" }}>Try again</button>
@@ -178,8 +178,8 @@ export default function ReadingComp({ onBack }: { onBack: () => void }) {
                 </div>
                 <p className="text-xs mb-2" style={{ color: "var(--muted)" }}>How did you do?</p>
                 <div className="flex gap-2">
-                  <button onClick={() => markCorrect(true)} className="px-4 py-2 rounded-lg text-sm font-medium" style={{ background: "#6ab07018", color: "#6ab070", border: "1px solid #6ab07040" }}>Got it right</button>
-                  <button onClick={() => markCorrect(false)} className="px-4 py-2 rounded-lg text-sm font-medium" style={{ background: "#c96b6b18", color: "#c96b6b", border: "1px solid #c96b6b40" }}>Missed it</button>
+                  <button onClick={() => markCorrect(true)} className="px-4 py-2 rounded-lg text-sm font-medium" style={{ background: "var(--success-bg)", color: "var(--success)", border: "1px solid #6ab07040" }}>Got it right</button>
+                  <button onClick={() => markCorrect(false)} className="px-4 py-2 rounded-lg text-sm font-medium" style={{ background: "var(--error-bg)", color: "var(--error)", border: "1px solid #c96b6b40" }}>Missed it</button>
                 </div>
               </div>
             )}

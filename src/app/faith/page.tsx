@@ -75,16 +75,16 @@ export default function FaithPage() {
               </p>
 
               {active.scriptureRef && (
-                <div className="rounded-lg p-3 mb-2" style={{ background: "var(--background)", border: "1px solid var(--border)" }}>
-                  <p className="text-xs font-semibold mb-0.5" style={{ color: "var(--accent)" }}>Scripture</p>
-                  <p className="text-sm italic" style={{ color: "var(--foreground)" }}>{active.scriptureRef}</p>
+                <div className="rounded-lg p-4 mb-2" style={{ background: "var(--prayer-bg)", border: "1px solid var(--prayer-border)" }}>
+                  <p className="text-xs font-semibold mb-1 tracking-wide uppercase" style={{ color: "var(--prayer)", letterSpacing: "0.08em" }}>Scripture</p>
+                  <p className="text-sm italic leading-relaxed" style={{ color: "var(--foreground)" }}>{active.scriptureRef}</p>
                 </div>
               )}
 
               {active.catechismRef && (
-                <div className="rounded-lg p-3" style={{ background: "var(--background)", border: "1px solid var(--border)" }}>
-                  <p className="text-xs font-semibold mb-0.5" style={{ color: "var(--accent)" }}>Catechism</p>
-                  <p className="text-sm" style={{ color: "var(--foreground)" }}>{active.catechismRef}</p>
+                <div className="rounded-lg p-4" style={{ background: "var(--prayer-bg)", border: "1px solid var(--prayer-border)" }}>
+                  <p className="text-xs font-semibold mb-1 tracking-wide uppercase" style={{ color: "var(--prayer)", letterSpacing: "0.08em" }}>Catechism</p>
+                  <p className="text-sm leading-relaxed" style={{ color: "var(--foreground)" }}>{active.catechismRef}</p>
                 </div>
               )}
             </div>

@@ -327,7 +327,7 @@ export default function NotesPage() {
                     <button
                       onClick={() => deleteNote(note.id)}
                       className="p-1.5 rounded-lg hover:opacity-60 transition-opacity"
-                      style={{ color: "#c96b6b" }}
+                      style={{ color: "var(--error)" }}
                       title="Delete"
                     >
                       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

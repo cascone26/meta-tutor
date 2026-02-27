@@ -1,9 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
-  <!-- Chi Rho — ancient Catholic Christogram -->
-  <!-- Vertical bar (Rho stem) -->
-  <rect x="28" y="8" width="8" height="48" rx="2" fill="#7c6b9a"/>
-  <!-- Horizontal bar (Cross arm) -->
-  <rect x="14" y="24" width="36" height="8" rx="2" fill="#7c6b9a"/>
-  <!-- Rho loop (P curve at top) -->
-  <path d="M36 8 C36 8 48 8 48 18 C48 28 36 28 36 28" stroke="#7c6b9a" stroke-width="7" stroke-linecap="round" fill="none"/>
-</svg>

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import ThemeToggle from "./ThemeToggle";
@@ -49,20 +50,24 @@ export default function Nav() {
   return (
     <nav
       className="flex items-center justify-around md:justify-center md:gap-1 px-2 py-2 border-b shrink-0 relative"
-      style={{ background: "var(--surface)", borderColor: "var(--border)" }}
+      style={{ background: "var(--surface)", borderColor: "var(--border)", boxShadow: "var(--shadow-xs)" }}
     >
-      {/* Logo - hidden on mobile to save space */}
+      {/* Logo */}
       <Link
         href="/"
-        className="hidden md:flex items-center gap-1.5 px-3 py-1 mr-2"
+        className="hidden md:flex items-center gap-2 px-3 py-1 mr-2"
         title="Meta Tutor"
       >
-        <svg width="22" height="22" viewBox="0 0 32 32" fill="none">
-          <rect width="32" height="32" rx="6" fill="var(--accent)" />
-          <rect x="13.5" y="4" width="5" height="24" rx="1.5" fill="white" />
-          <rect x="6" y="12" width="20" height="5" rx="1.5" fill="white" />
-          <path d="M18.5 4 C18.5 4 26 4 26 9.5 C26 15 18.5 15 18.5 15" stroke="white" strokeWidth="4.5" strokeLinecap="round" fill="none" />
-        </svg>
+        <Image
+          src="/chi-rho.png"
+          alt="Chi Rho"
+          width={24}
+          height={24}
+          className="opacity-70 dark:invert dark:opacity-60"
+        />
+        <span className="text-sm font-semibold tracking-tight" style={{ color: "var(--foreground)" }}>
+          Meta Tutor
+        </span>
       </Link>
 
       {mainTabs.map((tab) => {
@@ -102,8 +107,8 @@ export default function Nav() {
           <>
             <div className="fixed inset-0 z-40" onClick={() => setMoreOpen(false)} />
             <div
-              className="absolute right-0 top-full mt-1 z-50 rounded-xl py-1 min-w-[140px] shadow-lg"
-              style={{ background: "var(--surface)", border: "1px solid var(--border)" }}
+              className="absolute right-0 top-full mt-1 z-50 rounded-xl py-1 min-w-[140px]"
+              style={{ background: "var(--surface)", border: "1px solid var(--border)", boxShadow: "var(--shadow-lg)" }}
             >
               {moreTabs.map((tab) => {
                 const active = pathname.startsWith(tab.href);

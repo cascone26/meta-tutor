@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 
 const KEY = "meta-tutor-show-prayer";
 
@@ -40,7 +41,6 @@ export default function Prayer() {
       setEnabled(false);
       return;
     }
-    // Show once per session
     const shown = sessionStorage.getItem("meta-tutor-prayer-shown");
     if (!shown) {
       setShow(true);
@@ -61,45 +61,68 @@ export default function Prayer() {
   if (!show || !enabled) return null;
 
   return (
-    <div className="fixed inset-0 z-[150] flex items-center justify-center">
-      <div className="fixed inset-0 bg-black/40" />
+    <div className="fixed inset-0 z-[150] flex items-center justify-center px-4">
       <div
-        className="relative z-10 rounded-xl p-6 w-full max-w-md shadow-xl"
-        style={{ background: "var(--surface)", border: "1px solid var(--border)" }}
+        className="fixed inset-0"
+        style={{ background: "rgba(44, 40, 37, 0.5)", backdropFilter: "blur(8px)" }}
+      />
+      <div
+        className="relative z-10 rounded-2xl p-8 w-full max-w-md"
+        style={{
+          background: "var(--prayer-bg)",
+          border: "1px solid var(--prayer-border)",
+          boxShadow: "var(--shadow-lg), 0 0 80px rgba(184, 150, 58, 0.06)",
+        }}
       >
-        <div className="text-center mb-4">
-          <p className="text-xs font-medium tracking-wider uppercase mb-1" style={{ color: "var(--accent)" }}>
+        <div className="flex justify-center mb-4">
+          <Image
+            src="/chi-rho.png"
+            alt=""
+            width={36}
+            height={36}
+            className="opacity-30 dark:invert dark:opacity-20"
+          />
+        </div>
+
+        <div className="text-center mb-5">
+          <p
+            className="text-xs font-medium tracking-widest uppercase mb-1.5"
+            style={{ color: "var(--prayer)", letterSpacing: "0.15em" }}
+          >
             Before you begin
           </p>
           <h2 className="text-base font-semibold" style={{ color: "var(--foreground)" }}>
             Prayer of St. Thomas Aquinas
           </h2>
-          <p className="text-xs" style={{ color: "var(--muted)" }}>Before Study</p>
+          <p className="text-xs mt-0.5" style={{ color: "var(--muted)" }}>Before Study</p>
         </div>
 
         <div
-          className="rounded-lg p-4 mb-4"
-          style={{ background: "var(--background)", border: "1px solid var(--border)" }}
+          className="rounded-xl p-5 mb-5"
+          style={{
+            background: "var(--surface)",
+            border: "1px solid var(--prayer-border)",
+          }}
         >
           <p
-            className="text-sm italic leading-relaxed text-center whitespace-pre-line"
+            className="text-sm italic leading-[1.85] text-center whitespace-pre-line"
             style={{ color: "var(--foreground)" }}
           >
             {prayer}
           </p>
         </div>
 
-        <div className="flex flex-col items-center gap-2">
+        <div className="flex flex-col items-center gap-3">
           <button
             onClick={dismiss}
-            className="px-6 py-2 rounded-lg text-sm font-medium"
-            style={{ background: "var(--accent)", color: "#fff" }}
+            className="px-8 py-2.5 rounded-xl text-sm font-medium transition-opacity hover:opacity-90"
+            style={{ background: "var(--prayer)", color: "#fff" }}
           >
             Begin studying
           </button>
           <button
             onClick={disablePrayer}
-            className="text-xs"
+            className="text-xs transition-opacity hover:opacity-70"
             style={{ color: "var(--muted)" }}
           >
             Don&apos;t show this again

@@ -235,7 +235,7 @@ function ChatPage() {
                         className="shrink-0 w-2.5 h-2.5 rounded-full mt-1"
                         style={{
                           background:
-                            conf === "got-it" ? "#6ab070" : conf === "shaky" ? "#d4a843" : "#c96b6b",
+                            conf === "got-it" ? "var(--success)" : conf === "shaky" ? "var(--warning)" : "var(--error)",
                         }}
                       />
                     )}
@@ -266,10 +266,10 @@ function ChatPage() {
                         background:
                           conf === level
                             ? level === "got-it"
-                              ? "#6ab070"
+                              ? "var(--success)"
                               : level === "shaky"
-                              ? "#d4a843"
-                              : "#c96b6b"
+                              ? "var(--warning)"
+                              : "var(--error)"
                             : "var(--background)",
                         color:
                           conf === level
@@ -297,13 +297,13 @@ function ChatPage() {
             style={{ borderColor: "var(--border)", color: "var(--muted)" }}
           >
             <div className="flex justify-between">
-              <span style={{ color: "#6ab070" }}>
+              <span style={{ color: "var(--success)" }}>
                 {Object.values(confidence).filter((v) => v === "got-it").length} got it
               </span>
-              <span style={{ color: "#d4a843" }}>
+              <span style={{ color: "var(--warning)" }}>
                 {Object.values(confidence).filter((v) => v === "shaky").length} shaky
               </span>
-              <span style={{ color: "#c96b6b" }}>
+              <span style={{ color: "var(--error)" }}>
                 {Object.values(confidence).filter((v) => v === "no-clue").length} no clue
               </span>
             </div>

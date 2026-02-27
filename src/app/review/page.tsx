@@ -70,7 +70,7 @@ export default function ReviewPage() {
             <p className="text-xs" style={{ color: "var(--muted)" }}>Day streak</p>
           </div>
           <div className="rounded-xl p-3 text-center" style={{ background: "var(--surface)", border: "1px solid var(--border)" }}>
-            <p className="text-lg font-bold" style={{ color: dueTerms.length > 0 ? "#c96b6b" : "#6ab070" }}>{dueTerms.length}</p>
+            <p className="text-lg font-bold" style={{ color: dueTerms.length > 0 ? "var(--error)" : "var(--success)" }}>{dueTerms.length}</p>
             <p className="text-xs" style={{ color: "var(--muted)" }}>Due today</p>
           </div>
           <div className="rounded-xl p-3 text-center" style={{ background: "var(--surface)", border: "1px solid var(--border)" }}>
@@ -102,9 +102,9 @@ export default function ReviewPage() {
 
         {/* Due terms */}
         {dueTerms.length > 0 && (
-          <div className="rounded-xl p-4 mb-4" style={{ background: "#fce4ec20", border: "1px solid #c96b6b30" }}>
+          <div className="rounded-xl p-4 mb-4" style={{ background: "var(--error-bg)", border: "1px solid #c96b6b30" }}>
             <div className="flex items-center justify-between mb-2">
-              <h3 className="font-semibold text-sm" style={{ color: "#c96b6b" }}>
+              <h3 className="font-semibold text-sm" style={{ color: "var(--error)" }}>
                 Due for review ({dueTerms.length})
               </h3>
               <Link href="/study" className="text-xs font-medium" style={{ color: "var(--accent)" }}>
@@ -135,7 +135,7 @@ export default function ReviewPage() {
             </div>
             <div className="flex gap-1.5 flex-wrap">
               {weakAreas.terms.map((t) => (
-                <span key={t} className="text-xs px-2 py-0.5 rounded-full" style={{ background: "#fce4ec", color: "#c96b6b" }}>
+                <span key={t} className="text-xs px-2 py-0.5 rounded-full" style={{ background: "var(--error-bg)", color: "var(--error)" }}>
                   {t}
                 </span>
               ))}
@@ -161,7 +161,7 @@ export default function ReviewPage() {
                   <div className="w-full h-1.5 rounded-full" style={{ background: "var(--border)" }}>
                     <div
                       className="h-full rounded-full transition-all"
-                      style={{ background: pct >= 80 ? "#6ab070" : pct >= 50 ? "#d4a843" : "var(--accent)", width: `${pct}%` }}
+                      style={{ background: pct >= 80 ? "var(--success)" : pct >= 50 ? "var(--warning)" : "var(--accent)", width: `${pct}%` }}
                     />
                   </div>
                 </div>

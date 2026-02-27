@@ -134,7 +134,7 @@ export default function MultipleChoice({ onBack }: { onBack: () => void }) {
             <h2 className="text-lg font-semibold mb-2" style={{ color: "var(--foreground)" }}>
               Quiz Complete!
             </h2>
-            <p className="text-4xl font-bold mb-1" style={{ color: pct >= 80 ? "#6ab070" : pct >= 60 ? "#d4a843" : "#c96b6b" }}>
+            <p className="text-4xl font-bold mb-1" style={{ color: pct >= 80 ? "var(--success)" : pct >= 60 ? "var(--warning)" : "var(--error)" }}>
               {pct}%
             </p>
             <p className="text-sm mb-4" style={{ color: "var(--muted)" }}>
@@ -143,19 +143,19 @@ export default function MultipleChoice({ onBack }: { onBack: () => void }) {
 
             {/* Feedback */}
             {pct >= 90 ? (
-              <div className="rounded-xl p-4 mb-4 text-left" style={{ background: "#e8f5e9", border: "1px solid #c8e6c9" }}>
-                <p className="text-sm font-medium mb-1" style={{ color: "#2d5a30" }}>Excellent!</p>
-                <p className="text-xs" style={{ color: "#4a7a4d" }}>Outstanding performance. Try filtering to a specific category for focused review.</p>
+              <div className="rounded-xl p-4 mb-4 text-left" style={{ background: "var(--success-bg)", border: "1px solid #c8e6c9" }}>
+                <p className="text-sm font-medium mb-1" style={{ color: "var(--success-text)" }}>Excellent!</p>
+                <p className="text-xs" style={{ color: "var(--success-text)" }}>Outstanding performance. Try filtering to a specific category for focused review.</p>
               </div>
             ) : pct >= 70 ? (
-              <div className="rounded-xl p-4 mb-4 text-left" style={{ background: "#fff8e1", border: "1px solid #ffecb3" }}>
-                <p className="text-sm font-medium mb-1" style={{ color: "#8d6e0f" }}>Good job!</p>
-                <p className="text-xs" style={{ color: "#a68612" }}>Solid foundation. Review the missed terms below to improve further.</p>
+              <div className="rounded-xl p-4 mb-4 text-left" style={{ background: "var(--warning-bg)", border: "1px solid #ffecb3" }}>
+                <p className="text-sm font-medium mb-1" style={{ color: "var(--warning-text)" }}>Good job!</p>
+                <p className="text-xs" style={{ color: "var(--warning-text)" }}>Solid foundation. Review the missed terms below to improve further.</p>
               </div>
             ) : (
-              <div className="rounded-xl p-4 mb-4 text-left" style={{ background: "#fce4ec", border: "1px solid #f8bbd0" }}>
-                <p className="text-sm font-medium mb-1" style={{ color: "#8b3a3a" }}>Keep going!</p>
-                <p className="text-xs" style={{ color: "#a04848" }}>Try Learn mode for a more guided approach, or filter to one category at a time.</p>
+              <div className="rounded-xl p-4 mb-4 text-left" style={{ background: "var(--error-bg)", border: "1px solid #f8bbd0" }}>
+                <p className="text-sm font-medium mb-1" style={{ color: "var(--error-text)" }}>Keep going!</p>
+                <p className="text-xs" style={{ color: "var(--error-text)" }}>Try Learn mode for a more guided approach, or filter to one category at a time.</p>
               </div>
             )}
 
@@ -164,7 +164,7 @@ export default function MultipleChoice({ onBack }: { onBack: () => void }) {
                 <p className="text-xs font-medium mb-2" style={{ color: "var(--muted)" }}>Missed terms:</p>
                 <div className="flex flex-wrap gap-1.5">
                   {uniqueWrongTerms.map((t) => (
-                    <span key={t} className="text-xs px-2 py-0.5 rounded-full" style={{ background: "#fce4ec", color: "#8b3a3a" }}>
+                    <span key={t} className="text-xs px-2 py-0.5 rounded-full" style={{ background: "var(--error-bg)", color: "var(--error-text)" }}>
                       {t}
                     </span>
                   ))}
@@ -206,7 +206,7 @@ export default function MultipleChoice({ onBack }: { onBack: () => void }) {
         </button>
         <div className="flex items-center gap-3 text-xs" style={{ color: "var(--muted)" }}>
           <span>{index + 1}/{questions.length}</span>
-          <span style={{ color: "#6ab070" }}>{score} correct</span>
+          <span style={{ color: "var(--success)" }}>{score} correct</span>
         </div>
       </div>
 
@@ -284,13 +284,13 @@ export default function MultipleChoice({ onBack }: { onBack: () => void }) {
 
               if (showAnswer) {
                 if (isCorrect) {
-                  bg = "#e8f5e9";
-                  border = "#6ab070";
-                  color = "#2d5a30";
+                  bg = "var(--success-bg)";
+                  border = "var(--success)";
+                  color = "var(--success-text)";
                 } else if (isPicked && !isCorrect) {
-                  bg = "#fce4ec";
-                  border = "#c96b6b";
-                  color = "#8b3a3a";
+                  bg = "var(--error-bg)";
+                  border = "var(--error)";
+                  color = "var(--error-text)";
                 }
               }
 

@@ -21,11 +21,11 @@ const typeLabels: Record<string, string> = {
 
 const typeColors: Record<string, string> = {
   nap: "#6b8fbf",
-  eat: "#6ab070",
+  eat: "var(--success)",
   study: "#7c6b9a",
   class: "#e07c4f",
-  quiz: "#c96b6b",
-  custom: "#d4a843",
+  quiz: "var(--error)",
+  custom: "var(--warning)",
 };
 
 export { typeLabels, typeColors };

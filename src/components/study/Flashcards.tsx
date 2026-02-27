@@ -141,7 +141,7 @@ export default function Flashcards({ onBack }: { onBack: () => void }) {
             className="w-full rounded-2xl p-8 cursor-pointer transition-all select-none"
             style={{
               background: "var(--surface)",
-              border: `2px solid ${known.has(card.term) ? "#6ab070" : "var(--border)"}`,
+              border: `2px solid ${known.has(card.term) ? "var(--success)" : "var(--border)"}`,
               minHeight: "240px",
               display: "flex",
               flexDirection: "column",
@@ -190,7 +190,7 @@ export default function Flashcards({ onBack }: { onBack: () => void }) {
                 onClick={markKnown}
                 className="text-xs px-4 py-2 rounded-full font-medium transition-all"
                 style={{
-                  background: known.has(card.term) ? "#6ab070" : "var(--surface)",
+                  background: known.has(card.term) ? "var(--success)" : "var(--surface)",
                   color: known.has(card.term) ? "#fff" : "var(--muted)",
                   border: `1px solid ${known.has(card.term) ? "transparent" : "var(--border)"}`,
                 }}

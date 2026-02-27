@@ -479,9 +479,9 @@ export default function Learn({ onBack }: { onBack: () => void }) {
           <div className="max-w-md mx-auto text-center py-8">
             <div
               className="w-16 h-16 rounded-full flex items-center justify-center mb-4 mx-auto"
-              style={{ background: "#e8f5e9" }}
+              style={{ background: "var(--success-bg)" }}
             >
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#6ab070" strokeWidth="2">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--success)" strokeWidth="2">
                 <path d="M9 12l2 2 4-4" />
                 <circle cx="12" cy="12" r="10" />
               </svg>
@@ -498,19 +498,19 @@ export default function Learn({ onBack }: { onBack: () => void }) {
 
             {/* Feedback */}
             {pct >= 90 ? (
-              <div className="rounded-xl p-4 mb-4 text-left" style={{ background: "#e8f5e9", border: "1px solid #c8e6c9" }}>
-                <p className="text-sm font-medium mb-1" style={{ color: "#2d5a30" }}>Excellent work!</p>
-                <p className="text-xs" style={{ color: "#4a7a4d" }}>You&apos;ve got a strong grasp on these terms. Try adding more categories or increasing the mastery threshold for a challenge.</p>
+              <div className="rounded-xl p-4 mb-4 text-left" style={{ background: "var(--success-bg)", border: "1px solid #c8e6c9" }}>
+                <p className="text-sm font-medium mb-1" style={{ color: "var(--success-text)" }}>Excellent work!</p>
+                <p className="text-xs" style={{ color: "var(--success-text)" }}>You&apos;ve got a strong grasp on these terms. Try adding more categories or increasing the mastery threshold for a challenge.</p>
               </div>
             ) : pct >= 70 ? (
-              <div className="rounded-xl p-4 mb-4 text-left" style={{ background: "#fff8e1", border: "1px solid #ffecb3" }}>
-                <p className="text-sm font-medium mb-1" style={{ color: "#8d6e0f" }}>Good progress!</p>
-                <p className="text-xs" style={{ color: "#a68612" }}>You&apos;re getting there. Focus on the terms below to solidify your understanding.</p>
+              <div className="rounded-xl p-4 mb-4 text-left" style={{ background: "var(--warning-bg)", border: "1px solid #ffecb3" }}>
+                <p className="text-sm font-medium mb-1" style={{ color: "var(--warning-text)" }}>Good progress!</p>
+                <p className="text-xs" style={{ color: "var(--warning-text)" }}>You&apos;re getting there. Focus on the terms below to solidify your understanding.</p>
               </div>
             ) : (
-              <div className="rounded-xl p-4 mb-4 text-left" style={{ background: "#fce4ec", border: "1px solid #f8bbd0" }}>
-                <p className="text-sm font-medium mb-1" style={{ color: "#8b3a3a" }}>Keep practicing!</p>
-                <p className="text-xs" style={{ color: "#a04848" }}>These terms need more review. Try learning in smaller batches by filtering to one category at a time.</p>
+              <div className="rounded-xl p-4 mb-4 text-left" style={{ background: "var(--error-bg)", border: "1px solid #f8bbd0" }}>
+                <p className="text-sm font-medium mb-1" style={{ color: "var(--error-text)" }}>Keep practicing!</p>
+                <p className="text-xs" style={{ color: "var(--error-text)" }}>These terms need more review. Try learning in smaller batches by filtering to one category at a time.</p>
               </div>
             )}
 
@@ -590,7 +590,7 @@ export default function Learn({ onBack }: { onBack: () => void }) {
         <div className="w-full h-2 rounded-full" style={{ background: "var(--border)" }}>
           <div
             className="h-full rounded-full transition-all duration-500"
-            style={{ background: "#6ab070", width: `${progressPct}%` }}
+            style={{ background: "var(--success)", width: `${progressPct}%` }}
           />
         </div>
         <div className="flex justify-between mt-1">
@@ -600,7 +600,7 @@ export default function Learn({ onBack }: { onBack: () => void }) {
           <span className="text-xs" style={{ color: "var(--accent)" }}>
             {remaining.filter((t) => t.phase === "typed").length} reviewing
           </span>
-          <span className="text-xs" style={{ color: "#6ab070" }}>
+          <span className="text-xs" style={{ color: "var(--success)" }}>
             {mastered} mastered
           </span>
         </div>
@@ -622,7 +622,7 @@ export default function Learn({ onBack }: { onBack: () => void }) {
               {current.phase === "mc" ? "Multiple choice" : "Type the answer"}
             </span>
             {current.lastWrong && (
-              <span className="text-xs" style={{ color: "#c96b6b" }}>
+              <span className="text-xs" style={{ color: "var(--error)" }}>
                 Let&apos;s try again
               </span>
             )}
@@ -667,13 +667,13 @@ export default function Learn({ onBack }: { onBack: () => void }) {
 
                 if (showAnswer) {
                   if (isCorrect) {
-                    bg = "#e8f5e9";
-                    border = "#6ab070";
-                    textColor = "#2d5a30";
+                    bg = "var(--success-bg)";
+                    border = "var(--success)";
+                    textColor = "var(--success-text)";
                   } else if (isPicked) {
-                    bg = "#fce4ec";
-                    border = "#c96b6b";
-                    textColor = "#8b3a3a";
+                    bg = "var(--error-bg)";
+                    border = "var(--error)";
+                    textColor = "var(--error-text)";
                   }
                 }
 
@@ -737,15 +737,15 @@ export default function Learn({ onBack }: { onBack: () => void }) {
                   style={{
                     background: typedSubmitted
                       ? typedCorrect
-                        ? "#e8f5e9"
-                        : "#fce4ec"
+                        ? "var(--success-bg)"
+                        : "var(--error-bg)"
                       : "var(--surface)",
                     color: "var(--foreground)",
                     border: `2px solid ${
                       typedSubmitted
                         ? typedCorrect
-                          ? "#6ab070"
-                          : "#c96b6b"
+                          ? "var(--success)"
+                          : "var(--error)"
                         : "var(--border)"
                     }`,
                   }}
@@ -793,13 +793,13 @@ export default function Learn({ onBack }: { onBack: () => void }) {
                   <div
                     className="rounded-xl p-4 mb-3"
                     style={{
-                      background: typedCorrect ? "#e8f5e9" : "#fff8e1",
-                      border: `1px solid ${typedCorrect ? "#6ab070" : "#d4a843"}`,
+                      background: typedCorrect ? "var(--success-bg)" : "var(--warning-bg)",
+                      border: `1px solid ${typedCorrect ? "var(--success)" : "var(--warning)"}`,
                     }}
                   >
                     <p
                       className="text-xs font-medium mb-1"
-                      style={{ color: typedCorrect ? "#6ab070" : "#c96b6b" }}
+                      style={{ color: typedCorrect ? "var(--success)" : "var(--error)" }}
                     >
                       {typedCorrect ? "Correct!" : "Not quite. The answer is:"}
                     </p>

@@ -156,7 +156,7 @@ export default function AudioReview({ onBack }: { onBack: () => void }) {
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3" /></svg>
               </button>
             ) : (
-              <button onClick={paused ? togglePause : togglePause} className="w-14 h-14 rounded-full flex items-center justify-center" style={{ background: paused ? "var(--accent)" : "#d4a843", color: "#fff" }}>
+              <button onClick={paused ? togglePause : togglePause} className="w-14 h-14 rounded-full flex items-center justify-center" style={{ background: paused ? "var(--accent)" : "var(--warning)", color: "#fff" }}>
                 {paused ? (
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3" /></svg>
                 ) : (
@@ -170,7 +170,7 @@ export default function AudioReview({ onBack }: { onBack: () => void }) {
             </button>
 
             {playing && (
-              <button onClick={stop} className="w-10 h-10 rounded-full flex items-center justify-center" style={{ background: "#c96b6b18", border: "1px solid #c96b6b40", color: "#c96b6b" }}>
+              <button onClick={stop} className="w-10 h-10 rounded-full flex items-center justify-center" style={{ background: "var(--error-bg)", border: "1px solid #c96b6b40", color: "var(--error)" }}>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" /></svg>
               </button>
             )}

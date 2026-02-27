@@ -200,16 +200,16 @@ export default function Match({ onBack }: { onBack: () => void }) {
           </p>
 
           {wrongCount === 0 ? (
-            <div className="rounded-xl p-3 mb-4 max-w-xs" style={{ background: "#e8f5e9", border: "1px solid #c8e6c9" }}>
-              <p className="text-xs" style={{ color: "#2d5a30" }}>Flawless! Try a bigger set or beat your time.</p>
+            <div className="rounded-xl p-3 mb-4 max-w-xs" style={{ background: "var(--success-bg)", border: "1px solid #c8e6c9" }}>
+              <p className="text-xs" style={{ color: "var(--success-text)" }}>Flawless! Try a bigger set or beat your time.</p>
             </div>
           ) : wrongCount <= 3 ? (
-            <div className="rounded-xl p-3 mb-4 max-w-xs" style={{ background: "#fff8e1", border: "1px solid #ffecb3" }}>
-              <p className="text-xs" style={{ color: "#8d6e0f" }}>Good job! A few mix-ups — use Flashcards to review tricky definitions.</p>
+            <div className="rounded-xl p-3 mb-4 max-w-xs" style={{ background: "var(--warning-bg)", border: "1px solid #ffecb3" }}>
+              <p className="text-xs" style={{ color: "var(--warning-text)" }}>Good job! A few mix-ups — use Flashcards to review tricky definitions.</p>
             </div>
           ) : (
-            <div className="rounded-xl p-3 mb-4 max-w-xs" style={{ background: "#fce4ec", border: "1px solid #f8bbd0" }}>
-              <p className="text-xs" style={{ color: "#8b3a3a" }}>Try studying with Learn mode first to build familiarity, then come back.</p>
+            <div className="rounded-xl p-3 mb-4 max-w-xs" style={{ background: "var(--error-bg)", border: "1px solid #f8bbd0" }}>
+              <p className="text-xs" style={{ color: "var(--error-text)" }}>Try studying with Learn mode first to build familiarity, then come back.</p>
             </div>
           )}
 
@@ -265,17 +265,17 @@ export default function Match({ onBack }: { onBack: () => void }) {
                 style={{
                   minHeight: "80px",
                   background: isMatched
-                    ? "#e8f5e9"
+                    ? "var(--success-bg)"
                     : isWrong
-                    ? "#fce4ec"
+                    ? "var(--error-bg)"
                     : isSelected
                     ? "var(--accent-light)"
                     : "var(--surface)",
                   border: `2px solid ${
                     isMatched
-                      ? "#6ab070"
+                      ? "var(--success)"
                       : isWrong
-                      ? "#c96b6b"
+                      ? "var(--error)"
                       : isSelected
                       ? "var(--accent)"
                       : "var(--border)"

@@ -80,7 +80,7 @@ const modes = [
         <circle cx="12" cy="12" r="10" />
       </svg>
     ),
-    color: "#6ab070",
+    color: "var(--success)",
     featured: false,
   },
   {
@@ -143,7 +143,7 @@ const modes = [
         <path d="M12 6v6l4 2" />
       </svg>
     ),
-    color: "#c96b6b",
+    color: "var(--error)",
     featured: false,
   },
   {
@@ -156,7 +156,7 @@ const modes = [
         <path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3M12 17h.01" />
       </svg>
     ),
-    color: "#d4a843",
+    color: "var(--warning)",
     featured: false,
   },
   {
@@ -192,7 +192,7 @@ const modes = [
         <path d="M15.536 8.464a5 5 0 010 7.072M18.364 5.636a9 9 0 010 12.728M11 5L6 9H2v6h4l5 4V5z" />
       </svg>
     ),
-    color: "#6ab070",
+    color: "var(--success)",
     featured: false,
   },
   {
