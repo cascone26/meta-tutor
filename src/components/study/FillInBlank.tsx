@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback, useRef } from "react";
-import { glossary, categories } from "@/lib/glossary";
+import { getEffectiveGlossary, getEffectiveCategories } from "@/lib/custom-glossary";
 import { getSRData, saveSRData, reviewTerm } from "@/lib/spaced-repetition";
 import { saveResult } from "@/lib/study-history";
 import { logWrongAnswer } from "@/lib/wrong-answers";
@@ -16,6 +16,7 @@ type BlankQuestion = {
 };
 
 function generateBlanks(cat: string | null): BlankQuestion[] {
+  const glossary = getEffectiveGlossary();
   const pool = cat ? glossary.filter((g) => g.category === cat) : [...glossary];
   // Shuffle
   for (let i = pool.length - 1; i > 0; i--) {
@@ -46,6 +47,9 @@ function generateBlanks(cat: string | null): BlankQuestion[] {
 }
 
 export default function FillInBlank({ onBack }: { onBack: () => void }) {
+  const glossary = getEffectiveGlossary();
+  const categories = getEffectiveCategories();
+
   const [selectedCat, setSelectedCat] = useState<string | null>(null);
   const [started, setStarted] = useState(false);
   const [questions, setQuestions] = useState<BlankQuestion[]>([]);

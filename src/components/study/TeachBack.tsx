@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { glossary, categories } from "@/lib/glossary";
+import { getEffectiveGlossary, getEffectiveCategories, type GlossaryTerm } from "@/lib/custom-glossary";
 import { recordStudySession } from "@/lib/streaks";
 
 type Level = "surface" | "partial" | "deep" | null;
@@ -14,8 +14,11 @@ type Evaluation = {
 };
 
 export default function TeachBack({ onBack }: { onBack: () => void }) {
+  const glossary = getEffectiveGlossary();
+  const categories = getEffectiveCategories();
+
   const [selectedCat, setSelectedCat] = useState<string | null>(null);
-  const [currentTerm, setCurrentTerm] = useState<typeof glossary[0] | null>(null);
+  const [currentTerm, setCurrentTerm] = useState<GlossaryTerm | null>(null);
   const [explanation, setExplanation] = useState("");
   const [evaluating, setEvaluating] = useState(false);
   const [evaluation, setEvaluation] = useState<Evaluation | null>(null);

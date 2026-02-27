@@ -1,8 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
-import { glossary } from "@/lib/glossary";
-import { categories } from "@/lib/glossary";
+import { getEffectiveGlossary, getEffectiveCategories } from "@/lib/custom-glossary";
 import { getSRData, saveSRData, reviewTerm } from "@/lib/spaced-repetition";
 import { saveResult } from "@/lib/study-history";
 import { logWrongAnswer } from "@/lib/wrong-answers";
@@ -25,6 +24,7 @@ type Question = {
 };
 
 function generateQuestions(cat: string | null, shuffled: boolean): Question[] {
+  const glossary = getEffectiveGlossary();
   const pool = cat ? glossary.filter((g) => g.category === cat) : glossary;
   if (pool.length < 4) return [];
 
@@ -44,6 +44,9 @@ function generateQuestions(cat: string | null, shuffled: boolean): Question[] {
 }
 
 export default function MultipleChoice({ onBack }: { onBack: () => void }) {
+  const glossary = getEffectiveGlossary();
+  const categories = getEffectiveCategories();
+
   const [category, setCategory] = useState<string | null>(() => {
     try { const s = localStorage.getItem("meta-tutor-mc-progress"); return s ? JSON.parse(s).category ?? null : null; } catch { return null; }
   });

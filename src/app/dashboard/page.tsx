@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { glossary, categories } from "@/lib/glossary";
+import { getEffectiveGlossary, getEffectiveCategories } from "@/lib/custom-glossary";
 import { questions } from "@/lib/questions";
 import { getSRData, getTermStats, getDueTerms } from "@/lib/spaced-repetition";
 import { getHistory, getWeakAreas } from "@/lib/study-history";
@@ -10,6 +10,9 @@ import { getSessionLog, getTodayStudyTime, getWeekStudyTime, formatTime } from "
 import Link from "next/link";
 
 export default function DashboardPage() {
+  const glossary = getEffectiveGlossary();
+  const categories = getEffectiveCategories();
+
   const [srStats, setSrStats] = useState({ total: 0, due: 0, learning: 0, reviewing: 0, mastered: 0 });
   const [dueTerms, setDueTerms] = useState<string[]>([]);
   const [history, setHistory] = useState<ReturnType<typeof getHistory>>([]);

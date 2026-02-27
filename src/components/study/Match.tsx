@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { glossary } from "@/lib/glossary";
+import { getEffectiveGlossary } from "@/lib/custom-glossary";
 import { saveResult } from "@/lib/study-history";
 import { logWrongAnswer } from "@/lib/wrong-answers";
 import { recordStudySession } from "@/lib/streaks";
@@ -23,6 +23,8 @@ type Card = {
 };
 
 export default function Match({ onBack }: { onBack: () => void }) {
+  const glossary = getEffectiveGlossary();
+
   const [cards, setCards] = useState<Card[]>([]);
   const [selected, setSelected] = useState<string | null>(null);
   const [matched, setMatched] = useState<Set<string>>(new Set());

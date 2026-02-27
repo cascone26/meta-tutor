@@ -1,19 +1,22 @@
 "use client";
 
 import { useState } from "react";
-import { glossary, categories } from "@/lib/glossary";
+import { getEffectiveGlossary, getEffectiveCategories, type GlossaryTerm } from "@/lib/custom-glossary";
 import { recordStudySession } from "@/lib/streaks";
 
 export default function AnalogyGenerator({ onBack }: { onBack: () => void }) {
+  const glossary = getEffectiveGlossary();
+  const categories = getEffectiveCategories();
+
   const [selectedCat, setSelectedCat] = useState<string | null>(null);
-  const [selectedTerm, setSelectedTerm] = useState<typeof glossary[0] | null>(null);
+  const [selectedTerm, setSelectedTerm] = useState<GlossaryTerm | null>(null);
   const [analogy, setAnalogy] = useState<{ analogy: string; explanation: string } | null>(null);
   const [loading, setLoading] = useState(false);
   const [history, setHistory] = useState<{ term: string; analogy: string; explanation: string }[]>([]);
 
   const pool = selectedCat ? glossary.filter((g) => g.category === selectedCat) : glossary;
 
-  async function generate(term: typeof glossary[0]) {
+  async function generate(term: GlossaryTerm) {
     setSelectedTerm(term);
     setAnalogy(null);
     setLoading(true);

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
-import { glossary } from "@/lib/glossary";
+import { getEffectiveGlossary } from "@/lib/custom-glossary";
 import { questions } from "@/lib/questions";
 import { saveResult } from "@/lib/study-history";
 import { logWrongAnswer } from "@/lib/wrong-answers";
@@ -12,6 +12,7 @@ type ExamQuestion =
   | { type: "essay"; id: number; text: string; topics: string[] };
 
 function generateExam(): ExamQuestion[] {
+  const glossary = getEffectiveGlossary();
   const exam: ExamQuestion[] = [];
 
   // 10 MC questions from glossary
@@ -80,7 +81,7 @@ export default function TimedExam({ onBack }: { onBack: () => void }) {
         total: mcTotal,
         percentage: mcTotal > 0 ? Math.round((correct / mcTotal) * 100) : 0,
         weakTerms: wrong,
-        weakCategories: [...new Set(wrong.map((t) => glossary.find((g) => g.term === t)?.category || ""))],
+        weakCategories: [...new Set(wrong.map((t) => getEffectiveGlossary().find((g) => g.term === t)?.category || ""))],
       });
     }
   }, [exam, answers]);

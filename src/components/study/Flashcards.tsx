@@ -1,8 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
-import { glossary } from "@/lib/glossary";
-import { categories } from "@/lib/glossary";
+import { getEffectiveGlossary, getEffectiveCategories } from "@/lib/custom-glossary";
 
 function shuffle<T>(arr: T[]): T[] {
   const a = [...arr];
@@ -21,18 +20,19 @@ export default function Flashcards({ onBack }: { onBack: () => void }) {
     try { const s = localStorage.getItem("meta-tutor-fc-progress"); return s ? JSON.parse(s).shuffled ?? true : true; } catch { return true; }
   });
   const [cards, setCards] = useState(() => {
+    const g = getEffectiveGlossary();
     try {
       const s = localStorage.getItem("meta-tutor-fc-progress");
       if (s) {
         const p = JSON.parse(s);
         if (p.cardTerms?.length) {
-          const termMap = Object.fromEntries(glossary.map((g) => [g.term, g]));
+          const termMap = Object.fromEntries(g.map((t) => [t.term, t]));
           const restored = p.cardTerms.map((t: string) => termMap[t]).filter(Boolean);
           if (restored.length) return restored;
         }
       }
     } catch {}
-    return glossary;
+    return g;
   });
   const [index, setIndex] = useState<number>(() => {
     try { const s = localStorage.getItem("meta-tutor-fc-progress"); return s ? JSON.parse(s).index ?? 0 : 0; } catch { return 0; }
@@ -60,7 +60,8 @@ export default function Flashcards({ onBack }: { onBack: () => void }) {
   // Reset cards when category/shuffle changes — skip on initial mount if restored
   useEffect(() => {
     if (restoredRef.current) { restoredRef.current = false; return; }
-    const filtered = category ? glossary.filter((g) => g.category === category) : glossary;
+    const g = getEffectiveGlossary();
+    const filtered = category ? g.filter((t) => t.category === category) : g;
     setCards(shuffled ? shuffle(filtered) : [...filtered]);
     setIndex(0);
     setFlipped(false);
@@ -106,7 +107,7 @@ export default function Flashcards({ onBack }: { onBack: () => void }) {
   }, [next, prev, markKnown]);
 
   function reshuffleRemaining() {
-    const remaining = glossary.filter(
+    const remaining = getEffectiveGlossary().filter(
       (g) => !known.has(g.term) && (!category || g.category === category)
     );
     setCards(shuffle(remaining));
@@ -156,7 +157,7 @@ export default function Flashcards({ onBack }: { onBack: () => void }) {
         >
           All
         </button>
-        {categories.map((cat) => (
+        {getEffectiveCategories().map((cat) => (
           <button
             key={cat}
             onClick={() => setCategory(category === cat ? null : cat)}

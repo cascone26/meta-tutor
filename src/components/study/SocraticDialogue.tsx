@@ -1,12 +1,15 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { glossary, categories } from "@/lib/glossary";
+import { getEffectiveGlossary, getEffectiveCategories } from "@/lib/custom-glossary";
 import { recordStudySession } from "@/lib/streaks";
 
 type Message = { role: "user" | "assistant"; content: string };
 
 export default function SocraticDialogue({ onBack }: { onBack: () => void }) {
+  const glossary = getEffectiveGlossary();
+  const categories = getEffectiveCategories();
+
   const [selectedCat, setSelectedCat] = useState<string | null>(null);
   const [topic, setTopic] = useState<string | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);

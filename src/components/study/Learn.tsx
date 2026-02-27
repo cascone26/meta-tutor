@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { glossary, categories } from "@/lib/glossary";
+import { getEffectiveGlossary, getEffectiveCategories } from "@/lib/custom-glossary";
 import { getSRData, saveSRData, reviewTerm } from "@/lib/spaced-repetition";
 import { saveResult } from "@/lib/study-history";
 
@@ -40,6 +40,42 @@ function normalize(s: string): string {
     .replace(/\s+/g, " ");
 }
 
+const STOP_WORDS = new Set([
+  "a", "an", "the", "and", "or", "but", "of", "to", "in", "is", "it",
+  "by", "as", "at", "be", "on", "so", "if", "no", "not", "are", "was",
+  "for", "its", "with", "this", "that", "from", "into", "than", "which",
+  "what", "have", "has", "had", "they", "their", "thus", "such", "also",
+]);
+
+function keyWords(s: string): string[] {
+  return normalize(s)
+    .split(" ")
+    .filter((w) => w.length > 2 && !STOP_WORDS.has(w));
+}
+
+function isClose(a: string, b: string): boolean {
+  // Stem-like: one word starts with the other (min 4 chars to avoid short false positives)
+  const shorter = a.length <= b.length ? a : b;
+  const longer = a.length <= b.length ? b : a;
+  return shorter.length >= 4 && longer.startsWith(shorter);
+}
+
+function isCorrectAnswer(userAnswer: string, correctAnswer: string): boolean {
+  const normUser = normalize(userAnswer);
+  const normCorrect = normalize(correctAnswer);
+  if (normUser === normCorrect) return true;
+
+  const userWords = normUser.split(" ");
+  const keys = keyWords(normCorrect);
+  if (keys.length === 0) return normUser.includes(normCorrect);
+
+  const matched = keys.filter((k) =>
+    userWords.some((w) => w === k || isClose(w, k))
+  ).length;
+
+  return matched / keys.length >= 0.55;
+}
+
 const BATCH_SIZE = 7;
 
 const defaultSettings: Settings = {
@@ -51,6 +87,9 @@ const defaultSettings: Settings = {
 // ─── Component ────────────────────────────────────────────────────────────────
 
 export default function Learn({ onBack }: { onBack: () => void }) {
+  const glossary = getEffectiveGlossary();
+  const categories = getEffectiveCategories();
+
   const [settings, setSettings] = useState<Settings>(() => {
     try {
       const s = localStorage.getItem("meta-tutor-learn-settings");
@@ -190,7 +229,7 @@ export default function Learn({ onBack }: { onBack: () => void }) {
   function handleTypedSubmit() {
     if (typedSubmitted) return;
     const term = currentBatch[batchIndex];
-    const correct = normalize(typedAnswer) === normalize(getAnswer(term));
+    const correct = isCorrectAnswer(typedAnswer, getAnswer(term));
     setTypedCorrect(correct);
     setTypedSubmitted(true);
     // Build new array immediately — pass to advanceTyped to avoid closure bug
@@ -774,22 +813,6 @@ export default function Learn({ onBack }: { onBack: () => void }) {
                 const isPicked = selectedMc === option;
                 const showAnswer = selectedMc !== null;
 
-                let bg = "var(--surface)";
-                let border = "var(--border)";
-                let textColor = "var(--foreground)";
-
-                if (showAnswer) {
-                  if (isCorrect) {
-                    bg = "#e8f5e9";
-                    border = "#6ab070";
-                    textColor = "#2d5a30";
-                  } else if (isPicked) {
-                    bg = "#fce4ec";
-                    border = "#c96b6b";
-                    textColor = "#8b3a3a";
-                  }
-                }
-
                 return (
                   <button
                     key={i}
@@ -797,15 +820,21 @@ export default function Learn({ onBack }: { onBack: () => void }) {
                     disabled={selectedMc !== null}
                     className="w-full text-left rounded-xl p-4 text-sm leading-relaxed transition-all"
                     style={{
-                      background: bg,
-                      border: `2px solid ${border}`,
-                      color: textColor,
+                      background: "var(--surface)",
+                      border: `2px solid ${showAnswer && (isCorrect || isPicked) ? "var(--accent)" : "var(--border)"}`,
+                      color: "var(--foreground)",
                     }}
                   >
                     <span className="font-medium mr-2 opacity-50">
                       {String.fromCharCode(65 + i)}.
                     </span>
                     {option.length > 120 ? option.slice(0, 120) + "..." : option}
+                    {showAnswer && isCorrect && (
+                      <span className="ml-2 text-xs font-semibold" style={{ color: "#6ab070" }}>Correct</span>
+                    )}
+                    {showAnswer && isPicked && !isCorrect && (
+                      <span className="ml-2 text-xs font-semibold" style={{ color: "#c96b6b" }}>Incorrect</span>
+                    )}
                   </button>
                 );
               })}
@@ -853,19 +882,9 @@ export default function Learn({ onBack }: { onBack: () => void }) {
                   autoFocus
                   className="w-full rounded-xl px-4 py-3 text-sm outline-none"
                   style={{
-                    background: typedSubmitted
-                      ? typedCorrect
-                        ? "#e8f5e9"
-                        : "#fce4ec"
-                      : "var(--surface)",
+                    background: "var(--surface)",
                     color: "var(--foreground)",
-                    border: `2px solid ${
-                      typedSubmitted
-                        ? typedCorrect
-                          ? "#6ab070"
-                          : "#c96b6b"
-                        : "var(--border)"
-                    }`,
+                    border: `2px solid var(--border)`,
                   }}
                 />
               </div>
@@ -899,15 +918,15 @@ export default function Learn({ onBack }: { onBack: () => void }) {
                   <div
                     className="rounded-xl p-4 mb-3"
                     style={{
-                      background: typedCorrect ? "#e8f5e9" : "#fff8e1",
-                      border: `1px solid ${typedCorrect ? "#6ab070" : "#d4a843"}`,
+                      background: "var(--surface)",
+                      border: `1px solid var(--border)`,
                     }}
                   >
                     <p
                       className="text-xs font-medium mb-1"
                       style={{ color: typedCorrect ? "#6ab070" : "#c96b6b" }}
                     >
-                      {typedCorrect ? "Correct!" : "Not quite. The answer is:"}
+                      {typedCorrect ? "Correct!" : "Incorrect. The answer is:"}
                     </p>
                     <p className="text-sm leading-relaxed" style={{ color: "var(--foreground)" }}>
                       {getAnswer(currentTerm)}

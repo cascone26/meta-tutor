@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { glossary, categories } from "@/lib/glossary";
+import { getEffectiveGlossary, getEffectiveCategories } from "@/lib/custom-glossary";
 import { getSRData, getTermStats, getDueTerms } from "@/lib/spaced-repetition";
 import { getHistory, getWeakAreas } from "@/lib/study-history";
 import { getStreakData } from "@/lib/streaks";
@@ -10,6 +10,9 @@ import { getWrongAnswersList } from "@/lib/wrong-answers";
 import Link from "next/link";
 
 export default function ReviewPage() {
+  const glossary = getEffectiveGlossary();
+  const categories = getEffectiveCategories();
+
   const [dueTerms, setDueTerms] = useState<string[]>([]);
   const [srStats, setSrStats] = useState({ total: 0, due: 0, learning: 0, reviewing: 0, mastered: 0 });
   const [weakAreas, setWeakAreas] = useState<{ terms: string[]; categories: string[] }>({ terms: [], categories: [] });

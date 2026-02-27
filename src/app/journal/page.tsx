@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { getWrongAnswersList, clearWrongAnswer, type WrongAnswer } from "@/lib/wrong-answers";
-import { glossary } from "@/lib/glossary";
+import { getEffectiveGlossary } from "@/lib/custom-glossary";
 import { getSRData, saveSRData, reviewTerm } from "@/lib/spaced-repetition";
 import { recordStudySession } from "@/lib/streaks";
 
@@ -18,6 +18,8 @@ type DrillState = {
 };
 
 export default function JournalPage() {
+  const glossary = getEffectiveGlossary();
+
   const [wrongAnswers, setWrongAnswers] = useState<WrongAnswer[]>([]);
   const [drill, setDrill] = useState<DrillState>({ active: false, terms: [], current: 0, input: "", answered: false, correct: false, score: 0, done: false });
 

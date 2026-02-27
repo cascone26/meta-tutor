@@ -1,13 +1,15 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { glossary } from "@/lib/glossary";
+import { getEffectiveGlossary } from "@/lib/custom-glossary";
 import { getSRData, getTermStats } from "@/lib/spaced-repetition";
 import { getHistory } from "@/lib/study-history";
 
 const KEY = "meta-tutor-exam-date";
 
 export default function CountdownPage() {
+  const glossary = getEffectiveGlossary();
+
   const [examDate, setExamDate] = useState("");
   const [inputDate, setInputDate] = useState("");
   const [srStats, setSrStats] = useState({ total: 0, due: 0, learning: 0, reviewing: 0, mastered: 0 });
