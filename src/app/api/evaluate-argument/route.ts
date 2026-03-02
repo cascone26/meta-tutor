@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
     const { conclusion, actualPremises, userPremises, philosopher } = await req.json();
 
     const response = await anthropic.messages.create({
-      model: "claude-haiku-4-5-20251001",
+      model: process.env.CLAUDE_MODEL || "claude-haiku-4-5-20251001",
       max_tokens: 1024,
       system: `You are evaluating a student's attempt to reconstruct a philosophical argument. They were given only the conclusion and asked to provide the premises.
 

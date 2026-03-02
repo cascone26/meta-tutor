@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
     const { term, definition, explanation } = await req.json();
 
     const response = await anthropic.messages.create({
-      model: "claude-haiku-4-5-20251001",
+      model: process.env.CLAUDE_MODEL || "claude-haiku-4-5-20251001",
       max_tokens: 1024,
       system: `You are evaluating a student's understanding of a metaphysics concept. The student was asked to explain a term in their own words WITHOUT seeing the definition first.
 

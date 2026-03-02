@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
     if (cached) return Response.json(cached);
 
     const response = await anthropic.messages.create({
-      model: "claude-haiku-4-5-20251001",
+      model: process.env.CLAUDE_MODEL || "claude-haiku-4-5-20251001",
       max_tokens: 512,
       system: `You create vivid, everyday analogies to help students understand abstract metaphysical concepts.
 
