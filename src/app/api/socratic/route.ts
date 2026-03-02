@@ -1,14 +1,19 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { NextRequest } from "next/server";
+import { checkRateLimit, rateLimitResponse } from "@/lib/rate-limit";
 
 const anthropic = new Anthropic();
 
 export async function POST(req: NextRequest) {
+  const ip = req.headers.get("x-forwarded-for") || "unknown";
+  const { allowed } = checkRateLimit(ip);
+  if (!allowed) return rateLimitResponse();
+
   try {
     const { term, messages } = await req.json();
 
     const response = await anthropic.messages.create({
-      model: "claude-sonnet-4-6",
+      model: "claude-haiku-4-5-20251001",
       max_tokens: 512,
       system: `You are Socrates, conducting a dialogue about the metaphysics concept "${term}" in the Thomistic/Aristotelian tradition.
 

@@ -1,14 +1,24 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { NextRequest } from "next/server";
+import { checkRateLimit, rateLimitResponse } from "@/lib/rate-limit";
+import { getCached, setCache, cacheKey } from "@/lib/cache";
 
 const anthropic = new Anthropic();
 
 export async function POST(req: NextRequest) {
+  const ip = req.headers.get("x-forwarded-for") || "unknown";
+  const { allowed } = checkRateLimit(ip);
+  if (!allowed) return rateLimitResponse();
+
   try {
     const { passage, source } = await req.json();
 
+    const key = cacheKey("reading-quiz", source, passage.slice(0, 200));
+    const cached = getCached(key);
+    if (cached) return Response.json(cached);
+
     const response = await anthropic.messages.create({
-      model: "claude-sonnet-4-6",
+      model: "claude-haiku-4-5-20251001",
       max_tokens: 1024,
       system: `You are generating reading comprehension questions for a metaphysics student. The questions should test whether the student actually read and understood the passage — NOT general knowledge.
 
@@ -29,7 +39,9 @@ Generate exactly 4 questions. Questions should:
 
     const text = response.content[0].type === "text" ? response.content[0].text : "";
     try {
-      return Response.json(JSON.parse(text));
+      const data = JSON.parse(text);
+      setCache(key, data);
+      return Response.json(data);
     } catch {
       return Response.json({
         questions: [

@@ -1,6 +1,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { NextRequest } from "next/server";
 import { courseNotes } from "@/lib/course-notes";
+import { checkRateLimit, rateLimitResponse } from "@/lib/rate-limit";
 
 const anthropic = new Anthropic();
 
@@ -24,6 +25,10 @@ COURSE NOTES:
 ${courseNotes}`;
 
 export async function POST(req: NextRequest) {
+  const ip = req.headers.get("x-forwarded-for") || "unknown";
+  const { allowed } = checkRateLimit(ip);
+  if (!allowed) return rateLimitResponse();
+
   try {
     const { messages, mode, userNotes, sources } = await req.json();
 
@@ -67,12 +72,20 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    const fullSystem = baseSystemPrompt + sourcesSection + userNotesSection + modeInstruction;
-
     const stream = anthropic.messages.stream({
-      model: "claude-sonnet-4-6",
+      model: "claude-haiku-4-5-20251001",
       max_tokens: 2048,
-      system: fullSystem,
+      system: [
+        {
+          type: "text" as const,
+          text: baseSystemPrompt + sourcesSection + userNotesSection,
+          cache_control: { type: "ephemeral" as const },
+        },
+        {
+          type: "text" as const,
+          text: modeInstruction,
+        },
+      ],
       messages: messages.map((m: { role: string; content: string }) => ({
         role: m.role as "user" | "assistant",
         content: m.content,
