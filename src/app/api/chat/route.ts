@@ -2,6 +2,7 @@ import Anthropic from "@anthropic-ai/sdk";
 import { NextRequest } from "next/server";
 import { courseNotes } from "@/lib/course-notes";
 import { checkRateLimit, rateLimitResponse } from "@/lib/rate-limit";
+import { auth } from "@/auth";
 
 const anthropic = new Anthropic();
 
@@ -25,6 +26,9 @@ COURSE NOTES:
 ${courseNotes}`;
 
 export async function POST(req: NextRequest) {
+  const session = await auth();
+  if (!session) return new Response("Unauthorized", { status: 401 });
+
   const ip = req.headers.get("x-forwarded-for") || "unknown";
   const { allowed } = checkRateLimit(ip);
   if (!allowed) return rateLimitResponse();
