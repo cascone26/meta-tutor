@@ -24,7 +24,11 @@ export function saveResult(result: QuizResult) {
   history.unshift(result);
   // Keep last 100
   if (history.length > 100) history.length = 100;
-  localStorage.setItem("meta-tutor-history", JSON.stringify(history));
+  try {
+    localStorage.setItem("meta-tutor-history", JSON.stringify(history));
+  } catch (e) {
+    console.error("Failed to save quiz history:", e);
+  }
 }
 
 export function getWeakAreas(): { terms: string[]; categories: string[] } {

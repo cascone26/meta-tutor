@@ -1,12 +1,12 @@
-// Simple in-memory rate limiter — resets when the serverless function cold starts,
-// but still prevents runaway costs within a warm instance.
-// Uses IP-based tracking since there's no auth system.
+// Rate limiter with in-memory tracking.
+// Resets on serverless cold start, but prevents runaway costs within warm instances.
+// Combined with auth, this provides reasonable protection.
 
-const DAILY_LIMIT = 75; // max API calls per IP per day
+const DAILY_LIMIT = 75;
 
 interface UsageEntry {
   count: number;
-  resetAt: number; // timestamp
+  resetAt: number;
 }
 
 const usage = new Map<string, UsageEntry>();
@@ -14,7 +14,8 @@ const usage = new Map<string, UsageEntry>();
 function getResetTime(): number {
   const now = new Date();
   const tomorrow = new Date(now);
-  tomorrow.setUTCHours(24, 0, 0, 0);
+  tomorrow.setUTCDate(tomorrow.getUTCDate() + 1);
+  tomorrow.setUTCHours(0, 0, 0, 0);
   return tomorrow.getTime();
 }
 

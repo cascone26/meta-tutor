@@ -7,6 +7,7 @@ import { getSRData, getTermStats, getDueTerms } from "@/lib/spaced-repetition";
 import { getHistory, getWeakAreas } from "@/lib/study-history";
 import { getStreakData, badges, checkBadges, type BadgeStats } from "@/lib/streaks";
 import { getSessionLog, getTodayStudyTime, getWeekStudyTime, formatTime } from "@/lib/session-timer";
+import { downloadExport, importAllData } from "@/lib/safe-storage";
 import Link from "next/link";
 
 export default function DashboardPage() {
@@ -117,6 +118,43 @@ export default function DashboardPage() {
           <h1 className="text-xl font-semibold" style={{ color: "var(--foreground)" }}>
             Progress
           </h1>
+          <div className="flex gap-2">
+            <button
+              onClick={downloadExport}
+              className="text-xs px-3 py-1.5 rounded-full font-medium transition-opacity hover:opacity-70"
+              style={{ background: "var(--surface)", color: "var(--accent)", border: "1px solid var(--border)" }}
+              aria-label="Export study data backup"
+            >
+              Backup data
+            </button>
+            <button
+              onClick={() => {
+                const input = document.createElement("input");
+                input.type = "file";
+                input.accept = ".json";
+                input.onchange = (e) => {
+                  const file = (e.target as HTMLInputElement).files?.[0];
+                  if (!file) return;
+                  const reader = new FileReader();
+                  reader.onload = (ev) => {
+                    try {
+                      const data = JSON.parse(ev.target?.result as string);
+                      const { imported, errors } = importAllData(data);
+                      alert(`Imported ${imported} items.${errors.length > 0 ? "\nErrors: " + errors.join(", ") : ""}\nRefresh to see changes.`);
+                    } catch {
+                      alert("Invalid backup file.");
+                    }
+                  };
+                  reader.readAsText(file);
+                };
+                input.click();
+              }}
+              className="text-xs px-3 py-1.5 rounded-full font-medium transition-opacity hover:opacity-70"
+              style={{ background: "var(--surface)", color: "var(--muted)", border: "1px solid var(--border)" }}
+              aria-label="Import study data from backup"
+            >
+              Restore
+            </button>
           <button
             onClick={() => {
               const printWin = window.open("", "_blank");
@@ -158,6 +196,7 @@ export default function DashboardPage() {
           >
             Export PDF
           </button>
+          </div>
         </div>
         <p className="text-sm mb-5" style={{ color: "var(--muted)" }}>
           Your study progress at a glance.

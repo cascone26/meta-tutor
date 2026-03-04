@@ -29,7 +29,11 @@ export function logWrongAnswer(term: string, definition: string, category: strin
   } else {
     data[term] = { term, definition, category, count: 1, lastWrong: Date.now(), modes: [mode] };
   }
-  localStorage.setItem(KEY, JSON.stringify(data));
+  try {
+    localStorage.setItem(KEY, JSON.stringify(data));
+  } catch (e) {
+    console.error("Failed to save wrong answers:", e);
+  }
 }
 
 export function getWrongAnswersList(): WrongAnswer[] {
@@ -39,5 +43,9 @@ export function getWrongAnswersList(): WrongAnswer[] {
 export function clearWrongAnswer(term: string) {
   const data = getWrongAnswers();
   delete data[term];
-  localStorage.setItem(KEY, JSON.stringify(data));
+  try {
+    localStorage.setItem(KEY, JSON.stringify(data));
+  } catch (e) {
+    console.error("Failed to save wrong answers:", e);
+  }
 }

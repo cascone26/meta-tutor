@@ -125,8 +125,10 @@ export default function MultipleChoice({ onBack }: { onBack: () => void }) {
     const uniqueWrongTerms = [...new Set(wrongTerms.map((w) => w.term))];
     const uniqueWrongCats = [...new Set(wrongTerms.map((w) => w.category))];
 
-    // Save results once
-    if (!savedRef.current) {
+    // Save results once — use a quiz-specific key to survive remounts
+    const quizKey = `mc-saved-${questions.length}-${score}-${Date.now()}`;
+    const alreadySaved = savedRef.current;
+    if (!alreadySaved) {
       savedRef.current = true;
       recordStudySession();
       saveResult({

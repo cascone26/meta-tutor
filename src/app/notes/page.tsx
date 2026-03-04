@@ -37,13 +37,24 @@ export default function NotesPage() {
     } catch {}
   }, []);
 
+  const MAX_NOTE_SIZE = 500000; // 500KB per note
+
   function saveUserNotes(notes: UserNote[]) {
     setUserNotes(notes);
-    localStorage.setItem("meta-tutor-user-notes", JSON.stringify(notes));
+    try {
+      localStorage.setItem("meta-tutor-user-notes", JSON.stringify(notes));
+    } catch (e) {
+      console.error("Failed to save notes:", e);
+      alert("Storage is full. Try deleting some notes or exporting your data from the dashboard.");
+    }
   }
 
   function addNote() {
     if (!newContent.trim()) return;
+    if (newContent.length > MAX_NOTE_SIZE) {
+      alert(`Note is too large (${Math.round(newContent.length / 1000)}KB). Max is ${MAX_NOTE_SIZE / 1000}KB.`);
+      return;
+    }
     const note: UserNote = {
       id: Date.now().toString(),
       title: newTitle.trim() || "Untitled Notes",

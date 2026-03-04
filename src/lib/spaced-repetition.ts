@@ -18,7 +18,11 @@ export function getSRData(): Record<string, SREntry> {
 }
 
 export function saveSRData(data: Record<string, SREntry>) {
-  localStorage.setItem("meta-tutor-sr", JSON.stringify(data));
+  try {
+    localStorage.setItem("meta-tutor-sr", JSON.stringify(data));
+  } catch (e) {
+    console.error("Failed to save SR data:", e);
+  }
 }
 
 // Simplified SM-2 algorithm
@@ -46,12 +50,13 @@ export function reviewTerm(
     // Correct
     if (reps === 0) interval = 1;
     else if (reps === 1) interval = 3;
-    else interval = Math.round(interval * ease);
+    else if (reps === 2) interval = 7;
+    else interval = Math.min(Math.round(interval * ease), 90); // cap at 90 days
     reps += 1;
   } else {
-    // Incorrect — reset
+    // Incorrect — reset but keep a short review interval
     reps = 0;
-    interval = 0;
+    interval = 1;
   }
 
   ease = Math.max(1.3, ease + (0.1 - (5 - quality) * (0.08 + (5 - quality) * 0.02)));

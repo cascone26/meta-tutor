@@ -190,6 +190,8 @@ export default function Nav() {
         <div className="relative">
           <button
             onClick={() => setMoreOpen(!moreOpen)}
+            aria-label="More navigation options"
+            aria-expanded={moreOpen}
             className="flex flex-col md:flex-row items-center gap-1 md:gap-2 px-3 md:px-4 py-1.5 rounded-lg text-xs md:text-sm font-medium transition-colors"
             style={{
               background: isMoreActive ? "var(--accent-light)" : "transparent",

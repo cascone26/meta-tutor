@@ -6,6 +6,7 @@ import KeyboardShortcuts from "@/components/KeyboardShortcuts";
 import Onboarding from "@/components/Onboarding";
 import SessionTimer from "@/components/SessionTimer";
 import Prayer from "@/components/Prayer";
+import ErrorBoundary from "@/components/ErrorBoundary";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -36,10 +37,12 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <div className="flex flex-col h-dvh overflow-hidden">
-          <Nav />
-          <div className="flex-1 overflow-hidden">{children}</div>
-        </div>
+        <ErrorBoundary>
+          <div className="flex flex-col h-dvh overflow-hidden">
+            <Nav />
+            <div className="flex-1 overflow-hidden">{children}</div>
+          </div>
+        </ErrorBoundary>
         <KeyboardShortcuts />
         <Onboarding />
         <SessionTimer />

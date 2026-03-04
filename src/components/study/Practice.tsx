@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { questions } from "@/lib/questions";
 import { keyPoints } from "@/lib/keypoints";
+import { formatMarkdown } from "@/lib/sanitize-markdown";
 
 type Draft = {
   questionId: number;
@@ -128,8 +129,13 @@ Be honest but encouraging. Ground feedback in the course material.`;
       const decoder = new TextDecoder();
       let feedback = "";
 
+      const STREAM_TIMEOUT = 30000;
       while (reader) {
-        const { done, value } = await reader.read();
+        const readPromise = reader.read();
+        const timeoutPromise = new Promise<never>((_, reject) =>
+          setTimeout(() => reject(new Error("Stream timeout")), STREAM_TIMEOUT)
+        );
+        const { done, value } = await Promise.race([readPromise, timeoutPromise]);
         if (done) break;
         const chunk = decoder.decode(value);
         for (const line of chunk.split("\n\n")) {
@@ -310,17 +316,3 @@ Be honest but encouraging. Ground feedback in the course material.`;
   );
 }
 
-function formatMarkdown(text: string): string {
-  return text
-    .replace(/^### (.+)$/gm, "<h3>$1</h3>")
-    .replace(/^## (.+)$/gm, "<h2>$1</h2>")
-    .replace(/^# (.+)$/gm, "<h1>$1</h1>")
-    .replace(/\*\*\*(.+?)\*\*\*/g, "<strong><em>$1</em></strong>")
-    .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
-    .replace(/\*(.+?)\*/g, "<em>$1</em>")
-    .replace(/^- (.+)$/gm, "<li>$1</li>")
-    .replace(/(<li>.*<\/li>\n?)+/g, "<ul>$&</ul>")
-    .replace(/^\d+\. (.+)$/gm, "<li>$1</li>")
-    .replace(/\n\n/g, "<br/><br/>")
-    .replace(/\n/g, "<br/>");
-}

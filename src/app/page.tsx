@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 import { questions } from "@/lib/questions";
+import { formatMarkdown } from "@/lib/sanitize-markdown";
 
 type Message = {
   role: "user" | "assistant";
@@ -127,8 +128,13 @@ function ChatPage() {
 
       setMessages([...newMessages, { role: "assistant", content: "" }]);
 
+      const STREAM_TIMEOUT = 30000;
       while (reader) {
-        const { done, value } = await reader.read();
+        const readPromise = reader.read();
+        const timeoutPromise = new Promise<never>((_, reject) =>
+          setTimeout(() => reject(new Error("Stream timeout")), STREAM_TIMEOUT)
+        );
+        const { done, value } = await Promise.race([readPromise, timeoutPromise]);
         if (done) break;
 
         const chunk = decoder.decode(value);
@@ -214,6 +220,7 @@ function ChatPage() {
             onClick={() => setSidebarOpen(false)}
             className="md:hidden p-1 rounded hover:opacity-60"
             style={{ color: "var(--muted)" }}
+            aria-label="Close sidebar"
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M18 6L6 18M6 6l12 12" />
@@ -338,6 +345,7 @@ function ChatPage() {
             onClick={() => setSidebarOpen(true)}
             className="md:hidden p-1.5 rounded-lg hover:opacity-60"
             style={{ color: "var(--muted)" }}
+            aria-label="Open exam questions sidebar"
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M3 12h18M3 6h18M3 18h18" />
@@ -529,6 +537,7 @@ function ChatPage() {
             <button
               type="submit"
               disabled={loading || !input.trim()}
+              aria-label="Send message"
               className="self-end rounded-xl px-4 py-3 text-sm font-medium transition-opacity disabled:opacity-30"
               style={{
                 background: "var(--accent)",
@@ -549,26 +558,3 @@ function ChatPage() {
   );
 }
 
-function formatMarkdown(text: string): string {
-  return text
-    // Headers
-    .replace(/^### (.+)$/gm, "<h3>$1</h3>")
-    .replace(/^## (.+)$/gm, "<h2>$1</h2>")
-    .replace(/^# (.+)$/gm, "<h1>$1</h1>")
-    // Bold and italic
-    .replace(/\*\*\*(.+?)\*\*\*/g, "<strong><em>$1</em></strong>")
-    .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
-    .replace(/\*(.+?)\*/g, "<em>$1</em>")
-    // Code
-    .replace(/`(.+?)`/g, "<code>$1</code>")
-    // Blockquotes
-    .replace(/^> (.+)$/gm, "<blockquote>$1</blockquote>")
-    // Unordered lists
-    .replace(/^- (.+)$/gm, "<li>$1</li>")
-    .replace(/(<li>.*<\/li>\n?)+/g, "<ul>$&</ul>")
-    // Ordered lists
-    .replace(/^\d+\. (.+)$/gm, "<li>$1</li>")
-    // Line breaks
-    .replace(/\n\n/g, "<br/><br/>")
-    .replace(/\n/g, "<br/>");
-}

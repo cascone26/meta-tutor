@@ -28,7 +28,9 @@ export function getCustomData(): CustomGlossaryData {
 export function saveCustomData(data: CustomGlossaryData) {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-  } catch {}
+  } catch (e) {
+    console.error("Failed to save custom glossary:", e);
+  }
 }
 
 export function getEffectiveGlossary(): GlossaryTerm[] {

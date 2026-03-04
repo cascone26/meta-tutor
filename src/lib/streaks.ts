@@ -51,7 +51,7 @@ export function recordStudySession() {
 
   if (data.lastStudyDate === t) {
     // Already recorded today
-    localStorage.setItem(KEY, JSON.stringify(data));
+    try { localStorage.setItem(KEY, JSON.stringify(data)); } catch (e) { console.error("Failed to save streaks:", e); }
     return data;
   }
 
