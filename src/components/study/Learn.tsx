@@ -2,6 +2,7 @@
 
 import { useState, useRef } from "react";
 import { getEffectiveGlossary, getEffectiveCategories } from "@/lib/custom-glossary";
+import { filterByUnits } from "@/lib/units";
 import { getSRData, saveSRData, reviewTerm } from "@/lib/spaced-repetition";
 import { saveResult } from "@/lib/study-history";
 
@@ -86,9 +87,9 @@ const defaultSettings: Settings = {
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
-export default function Learn({ onBack }: { onBack: () => void }) {
-  const glossary = getEffectiveGlossary();
-  const categories = getEffectiveCategories();
+export default function Learn({ onBack, unitFilter = [] }: { onBack: () => void; unitFilter?: number[] }) {
+  const glossary = filterByUnits(getEffectiveGlossary(), unitFilter);
+  const categories = [...new Set(glossary.map((g) => g.category))];
 
   const [settings, setSettings] = useState<Settings>(() => {
     try {

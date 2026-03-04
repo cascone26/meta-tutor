@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { getEffectiveGlossary } from "@/lib/custom-glossary";
+import { filterByUnits } from "@/lib/units";
 import { saveResult } from "@/lib/study-history";
 import { logWrongAnswer } from "@/lib/wrong-answers";
 import { recordStudySession } from "@/lib/streaks";
@@ -22,8 +23,8 @@ type Card = {
   type: "term" | "def";
 };
 
-export default function Match({ onBack }: { onBack: () => void }) {
-  const glossary = getEffectiveGlossary();
+export default function Match({ onBack, unitFilter = [] }: { onBack: () => void; unitFilter?: number[] }) {
+  const glossary = filterByUnits(getEffectiveGlossary(), unitFilter);
 
   const [cards, setCards] = useState<Card[]>([]);
   const [selected, setSelected] = useState<string | null>(null);

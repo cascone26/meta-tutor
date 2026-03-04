@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import { getEffectiveGlossary, getEffectiveCategories } from "@/lib/custom-glossary";
+import { filterByUnits } from "@/lib/units";
 
 function shuffle<T>(arr: T[]): T[] {
   const a = [...arr];
@@ -12,7 +13,7 @@ function shuffle<T>(arr: T[]): T[] {
   return a;
 }
 
-export default function Flashcards({ onBack }: { onBack: () => void }) {
+export default function Flashcards({ onBack, unitFilter = [] }: { onBack: () => void; unitFilter?: number[] }) {
   const [category, setCategory] = useState<string | null>(() => {
     try { const s = localStorage.getItem("meta-tutor-fc-progress"); return s ? JSON.parse(s).category ?? null : null; } catch { return null; }
   });
@@ -20,7 +21,7 @@ export default function Flashcards({ onBack }: { onBack: () => void }) {
     try { const s = localStorage.getItem("meta-tutor-fc-progress"); return s ? JSON.parse(s).shuffled ?? true : true; } catch { return true; }
   });
   const [cards, setCards] = useState(() => {
-    const g = getEffectiveGlossary();
+    const g = filterByUnits(getEffectiveGlossary(), unitFilter);
     try {
       const s = localStorage.getItem("meta-tutor-fc-progress");
       if (s) {
@@ -60,7 +61,7 @@ export default function Flashcards({ onBack }: { onBack: () => void }) {
   // Reset cards when category/shuffle changes — skip on initial mount if restored
   useEffect(() => {
     if (restoredRef.current) { restoredRef.current = false; return; }
-    const g = getEffectiveGlossary();
+    const g = filterByUnits(getEffectiveGlossary(), unitFilter);
     const filtered = category ? g.filter((t) => t.category === category) : g;
     setCards(shuffled ? shuffle(filtered) : [...filtered]);
     setIndex(0);
@@ -107,7 +108,7 @@ export default function Flashcards({ onBack }: { onBack: () => void }) {
   }, [next, prev, markKnown]);
 
   function reshuffleRemaining() {
-    const remaining = getEffectiveGlossary().filter(
+    const remaining = filterByUnits(getEffectiveGlossary(), unitFilter).filter(
       (g) => !known.has(g.term) && (!category || g.category === category)
     );
     setCards(shuffle(remaining));

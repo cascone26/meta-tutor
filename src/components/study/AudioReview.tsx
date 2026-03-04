@@ -2,11 +2,12 @@
 
 import { useState, useRef, useEffect } from "react";
 import { getEffectiveGlossary, getEffectiveCategories } from "@/lib/custom-glossary";
+import { filterByUnits } from "@/lib/units";
 import { recordStudySession } from "@/lib/streaks";
 
-export default function AudioReview({ onBack }: { onBack: () => void }) {
-  const glossary = getEffectiveGlossary();
-  const categories = getEffectiveCategories();
+export default function AudioReview({ onBack, unitFilter = [] }: { onBack: () => void; unitFilter?: number[] }) {
+  const glossary = filterByUnits(getEffectiveGlossary(), unitFilter);
+  const categories = [...new Set(glossary.map((g) => g.category))];
 
   const [selectedCat, setSelectedCat] = useState<string | null>(null);
   const [playing, setPlaying] = useState(false);

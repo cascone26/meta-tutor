@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import { getEffectiveGlossary, getEffectiveCategories } from "@/lib/custom-glossary";
+import { filterByUnits } from "@/lib/units";
 import { getSRData, saveSRData, reviewTerm } from "@/lib/spaced-repetition";
 import { saveResult } from "@/lib/study-history";
 import { logWrongAnswer } from "@/lib/wrong-answers";
@@ -23,8 +24,7 @@ type Question = {
   category: string;
 };
 
-function generateQuestions(cat: string | null, shuffled: boolean): Question[] {
-  const glossary = getEffectiveGlossary();
+function generateQuestions(cat: string | null, shuffled: boolean, glossary: { term: string; definition: string; category: string }[]): Question[] {
   const pool = cat ? glossary.filter((g) => g.category === cat) : glossary;
   if (pool.length < 4) return [];
 
@@ -43,9 +43,9 @@ function generateQuestions(cat: string | null, shuffled: boolean): Question[] {
   });
 }
 
-export default function MultipleChoice({ onBack }: { onBack: () => void }) {
-  const glossary = getEffectiveGlossary();
-  const categories = getEffectiveCategories();
+export default function MultipleChoice({ onBack, unitFilter = [] }: { onBack: () => void; unitFilter?: number[] }) {
+  const glossary = filterByUnits(getEffectiveGlossary(), unitFilter);
+  const categories = [...new Set(glossary.map((g) => g.category))];
 
   const [category, setCategory] = useState<string | null>(() => {
     try { const s = localStorage.getItem("meta-tutor-mc-progress"); return s ? JSON.parse(s).category ?? null : null; } catch { return null; }
@@ -83,7 +83,7 @@ export default function MultipleChoice({ onBack }: { onBack: () => void }) {
   const startQuiz = useCallback((cat: string | null, sh: boolean = shuffled) => {
     try { localStorage.removeItem("meta-tutor-mc-progress"); } catch {}
     setCategory(cat);
-    setQuestions(generateQuestions(cat, sh));
+    setQuestions(generateQuestions(cat, sh, glossary));
     setIndex(0);
     setSelected(null);
     setScore(0);

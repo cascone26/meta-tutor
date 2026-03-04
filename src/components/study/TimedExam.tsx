@@ -2,7 +2,8 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import { getEffectiveGlossary } from "@/lib/custom-glossary";
-import { questions } from "@/lib/questions";
+import { questions as allQuestions } from "@/lib/questions";
+import { filterByUnits, filterQuestionsByUnits } from "@/lib/units";
 import { saveResult } from "@/lib/study-history";
 import { logWrongAnswer } from "@/lib/wrong-answers";
 import { recordStudySession } from "@/lib/streaks";
@@ -11,8 +12,9 @@ type ExamQuestion =
   | { type: "mc"; term: string; definition: string; category: string; correct: string; options: string[] }
   | { type: "essay"; id: number; text: string; topics: string[] };
 
-function generateExam(): ExamQuestion[] {
-  const glossary = getEffectiveGlossary();
+function generateExam(unitFilter: number[]): ExamQuestion[] {
+  const glossary = filterByUnits(getEffectiveGlossary(), unitFilter);
+  const questions = filterQuestionsByUnits(allQuestions, unitFilter);
   const exam: ExamQuestion[] = [];
 
   // 10 MC questions from glossary
@@ -37,7 +39,7 @@ function generateExam(): ExamQuestion[] {
   return exam;
 }
 
-export default function TimedExam({ onBack }: { onBack: () => void }) {
+export default function TimedExam({ onBack, unitFilter = [] }: { onBack: () => void; unitFilter?: number[] }) {
   const [started, setStarted] = useState(false);
   const [exam, setExam] = useState<ExamQuestion[]>([]);
   const [current, setCurrent] = useState(0);
@@ -102,7 +104,7 @@ export default function TimedExam({ onBack }: { onBack: () => void }) {
   }, [started, done, finishExam]);
 
   function start() {
-    const e = generateExam();
+    const e = generateExam(unitFilter);
     setExam(e);
     setCurrent(0);
     setAnswers({});

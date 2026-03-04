@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useRef } from "react";
 import { getEffectiveGlossary, getEffectiveCategories } from "@/lib/custom-glossary";
+import { filterByUnits } from "@/lib/units";
 import { getSRData, saveSRData, reviewTerm } from "@/lib/spaced-repetition";
 import { saveResult } from "@/lib/study-history";
 import { logWrongAnswer } from "@/lib/wrong-answers";
@@ -15,8 +16,7 @@ type BlankQuestion = {
   answer: string;
 };
 
-function generateBlanks(cat: string | null): BlankQuestion[] {
-  const glossary = getEffectiveGlossary();
+function generateBlanks(cat: string | null, glossary: { term: string; definition: string; category: string }[]): BlankQuestion[] {
   const pool = cat ? glossary.filter((g) => g.category === cat) : [...glossary];
   // Shuffle
   for (let i = pool.length - 1; i > 0; i--) {
@@ -46,8 +46,8 @@ function generateBlanks(cat: string | null): BlankQuestion[] {
   });
 }
 
-export default function FillInBlank({ onBack }: { onBack: () => void }) {
-  const glossary = getEffectiveGlossary();
+export default function FillInBlank({ onBack, unitFilter = [] }: { onBack: () => void; unitFilter?: number[] }) {
+  const glossary = filterByUnits(getEffectiveGlossary(), unitFilter);
   const categories = getEffectiveCategories();
 
   const [selectedCat, setSelectedCat] = useState<string | null>(null);
@@ -64,7 +64,7 @@ export default function FillInBlank({ onBack }: { onBack: () => void }) {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const start = useCallback(() => {
-    const q = generateBlanks(selectedCat);
+    const q = generateBlanks(selectedCat, glossary);
     setQuestions(q);
     setCurrent(0);
     setInput("");

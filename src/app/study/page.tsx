@@ -16,6 +16,8 @@ import Debate from "@/components/study/Debate";
 import ReadingComp from "@/components/study/ReadingComp";
 import AudioReview from "@/components/study/AudioReview";
 import AnalogyGenerator from "@/components/study/AnalogyGenerator";
+import UnitFilter from "@/components/UnitFilter";
+import { getSelectedUnits } from "@/lib/units";
 
 type Mode = "hub" | "learn" | "flashcards" | "practice" | "match" | "mc" | "outline" | "teachback" | "fillinblank" | "argument" | "exam" | "socratic" | "debate" | "reading" | "audio" | "analogy";
 
@@ -211,21 +213,22 @@ const modes = [
 
 export default function StudyPage() {
   const [mode, setMode] = useState<Mode>("hub");
+  const [activeUnits, setActiveUnits] = useState<number[]>(() => getSelectedUnits());
 
-  if (mode === "learn") return <Learn onBack={() => setMode("hub")} />;
-  if (mode === "flashcards") return <Flashcards onBack={() => setMode("hub")} />;
-  if (mode === "practice") return <Practice onBack={() => setMode("hub")} />;
-  if (mode === "match") return <Match onBack={() => setMode("hub")} />;
-  if (mode === "mc") return <MultipleChoice onBack={() => setMode("hub")} />;
+  if (mode === "learn") return <Learn onBack={() => setMode("hub")} unitFilter={activeUnits} />;
+  if (mode === "flashcards") return <Flashcards onBack={() => setMode("hub")} unitFilter={activeUnits} />;
+  if (mode === "practice") return <Practice onBack={() => setMode("hub")} unitFilter={activeUnits} />;
+  if (mode === "match") return <Match onBack={() => setMode("hub")} unitFilter={activeUnits} />;
+  if (mode === "mc") return <MultipleChoice onBack={() => setMode("hub")} unitFilter={activeUnits} />;
   if (mode === "outline") return <EssayOutliner onBack={() => setMode("hub")} />;
   if (mode === "teachback") return <TeachBack onBack={() => setMode("hub")} />;
-  if (mode === "fillinblank") return <FillInBlank onBack={() => setMode("hub")} />;
+  if (mode === "fillinblank") return <FillInBlank onBack={() => setMode("hub")} unitFilter={activeUnits} />;
   if (mode === "argument") return <ArgumentReconstruction onBack={() => setMode("hub")} />;
-  if (mode === "exam") return <TimedExam onBack={() => setMode("hub")} />;
+  if (mode === "exam") return <TimedExam onBack={() => setMode("hub")} unitFilter={activeUnits} />;
   if (mode === "socratic") return <SocraticDialogue onBack={() => setMode("hub")} />;
   if (mode === "debate") return <Debate onBack={() => setMode("hub")} />;
   if (mode === "reading") return <ReadingComp onBack={() => setMode("hub")} />;
-  if (mode === "audio") return <AudioReview onBack={() => setMode("hub")} />;
+  if (mode === "audio") return <AudioReview onBack={() => setMode("hub")} unitFilter={activeUnits} />;
   if (mode === "analogy") return <AnalogyGenerator onBack={() => setMode("hub")} />;
 
   const featured = modes.find((m) => m.featured)!;
@@ -237,9 +240,19 @@ export default function StudyPage() {
         <h1 className="text-xl font-semibold mb-1" style={{ color: "var(--foreground)" }}>
           Study
         </h1>
-        <p className="text-sm mb-6" style={{ color: "var(--muted)" }}>
+        <p className="text-sm mb-4" style={{ color: "var(--muted)" }}>
           Pick a study mode. Your progress is saved automatically.
         </p>
+
+        {/* Unit Filter */}
+        <div className="mb-5 rounded-xl p-3" style={{ background: "var(--surface)", border: "1px solid var(--border)" }}>
+          <UnitFilter onChange={(ids) => setActiveUnits(ids)} />
+          {activeUnits.length > 0 && (
+            <p className="text-xs mt-2" style={{ color: "var(--accent)" }}>
+              Filtering to {activeUnits.length} unit{activeUnits.length > 1 ? "s" : ""}
+            </p>
+          )}
+        </div>
 
         {/* Featured: Learn mode */}
         <button

@@ -1,9 +1,10 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { questions } from "@/lib/questions";
+import { questions as allQuestions } from "@/lib/questions";
 import { keyPoints } from "@/lib/keypoints";
 import { formatMarkdown } from "@/lib/sanitize-markdown";
+import { filterQuestionsByUnits } from "@/lib/units";
 
 type Draft = {
   questionId: number;
@@ -11,7 +12,8 @@ type Draft = {
   lastSaved: string;
 };
 
-export default function Practice({ onBack }: { onBack: () => void }) {
+export default function Practice({ onBack, unitFilter = [] }: { onBack: () => void; unitFilter?: number[] }) {
+  const questions = filterQuestionsByUnits(allQuestions, unitFilter);
   const [currentQ, setCurrentQ] = useState(0);
   const [answer, setAnswer] = useState("");
   const [showPoints, setShowPoints] = useState(false);
