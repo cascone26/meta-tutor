@@ -1,7 +1,7 @@
 # Meta Tutor — Status
 
 ## Last Updated
-2026-03-04
+2026-03-27
 
 ## Current State
 - Live at `https://meta-tutor.vercel.app`
@@ -42,6 +42,7 @@ Study app with a strict no-cheat constraint — all features force active recall
 - `/api/auth/[...nextauth]` — NextAuth Google OAuth
 
 ## Recent Work
+- 2026-03-27 Security audit: Next.js 16.1.6→16.2.1 (5 CVEs fixed), picomatch ReDoS/injection, brace-expansion DoS; 0 vulnerabilities. middleware.ts→proxy.ts per Next.js 16.2 convention.
 - Unit filter for study modes
 - Security vulnerability fixes and data loss prevention
 - Model moved to env var (`CLAUDE_MODEL`)
