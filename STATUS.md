@@ -42,6 +42,7 @@ Study app with a strict no-cheat constraint — all features force active recall
 - `/api/auth/[...nextauth]` — NextAuth Google OAuth
 
 ## Recent Work
+- 2026-03-27 Full audit: /api/notes missing auth check fixed (was relying on middleware 307 redirect instead of 401); removed dead files faith-connections.ts and notes.txt from lib/. 0 TS errors, 0 npm vulnerabilities. Latest Vercel deploy healthy (build succeeded, all 26 pages/routes compiled).
 - 2026-03-27 Security audit: Next.js 16.1.6→16.2.1 (5 CVEs fixed), picomatch ReDoS/injection, brace-expansion DoS; 0 vulnerabilities. middleware.ts→proxy.ts per Next.js 16.2 convention.
 - Unit filter for study modes
 - Security vulnerability fixes and data loss prevention
