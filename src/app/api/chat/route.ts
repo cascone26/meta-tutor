@@ -4,7 +4,9 @@ import { courseNotes } from "@/lib/course-notes";
 import { checkRateLimit, rateLimitResponse } from "@/lib/rate-limit";
 import { auth } from "@/auth";
 
-const anthropic = new Anthropic();
+const anthropic = new Anthropic({
+  timeout: 15000, // 15 second timeout for faster response
+});
 
 const baseSystemPrompt = `You are a study assistant for a college Metaphysics course (Thomistic/Aristotelian tradition). Your job is to help the student understand and prepare answers for their exam questions.
 
@@ -86,7 +88,7 @@ export async function POST(req: NextRequest) {
     }
 
     const stream = anthropic.messages.stream({
-      model: process.env.CLAUDE_MODEL || "claude-haiku-4-5-20251001",
+      model: process.env.CLAUDE_MODEL || "claude-sonnet-4-5-20250929", // Use Sonnet for better reliability
       max_tokens: 2048,
       system: [
         {
