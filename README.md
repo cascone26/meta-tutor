@@ -17,7 +17,7 @@ npm run dev
 ### Environment Variables
 - `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` -- Google OAuth
 - `ANTHROPIC_API_KEY` -- Claude API
-- `CLAUDE_MODEL` -- Model ID (default: Haiku)
+- `CLAUDE_MODEL` -- Model ID (default: Sonnet)
 - `NEXTAUTH_SECRET` -- NextAuth session secret
 - `NEXTAUTH_URL` -- App URL
 
@@ -27,4 +27,4 @@ Auto-deploys to Vercel from GitHub. Project: `meta-tutor`.
 
 ## Tech
 
-Next.js 16, NextAuth (Google OAuth), Anthropic API (Claude Haiku), Tailwind CSS, TypeScript
+Next.js 16, NextAuth (Google OAuth), Anthropic API (Claude Sonnet), Tailwind CSS, TypeScript
