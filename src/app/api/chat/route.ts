@@ -4,8 +4,10 @@ import { courseNotes } from "@/lib/course-notes";
 import { checkRateLimit, rateLimitResponse } from "@/lib/rate-limit";
 import { auth } from "@/auth";
 
+export const maxDuration = 30; // Allow up to 30s for streaming responses
+
 const anthropic = new Anthropic({
-  timeout: 15000, // 15 second timeout for faster response
+  timeout: 25000, // 25s — gives Vercel time to cleanly close before 30s limit
 });
 
 const baseSystemPrompt = `You are a study assistant for a college Metaphysics course (Thomistic/Aristotelian tradition). Your job is to help the student understand and prepare answers for their exam questions.
@@ -88,7 +90,7 @@ export async function POST(req: NextRequest) {
     }
 
     const stream = anthropic.messages.stream({
-      model: process.env.CLAUDE_MODEL || "claude-sonnet-4-5-20250929", // Use Sonnet for better reliability
+      model: process.env.CLAUDE_MODEL || "claude-sonnet-4-6", // Use Sonnet for better reliability
       max_tokens: 2048,
       system: [
         {
