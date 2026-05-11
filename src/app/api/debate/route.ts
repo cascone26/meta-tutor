@@ -3,7 +3,11 @@ import { NextRequest } from "next/server";
 import { checkRateLimit, rateLimitResponse } from "@/lib/rate-limit";
 import { auth } from "@/auth";
 
-const anthropic = new Anthropic();
+export const maxDuration = 30;
+
+const anthropic = new Anthropic({
+  timeout: 25000, // 25s — gives Vercel time to cleanly close before 30s limit
+});
 
 export async function POST(req: NextRequest) {
   const session = await auth();
