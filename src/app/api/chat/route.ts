@@ -33,8 +33,8 @@ export async function POST(req: NextRequest) {
   const session = await auth();
   if (!session) return new Response("Unauthorized", { status: 401 });
 
-  const ip = req.headers.get("x-forwarded-for") || "unknown";
-  const { allowed } = checkRateLimit(ip);
+  const userId = session.user?.email || "unknown";
+  const { allowed } = checkRateLimit(userId);
   if (!allowed) return rateLimitResponse();
 
   try {
@@ -90,7 +90,7 @@ export async function POST(req: NextRequest) {
     }
 
     const stream = anthropic.messages.stream({
-      model: process.env.CLAUDE_MODEL || "claude-sonnet-4-6", // Use Sonnet for better reliability
+      model: process.env.CLAUDE_MODEL || "claude-haiku-4-5-20251001",
       max_tokens: 2048,
       system: [
         {

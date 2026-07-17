@@ -13,8 +13,8 @@ export async function POST(req: NextRequest) {
   const session = await auth();
   if (!session) return new Response("Unauthorized", { status: 401 });
 
-  const ip = req.headers.get("x-forwarded-for") || "unknown";
-  const { allowed } = checkRateLimit(ip);
+  const userId = session.user?.email || "unknown";
+  const { allowed } = checkRateLimit(userId);
   if (!allowed) return rateLimitResponse();
 
   try {
