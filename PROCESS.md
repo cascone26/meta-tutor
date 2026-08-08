@@ -93,3 +93,68 @@ Found 11 commits since 2026-03-27 that weren't in STATUS.md:
 2. Monitor rate-limit behavior under real usage to confirm user-based enforcement is working
 3. Consider adding rate-limit header responses (e.g., `X-RateLimit-Remaining`) for debugging
 4. Consider database-backed rate limiting for production (current in-memory is acceptable for single app, but would fail if scaled to multiple instances)
+
+## Multi-Subject Hub — 2026-08-08 (branch `hub-shell`)
+
+### Problem Statement
+Jacob wants to use the weak-area-tracking + AI-tutoring pattern already built for Cris's course on his
+own learning (starting with chess, then Latin for the school year), without losing the Cris-facing app.
+Conversation arrived at: Meta Tutor stays the brand/hub, and becomes a "train station" landing page that
+branches into subject-specific sub-apps with their own look, sharing one AI layer and one weak-area engine.
+
+### Decision Fork 1 — extend vs. rebuild
+Read the actual code before deciding (not just STATUS.md, which — per this file's own proof-gate rule —
+can drift from reality). Found: `wrong-answers.ts` + `study-history.ts` already implement exactly the
+weak-area-tracking mechanism Jacob was describing, and the study-mode components + AI routes (Socratic,
+evaluate, debate, analogy) are a real, working toolkit. But all content (`glossary.ts`, `arguments.ts`,
+`comparisons.ts`, `keypoints.ts`, `course-notes.ts`) is hardcoded to one course, and there's no
+subject/catalog abstraction. Decision: extend, don't rebuild — the auth + weak-area engine + AI plumbing
+are too good to duplicate. Reused via [[search-before-build]] discipline.
+
+### Decision Fork 2 — how to keep Cris's course untouched
+`app/layout.tsx` (root) unconditionally renders `Nav`, `Prayer`, `Onboarding`, `SessionTimer` — all four
+are metaphysics-specific (prayer modal, exam-question sidebar, metaphysics-specific onboarding copy) and
+would leak onto any new route added under the same root layout. Two options considered:
+- **Full route-group restructure** (`app/(metaphysics)/...`) — the fully correct long-term shape, but
+  means moving ~15 existing page files that Cris actively uses. Higher risk for the first increment.
+- **Pathname guard** — add `isHubShellRoute(pathname)` check to each of the 4 chrome components so they
+  render exactly as before on Cris's routes and simply return `null` on `/hub`, `/chess`, `/latin`.
+Chose the guard for this first increment — additive, zero behavior change for Cris, much smaller diff.
+Revisit the route-group restructure once more subjects exist and the guard list gets unwieldy.
+
+### Decision Fork 3 — chess data source & build order (Jacob's call, asked directly)
+Asked Jacob: (1) chess game data — play on-site vs. import from Lichess/Chess.com → **play on-site**
+(embedded board + bot, no account linkage needed to start). (2) build order — chess vs. Latin vs. hub
+shell first → **hub shell first**, so the subject pattern is proven before sinking time into either
+subject's real content.
+
+### What Was Built (this session)
+- `src/lib/subjects.ts` — subject registry (id/name/tagline/href/theme colors/status) + `isHubShellRoute()`.
+- `src/lib/subject-progress.ts` — subject-namespaced clone of `wrong-answers.ts`/`study-history.ts`
+  (`meta-tutor-{subject}-wrong-answers` / `-history` keys) — same shape, kept as a separate file
+  on purpose so Cris's storage/behavior is untouched.
+- `src/app/hub/page.tsx` — subject-picker landing page.
+- `src/app/chess/layout.tsx` + `page.tsx`, `src/app/latin/layout.tsx` + `page.tsx` — stub subject pages,
+  own theme, wired to `subject-progress.ts` (shows real empty state, no fake data).
+- Pathname guards added to `Nav.tsx`, `Prayer.tsx`, `Onboarding.tsx`, `SessionTimer.tsx`.
+
+### Verification
+- `npm run build` — compiled successfully, 0 TypeScript errors, all 29 routes (26 existing + 3 new)
+  statically generated.
+- Local `npm run dev` + curl smoke test: `/`, `/hub`, `/chess`, `/latin`, `/study` all return 302 to
+  `/login` when unauthenticated — same middleware behavior as every existing route, confirming the new
+  routes are wired into auth correctly and nothing crashes. Dev log checked for runtime errors: none.
+- Not yet verified: actual logged-in render (needs a real Google login round-trip), Vercel deploy.
+
+### Proof Pointers
+- Branch: `hub-shell` (not merged to `main`, not deployed — see STATUS.md "In Progress" section, dated
+  the same day this entry was written; do not read that section as "live").
+
+### Next Steps
+1. Jacob review the branch locally or via a preview deploy before any merge to `main` (merging touches
+   Cris's production app).
+2. Chess: embedded board + bot opponent, then a Stockfish analysis pipeline feeding `subject-progress.ts`.
+3. Latin: real vocab/grammar content using the existing glossary/flashcard/spaced-repetition components,
+   retargeted via the new namespaced storage.
+4. Generalize the AI routes (`/api/chat`, `/api/evaluate`, `/api/socratic`, etc.) to take a subject/system-
+   prompt parameter instead of being hardcoded to metaphysics, so Chess/Latin can use the same endpoints.

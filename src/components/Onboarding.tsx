@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
+import { isHubShellRoute } from "@/lib/subjects";
 
 const steps = [
   {
@@ -36,6 +38,7 @@ const steps = [
 const KEY = "meta-tutor-onboarding-done";
 
 export default function Onboarding() {
+  const pathname = usePathname();
   const [show, setShow] = useState(false);
   const [step, setStep] = useState(0);
 
@@ -49,7 +52,7 @@ export default function Onboarding() {
     setShow(false);
   }
 
-  if (!show) return null;
+  if (!show || isHubShellRoute(pathname)) return null;
 
   return (
     <div className="fixed inset-0 z-[200] flex items-center justify-center">

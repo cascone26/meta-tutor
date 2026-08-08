@@ -1,10 +1,13 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
+import { usePathname } from "next/navigation";
 import { addSessionTime, getTimerState, saveTimerState, formatTime } from "@/lib/session-timer";
 import { recordStudySession } from "@/lib/streaks";
+import { isHubShellRoute } from "@/lib/subjects";
 
 export default function SessionTimer() {
+  const pathname = usePathname();
   const [elapsed, setElapsed] = useState(0);
   const [running, setRunning] = useState(false);
   const [minimized, setMinimized] = useState(true);
@@ -68,6 +71,8 @@ export default function SessionTimer() {
   }, [running, elapsed]);
 
   // Listen for D key to toggle dark mode (handled elsewhere) — no conflict
+
+  if (isHubShellRoute(pathname)) return null;
 
   if (minimized) {
     return (

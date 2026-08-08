@@ -1,14 +1,30 @@
 # Meta Tutor — Status
 
 ## Last Updated
-2026-07-17 (comprehensive audit + fixes)
+2026-08-08 (hub-shell branch started)
 
 ## Current State
-- Live at `https://meta-tutor.vercel.app`
+- Live at `https://meta-tutor.vercel.app` (production, main branch — this is Cris's course, unaffected by the work below)
 - GitHub: `https://github.com/cascone26/meta-tutor.git`
 - Built for Cris's Thomistic Metaphysics course
 - Google login required for all routes
 - Uses Claude Haiku (via `CLAUDE_MODEL` env var) with rate limiting (75/day) and prompt caching
+
+## In Progress (branch `hub-shell`, NOT merged/deployed — claimed status only, not live)
+Turning Meta Tutor into a multi-subject hub: one login/app, subject-specific sub-apps branching off a
+landing page ("train station"), each with its own look, sharing one AI + weak-area-tracking engine
+underneath. Jacob's own learning (chess, Latin, ...), not Cris's course — additive only.
+- `/hub` — subject picker landing page. Built, builds clean, routes locally (verified via `npm run build`
+  and local dev server route checks 2026-08-08).
+- `/chess`, `/latin` — stub subject pages with their own layout/theme, wired to a new namespaced
+  weak-area engine (`src/lib/subject-progress.ts`). Content is placeholder ("coming next" + empty
+  weak-areas state) — no real study content yet.
+- Cris's existing routes (`/`, `/study`, `/glossary`, etc.) and `Nav.tsx`/`Prayer.tsx`/`Onboarding.tsx`/
+  `SessionTimer.tsx` are unchanged in behavior — those components got a pathname guard
+  (`isHubShellRoute`) so they simply don't render on the new `/hub|/chess|/latin` routes; nothing about
+  her experience changes. Verified via `npm run build` (all 29 routes compile) + local route smoke test.
+- Not yet done: merge to main / deploy, real chess module (board+bot+Stockfish analysis), real Latin
+  content, generalizing the AI chat/evaluate routes to be subject-aware instead of metaphysics-hardcoded.
 
 ## What It Is
 Study app with a strict no-cheat constraint — all features force active recall. No passive reading or answer lookup.

@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
+import { isHubShellRoute } from "@/lib/subjects";
 
 const KEY = "meta-tutor-show-prayer";
 
@@ -32,6 +34,7 @@ I ask this through Jesus Christ our Lord.
 Amen.`;
 
 export default function Prayer() {
+  const pathname = usePathname();
   const [show, setShow] = useState(false);
   const [enabled, setEnabled] = useState(true);
 
@@ -58,7 +61,7 @@ export default function Prayer() {
     setShow(false);
   }
 
-  if (!show || !enabled) return null;
+  if (!show || !enabled || isHubShellRoute(pathname)) return null;
 
   return (
     <div className="fixed inset-0 z-[150] flex items-center justify-center px-4">

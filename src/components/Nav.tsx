@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
+import { isHubShellRoute } from "@/lib/subjects";
 
 const mainTabs = [
   {
@@ -125,6 +126,8 @@ export default function Nav() {
     setPrayerOpen(false);
     if (permanent) localStorage.setItem("meta-tutor-show-prayer", "false");
   }
+
+  if (isHubShellRoute(pathname)) return null;
 
   return (
     <>

@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
+import { isHubShellRoute } from "@/lib/subjects";
 
 const shortcuts = [
   { keys: ["?"], description: "Show this help" },
@@ -13,6 +15,7 @@ const shortcuts = [
 ];
 
 export default function KeyboardShortcuts() {
+  const pathname = usePathname();
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -31,7 +34,7 @@ export default function KeyboardShortcuts() {
     return () => window.removeEventListener("keydown", handler);
   }, [open]);
 
-  if (!open) return null;
+  if (!open || isHubShellRoute(pathname)) return null;
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center">
