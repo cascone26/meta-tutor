@@ -2,16 +2,23 @@ import Anthropic from "@anthropic-ai/sdk";
 import { NextRequest } from "next/server";
 import { checkRateLimit, rateLimitResponse } from "@/lib/rate-limit";
 import { auth } from "@/auth";
-import { getRcaClass, currentLessonNumber } from "@/lib/rca";
+import { getRcaClass, rcaClasses, rcaSchedule, currentLessonNumber } from "@/lib/rca";
 import { music34Overview, music34Lessons } from "@/lib/rca-content/music-3-4";
 
 export const maxDuration = 30;
 
 const anthropic = new Anthropic({ timeout: 25000 });
 
-function buildGrounding(subjectId: string): string {
+function buildGeneralGrounding(): string {
+  const list = rcaClasses.map((c) => `- ${c.name} (${c.grade}, ${c.area})`).join("\n");
+  return `CONTEXT: Regina Caeli Academy (KSC, Overland Park KS) — a Catholic classical homeschool hybrid. Jacob is the 6th Grade Lead plus Music 3-4 / PE 3-4 / PE 5-6 tutor, on campus ${rcaSchedule.days.join(" & ")} ${rcaSchedule.startTime}-${rcaSchedule.endTime}. He's not currently viewing a specific class page, so answer generally across his full teaching load unless he names a subject.\n\nHIS CLASSES:\n${list}`;
+}
+
+function buildGrounding(subjectId: string | undefined): string {
+  if (!subjectId || subjectId === "general") return buildGeneralGrounding();
+
   const cls = getRcaClass(subjectId);
-  if (!cls) return "No class context provided.";
+  if (!cls) return buildGeneralGrounding();
 
   let grounding = `CLASS: ${cls.name} (${cls.grade}, ${cls.area}) at Regina Caeli Academy — a Catholic classical homeschool hybrid. Jacob (the tutor) meets this class as part of his Mon/Thu on-campus schedule.\nSUMMARY: ${cls.summary}\n`;
   if (cls.books.length) grounding += `BOOKS: ${cls.books.join(", ")}\n`;

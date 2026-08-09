@@ -359,3 +359,68 @@ Branch `hub-shell` (uncommitted at time of writing). Files: `src/lib/rca.ts`,
    no schema change needed, same pattern chess/latin already use.
 5. Commit + merge to `main` when Jacob's ready — currently sitting on `hub-shell` uncommitted, matching
    how the chess work landed.
+
+## RCA Nature Theme + Latin Consolidation + Persistent Assistant — 2026-08-09
+
+### Problem Statement
+After seeing the first preview deploy, Jacob asked for three things in one pass: (1) actually build the
+RCA section out rather than leave it as scaffolding, (2) fold the old standalone `/latin` personal-study
+station into RCA (it's really his RCA class, First Form Latin 6, not a separate side interest), (3) give
+RCA a nature theme — "sky earth butterfly birds simple not emojis tho" — plus a persistent, always-visible
+Claude chat connected throughout the section instead of one buried per-class box.
+
+### Latin consolidation
+`/latin` (the old dark-brown stub station with placeholder "coming next" text and no real content) is
+gone. `next.config.ts` now 308-redirects `/latin` and `/latin/*` to `/rca/first-form-latin-6` permanently,
+so old links/bookmarks still land somewhere real. Removed `latin` from `subjects.ts`'s `subjects` array
+(no longer shows as its own hub tile) but kept `/latin` in `HUB_SHELL_PREFIXES` so the redirect itself
+still gets the chrome-free treatment mid-flight. The `first-form-latin-6` entry in `rca.ts` absorbed the
+old station's stated intent (vocab/grammar/declension drills, quizzing) into its summary — no actual
+drill content exists yet either way, so nothing was lost, just de-duplicated into one real home instead
+of two half-built ones.
+
+### Nature theme — deliberate light/day palette, distinct from the rest of hub-shell
+Chess and the old Latin station are dark, moody per-station themes. For RCA I went the other direction on
+purpose: a light sky-to-earth gradient background (`#dceefc` sky blue → `#f4f1e6` → `#eef2e2` earth),
+because (a) Jacob explicitly said sky/earth/butterfly/bird, which reads as daytime/outdoor, and (b) RCA is
+a classical Catholic homeschool program with a real nature-study (Charlotte-Mason-adjacent) thread running
+through classical education generally — a light, airy palette fits the actual institution, not just the
+literal color words. Built `src/components/rca/NatureIcons.tsx`: four hand-drawn single-stroke SVG icons
+(Bird, Butterfly, Leaf, Sky/cloud) — explicitly not emoji, per instruction — used sparingly as section
+markers (leaf next to "Academic"/"Specials" headers, sky icon on the schedule card, butterfly by the page
+title, bird in the header and on the assistant's toggle button). Updated the RCA umbrella's accent colors
+in `subjects.ts` from the old gold (`#c9a227`) to sky blue (`#7ec8e3`/`#3f7ea6`) so the `/hub` card previews
+the theme before you click in.
+
+### Persistent assistant — replaced the per-page chat box with one global one
+Deleted `RcaLessonChat.tsx` (the original per-class embedded chat box from the first pass — you had to
+scroll down on each class page to find it). Built `RcaAssistant.tsx` instead: a fixed floating button
+(bottom-right, bird icon) mounted once in `rca/layout.tsx`, so it's present and keeps its conversation
+across every page in the umbrella, not just one class. It reads `usePathname()` to figure out which class
+you're currently looking at and re-derives the grounding subject on every message send — so if you
+navigate from `/rca` to `/rca/music-34` mid-conversation, the next message answers in that class's context
+without losing chat history. `/api/rca-chat`'s `buildGrounding` got a genuine "no specific class" path
+(`buildGeneralGrounding()` — lists all 10 classes + the schedule) instead of the old placeholder string
+("No class context provided.") for when you're on the `/rca` landing page itself.
+
+### Verification — Report vs. Handle
+- Report/structural (done): `npm run build` clean (0 TS errors, 31 routes — `/latin` correctly gone from
+  the route list). Local dev smoke test: `/latin` returns a real `308 Permanent Redirect` to
+  `/rca/first-form-latin-6` (confirmed via `curl -D -`), `/rca`, `/rca/music-34`, and `/hub` all still
+  302 to `/login` when logged out, matching every other route.
+- Handle (NOT done): the nature theme and the floating assistant have not been seen in an actual browser
+  by anyone — no screenshot, no logged-in click-through, no confirmation the assistant panel opens/closes
+  correctly or that context-switching between classes mid-chat actually works as designed. This entire
+  visual pass is Report-tier only until Jacob (or a driven browser session) actually looks at it.
+
+### Proof Pointers
+Branch `hub-shell`. Files: `src/components/rca/NatureIcons.tsx`, `src/components/rca/RcaAssistant.tsx`
+(new, replaces deleted `RcaLessonChat.tsx`), `src/app/rca/layout.tsx`, `src/app/rca/page.tsx`,
+`src/app/rca/[slug]/page.tsx`, `src/app/api/rca-chat/route.ts`, `next.config.ts`, `src/lib/subjects.ts`,
+`src/lib/rca.ts`. `src/app/latin/` deleted entirely.
+
+### Next Steps
+1. **Jacob**: actually look at it — confirm the nature theme reads the way he pictured it and the
+   floating assistant behaves (opens, remembers context across page navigation, closes cleanly).
+2. Everything from the prior entry's Next Steps still stands (re-share the other master docs, PE
+   curriculum, rosters once enrollment finalizes) — unchanged by this pass.

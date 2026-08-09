@@ -126,7 +126,7 @@ export const rcaClasses: RcaClass[] = [
     name: "First Form Latin 6",
     grade: "6th",
     area: "Academic",
-    summary: "Part of the 6th Grade core master lesson plans / TRM.",
+    summary: "Part of the 6th Grade core master lesson plans / TRM. Vocab, grammar/declension drills, and quizzing live here (folded in from the old standalone Latin station).",
     books: ["First Form Latin"],
     lessonPlanUrl: sixthGradeMasterDoc,
     driveUrls: [
