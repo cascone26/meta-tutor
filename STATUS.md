@@ -1,12 +1,16 @@
 # Meta Tutor — Status
 
 ## Last Updated
-2026-08-09 (RCA: real "test my understanding" comprehension checks added, Mon/Thu emphasized as deadlines, visible staleness banner, still on hub-shell branch)
+2026-08-09 (Root URL is now the hub landing page; Cris's chat moved to /metaphysics; understanding-check error surfacing fixed, still on hub-shell branch)
 
 ## Current State
-- Live at `https://meta-tutor.vercel.app` (production, main branch — this is Cris's course, unaffected by the work below)
+- Live at `https://meta-tutor.vercel.app` (production, main branch — still Cris's course at root for now,
+  since `hub-shell` hasn't merged yet. **When it does merge**: root becomes the hub landing page and
+  Cris's course moves to `/metaphysics` — done deliberately, confirmed with Jacob (Cris isn't using the
+  app for the foreseeable future, no need to preserve his old URL).
 - GitHub: `https://github.com/cascone26/meta-tutor.git`
-- Built for Cris's Thomistic Metaphysics course
+- Originally built for Cris's Thomistic Metaphysics course; now a multi-subject personal hub (Jacob's RCA
+  teaching umbrella + chess + Cris's course) once `hub-shell` merges
 - Google login required for all routes
 - Uses Claude Haiku (via `CLAUDE_MODEL` env var) with rate limiting (75/day) and prompt caching
 

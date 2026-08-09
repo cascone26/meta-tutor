@@ -16,7 +16,8 @@ const RESULT_COLOR: Record<string, string> = {
 export default function UnderstandingCheck({ subjectId, subjectName }: { subjectId: string; subjectName: string }) {
   const progressKey = `rca-${subjectId}`;
 
-  const [phase, setPhase] = useState<"idle" | "loading" | "quiz" | "evaluating" | "result" | "done">("idle");
+  const [phase, setPhase] = useState<"idle" | "loading" | "quiz" | "evaluating" | "result" | "done" | "error">("idle");
+  const [errorMsg, setErrorMsg] = useState("");
   const [questions, setQuestions] = useState<Question[]>([]);
   const [index, setIndex] = useState(0);
   const [answer, setAnswer] = useState("");
@@ -33,15 +34,27 @@ export default function UnderstandingCheck({ subjectId, subjectName }: { subject
 
   async function start() {
     setPhase("loading");
+    setErrorMsg("");
     try {
       const res = await fetch("/api/rca-understanding", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ action: "generate", subjectId }),
       });
+      if (!res.ok) {
+        setErrorMsg(`Request failed (${res.status}). ${res.status === 401 ? "You may need to log in again." : "Try again in a moment."}`);
+        setPhase("error");
+        return;
+      }
       const data = await res.json();
+      if (data.error) {
+        setErrorMsg(data.error);
+        setPhase("error");
+        return;
+      }
       if (!data.questions || data.questions.length === 0) {
-        setPhase("idle");
+        setErrorMsg("The assistant didn't return any questions — try again.");
+        setPhase("error");
         return;
       }
       setQuestions(data.questions);
@@ -49,8 +62,9 @@ export default function UnderstandingCheck({ subjectId, subjectName }: { subject
       setEvaluated([]);
       setAnswer("");
       setPhase("quiz");
-    } catch {
-      setPhase("idle");
+    } catch (e) {
+      setErrorMsg(e instanceof Error ? e.message : "Network error — try again.");
+      setPhase("error");
     }
   }
 
@@ -72,8 +86,9 @@ export default function UnderstandingCheck({ subjectId, subjectName }: { subject
         logWrongAnswer(progressKey, q.question.slice(0, 80), q.answer, subjectName, "understanding-check");
       }
       setPhase("result");
-    } catch {
-      setPhase("quiz");
+    } catch (e) {
+      setErrorMsg(e instanceof Error ? e.message : "Network error grading your answer — try again.");
+      setPhase("error");
     }
   }
 
@@ -129,6 +144,15 @@ export default function UnderstandingCheck({ subjectId, subjectName }: { subject
       )}
 
       {phase === "loading" && <p className="text-sm" style={{ color: "#8a9a7c" }}>Generating questions from this week&apos;s lesson…</p>}
+
+      {phase === "error" && (
+        <div>
+          <p className="text-sm mb-3" style={{ color: "#a04a4a" }}>{errorMsg}</p>
+          <button onClick={start} className="px-4 py-2 rounded-lg text-sm font-medium" style={{ background: "#6b8e5a", color: "#fff" }}>
+            Try again
+          </button>
+        </div>
+      )}
 
       {(phase === "quiz" || phase === "evaluating" || phase === "result") && questions[index] && (
         <div>

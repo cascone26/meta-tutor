@@ -47,9 +47,13 @@ export async function POST(req: NextRequest) {
       });
       const text = response.content[0].type === "text" ? response.content[0].text : "";
       try {
-        return Response.json(JSON.parse(text));
+        const parsed = JSON.parse(text);
+        if (!parsed.questions || !Array.isArray(parsed.questions) || parsed.questions.length === 0) {
+          return Response.json({ questions: [], error: "Model returned no questions — try again." });
+        }
+        return Response.json(parsed);
       } catch {
-        return Response.json({ questions: [] });
+        return Response.json({ questions: [], error: `Couldn't parse the model's response: "${text.slice(0, 150)}"` });
       }
     }
 

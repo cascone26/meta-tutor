@@ -610,3 +610,68 @@ Branch `hub-shell`. New: `src/lib/rca-grounding.ts`, `src/app/api/rca-understand
 1. **Jacob**: run an actual understanding-check for real — this is the piece most worth verifying live.
 2. Run `supabase-schema-hub.sql` whenever convenient, to make gap-tracking persist across sessions.
 3. Everything from prior entries' Next Steps still stands.
+
+## Error Surfacing Fix + Root URL Becomes the Hub — 2026-08-09
+
+### Problem Statement
+Two reports from Jacob: (1) pressing "Start check" on the understanding-check said "generating" then
+silently did nothing — no error, no result; (2) the app's root URL (meta-tutor.vercel.app) should be the
+hub landing page, not Cris's Metaphysics chat.
+
+### Silent-failure bug fixed (root cause not confirmed live — no way to reproduce without his session)
+`UnderstandingCheck.tsx`'s `start()` and `submitAnswer()} both had failure paths that silently reset to a
+prior state with zero user-visible error — a non-ok HTTP response, a JSON parse failure, or a thrown
+fetch error all just quietly went back to the button/quiz with nothing shown. Added a proper `error` phase
+with a message + "Try again" button, and made `/api/rca-understanding`'s generate action always include an
+`error` field on failure (empty questions, JSON-parse failure of the model's response) instead of silently
+returning `{questions: []}`.
+
+**Root cause suspected, not confirmed**: `.env.local` has `ANTHROPIC_API_KEY=` blank. This file isn't what
+Vercel deploys with (Vercel has its own dashboard-configured env vars per environment), but it raises the
+real possibility that `ANTHROPIC_API_KEY` is only set for Vercel's "Production" environment and not
+"Preview" — which would make every AI call on the `hub-shell` preview branch fail. Could not check Vercel's
+actual env var config directly: no Vercel CLI/API credentials available in this session (`vercel whoami`
+fails, no token in `~/.vercel`, no `VERCEL_TOKEN` in env). Asked Jacob to check the Vercel dashboard
+directly rather than guessing further. The error-surfacing fix means next attempt will show the real
+error message regardless of cause.
+
+### Root URL becomes the hub
+Asked Jacob how to handle Cris's access before touching this, since it's the one part of the app with a
+real outside user — he said Cris (his cousin, correcting my wrong pronoun guess) isn't going to use it for
+the foreseeable future, so no need to preserve his exact URL; just build what Jacob wants.
+- Moved `src/app/page.tsx` (Cris's chat) → `src/app/metaphysics/page.tsx`. Moved `src/app/hub/page.tsx`
+  (the subject-picker) → `src/app/page.tsx`, so `/` is now the hub landing page.
+- `next.config.ts`: added `/hub` → `/` permanent redirect (same pattern as the existing `/latin` redirect)
+  so nothing that already links to `/hub` breaks.
+- `subjects.ts`: metaphysics subject's `href` updated `/` → `/metaphysics`; `HUB_SHELL_PREFIXES` swapped
+  `/hub` for `/` (with an explicit `p !== "/"` guard in `isHubShellRoute` so `/` only matches exactly, never
+  as a prefix for every other route) — this is what hides Cris's chrome (Nav/Prayer/Onboarding/
+  SessionTimer) from the hub landing page, same mechanism as every other hub-shell route.
+- `Nav.tsx`: the "Chat" tab (Cris's nav, only rendered on her non-hub-shell pages) now points at
+  `/metaphysics` instead of `/`.
+- `chess/layout.tsx` and `rca/layout.tsx`: "← Hub" links now point directly at `/` instead of `/hub`, to
+  skip the redirect hop (the redirect itself is kept for anything still bookmarked at `/hub`).
+- `layout.tsx` metadata (browser tab title/description) genericized from "Meta Tutor — Metaphysics Study
+  Assistant" to "Meta Tutor" / "Personal multi-subject learning hub", since root is no longer
+  Metaphysics-specific.
+
+### Verification
+`npm run build` clean (31 routes, `/metaphysics` present, `/hub` correctly absent as its own route since
+it's now a redirect). Local dev smoke test: `/` and `/metaphysics` and `/rca` all 302 to `/login` when
+logged out (unchanged behavior, just at the new URLs); `/hub` returns a real `308 Permanent Redirect` to
+`/`. Not yet verified live/logged-in that the hub renders correctly at `/` or that Cris's chat still works
+end-to-end at its new `/metaphysics` URL.
+
+### Proof Pointers
+Branch `hub-shell`. Moved: `src/app/page.tsx` → `src/app/metaphysics/page.tsx`, `src/app/hub/page.tsx` →
+`src/app/page.tsx`. Modified: `next.config.ts`, `src/lib/subjects.ts`, `src/components/Nav.tsx`,
+`src/app/chess/layout.tsx`, `src/app/rca/layout.tsx`, `src/app/layout.tsx`,
+`src/components/rca/UnderstandingCheck.tsx`, `src/app/api/rca-understanding/route.ts`.
+
+### Next Steps
+1. **Jacob**: check Vercel dashboard → Project Settings → Environment Variables → confirm
+   `ANTHROPIC_API_KEY` is enabled for the "Preview" environment, not just "Production" — this is the
+   leading suspect for the silent-failure bug. Then retry the understanding-check; the new error state
+   will show the real error if it's still failing.
+2. Confirm `/` renders the hub correctly and `/metaphysics` still works for Cris's course, logged in.
+3. Everything from prior entries' Next Steps still stands.

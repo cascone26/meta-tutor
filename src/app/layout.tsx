@@ -23,8 +23,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Meta Tutor — Metaphysics Study Assistant",
-  description: "AI-powered study assistant for Thomistic Metaphysics",
+  title: "Meta Tutor",
+  description: "Personal multi-subject learning hub",
   icons: {
     icon: "/chi-rho.png",
     apple: "/chi-rho.png",

@@ -6,6 +6,7 @@ const nextConfig: NextConfig = {
     return [
       { source: "/latin", destination: "/rca/first-form-latin-6", permanent: true },
       { source: "/latin/:path*", destination: "/rca/first-form-latin-6", permanent: true },
+      { source: "/hub", destination: "/", permanent: true },
     ];
   },
 };
