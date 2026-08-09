@@ -5,6 +5,7 @@ import Link from "next/link";
 import { getRcaClass } from "@/lib/rca";
 import { rcaContent } from "@/lib/rca-content";
 import LessonViewer from "@/components/rca/LessonViewer";
+import UnderstandingCheck from "@/components/rca/UnderstandingCheck";
 import { LeafIcon } from "@/components/rca/NatureIcons";
 
 export default function RcaClassPage({ params }: { params: Promise<{ slug: string }> }) {
@@ -57,7 +58,10 @@ export default function RcaClassPage({ params }: { params: Promise<{ slug: strin
       )}
 
       {content ? (
-        <LessonViewer content={content} />
+        <>
+          <LessonViewer content={content} />
+          <UnderstandingCheck subjectId={cls.id} subjectName={cls.name} />
+        </>
       ) : (
         <div className="rounded-2xl p-4 mb-6" style={{ background: "#fbf8f0", border: "1px solid #d9e4d3" }}>
           <p className="text-sm" style={{ color: "#5c6b52" }}>

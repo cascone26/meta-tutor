@@ -143,6 +143,18 @@ export function getRcaClass(id: string): RcaClass | undefined {
   return rcaClasses.find((c) => c.id === id);
 }
 
+/** Monday & Thursday are the real deadlines — the only two days Jacob is actually on
+ * campus teaching. Returns the next one (today counts if it's Mon/Thu). */
+export function nextTeachingDay(today: Date = new Date()): Date {
+  const day = today.getDay(); // 0=Sun, 1=Mon, ..., 4=Thu
+  const daysUntilMon = (1 - day + 7) % 7;
+  const daysUntilThu = (4 - day + 7) % 7;
+  const offset = Math.min(daysUntilMon, daysUntilThu);
+  const next = new Date(today);
+  next.setDate(today.getDate() + offset);
+  return next;
+}
+
 /** Roughly which lesson we're on, given the term started `rcaSchedule.termStart` and these
  * lessons are paced across `totalWeeks` (defaults to 1 lesson/week if omitted). Clamped to
  * [1, totalLessons]. Does not account for holidays. */

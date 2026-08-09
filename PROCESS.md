@@ -529,3 +529,84 @@ registry), `src/app/api/rca-chat/route.ts` (generic grounding).
 3. PE is gone for good (not "later") per direct instruction — don't re-add without Jacob asking again.
 4. Once 2026-2027's actual docs get sent (vs. these 2025-2026 copies), diff and refresh — the current
    content is a known-stale-but-structurally-sound placeholder for the real thing.
+
+## Mon/Thu Emphasis, Visible Staleness Banner, Real Comprehension-Check Feature — 2026-08-09
+
+### Problem Statement
+Jacob's feedback after seeing the deployed app: (1) Monday/Thursday should read as THE deadlines, not just
+two days in a list — those are the only two days he's physically teaching; (2) the "this is last year's
+content" caveat was buried in code comments/PROCESS.md, which he never sees — needs to be visible on the
+actual pages; (3) most importantly, this isn't supposed to be a passive schedule/calendar+reader — it's
+meant to be an ACTIVE improvement tool where he can check whether he actually understands the material
+(math, reading, history, logic, theology — whatever the subject) well enough to teach it, not just see
+what lesson is next.
+
+### Mon/Thu as deadlines, not list items
+Added `nextTeachingDay()` to `rca.ts` — computes the next Monday or Thursday from today (today counts if
+it already is one). `/rca`'s schedule card now bolds "Monday & Thursday" as "the deadlines — the only two
+days actually on campus" and shows a live "Next teaching day: <weekday>, <date>" line. Had to mark
+`rca/page.tsx` with `export const dynamic = "force-dynamic"` — it was being statically prerendered at
+build time, which would have frozen "next teaching day" at whatever it was during the last deploy instead
+of computing fresh per request.
+
+### Visible staleness banner
+Built `RcaStaleBanner.tsx` — a persistent banner mounted in `rca/layout.tsx` (so it's on every RCA page,
+not just one), stating plainly that content is transcribed from RCA's 2025-2026 docs and 2026-2027's
+haven't been issued. Also folded the same caveat into the AI grounding itself (`STALE_CONTENT_NOTE` in the
+new shared `rca-grounding.ts`) so the assistant and the understanding-check both know to flag it if asked
+about specific dates.
+
+### Refactor: shared grounding lib
+Before adding a second AI feature, pulled the class/lesson grounding logic out of `/api/rca-chat/route.ts`
+into `src/lib/rca-grounding.ts` (`buildClassGrounding(subjectId)`) — both `/api/rca-chat` (the assistant)
+and the new `/api/rca-understanding` (the comprehension check) now share one implementation instead of
+duplicating "how do I describe this class + its current lesson to the model."
+
+### The actual feature: "Test my understanding"
+This is the answer to "isn't just a schedule — an active improvement website where I can see what exact
+math I'll be on and see if I'll understand it." Built `/api/rca-understanding` (generate + evaluate
+actions, same non-streaming JSON pattern as the existing `/api/evaluate` and `/api/reading-quiz` routes —
+anchored to those rather than inventing a new pattern) and `UnderstandingCheck.tsx`, mounted on every class
+page that has real lesson content (below the `LessonViewer`).
+
+Flow: "Start check" generates 4 questions from the CURRENT lesson via the shared grounding — but tailored
+to the subject, not generic trivia: Saxon gets an actual computable math problem, Latin/LOE get a
+grammar/spelling item to apply, Religion/History/Science/Music get specific content questions (a fact, a
+translation, a distinction) rather than opinion prompts. Jacob answers one at a time in a textarea; each
+answer gets evaluated (correct/partial/incorrect + 1-2 sentence feedback) against the real answer via a
+second AI call, not string-matching — free-text answers about e.g. "explain why Rome fell" can't be
+graded by exact match. Wrong/partial answers get logged via the *existing* `subject-progress.ts` (already
+built for Cris's course + the hub-shell chess/latin work, namespaced by subject string — used
+`rca-<classId>` as the namespace so it can't collide with anything else) — reused as-is, not rebuilt.
+Finished sessions save a result row; a "Recent gaps" chip list shows on the idle state once there's
+history, mirroring the pattern the old standalone Latin station used to have.
+
+### Known gap, called out on purpose
+`mt_wrong_answers` / `mt_quiz_history` (the Supabase tables `subject-progress.ts` writes to) still haven't
+had their schema run (`supabase-schema-hub.sql`) — this was already a known gap from the original hub-shell
+work, not something this pass introduced. Until that SQL runs, the understanding-check will generate
+questions and show correct/incorrect feedback live (that part doesn't touch Supabase), but logging
+wrong-answers/history will silently fail (the underlying lib functions swallow errors on purpose, so no
+crash — just no persistence). Told Jacob about this dependency; it blocks "gaps carry over between
+sessions," not "does the check work right now."
+
+### Verification — Report vs. Handle
+- Report/structural (done): `npm run build` clean (0 TS errors, new routes `/api/rca-understanding`
+  present, `/rca` now correctly dynamic instead of statically frozen). Local dev smoke test: `/rca`,
+  `/rca/saxon-76`, and an unauthenticated POST to `/api/rca-understanding` all 302 to `/login`, matching
+  every other route.
+- Handle (NOT done): nobody has run an actual understanding-check end-to-end (generate real questions,
+  answer one, see it graded, confirm it logs) in a live browser. This is the newest and most complex piece
+  added so far — worth the closest look before trusting it.
+
+### Proof Pointers
+Branch `hub-shell`. New: `src/lib/rca-grounding.ts`, `src/app/api/rca-understanding/route.ts`,
+`src/components/rca/UnderstandingCheck.tsx`, `src/components/rca/RcaStaleBanner.tsx`. Modified:
+`src/lib/rca.ts` (`nextTeachingDay`), `src/app/rca/page.tsx` (deadline emphasis, `force-dynamic`),
+`src/app/rca/layout.tsx` (banner mount), `src/app/rca/[slug]/page.tsx` (mounts `UnderstandingCheck`),
+`src/app/api/rca-chat/route.ts` (now imports shared grounding instead of its own copy).
+
+### Next Steps
+1. **Jacob**: run an actual understanding-check for real — this is the piece most worth verifying live.
+2. Run `supabase-schema-hub.sql` whenever convenient, to make gap-tracking persist across sessions.
+3. Everything from prior entries' Next Steps still stands.

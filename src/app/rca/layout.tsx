@@ -1,5 +1,6 @@
 import Link from "next/link";
 import RcaAssistant from "@/components/rca/RcaAssistant";
+import RcaStaleBanner from "@/components/rca/RcaStaleBanner";
 import { BirdIcon } from "@/components/rca/NatureIcons";
 
 export default function RcaLayout({ children }: { children: React.ReactNode }) {
@@ -21,6 +22,7 @@ export default function RcaLayout({ children }: { children: React.ReactNode }) {
         </span>
         <span className="w-10" />
       </header>
+      <RcaStaleBanner />
       {children}
       <RcaAssistant />
     </div>

@@ -1,11 +1,16 @@
 import Link from "next/link";
-import { rcaClasses, rcaSchedule, gradingGuidelinesUrl } from "@/lib/rca";
+import { rcaClasses, rcaSchedule, gradingGuidelinesUrl, nextTeachingDay } from "@/lib/rca";
 import { rcaContent } from "@/lib/rca-content";
 import { SkyIcon, LeafIcon, ButterflyIcon } from "@/components/rca/NatureIcons";
+
+// Next-teaching-day needs a fresh Date() per request, not baked in at build time.
+export const dynamic = "force-dynamic";
 
 export default function RcaPage() {
   const academic = rcaClasses.filter((c) => c.area === "Academic");
   const specials = rcaClasses.filter((c) => c.area === "Specials");
+  const next = nextTeachingDay();
+  const nextLabel = next.toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric" });
 
   return (
     <div className="max-w-2xl mx-auto px-5 py-8 pb-24">
@@ -23,11 +28,15 @@ export default function RcaPage() {
           Weekly schedule
         </h2>
         <p className="text-sm" style={{ color: "#3a4a34" }}>
-          {rcaSchedule.days.join(" & ")} · {rcaSchedule.startTime} – {rcaSchedule.endTime}
+          <strong>Monday &amp; Thursday</strong> are the deadlines — the only two days actually on campus.
+          {" "}{rcaSchedule.startTime} – {rcaSchedule.endTime}.
+        </p>
+        <p className="text-sm mt-1.5 font-medium" style={{ color: "#2f5e7a" }}>
+          Next teaching day: {nextLabel}
         </p>
         <p className="text-xs mt-1" style={{ color: "#8a9a7c" }}>{rcaSchedule.address}</p>
         <p className="text-xs mt-2" style={{ color: "#8a9a7c" }}>
-          Term: {rcaSchedule.termStart} – {rcaSchedule.termEnd}. Per-class block times aren&apos;t set yet — this is the full on-campus window.
+          Term: {rcaSchedule.termStart} – {rcaSchedule.termEnd}. Per-class block times aren&apos;t set yet.
         </p>
       </div>
 

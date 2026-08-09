@@ -1,7 +1,7 @@
 # Meta Tutor — Status
 
 ## Last Updated
-2026-08-09 (RCA: 7 of 8 classes now have real lesson content, PE dropped entirely, still on hub-shell branch)
+2026-08-09 (RCA: real "test my understanding" comprehension checks added, Mon/Thu emphasized as deadlines, visible staleness banner, still on hub-shell branch)
 
 ## Current State
 - Live at `https://meta-tutor.vercel.app` (production, main branch — this is Cris's course, unaffected by the work below)
@@ -71,13 +71,23 @@ underneath. Jacob's own learning (chess, Latin, ...), not Cris's course — addi
   `src/lib/rca-content/*.ts`, all sharing one generic schema (`types.ts`) + one `LessonViewer` component +
   one `rcaContent` registry (`index.ts`) — no more per-subject special-casing. **PE 3-4/PE 5-6 removed
   entirely** per direct instruction, not stubbed.
-- Not yet done: run `supabase-schema-hub.sql`, merge to main / deploy, generalizing the AI chat/evaluate
-  routes to be subject-aware instead of metaphysics-hardcoded, RCA roster/weak-area tracking (blocked on
-  enrollment finalizing near Aug 17), refreshing content once RCA sends actual 2026-2027 docs. Nature
-  theme + persistent assistant + all 7 newly-pulled lesson viewers are Report-tier only — nobody's
-  actually clicked through them in a browser yet. See `PROCESS.md` "Full Content Pull" entry (2026-08-09)
-  for the fork pipeline, bugs found/fixed, and a known gap (source doc's "Poetry" thread isn't represented
-  anywhere).
+- **"Test my understanding" comprehension check — new, 2026-08-09**: every class page with real lesson
+  content now has a real active-recall feature, not just a reader. `/api/rca-understanding` generates 4
+  subject-tailored questions from the CURRENT lesson (actual computable math problems for Saxon, grammar
+  items for Latin/LOE, content questions for Religion/History/Science/Music) and grades free-text answers
+  via a second AI call (correct/partial/incorrect + feedback), reusing the existing `subject-progress.ts`
+  Supabase-backed tracking (namespaced `rca-<classId>`) for wrong-answer/history logging — same
+  infrastructure Cris's course and the old Latin station already used, not rebuilt.
+- Monday & Thursday now read as the real deadlines (bolded, "next teaching day" computed live) instead of
+  a plain day list, and every RCA page has a visible banner stating content is from 2025-2026 docs
+  (2026-2027 not sent yet) — previously that caveat only lived in code comments Jacob never saw.
+- Not yet done: run `supabase-schema-hub.sql` (blocks the understanding-check's gap-tracking from
+  persisting across sessions — the check itself still works live either way), merge to main / deploy,
+  generalizing the AI chat/evaluate routes to be subject-aware instead of metaphysics-hardcoded, RCA
+  roster/weak-area tracking (blocked on enrollment finalizing near Aug 17), refreshing content once RCA
+  sends actual 2026-2027 docs. The understanding-check feature is Report-tier only — nobody's run one
+  live yet. See `PROCESS.md`'s two 2026-08-09 entries for the fork pipeline / bugs fixed / this feature's
+  design.
 
 ## Report vs. Handle (honesty check on everything above, 2026-08-08)
 Per the Charisma discipline — Report (built, reasoned about, compiles) is not the same as Handle (actually

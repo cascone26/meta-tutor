@@ -2,44 +2,13 @@ import Anthropic from "@anthropic-ai/sdk";
 import { NextRequest } from "next/server";
 import { checkRateLimit, rateLimitResponse } from "@/lib/rate-limit";
 import { auth } from "@/auth";
-import { getRcaClass, rcaClasses, rcaSchedule, currentLessonNumber } from "@/lib/rca";
-import { rcaContent } from "@/lib/rca-content";
+import { buildClassGrounding } from "@/lib/rca-grounding";
 
 export const maxDuration = 30;
 
 const anthropic = new Anthropic({ timeout: 25000 });
 
-function buildGeneralGrounding(): string {
-  const list = rcaClasses.map((c) => `- ${c.name} (${c.grade}, ${c.area})`).join("\n");
-  return `CONTEXT: Regina Caeli Academy (KSC, Overland Park KS) — a Catholic classical homeschool hybrid. Jacob is the 6th Grade Lead plus Music 3-4 / PE 3-4 / PE 5-6 tutor, on campus ${rcaSchedule.days.join(" & ")} ${rcaSchedule.startTime}-${rcaSchedule.endTime}. He's not currently viewing a specific class page, so answer generally across his full teaching load unless he names a subject.\n\nHIS CLASSES:\n${list}`;
-}
-
-function buildGrounding(subjectId: string | undefined): string {
-  if (!subjectId || subjectId === "general") return buildGeneralGrounding();
-
-  const cls = getRcaClass(subjectId);
-  if (!cls) return buildGeneralGrounding();
-
-  let grounding = `CLASS: ${cls.name} (${cls.grade}, ${cls.area}) at Regina Caeli Academy — a Catholic classical homeschool hybrid. Jacob (the tutor) meets this class as part of his Mon/Thu on-campus schedule.\nSUMMARY: ${cls.summary}\n`;
-  if (cls.books.length) grounding += `BOOKS: ${cls.books.join(", ")}\n`;
-
-  const content = rcaContent[cls.id];
-  if (content) {
-    const n = currentLessonNumber(content.lessons.length, content.totalWeeks);
-    const lesson = content.lessons.find((l) => l.n === n);
-    grounding += `\n${content.overview}\n\nCURRENT LESSON (Lesson ${n} of ${content.lessons.length}):\n`;
-    if (lesson) {
-      for (const s of lesson.sections) grounding += `${s.label}: ${s.text}\n`;
-      if (lesson.note) grounding += `Note: ${lesson.note}\n`;
-    }
-  } else if (cls.lessonPlanUrl) {
-    grounding += `\nFull lesson plan content hasn't been pulled into this app yet — the master doc lives at ${cls.lessonPlanUrl}. Answer from general knowledge of the subject/grade level and RCA's classical, Catholic approach, and say so if asked something only the doc would answer.\n`;
-  }
-
-  return grounding;
-}
-
-const baseSystemPrompt = `You are Jacob's personal lesson-prep assistant for his teaching work at Regina Caeli Academy (RCA), a Catholic classical homeschool hybrid where he is the 6th Grade Lead plus Music 3-4 / PE 3-4 / PE 5-6 tutor.
+const baseSystemPrompt = `You are Jacob's personal lesson-prep assistant for his teaching work at Regina Caeli Academy (RCA), a Catholic classical homeschool hybrid where he is the 6th Grade Lead plus Music 3-4 tutor.
 
 Help him prepare for class: suggest activities, anticipate where students will struggle, draft warm-ups or discussion questions, adapt pacing, or explain content he needs to teach. Ground answers in the class context provided below when given. RCA is Catholic and classical in approach (chant, Latin, memory work, Socratic questioning) — keep suggestions consistent with that style unless Jacob asks otherwise. Be concrete and practical, not generic teaching-textbook advice. Keep responses focused, not overly long. Format with markdown when helpful.`;
 
@@ -53,7 +22,7 @@ export async function POST(req: NextRequest) {
 
   try {
     const { messages, subjectId } = await req.json();
-    const grounding = buildGrounding(subjectId);
+    const grounding = buildClassGrounding(subjectId);
 
     const stream = anthropic.messages.stream({
       model: process.env.CLAUDE_MODEL || "claude-haiku-4-5-20251001",
