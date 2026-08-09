@@ -424,3 +424,108 @@ Branch `hub-shell`. Files: `src/components/rca/NatureIcons.tsx`, `src/components
    floating assistant behaves (opens, remembers context across page navigation, closes cleanly).
 2. Everything from the prior entry's Next Steps still stands (re-share the other master docs, PE
    curriculum, rosters once enrollment finalizes) — unchanged by this pass.
+
+## Full Content Pull (7 of 8 classes) + Generic Lesson Schema + PE Dropped — 2026-08-09
+
+### Problem Statement
+Jacob re-shared 4 more docs (Saxon 7/6, LOE Essentials C, and the "6th Grade" combined doc covering
+Classical Language Arts/Religion/History/Science/First Form Latin, plus a bonus Employee Handbook) as
+"anyone with the link," same move as Music 3-4, and said to drop PE entirely — he doesn't want it tracked
+in the app at all (not "deprioritize," remove). This session pulled all 4 docs and turned 7 of the
+remaining 8 classes (all but PE, which is now gone) into real lesson-by-lesson content, matching what
+Music 3-4 already had.
+
+### Schema generalized before scaling up
+The original Music 3-4 lesson shape (`{n, warmup, hymnsChants, recorder, note}`) was Music-specific and the
+`[slug]/page.tsx` had a hardcoded `cls.id === "music-34"` branch. Before fanning out to 7 more subjects
+with likely-different structures, generalized to one shared shape in `src/lib/rca-content/types.ts`:
+`Lesson = {n, sections: {label, text}[], note?}`, `SubjectContent = {overview, lessons, totalWeeks?}`. Built
+one `LessonViewer.tsx` component and one `rcaContent` registry (`src/lib/rca-content/index.ts`, class id →
+content) that both `[slug]/page.tsx` and `/api/rca-chat`'s grounding now read generically — no more
+per-subject special-casing anywhere. `music-3-4.ts` kept its original array (32 entries, not worth
+retyping) and got a thin adapter (`music34Content`) at the bottom mapping into the generic shape.
+
+### Fanned out 3 parallel transcription forks
+Same pattern as Music 3-4 — read the raw doc, condense into the generic schema, write real files — but
+this time via 3 parallel background agents (Saxon 7/6 alone; LOE Essentials C alone; the 6th-grade combined
+doc split across Classical Language Arts 6 / Religion 6 / History 6 / Science 6 / First Form Latin 6, since
+one doc covers all five). Chose forks over doing it inline specifically because the combined raw text was
+~9,400 lines total — well past what's worth holding in the main conversation's context for content that's
+mechanical transcription, not judgment-heavy design work.
+
+### Bugs found and fixed post-transcription (trust but verify)
+The 6th-grade-core fork's output had 3 instances of a real syntax bug — closing a `sections: [...]` array
+with `}` instead of `]` right before a trailing `note:` field (in `religion-6.ts` and
+`first-form-latin-6.ts`, 2 spots) — caught immediately by `npm run build` (TypeScript type-checks every
+file in `src/`, not just reachable ones, so even an unregistered orphan file breaks the build). Fixed by
+hand, one at a time, using the compiler's own error location as ground truth rather than trusting a
+regex/bracket-counting heuristic script (tried one first — it missed real mismatches because it tracked
+open/close *counts* per bracket type independently rather than a proper type-checked stack, so a `{`/`]`
+swap could still "balance" in aggregate; not worth fixing the heuristic when `tsc` is authoritative and
+free).
+
+### Verified against the raw source, not just trusted the fork's self-report
+Spot-checked Saxon 7/6's output against `/tmp/saxon76.txt` directly: the source doc is genuinely a bare
+pacing CHECKLIST ("Teach Lessons 1, 2, 3" + a checkbox per lesson), not a topic-by-topic teaching guide —
+Saxon's actual lesson content lives in the textbook itself. So the fork's "generic-sounding" condensed
+text ("teach concepts, problem set") is an accurate reflection of thin source material, not a hallucination
+papering over real detail that got dropped. Also spot-checked the 6th-grade doc's actual Week 1 table
+(Religion/Latin/Poetry/History/Science columns) against `history-6.ts` and `religion-6.ts` output — matches.
+One caught gap: the source doc has a "Poetry" thread (weekly memorization, e.g. "The Charge of the Light
+Brigade") that doesn't appear in `classical-language-arts-6.ts` or anywhere else — Poetry isn't one of
+Jacob's contracted assignments per either offer letter, so it wasn't given its own station, but if it's
+actually meant to live inside how he teaches CLA, that content wasn't pulled. Noted, not silently dropped.
+
+### Pacing bug found and fixed: `currentLessonNumber` assumed 1 lesson/week universally
+Saxon 7/6 is 120 lessons across only 33 teaching weeks (~3-4 lessons/week) — the original
+`currentLessonNumber(totalLessons)` helper (built for Music 3-4, which really is 1 lesson/week) would have
+capped out at lesson 33 forever once week 33 arrived, never reaching lesson 120. Added an optional
+`totalWeeks` field to `SubjectContent` and a second parameter to `currentLessonNumber` so it now
+interpolates `(currentWeek / totalWeeks) * totalLessons` instead of assuming a 1:1 week:lesson ratio.
+`saxon76Content` sets `totalWeeks: 33`; every other subject's `totalWeeks` defaults to its own lesson count
+(still 1/week, which matches how the other 6 subjects/RCA's own doc structure actually paces).
+
+### Stale-date caveat (Saxon specifically)
+Saxon's source doc is the 2025-2026 copy (2026-2027's hasn't been issued) and embeds literal calendar dates
+per week (e.g. "Week 1 (Aug 18-22)") that are last year's, not this year's. Added an explicit caveat in
+both the file's header comment and its `overview` string: trust the WEEK NUMBER for pacing, not the literal
+date, until RCA sends the 2026-2027 center calendar. Same underlying issue as Music 3-4's 2025-2026 source,
+just more visible here because Saxon's doc embeds dates inline per-lesson where Music's didn't.
+
+### PE dropped entirely
+Removed `pe-34` and `pe-56` from `rcaClasses` in `rca.ts` completely, per direct instruction ("dont need pe
+stuff at all") — not deprioritized, not stubbed, just gone. `/rca` now lists 8 classes (7 Academic + Music
+under Specials), matching his actual full teaching load minus PE. `hasStructuredContent` field removed from
+`RcaClass` entirely (was redundant now that `rcaContent` registry membership is the single source of truth
+for "does this class have a real viewer").
+
+### Verification — Report vs. Handle
+- Report/structural (done): `npm run build` clean (0 TS errors) after fixing the 3 bracket bugs. Local dev
+  smoke test: all 8 class routes (`/rca/saxon-76`, `/rca/loe-essentials-c`,
+  `/rca/classical-language-arts-6`, `/rca/religion-6`, `/rca/history-6`, `/rca/science-6`,
+  `/rca/first-form-latin-6`, `/rca/music-34`) plus `/rca` itself all correctly 302 to `/login` when
+  logged out — no 500s, no crashes. Spot-checked 2 of 7 new subjects' content against raw source text
+  directly (Saxon fully, the 6th-grade doc's Week 1 table partially) rather than trusting the forks'
+  self-reports at face value.
+- Handle (NOT done): nobody has opened a real browser and actually clicked through any of the 7 new
+  lesson viewers, confirmed the prev/next navigation renders real content correctly, or confirmed the
+  Saxon pacing interpolation lands on a sane lesson number once the term starts. Content volume here is
+  large (7 subjects × ~33 lessons each) — worth a real look before trusting it fully, more so than the
+  smaller Music 3-4 pass.
+
+### Proof Pointers
+Branch `hub-shell`. New: `src/lib/rca-content/types.ts`, `saxon-76.ts`, `loe-essentials-c.ts`,
+`religion-6.ts`, `classical-language-arts-6.ts`, `history-6.ts`, `science-6.ts`, `first-form-latin-6.ts`,
+`index.ts`, `src/components/rca/LessonViewer.tsx`. Modified: `src/lib/rca-content/music-3-4.ts` (adapter
+added), `src/lib/rca.ts` (PE removed, `totalWeeks` support, refreshed summaries), `src/app/rca/[slug]/page.tsx`
+(generic registry lookup replacing the Music special-case), `src/app/rca/page.tsx` (badge check uses
+registry), `src/app/api/rca-chat/route.ts` (generic grounding).
+
+### Next Steps
+1. **Jacob**: click through the new lesson viewers for real, especially Saxon (the pacing math is the
+   most complex of the bunch) — close the Report→Handle gap.
+2. Investigate whether the source doc's "Poetry" thread belongs inside Classical Language Arts 6 or
+   deserves its own note — currently not represented anywhere.
+3. PE is gone for good (not "later") per direct instruction — don't re-add without Jacob asking again.
+4. Once 2026-2027's actual docs get sent (vs. these 2025-2026 copies), diff and refresh — the current
+   content is a known-stale-but-structurally-sound placeholder for the real thing.

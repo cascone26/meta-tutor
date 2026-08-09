@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { rcaClasses, rcaSchedule, gradingGuidelinesUrl } from "@/lib/rca";
+import { rcaContent } from "@/lib/rca-content";
 import { SkyIcon, LeafIcon, ButterflyIcon } from "@/components/rca/NatureIcons";
 
 export default function RcaPage() {
@@ -13,7 +14,7 @@ export default function RcaPage() {
         <h1 className="text-xl font-semibold">Regina Caeli Academy</h1>
       </div>
       <p className="text-sm mb-6" style={{ color: "#5c6b52" }}>
-        6th Grade Lead + Music 3-4, PE 3-4, PE 5-6 — {rcaSchedule.center}
+        6th Grade Lead + Music 3-4 — {rcaSchedule.center}
       </p>
 
       <div className="rounded-2xl p-4 mb-6" style={{ background: "#fbf8f0", border: "1px solid #d9e4d3" }}>
@@ -36,7 +37,7 @@ export default function RcaPage() {
       </h2>
       <div className="grid gap-2 mb-6">
         {academic.map((c) => (
-          <ClassCard key={c.id} id={c.id} name={c.name} summary={c.summary} hasContent={c.hasStructuredContent} />
+          <ClassCard key={c.id} id={c.id} name={c.name} summary={c.summary} hasContent={c.id in rcaContent} />
         ))}
       </div>
 
@@ -46,7 +47,7 @@ export default function RcaPage() {
       </h2>
       <div className="grid gap-2 mb-6">
         {specials.map((c) => (
-          <ClassCard key={c.id} id={c.id} name={c.name} summary={c.summary} hasContent={c.hasStructuredContent} />
+          <ClassCard key={c.id} id={c.id} name={c.name} summary={c.summary} hasContent={c.id in rcaContent} />
         ))}
       </div>
 

@@ -50,3 +50,20 @@ export const music34Lessons: MusicLesson[] = [
   { n: 31, warmup: "Sing \"Frere Jacques\" as a round in 2, then 3 parts.", hymnsChants: "Sing O Salutaris + Ave Maria.", recorder: "New: Sharp, new note F# (p.25) — Let's Play F#, Row Row Row Your Boat, EEQ Oh! Susannah." },
   { n: 32, warmup: "Review rounds: Pauper Sum Ego, Chairs to Mend, Frere Jacques.", hymnsChants: "Review Sanctus, Agnus Dei, O Salutaris, Ave Maria (this semester's chants).", recorder: "Review/make-up week — catch-up, revisit favorites, optionally start p.26. Encourage summer recorder practice.", note: "Review / make-up week (end of year)." },
 ];
+
+// Adapter into the generic SubjectContent schema used by LessonViewer/rca-chat — kept
+// as a thin wrapper rather than retyping all 32 lessons in the generic shape by hand.
+import type { SubjectContent } from "./types";
+
+export const music34Content: SubjectContent = {
+  overview: music34Overview,
+  lessons: music34Lessons.map((l) => ({
+    n: l.n,
+    sections: [
+      { label: "Choral Warm-up", text: l.warmup },
+      { label: "Hymns and Chants", text: l.hymnsChants },
+      { label: "Recorder", text: l.recorder },
+    ],
+    note: l.note,
+  })),
+};

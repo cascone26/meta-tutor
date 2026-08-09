@@ -3,7 +3,7 @@ import { NextRequest } from "next/server";
 import { checkRateLimit, rateLimitResponse } from "@/lib/rate-limit";
 import { auth } from "@/auth";
 import { getRcaClass, rcaClasses, rcaSchedule, currentLessonNumber } from "@/lib/rca";
-import { music34Overview, music34Lessons } from "@/lib/rca-content/music-3-4";
+import { rcaContent } from "@/lib/rca-content";
 
 export const maxDuration = 30;
 
@@ -23,12 +23,13 @@ function buildGrounding(subjectId: string | undefined): string {
   let grounding = `CLASS: ${cls.name} (${cls.grade}, ${cls.area}) at Regina Caeli Academy — a Catholic classical homeschool hybrid. Jacob (the tutor) meets this class as part of his Mon/Thu on-campus schedule.\nSUMMARY: ${cls.summary}\n`;
   if (cls.books.length) grounding += `BOOKS: ${cls.books.join(", ")}\n`;
 
-  if (cls.id === "music-34") {
-    const n = currentLessonNumber(music34Lessons.length);
-    const lesson = music34Lessons.find((l) => l.n === n);
-    grounding += `\n${music34Overview}\n\nCURRENT LESSON (Lesson ${n} of ${music34Lessons.length}):\n`;
+  const content = rcaContent[cls.id];
+  if (content) {
+    const n = currentLessonNumber(content.lessons.length, content.totalWeeks);
+    const lesson = content.lessons.find((l) => l.n === n);
+    grounding += `\n${content.overview}\n\nCURRENT LESSON (Lesson ${n} of ${content.lessons.length}):\n`;
     if (lesson) {
-      grounding += `Choral Warm-up: ${lesson.warmup}\nHymns and Chants: ${lesson.hymnsChants}\nRecorder: ${lesson.recorder}\n`;
+      for (const s of lesson.sections) grounding += `${s.label}: ${s.text}\n`;
       if (lesson.note) grounding += `Note: ${lesson.note}\n`;
     }
   } else if (cls.lessonPlanUrl) {

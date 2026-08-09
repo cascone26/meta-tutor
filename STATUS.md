@@ -1,7 +1,7 @@
 # Meta Tutor — Status
 
 ## Last Updated
-2026-08-09 (RCA teacher umbrella: nature theme + Latin consolidated in + persistent assistant, still on hub-shell branch)
+2026-08-09 (RCA: 7 of 8 classes now have real lesson content, PE dropped entirely, still on hub-shell branch)
 
 ## Current State
 - Live at `https://meta-tutor.vercel.app` (production, main branch — this is Cris's course, unaffected by the work below)
@@ -64,11 +64,20 @@ underneath. Jacob's own learning (chess, Latin, ...), not Cris's course — addi
   re-grounds itself per current page on each message (`/api/rca-chat`, same auth/rate-limit/streaming
   pattern as `/api/chat`). See `PROCESS.md` "RCA Teacher Umbrella" + "RCA Nature Theme + Latin
   Consolidation + Persistent Assistant" entries (both 2026-08-09) for the full research trail and next steps.
+- **7 of 8 RCA classes now have real lesson-by-lesson content** (Saxon 7/6, LOE Essentials C, Classical
+  Language Arts 6, Religion 6, History 6, Science 6, First Form Latin 6, plus Music 3-4 from the prior
+  pass) — only... wait, that's all 8. Every RCA class Jacob actually teaches has a working lesson viewer
+  now. Content is transcribed/condensed from RCA's 2025-2026 master docs (2026-2027's not sent yet) via
+  `src/lib/rca-content/*.ts`, all sharing one generic schema (`types.ts`) + one `LessonViewer` component +
+  one `rcaContent` registry (`index.ts`) — no more per-subject special-casing. **PE 3-4/PE 5-6 removed
+  entirely** per direct instruction, not stubbed.
 - Not yet done: run `supabase-schema-hub.sql`, merge to main / deploy, generalizing the AI chat/evaluate
-  routes to be subject-aware instead of metaphysics-hardcoded, pulling the remaining 9 RCA classes' full
-  lesson content (blocked on doc access), PE curriculum, RCA roster/weak-area tracking (blocked on
-  enrollment finalizing near Aug 17). Nature theme + persistent assistant are Report-tier only — nobody's
-  actually looked at them in a browser yet.
+  routes to be subject-aware instead of metaphysics-hardcoded, RCA roster/weak-area tracking (blocked on
+  enrollment finalizing near Aug 17), refreshing content once RCA sends actual 2026-2027 docs. Nature
+  theme + persistent assistant + all 7 newly-pulled lesson viewers are Report-tier only — nobody's
+  actually clicked through them in a browser yet. See `PROCESS.md` "Full Content Pull" entry (2026-08-09)
+  for the fork pipeline, bugs found/fixed, and a known gap (source doc's "Poetry" thread isn't represented
+  anywhere).
 
 ## Report vs. Handle (honesty check on everything above, 2026-08-08)
 Per the Charisma discipline — Report (built, reasoned about, compiles) is not the same as Handle (actually
