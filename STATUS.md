@@ -37,9 +37,33 @@ underneath. Jacob's own learning (chess, Latin, ...), not Cris's course — addi
   `/chess`, `/latin`, `/api/subject-progress` (GET+POST) all correctly redirect/401 when unauthenticated,
   no runtime errors in dev log. **Not yet verified**: authenticated round-trip (needs a real Google login)
   and the actual Supabase writes (blocked on the SQL Editor step above).
-- Not yet done: run `supabase-schema-hub.sql`, merge to main / deploy, real chess module (board+bot+
-  Stockfish analysis), real Latin content, generalizing the AI chat/evaluate routes to be subject-aware
-  instead of metaphysics-hardcoded.
+- **Chess module — real, playable**: `/chess` now has an actual board (`react-chessboard` + `chess.js`)
+  against a real Stockfish 18 engine (lite/single-threaded WASM build, runs client-side in a Web Worker,
+  files in `public/stockfish/`, zero server cost). Pick a color + bot strength (Beginner/Intermediate/
+  Strong via Stockfish's Skill Level option), play a full game. Every one of your moves is analyzed
+  (centipawn-loss vs. the engine's best line at depth 12) and flagged blunder/mistake if it crosses a
+  threshold (≥200cp / ≥90cp), tagged by phase (opening/middlegame/endgame) and logged into the same
+  `subject-progress` weak-area system as everything else. Game summary saved on game end/resign.
+  `src/lib/chess-engine.ts` (engine wrapper), `src/components/chess/ChessGame.tsx` (the board + game loop).
+- Latin: still the placeholder stub from before — real content needs Jacob's actual syllabus/textbook,
+  couldn't build that unattended.
+- Not yet done: run `supabase-schema-hub.sql`, merge to main / deploy, real Latin content, generalizing
+  the AI chat/evaluate routes to be subject-aware instead of metaphysics-hardcoded.
+
+## Report vs. Handle (honesty check on everything above, 2026-08-08)
+Per the Charisma discipline — Report (built, reasoned about, compiles) is not the same as Handle (actually
+watched it work). Being explicit about which is which for this session's chess work, since it was built
+fully unattended with nobody watching a browser:
+- **Report-tier**: the whole chess feature — engine wrapper, board UI, blunder-detection math, Supabase
+  wiring. `npm run build` is clean (0 TS errors, 31 routes), local dev smoke tests confirm every route is
+  correctly auth-gated with no server-side crashes, and the WASM file itself was verified as a valid,
+  uncorrupted WebAssembly binary that the worker's own `locateFile` logic will find (same directory,
+  matching filename — checked directly in the built JS).
+- **NOT Handle-tier yet**: nobody has actually dragged a piece in a real browser and watched the bot
+  reply, watched a blunder get flagged, or confirmed the Supabase round-trip. That needs a real Google
+  login + a real click-through, which requires either Jacob or an explicit ask to drive it via
+  computer-use — deliberately not done unattended/unsupervised. Treat "it plays chess" as a strong,
+  structurally-verified claim, not a proven one, until someone actually plays a game on it.
 
 ## What It Is
 Study app with a strict no-cheat constraint — all features force active recall. No passive reading or answer lookup.

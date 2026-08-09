@@ -209,3 +209,70 @@ zero new signup/cost, and a pattern already proven to work from this exact deplo
    same one LessonDraft uses) — one-time, ~30 seconds.
 2. Once tables exist: log in for real and confirm a wrong-answer/quiz-result round-trips end to end.
 3. Then continue with the chess/Latin content build-out already queued above.
+
+## Real Chess Module — 2026-08-08 (same branch, `hub-shell`, built unattended)
+
+### Problem Statement
+Jacob asked to "get everything done that you can" and left the session. Chess was the best-specified,
+most self-contained piece of the roadmap (play on-site, bot opponent, engine-analyzed weaknesses) — the
+one thing buildable end-to-end without needing him for curriculum specifics (unlike Latin, which needs
+his actual syllabus/textbook and so stays a stub).
+
+### Library choices
+- **`chess.js` v1.4.0** for rules/legality/game-state — the standard choice, note its `move()` throws on
+  illegal moves in v1.x (older versions returned `null`); handled with try/catch in `onPieceDrop`.
+- **`react-chessboard` v5** for the board UI — v5 rewrote the whole API around a single `options` object
+  (very different from v3/v4 examples that circulate online); read the actual shipped `.d.ts` files rather
+  than trusting a remembered API shape, per [[orient-before-act]].
+- **`stockfish` npm package, the `-18-lite-single` build** — real Stockfish 18, not a toy heuristic bot.
+  Chose the *lite single-threaded* WASM variant deliberately over the full/multi-threaded ones: it needs
+  no COOP/COEP cross-origin-isolation headers (the multi-threaded build does, which would mean touching
+  `next.config.ts` headers for the whole app), while still being far stronger than any human. Files copied
+  from `node_modules/stockfish/bin/` into `public/stockfish/` (not built from source, not bundled by
+  Turbopack — served as plain static assets and instantiated via `new Worker(path)`, the standard
+  low-risk integration pattern). 7MB `.wasm`, committed to the repo since Vercel needs it in the deploy
+  and there's no build step generating it.
+
+### How blunder detection actually works (not hand-waved)
+Before/after every one of the player's moves: evaluate both positions at depth 12 via the same engine.
+UCI eval is always from the perspective of the side to move, so the "after" eval (now the opponent's
+perspective) gets negated back to the player's perspective before comparing. The difference
+(`evalBefore - evalAfterMine`) is centipawn loss vs. the engine's own best continuation from the
+pre-move position — this is the same metric lichess/chess.com use for move classification, not an
+invented one. Thresholds: ≥200cp = blunder, ≥90cp = mistake, below that = not flagged (kept to reduce
+noise; every move isn't logged, only real ones). Phase tagged by move number (≤10 opening, ≤30
+middlegame, else endgame) — a simple heuristic, stated as such, not dressed up as more rigorous than
+it is.
+
+### Decision — single serialized engine, not two
+Both move-analysis (`evaluate`) and the bot's own move (`getBestMove`) run through one Stockfish
+instance/one Worker, queued (see `chess-engine.ts`'s `run()` wrapper) rather than spinning up a second
+engine. Means the bot's reply waits behind the analysis of the player's move (a second or two extra),
+traded deliberately for not running two competing WASM engines client-side and for simpler state
+(one worker to create/terminate/reason about).
+
+### Verification — Report vs. Handle, stated explicitly
+- Report/structural (done): `npm run build` clean, 0 TypeScript errors, 31 routes. Local dev smoke test:
+  `/chess` and the stockfish static files both correctly hit the auth middleware (302 when logged out —
+  expected, matches every other route). Confirmed the copied `.wasm` is a valid, non-corrupted WebAssembly
+  binary (`file` command) and that the shipped JS's own `locateFile` logic resolves the `.wasm` next to
+  itself by filename/same-directory — matches exactly how the two files were placed in `public/stockfish/`.
+- Handle (NOT done): nobody has opened a real logged-in browser, dragged a piece, watched the bot reply,
+  or watched a blunder actually get flagged and logged to Supabase. Built and verified unattended, with
+  nobody watching a screen — deliberately did not use computer-use to drive a live click-through solo,
+  since that means taking over the screen/mouse with nobody around to context it. This is a real,
+  structurally-sound build, not a rubber-stamped "done" — but the gap between Report and Handle here is
+  real and should be closed by an actual playthrough before trusting it fully.
+
+### Proof Pointers
+- Branch `hub-shell`, commit to follow this entry. Files: `src/lib/chess-engine.ts`,
+  `src/components/chess/ChessGame.tsx`, `src/app/chess/page.tsx`, `public/stockfish/*`.
+
+### Next Steps
+1. **Jacob**: play an actual game at `/chess` (after logging in) to close the Report→Handle gap — confirm
+   the bot moves, a deliberate blunder gets flagged with a sane centipawn number, and (once the SQL step
+   above is done) that it shows up under "Recent weak areas" after the game ends.
+2. Latin real content — blocked on Jacob's actual syllabus/textbook for the year.
+3. Puzzle-from-your-own-blunders mode (re-serve flagged mistakes spaced-repetition style) — the
+   originally-discussed differentiator, not yet built; natural next slice once the base loop is confirmed
+   working.
