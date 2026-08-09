@@ -23,8 +23,23 @@ underneath. Jacob's own learning (chess, Latin, ...), not Cris's course — addi
   `SessionTimer.tsx` are unchanged in behavior — those components got a pathname guard
   (`isHubShellRoute`) so they simply don't render on the new `/hub|/chess|/latin` routes; nothing about
   her experience changes. Verified via `npm run build` (all 29 routes compile) + local route smoke test.
-- Not yet done: merge to main / deploy, real chess module (board+bot+Stockfish analysis), real Latin
-  content, generalizing the AI chat/evaluate routes to be subject-aware instead of metaphysics-hardcoded.
+- **Persistence**: `subject-progress.ts` now backed by Supabase, not localStorage — reuses LessonDraft's
+  existing Supabase project (`jqeypwrmsgjsmggdgvgd`), isolated via `mt_`-prefixed tables
+  (`mt_wrong_answers`, `mt_quiz_history`), keyed by NextAuth session email. New `/api/subject-progress`
+  route (GET/POST, auth-gated same pattern as `/api/notes`). Client lib (`src/lib/subject-progress.ts`)
+  and `/chess`, `/latin` pages updated to call it. Chose to share LessonDraft's project rather than spin
+  up a new one — personal single-user use, zero new infra/cost, already proven working from Vercel.
+  **Tables not created yet** — `supabase-schema-hub.sql` is written (additive only, doesn't touch any
+  existing table) but needs to be pasted into the Supabase SQL Editor by hand; no DB password/CLI session
+  available to run DDL directly. Until that's run, `/api/subject-progress` will 500 once authenticated
+  (build compiles fine, route is wired, just no tables to query yet).
+- Verified 2026-08-08: `npm run build` clean (30 routes, 0 TS errors), local dev smoke test — `/`, `/hub`,
+  `/chess`, `/latin`, `/api/subject-progress` (GET+POST) all correctly redirect/401 when unauthenticated,
+  no runtime errors in dev log. **Not yet verified**: authenticated round-trip (needs a real Google login)
+  and the actual Supabase writes (blocked on the SQL Editor step above).
+- Not yet done: run `supabase-schema-hub.sql`, merge to main / deploy, real chess module (board+bot+
+  Stockfish analysis), real Latin content, generalizing the AI chat/evaluate routes to be subject-aware
+  instead of metaphysics-hardcoded.
 
 ## What It Is
 Study app with a strict no-cheat constraint — all features force active recall. No passive reading or answer lookup.

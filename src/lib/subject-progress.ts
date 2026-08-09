@@ -1,5 +1,7 @@
-// Generalized, subject-namespaced version of wrong-answers.ts + study-history.ts.
-// Kept separate from those files so Cris's Metaphysics course storage/behavior is untouched.
+// Subject-namespaced progress tracking, backed by Supabase (mt_wrong_answers /
+// mt_quiz_history) via /api/subject-progress. Separate from wrong-answers.ts /
+// study-history.ts (Cris's localStorage-based Metaphysics tracking) on purpose —
+// this is a different backend entirely, not just a different storage key.
 
 export type WrongAnswer = {
   term: string;
@@ -21,84 +23,97 @@ export type QuizResult = {
   weakCategories: string[];
 };
 
-function storageKey(subject: string, name: string) {
-  return `meta-tutor-${subject}-${name}`;
-}
+export type SubjectProgress = {
+  wrongAnswers: WrongAnswer[];
+  history: QuizResult[];
+  weakAreas: { terms: string[]; categories: string[] };
+};
 
-export function getWrongAnswers(subject: string): Record<string, WrongAnswer> {
-  if (typeof window === "undefined") return {};
-  try {
-    const saved = localStorage.getItem(storageKey(subject, "wrong-answers"));
-    return saved ? JSON.parse(saved) : {};
-  } catch {
-    return {};
-  }
-}
+type WrongAnswerRow = {
+  term: string;
+  definition: string | null;
+  category: string | null;
+  count: number;
+  last_wrong: string;
+  modes: string[];
+};
 
-export function logWrongAnswer(subject: string, term: string, definition: string, category: string, mode: string) {
-  const data = getWrongAnswers(subject);
-  const existing = data[term];
-  if (existing) {
-    existing.count += 1;
-    existing.lastWrong = Date.now();
-    if (!existing.modes.includes(mode)) existing.modes.push(mode);
-  } else {
-    data[term] = { term, definition, category, count: 1, lastWrong: Date.now(), modes: [mode] };
-  }
+type HistoryRow = {
+  mode: string;
+  score: number;
+  total: number;
+  percentage: number;
+  weak_terms: string[];
+  weak_categories: string[];
+  created_at: string;
+};
+
+const EMPTY: SubjectProgress = { wrongAnswers: [], history: [], weakAreas: { terms: [], categories: [] } };
+
+export async function getSubjectProgress(subject: string): Promise<SubjectProgress> {
   try {
-    localStorage.setItem(storageKey(subject, "wrong-answers"), JSON.stringify(data));
+    const res = await fetch(`/api/subject-progress?subject=${encodeURIComponent(subject)}`);
+    if (!res.ok) return EMPTY;
+    const data = await res.json();
+    return {
+      wrongAnswers: (data.wrongAnswers as WrongAnswerRow[]).map((r) => ({
+        term: r.term,
+        definition: r.definition || "",
+        category: r.category || "",
+        count: r.count,
+        lastWrong: new Date(r.last_wrong).getTime(),
+        modes: r.modes,
+      })),
+      history: (data.history as HistoryRow[]).map((r) => ({
+        mode: r.mode,
+        date: new Date(r.created_at).toLocaleDateString(),
+        timestamp: new Date(r.created_at).getTime(),
+        score: r.score,
+        total: r.total,
+        percentage: r.percentage,
+        weakTerms: r.weak_terms,
+        weakCategories: r.weak_categories,
+      })),
+      weakAreas: data.weakAreas,
+    };
   } catch (e) {
-    console.error("Failed to save wrong answers:", e);
+    console.error("Failed to load subject progress:", e);
+    return EMPTY;
   }
 }
 
-export function getWrongAnswersList(subject: string): WrongAnswer[] {
-  return Object.values(getWrongAnswers(subject)).sort((a, b) => b.count - a.count);
-}
-
-export function clearWrongAnswer(subject: string, term: string) {
-  const data = getWrongAnswers(subject);
-  delete data[term];
+export async function logWrongAnswer(subject: string, term: string, definition: string, category: string, mode: string) {
   try {
-    localStorage.setItem(storageKey(subject, "wrong-answers"), JSON.stringify(data));
+    await fetch("/api/subject-progress", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "logWrongAnswer", subject, term, definition, category, mode }),
+    });
   } catch (e) {
-    console.error("Failed to save wrong answers:", e);
+    console.error("Failed to log wrong answer:", e);
   }
 }
 
-export function getHistory(subject: string): QuizResult[] {
-  if (typeof window === "undefined") return [];
+export async function saveResult(subject: string, result: QuizResult) {
   try {
-    const saved = localStorage.getItem(storageKey(subject, "history"));
-    return saved ? JSON.parse(saved) : [];
-  } catch {
-    return [];
-  }
-}
-
-export function saveResult(subject: string, result: QuizResult) {
-  const history = getHistory(subject);
-  history.unshift(result);
-  if (history.length > 100) history.length = 100;
-  try {
-    localStorage.setItem(storageKey(subject, "history"), JSON.stringify(history));
+    await fetch("/api/subject-progress", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "saveResult", subject, result }),
+    });
   } catch (e) {
-    console.error("Failed to save quiz history:", e);
+    console.error("Failed to save quiz result:", e);
   }
 }
 
-export function getWeakAreas(subject: string): { terms: string[]; categories: string[] } {
-  const history = getHistory(subject).slice(0, 20);
-  const termCounts: Record<string, number> = {};
-  const catCounts: Record<string, number> = {};
-
-  for (const r of history) {
-    for (const t of r.weakTerms) termCounts[t] = (termCounts[t] || 0) + 1;
-    for (const c of r.weakCategories) catCounts[c] = (catCounts[c] || 0) + 1;
+export async function clearWrongAnswer(subject: string, term: string) {
+  try {
+    await fetch("/api/subject-progress", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "clearWrongAnswer", subject, term }),
+    });
+  } catch (e) {
+    console.error("Failed to clear wrong answer:", e);
   }
-
-  const terms = Object.entries(termCounts).sort((a, b) => b[1] - a[1]).slice(0, 10).map(([t]) => t);
-  const categories = Object.entries(catCounts).sort((a, b) => b[1] - a[1]).slice(0, 5).map(([c]) => c);
-
-  return { terms, categories };
 }

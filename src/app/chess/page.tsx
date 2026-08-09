@@ -1,15 +1,17 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getWeakAreas, getHistory } from "@/lib/subject-progress";
+import { getSubjectProgress } from "@/lib/subject-progress";
 
 export default function ChessPage() {
   const [weakAreas, setWeakAreas] = useState<{ terms: string[]; categories: string[] }>({ terms: [], categories: [] });
   const [gamesAnalyzed, setGamesAnalyzed] = useState(0);
 
   useEffect(() => {
-    setWeakAreas(getWeakAreas("chess"));
-    setGamesAnalyzed(getHistory("chess").length);
+    getSubjectProgress("chess").then((p) => {
+      setWeakAreas(p.weakAreas);
+      setGamesAnalyzed(p.history.length);
+    });
   }, []);
 
   return (

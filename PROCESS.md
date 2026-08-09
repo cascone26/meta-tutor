@@ -158,3 +158,54 @@ subject's real content.
    retargeted via the new namespaced storage.
 4. Generalize the AI routes (`/api/chat`, `/api/evaluate`, `/api/socratic`, etc.) to take a subject/system-
    prompt parameter instead of being hardcoded to metaphysics, so Chess/Latin can use the same endpoints.
+
+## Persistence Backend — 2026-08-08 (same branch, `hub-shell`)
+
+### Problem Statement
+`subject-progress.ts` (the weak-area tracker for Chess/Latin) was localStorage-only — no cross-device
+sync, and no way for an AI layer to proactively notice a pattern outside an active browser tab. Discussed
+with Jacob: does a real backend already exist somewhere in the fleet we should reuse, per
+[[search-before-build]], instead of standing up new infra unasked.
+
+### Decision — reuse LessonDraft's Supabase project
+Checked `~/projects/LessonDraft`: it has a live, working Supabase project (`jqeypwrmsgjsmggdgvgd`),
+called from Vercel via `@supabase/supabase-js` + service-role key from server-side routes only, with a
+mature schema (users/streaks/achievements/content — the exact same shape this needed). Checked the fleet
+storage-organ memory (the Hold / restic / recall.py) too — that's file/blob tiering and memory-file
+search, not relational per-user app data; wrong tool for this. Asked Jacob: share LessonDraft's project
+(new isolated tables) vs. spin up a dedicated one. He deferred to my judgment and clarified this is
+single-user, not multi-tenant — reinforces sharing: reused LessonDraft's project, new `mt_`-prefixed
+tables (`mt_wrong_answers`, `mt_quiz_history`) so there's zero name collision with its existing tables,
+zero new signup/cost, and a pattern already proven to work from this exact deploy target.
+
+### What Was Built
+- `supabase-schema-hub.sql` — the two new tables + indexes + RLS (service-role-only, same policy pattern
+  LessonDraft already uses). Additive only.
+- `src/lib/supabase.ts` — server-only client (mirrors `LessonDraft/lib/supabase.ts`).
+- `src/app/api/subject-progress/route.ts` — GET (wrong answers + history + computed weak areas for a
+  subject) and POST (`logWrongAnswer` / `saveResult` / `clearWrongAnswer`), auth-gated on the NextAuth
+  session the same way `/api/notes` is, keyed by `session.user.email`.
+- `src/lib/subject-progress.ts` rewritten from a localStorage module to a thin async client for that API
+  (same exported function shapes as before, so `/chess` and `/latin` only needed `useEffect` tweaks).
+- `.env.local` / `.env.example` — added `NEXT_PUBLIC_SUPABASE_URL` / `SUPABASE_SERVICE_ROLE_KEY` (values
+  copied from LessonDraft's `.env.local`, not committed).
+
+### Verification
+- `npm run build`: clean, 0 TypeScript errors, 30 routes (incl. `/api/subject-progress`).
+- Local dev smoke test: GET/POST `/api/subject-progress` both correctly redirect when unauthenticated
+  (same behavior as every other route under `proxy.ts`'s middleware), no runtime errors in the dev log.
+- **NOT verified**: an actual authenticated write/read against Supabase. Blocked on the one manual step
+  below, and even once tables exist, needs a real logged-in session to exercise (can't fake Google OAuth
+  from a headless curl check).
+
+### Proof Pointers / What's Actually Live
+- Branch `hub-shell`, not merged to `main`, not deployed. `supabase-schema-hub.sql` written but **not yet
+  run** — I have the service-role (data-API) key but not a DB password or an authenticated `supabase` CLI
+  session, so I can't execute DDL myself. Until Jacob pastes it into the Supabase SQL Editor, hitting
+  `/api/subject-progress` while logged in will 500 (querying tables that don't exist).
+
+### Next Steps
+1. **Jacob**: paste `supabase-schema-hub.sql` into the Supabase SQL Editor (project `jqeypwrmsgjsmggdgvgd`,
+   same one LessonDraft uses) — one-time, ~30 seconds.
+2. Once tables exist: log in for real and confirm a wrong-answer/quiz-result round-trips end to end.
+3. Then continue with the chess/Latin content build-out already queued above.

@@ -1,15 +1,17 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getWeakAreas, getHistory } from "@/lib/subject-progress";
+import { getSubjectProgress } from "@/lib/subject-progress";
 
 export default function LatinPage() {
   const [weakAreas, setWeakAreas] = useState<{ terms: string[]; categories: string[] }>({ terms: [], categories: [] });
   const [sessionsLogged, setSessionsLogged] = useState(0);
 
   useEffect(() => {
-    setWeakAreas(getWeakAreas("latin"));
-    setSessionsLogged(getHistory("latin").length);
+    getSubjectProgress("latin").then((p) => {
+      setWeakAreas(p.weakAreas);
+      setSessionsLogged(p.history.length);
+    });
   }, []);
 
   return (
