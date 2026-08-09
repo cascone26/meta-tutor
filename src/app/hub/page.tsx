@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { subjects } from "@/lib/subjects";
+import { subjects, umbrellas } from "@/lib/subjects";
 
 export default function HubPage() {
   return (
@@ -15,6 +15,39 @@ export default function HubPage() {
         <p className="text-sm text-center mb-8" style={{ color: "#8a8580" }}>
           Pick a subject. Each one tracks your progress and tells you what to work on.
         </p>
+
+        {umbrellas.length > 0 && (
+          <div className="grid gap-3 mb-6">
+            {umbrellas.map((u) => (
+              <Link
+                key={u.id}
+                href={u.href}
+                className="group flex items-center justify-between rounded-2xl px-5 py-4 transition-transform hover:scale-[1.01]"
+                style={{ background: "#201a0e", border: `1px solid ${u.accent}55` }}
+              >
+                <div className="flex items-center gap-3">
+                  <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ background: u.accentDark }} />
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className="font-medium text-sm">{u.name}</span>
+                      <span
+                        className="text-[10px] px-1.5 py-0.5 rounded-full font-medium uppercase tracking-wide"
+                        style={{ background: "#2a2412", color: u.accentDark }}
+                      >
+                        Umbrella
+                      </span>
+                    </div>
+                    <p className="text-xs mt-0.5" style={{ color: "#8a8580" }}>{u.tagline}</p>
+                  </div>
+                </div>
+                <span className="text-sm opacity-40 group-hover:opacity-80 transition-opacity" style={{ color: u.accentDark }}>
+                  →
+                </span>
+              </Link>
+            ))}
+            <div className="h-px" style={{ background: "#2a2a30" }} />
+          </div>
+        )}
 
         <div className="grid gap-3">
           {subjects.map((s) => (

@@ -9,6 +9,30 @@ export type Subject = {
   status: "live" | "building";
 };
 
+// An "umbrella" owns multiple stations under one roof (e.g. RCA owns 10 classes) and
+// has its own sub-landing page, distinct from a standalone single-station subject above.
+export type Umbrella = {
+  id: string;
+  name: string;
+  tagline: string;
+  href: string;
+  accent: string;
+  accentDark: string;
+  status: "live" | "building";
+};
+
+export const umbrellas: Umbrella[] = [
+  {
+    id: "rca",
+    name: "Regina Caeli (KSC)",
+    tagline: "Teaching hub — schedule, lesson plans, prep for all 10 classes",
+    href: "/rca",
+    accent: "#8a6d1f",
+    accentDark: "#c9a227",
+    status: "building",
+  },
+];
+
 export const subjects: Subject[] = [
   {
     id: "metaphysics",
@@ -42,7 +66,7 @@ export const subjects: Subject[] = [
   },
 ];
 
-const HUB_SHELL_PREFIXES = ["/hub", "/chess", "/latin"];
+const HUB_SHELL_PREFIXES = ["/hub", "/chess", "/latin", "/rca"];
 
 export function isHubShellRoute(pathname: string): boolean {
   return HUB_SHELL_PREFIXES.some((p) => pathname === p || pathname.startsWith(p + "/"));

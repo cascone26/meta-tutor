@@ -276,3 +276,86 @@ traded deliberately for not running two competing WASM engines client-side and f
 3. Puzzle-from-your-own-blunders mode (re-serve flagged mistakes spaced-repetition style) — the
    originally-discussed differentiator, not yet built; natural next slice once the base loop is confirmed
    working.
+
+## RCA Teacher Umbrella — 2026-08-09
+
+### Problem Statement
+Jacob's plan: get his Regina Caeli Academy (RCA) teaching schedule + lesson plans organized, then add
+"classes/sections" to Meta Tutor so he can use it as his personal teaching-prep tool. First year on this
+6th-grade assignment was 2025-2026; this is year two (2026-2027), same days.
+
+### Decision fork — hub-shell vs. a new "umbrella" concept
+Asked Jacob directly whether RCA should extend the existing hub-shell (chess/latin, personal-study
+stations) or live as a new standalone area. His answer reframed the whole information architecture:
+Meta Tutor = a train system. `/hub` = the landing page. Each subject page (chess, latin, ...) = a station.
+An **umbrella** = a company that owns multiple stations under one roof and has its own sub-landing page —
+RCA owns 10 class-stations (his actual teaching load), and going to "the RCA umbrella" should feel like
+its own mini-hub with everything a teacher needs, nested one level under the main hub. This is a new,
+more general concept than a single station — implemented as `Umbrella` type in `src/lib/subjects.ts`
+alongside the existing `Subject` type, rendered as its own section on `/hub` above the station list.
+Explicitly personal/single-user for now — no multi-tenant design, per Jacob ("if we ever need to spread
+it out... we'll figure that out").
+
+### Research before building (search-before-build)
+Local disk had only certificates + an offer letter PDF, no actual schedule/lesson content. Forked a
+research agent to search Gmail (`mcp__gmail__search_emails` / `read_email`) + Google Calendar for the real
+schedule and curriculum docs before writing any code — turned up a forwarded-emails dump
+(`jcasrcaattachforward`, thread `19fda5e69000187e`) containing master lesson plan Google Doc links for
+most of the 10 assigned classes. Jacob then confirmed the remaining gaps directly: Mon/Thu, 9:00am–3:30pm
+(no per-block bell schedule given), and pointed to a separate email (`19fe6ee265cea749`) with the Music 3-4
+Year B lesson plan doc, which he re-shared as "anyone with the link" so it could actually be pulled
+(`curl .../export?format=txt` — 401 until re-shared, 200 after). The other classes' master docs (Saxon
+7/6, LOE Essentials C, 6th grade core TRM) are still access-restricted to his RCA staff Google account —
+**not pulled**, so those pages link out to the doc rather than showing structured content. PE 3-4 / PE 5-6
+curriculum was never sent by RCA in either the 2025-2026 or 2026-2027 offer-letter/email chain — likely
+handed out physically at Staff Training (Aug 12-13); noted as genuinely missing, not assumed.
+
+### What got built
+- `src/lib/rca.ts` — RCA schedule (Mon/Thu, 9am-3:30pm, KSC/Overland Park KS, term 08/17/26-5/31/27) +
+  registry of all 10 classes (name/grade/area/books/lesson-plan+drive links/`hasStructuredContent` flag)
+  + `currentLessonNumber()` helper (weeks elapsed since term start, clamped, no holiday awareness yet).
+- `src/lib/rca-content/music-3-4.ts` — the one class with real transcribed content: all 32 weekly lessons
+  of Music 3-4 Year B (rounds, Latin hymns/chants, recorder), condensed from the full source doc into
+  {warmup, hymnsChants, recorder, note} per lesson. This is the only class currently past Report-tier
+  (doc read in full) into having its content actually usable in-app.
+- `src/app/rca/{layout,page}.tsx` — RCA sub-hub: weekly schedule block + Academic/Specials class grids,
+  each card linking to `/rca/[slug]`.
+- `src/app/rca/[slug]/page.tsx` — per-class page: summary/books/resource links, and for Music 3-4 a real
+  lesson viewer (prev/next through the 32 lessons, defaulting to the calendar-computed current week). All
+  other classes get an honest "content not pulled yet, here's the doc link" state instead of a fake viewer.
+- `src/app/api/rca-chat/route.ts` + `src/components/rca/RcaLessonChat.tsx` — subject-aware AI lesson-prep
+  assistant (streaming SSE, same pattern as `/api/chat`), grounded per-class: full current-lesson content
+  for Music 3-4, general subject/grade context + doc-link caveat for the rest. Shares the existing 75/day
+  rate limit and Google auth gate — no new cost controls needed.
+- `src/lib/subjects.ts` — added `Umbrella` type + `umbrellas` export (RCA entry), added `/rca` to
+  `HUB_SHELL_PREFIXES` so the existing `isHubShellRoute` guard (already used by Nav/Prayer/Onboarding/
+  SessionTimer/KeyboardShortcuts) hides the student-facing chrome on RCA pages automatically — no new
+  guard code needed, extended the existing single source of truth.
+
+### Verification — Report vs. Handle
+- Report/structural (done): `npm run build` clean (0 TS errors, 33 routes: `/rca`, `/rca/[slug]`,
+  `/api/rca-chat` all present). Local dev smoke test (`localhost:3001`, port 3000 was occupied by another
+  process): `/rca`, `/rca/music-34`, `/rca/pe-34`, `/hub`, and an unauthenticated POST to `/api/rca-chat`
+  all correctly 302-redirect to `/login` — identical behavior to the pre-existing `/api/chat`, confirming
+  the new routes inherit the same auth middleware with no gap.
+- Handle (NOT done): nobody has logged in and actually clicked through `/rca` → a class → the lesson
+  viewer → sent a message to the prep assistant and read a real streamed reply. Built unattended; the
+  Report→Handle gap should close with an actual logged-in walkthrough.
+
+### Proof Pointers
+Branch `hub-shell` (uncommitted at time of writing). Files: `src/lib/rca.ts`,
+`src/lib/rca-content/music-3-4.ts`, `src/app/rca/**`, `src/app/api/rca-chat/route.ts`,
+`src/components/rca/RcaLessonChat.tsx`, `src/lib/subjects.ts`, `src/app/hub/page.tsx`.
+
+### Next Steps
+1. **Jacob**: log in and click through `/rca` for real — close the Report→Handle gap, and sanity-check the
+   Music 3-4 lesson-number auto-detection actually lands on a reasonable week once school starts (Aug 17).
+2. Get Saxon 7/6 / LOE Essentials C / 6th-grade-core master docs re-shared as "anyone with the link" (like
+   Music 3-4 was) so their full lesson content can be pulled and get real lesson viewers instead of link-out
+   cards.
+3. PE 3-4 / PE 5-6 curriculum — watch for it at Staff Training (Aug 12-13) or a follow-up RCA email.
+4. Once rosters exist (near Aug 17): per-student weak-area tracking for RCA classes, reusing
+   `subject-progress.ts`'s existing namespaced-by-subject-string design (e.g. `subject="rca-music-34"`) —
+   no schema change needed, same pattern chess/latin already use.
+5. Commit + merge to `main` when Jacob's ready — currently sitting on `hub-shell` uncommitted, matching
+   how the chess work landed.

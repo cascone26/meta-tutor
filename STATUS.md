@@ -1,7 +1,7 @@
 # Meta Tutor — Status
 
 ## Last Updated
-2026-08-08 (hub-shell branch started)
+2026-08-09 (RCA teacher umbrella added, still on hub-shell branch)
 
 ## Current State
 - Live at `https://meta-tutor.vercel.app` (production, main branch — this is Cris's course, unaffected by the work below)
@@ -47,8 +47,22 @@ underneath. Jacob's own learning (chess, Latin, ...), not Cris's course — addi
   `src/lib/chess-engine.ts` (engine wrapper), `src/components/chess/ChessGame.tsx` (the board + game loop).
 - Latin: still the placeholder stub from before — real content needs Jacob's actual syllabus/textbook,
   couldn't build that unattended.
+- **RCA teacher umbrella — new, 2026-08-09**: `/rca` is Jacob's personal teaching-prep hub for his
+  Regina Caeli Academy job (6th Grade Lead + Music 3-4/PE 3-4/PE 5-6, Mon/Thu 9am-3:30pm, KSC center).
+  Added the `Umbrella` concept to `subjects.ts` (a station-group with its own sub-landing page, distinct
+  from a single-station `Subject`) — `/hub` now shows the RCA umbrella card above the regular station
+  list. `/rca` lists all 10 classes with weekly schedule up top; `/rca/[slug]` is per-class detail +
+  resource links + a subject-aware AI lesson-prep chat (`/api/rca-chat`, same auth/rate-limit/streaming
+  pattern as `/api/chat`). Only Music 3-4 has real transcribed lesson content (all 32 weekly lessons,
+  `src/lib/rca-content/music-3-4.ts`) with a working prev/next lesson viewer that auto-picks the current
+  week; the other 9 classes link out to their master lesson plan Google Docs (most are access-restricted
+  to Jacob's RCA staff account, not yet pulled in). PE 3-4/5-6 curriculum genuinely doesn't exist yet
+  (RCA hasn't sent it either year) — flagged as missing, not stubbed. See `PROCESS.md` "RCA Teacher
+  Umbrella — 2026-08-09" for the full research trail and next steps.
 - Not yet done: run `supabase-schema-hub.sql`, merge to main / deploy, real Latin content, generalizing
-  the AI chat/evaluate routes to be subject-aware instead of metaphysics-hardcoded.
+  the AI chat/evaluate routes to be subject-aware instead of metaphysics-hardcoded, pulling the remaining
+  9 RCA classes' full lesson content (blocked on doc access), RCA roster/weak-area tracking (blocked on
+  enrollment finalizing near Aug 17).
 
 ## Report vs. Handle (honesty check on everything above, 2026-08-08)
 Per the Charisma discipline — Report (built, reasoned about, compiles) is not the same as Handle (actually
