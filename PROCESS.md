@@ -675,3 +675,108 @@ Branch `hub-shell`. Moved: `src/app/page.tsx` → `src/app/metaphysics/page.tsx`
    will show the real error if it's still failing.
 2. Confirm `/` renders the hub correctly and `/metaphysics` still works for Cris's course, logged in.
 3. Everything from prior entries' Next Steps still stands.
+
+## Root Cause Found + Fixed: Stale OAuth Token, No Refresh Mechanism — 2026-08-09
+
+### Problem Statement
+Jacob confirmed the understanding-check was still failing after the error-surfacing fix, with a real
+`Request failed (500)`. Asked for Vercel access to actually diagnose instead of guessing further — Jacob
+ran `vercel login` in his own terminal, giving this session real Vercel CLI credentials for the first time.
+
+### What was actually wrong (traced with real access, not guessed)
+`vercel env ls` showed the project has **no `ANTHROPIC_API_KEY` at all** — instead `ANTHROPIC_AUTH_TOKEN` /
+`ANTHROPIC_REFRESH_TOKEN` (format `sk-ant-oat01-...` / `sk-ant-ort01-...`), meaning this app was already
+built to reuse Jacob's Claude Max subscription via OAuth rather than a billed API key — confirmed by
+checking the installed `@anthropic-ai/sdk` (`^0.80.0`) source directly: `new Anthropic({...})` with no
+`apiKey`/`authToken` passed auto-reads `process.env.ANTHROPIC_AUTH_TOKEN` and uses it as `Authorization:
+Bearer` automatically. **No code changes were ever needed for this to work** — the app was written
+correctly for OAuth reuse from the start (someone, possibly Jacob in an earlier session, already made this
+choice deliberately).
+
+Direct testing (not speculation) found two real bugs stacked together:
+1. **The stored access token was expired.** `curl`-equivalent test against `api.anthropic.com/v1/messages`
+   with the token stored in Vercel → `401 "OAuth access token is invalid."` It had been sitting there
+   unchanged for 26+ days; these access tokens last on the order of hours (~7h observed on a fresh one via
+   its `expiresAt`).
+2. **`vercel env ls` showed every single env var (all 7 of them) scoped to "Production" only — zero
+   configured for "Preview" at all.** So the `hub-shell` branch had NO credentials whatsoever, not even the
+   (already-expired) ones Production had.
+3. Attempted a live OAuth refresh using `ANTHROPIC_REFRESH_TOKEN` against
+   `console.anthropic.com/v1/oauth/token` directly — got blocked by Cloudflare (403, error 1010), which
+   initially looked like confirmation of a fleet memory noting a prior "org block" on this exact pattern
+   for a different project (LessonDraft, 2026-08-04). Told Jacob this looked like a dead end and recommended
+   a real API key instead — **he said no, wire it to the subscription like everything else.**
+
+### Second look — the "org block" theory didn't survive an actual test with a fresh token
+Rather than keep asserting it was blocked, pulled the Mac's own currently-live Claude Code OAuth token
+straight from Keychain (`security find-generic-password -s "Claude Code-credentials-c3d031f7" -w` — the
+exact mechanism `~/tools/ai-gateway.cjs`, already running on this Mac for other fleet tools, uses) and
+hit `api.anthropic.com/v1/messages` with it directly. **200, real response.** So OAuth-subscription-reuse
+against the real Messages API is NOT blocked — the Cloudflare 403 was specific to my raw refresh-endpoint
+call (likely bot-fingerprint related, not an account-level block), and the earlier 401 was purely the
+token being stale. This matters: it means the fix is "keep the token fresh," not "give up on the
+subscription."
+
+### The actual fix: a local sync job, not a public proxy
+Vercel serverless functions read env vars at deploy time, not live per-request — so keeping the token
+fresh in Vercel requires periodically pushing a new value AND triggering a redeploy. Considered exposing
+`~/tools/ai-gateway.cjs` (which already does live Keychain-token proxying) via a public Tailscale Funnel so
+Vercel could call it directly and never store a token at all — rejected: the gateway has no inbound auth
+of its own (trusts loopback-only binding as its security boundary), so funneling it to the public internet
+would let anyone who found the URL burn Jacob's subscription quota. A periodic local→Vercel sync avoids
+that entirely — no new public attack surface.
+
+Built `~/tools/sync-meta-tutor-token.sh`:
+- Reads the live access/refresh token pair from Keychain (same source as the AI gateway).
+- Skips work entirely if the access token hasn't changed since last run (state file at
+  `~/.meta-tutor-token-sync-state`) — avoids redeploying on every run when nothing's changed.
+- On a real change: `vercel env rm` + `vercel env add` for both `ANTHROPIC_AUTH_TOKEN` and
+  `ANTHROPIC_REFRESH_TOKEN`, on **both** `production` and `preview` (closing the Preview-was-empty gap
+  found above at the same time).
+- Triggers `vercel redeploy <url> --no-wait` on the latest Production deployment and the latest
+  `hub-shell` Preview deployment — `redeploy` rebuilds from that deployment's *original* git commit, not
+  whatever's in the local working tree, so this can never accidentally ship `hub-shell` code to
+  production or vice versa. Verified this directly: cross-checked the redeployed production build's commit
+  via `gh api .../deployments` against `git ls-remote origin main` — exact match, confirming no
+  cross-contamination.
+- **Bug found and fixed during testing**: `vercel ls` renders a completely different, unparseable output
+  format when its stdout isn't a TTY (which is always true for a script/launchd context) — dropped the
+  "Production"/"Preview" label onto its own line instead of alongside the URL. The first version of this
+  script silently got empty URLs and skipped the redeploy step with no error (a similar silent-failure
+  shape to the bug reported earlier in this session — caught by testing the script for real rather than
+  trusting it). Fixed by switching to `vercel ls --environment <env> -F json` (structured, TTY-independent),
+  filtering the Preview list specifically for `githubCommitRef == "hub-shell"`.
+- Registered as a LaunchAgent (`~/Library/LaunchAgents/com.cobo.meta-tutor-token-sync.plist`,
+  `StartInterval` 10800s = every 3 hours, well inside the observed ~7h token lifetime, `RunAtLoad` so it
+  also fires on login/reboot) — same pattern as this fleet's other periodic jobs (anchored to
+  `com.classpilot.assignment-alert.plist`), not the `KeepAlive` daemon pattern used by the AI gateway
+  itself (this is a one-shot-per-interval job, not a persistent server).
+
+### Real, load-bearing tradeoff — stated plainly, not buried
+This fix makes meta-tutor's AI features depend on **this Mac being on and Claude Code staying logged in**.
+If the Mac is off/asleep for longer than the access token's lifetime with no sync running, the deployed
+app's AI calls degrade back to 401s until the Mac comes back online and the LaunchAgent catches up (within
+3h of it waking, or immediately via `RunAtLoad` on unlock/login). This is the real cost of "subscription
+reuse" vs. a real API key — no code/architecture choice removes it, it's inherent to routing a cloud app's
+auth through a laptop's login session. Explicitly not hidden — this is what "wire it to the subscription"
+means in practice.
+
+### Verification
+Live-tested the actual credential end to end (not just plumbing): confirmed 401 on the stale stored token,
+confirmed 200 on a fresh Keychain-sourced token against the real Messages API, then pushed that exact
+fresh token through the real sync script into both environments and confirmed via `vercel env ls`/`pull`
+that it landed correctly. Both the Production and Preview (`hub-shell`) redeploys completed
+(`vercel inspect` → `Ready`) using their correct original source commits. Local dev/build not re-run this
+pass (no source code changed at all — this was entirely an infra/credentials fix). **Not yet verified**:
+Jacob has not yet re-tried the understanding-check live since this fix landed.
+
+### Proof Pointers
+New: `~/tools/sync-meta-tutor-token.sh`,
+`~/Library/LaunchAgents/com.cobo.meta-tutor-token-sync.plist`. No files changed inside
+`~/projects/meta-tutor` — purely a Vercel env var + redeploy fix, git history unaffected.
+
+### Next Steps
+1. **Jacob**: try the understanding-check again — this should be the one that actually works.
+2. Keep Claude Code logged in / this Mac reachable for the sync job to keep doing its job — if AI
+   features degrade again, `tail ~/logs/meta-tutor-token-sync.log` first before assuming a new bug.
+3. Everything else from prior entries' Next Steps still stands.

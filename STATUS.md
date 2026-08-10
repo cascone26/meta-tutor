@@ -1,7 +1,7 @@
 # Meta Tutor — Status
 
 ## Last Updated
-2026-08-09 (Root URL is now the hub landing page; Cris's chat moved to /metaphysics; understanding-check error surfacing fixed, still on hub-shell branch)
+2026-08-09 (AI calls actually work now — found + fixed a stale/never-refreshed OAuth token across both Production and Preview; automated the fix so it stays fixed)
 
 ## Current State
 - Live at `https://meta-tutor.vercel.app` (production, main branch — still Cris's course at root for now,
@@ -13,6 +13,14 @@
   teaching umbrella + chess + Cris's course) once `hub-shell` merges
 - Google login required for all routes
 - Uses Claude Haiku (via `CLAUDE_MODEL` env var) with rate limiting (75/day) and prompt caching
+- **AI auth: reuses Jacob's Claude Max subscription via OAuth (`ANTHROPIC_AUTH_TOKEN`/`ANTHROPIC_REFRESH_TOKEN`),
+  not a billed API key** — deliberate choice, confirmed with Jacob twice. Kept alive by
+  `~/tools/sync-meta-tutor-token.sh`, a LaunchAgent on Jacob's Mac (`com.cobo.meta-tutor-token-sync`, every
+  3h) that pulls the live token from this Mac's Keychain (same source `~/tools/ai-gateway.cjs` uses) and
+  pushes it to both Vercel environments + triggers redeploys. **Real dependency**: this Mac needs to stay
+  on / Claude Code needs to stay logged in for AI features to keep working — if they break again, check
+  `~/logs/meta-tutor-token-sync.log` before assuming a code bug. See PROCESS.md "Root Cause Found + Fixed"
+  (2026-08-09) for the full diagnostic trail.
 
 ## In Progress (branch `hub-shell`, NOT merged/deployed — claimed status only, not live)
 Turning Meta Tutor into a multi-subject hub: one login/app, subject-specific sub-apps branching off a
@@ -157,7 +165,8 @@ Study app with a strict no-cheat constraint — all features force active recall
 - Model: Claude Haiku (cheapest)
 - Rate limit: 75 requests/day
 - Prompt caching enabled
-- Shares TeacherKit API key with LessonDraft (consider separating)
+- $0 marginal API cost — runs on Jacob's Claude Max subscription via OAuth, not a billed key (see "AI auth"
+  above). The old "shares TeacherKit API key with LessonDraft" note was stale; there's no API key at all now.
 
 ## Stack
 Next.js 16, NextAuth (Google OAuth), Anthropic API (Claude Haiku), Tailwind CSS, TypeScript
