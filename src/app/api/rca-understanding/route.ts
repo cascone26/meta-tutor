@@ -8,6 +8,12 @@ export const maxDuration = 30;
 
 const anthropic = new Anthropic({ timeout: 25000 });
 
+function stripJsonFences(text: string): string {
+  const trimmed = text.trim();
+  const fenced = trimmed.match(/^```(?:json)?\s*([\s\S]*?)\s*```$/);
+  return fenced ? fenced[1] : trimmed;
+}
+
 const GENERATE_SYSTEM = `You are building a "do I actually understand this well enough to teach it" self-check for Jacob, a tutor at Regina Caeli Academy prepping for his next class. This tests JACOB's own mastery of the material he's about to teach — not generic trivia, not a kids' worksheet.
 
 Generate questions matched to the SUBJECT below:
@@ -47,7 +53,7 @@ export async function POST(req: NextRequest) {
       });
       const text = response.content[0].type === "text" ? response.content[0].text : "";
       try {
-        const parsed = JSON.parse(text);
+        const parsed = JSON.parse(stripJsonFences(text));
         if (!parsed.questions || !Array.isArray(parsed.questions) || parsed.questions.length === 0) {
           return Response.json({ questions: [], error: "Model returned no questions — try again." });
         }
@@ -72,7 +78,7 @@ export async function POST(req: NextRequest) {
       });
       const text = response.content[0].type === "text" ? response.content[0].text : "";
       try {
-        return Response.json(JSON.parse(text));
+        return Response.json(JSON.parse(stripJsonFences(text)));
       } catch {
         return Response.json({ result: "partial", feedback: text.slice(0, 300) });
       }
