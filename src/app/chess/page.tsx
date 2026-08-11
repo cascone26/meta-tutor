@@ -20,8 +20,9 @@ export default function ChessPage() {
       <div className="max-w-4xl mx-auto px-5 pt-8">
         <h1 className="text-xl font-semibold mb-1">Chess</h1>
         <p className="text-sm" style={{ color: "#8fae9a" }}>
-          Play against the engine. Every move you make gets checked against Stockfish's best line —
-          blunders and mistakes get logged automatically.
+          Play against a real Stockfish engine (0-20 skill, fully adjustable), or drill tactics in Puzzle mode.
+          Every move gets classified live — eval bar, move-quality tags, opening name, game review — and
+          the board is yours to customize: themes, piece sets, sound, hints, clocks.
         </p>
       </div>
 
