@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { ZeroLineIcon } from "./ZeroLineIcon";
+import { EXPLAIN_DIFFERENTLY_EVENT } from "./RiemannLessonViewer";
 
 const PROGRESS_KEY = "riemann-lesson-progress";
 
@@ -21,7 +22,7 @@ export default function RiemannAssistant() {
     if (open) endRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, open]);
 
-  async function send(content: string) {
+  const send = useCallback(async (content: string) => {
     if (!content.trim() || loading) return;
     const lessonN = Number(localStorage.getItem(PROGRESS_KEY)) || 1;
     const next = [...messages, { role: "user" as const, content: content.trim() }];
@@ -67,7 +68,16 @@ export default function RiemannAssistant() {
     } finally {
       setLoading(false);
     }
-  }
+  }, [messages, loading]);
+
+  useEffect(() => {
+    function onExplainDifferently() {
+      setOpen(true);
+      send("Can you explain this lesson's core idea a different way — a new analogy or angle? The current explanation isn't clicking.");
+    }
+    window.addEventListener(EXPLAIN_DIFFERENTLY_EVENT, onExplainDifferently);
+    return () => window.removeEventListener(EXPLAIN_DIFFERENTLY_EVENT, onExplainDifferently);
+  }, [send]);
 
   return (
     <>

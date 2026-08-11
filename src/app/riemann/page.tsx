@@ -3,6 +3,7 @@
 import { useState } from "react";
 import RiemannLessonViewer from "@/components/riemann/RiemannLessonViewer";
 import RiemannUnderstandingCheck from "@/components/riemann/RiemannUnderstandingCheck";
+import ReviewPicker from "@/components/riemann/ReviewPicker";
 
 export default function RiemannPage() {
   const [lessonN, setLessonN] = useState(1);
@@ -16,6 +17,7 @@ export default function RiemannPage() {
 
       <RiemannLessonViewer onLessonChange={setLessonN} />
       <RiemannUnderstandingCheck lessonN={lessonN} />
+      {lessonN > 1 && <ReviewPicker currentLessonN={lessonN - 1} />}
     </div>
   );
 }
