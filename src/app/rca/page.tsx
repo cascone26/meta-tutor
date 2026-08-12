@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { rcaClasses, rcaSchedule, gradingGuidelinesUrl, nextTeachingDay } from "@/lib/rca";
 import { rcaContent } from "@/lib/rca-content";
-import { SkyIcon, LeafIcon, ButterflyIcon } from "@/components/rca/NatureIcons";
+import { SkyIcon, LeafIcon, ButterflyIcon, CloudDoodle, TreeDoodle, FlowerDoodle } from "@/components/rca/NatureIcons";
 import Reveal from "@/components/Reveal";
 
 // Next-teaching-day needs a fresh Date() per request, not baked in at build time.
@@ -14,7 +14,17 @@ export default function RcaPage() {
   const nextLabel = next.toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric" });
 
   return (
-    <div className="max-w-2xl mx-auto px-5 py-8 pb-24">
+    <div className="relative">
+      {/* Doodle scene — sits in the page's own flow so it appears at the right narrative
+          depth as you scroll (clouds up top, tree mid-page, flowers down in the earthy zone). */}
+      <CloudDoodle size={90} className="hidden md:block absolute pointer-events-none" style={{ top: "1%", left: "3%", color: "#ffffff", opacity: 0.8, animation: "drift 45s linear infinite alternate" }} />
+      <CloudDoodle size={64} className="hidden md:block absolute pointer-events-none" style={{ top: "3.5%", right: "5%", color: "#ffffff", opacity: 0.7, animation: "drift 60s linear infinite alternate-reverse" }} />
+      <TreeDoodle size={130} className="hidden md:block absolute pointer-events-none" style={{ top: "44%", right: "2%", color: "#4f6a41", opacity: 0.55, animation: "sway 7s ease-in-out infinite", transformOrigin: "bottom center" }} />
+      <FlowerDoodle size={46} className="hidden md:block absolute pointer-events-none" style={{ top: "82%", left: "4%", color: "#7a5a8a", opacity: 0.65, animation: "sway 5s ease-in-out infinite", transformOrigin: "bottom center" }} />
+      <FlowerDoodle size={34} className="hidden md:block absolute pointer-events-none" style={{ top: "87%", left: "9%", color: "#c9843a", opacity: 0.6, animation: "sway 4.5s ease-in-out infinite 0.3s", transformOrigin: "bottom center" }} />
+      <FlowerDoodle size={40} className="hidden md:block absolute pointer-events-none" style={{ top: "90%", right: "5%", color: "#5a7a4a", opacity: 0.6, animation: "sway 5.5s ease-in-out infinite 0.6s", transformOrigin: "bottom center" }} />
+
+    <div className="max-w-2xl mx-auto px-5 py-8 pb-24 relative z-[1]">
       <div className="flex items-center gap-2 mb-1" style={{ animation: "fadeUpIn 0.6s cubic-bezier(0.16,1,0.3,1) both" }}>
         <ButterflyIcon size={24} style={{ color: "#3f7ea6", animation: "floatSlow 6s ease-in-out infinite" }} />
         <h1 className="text-2xl font-bold tracking-tight">Regina Caeli Academy</h1>
@@ -79,6 +89,7 @@ export default function RcaPage() {
           RCA Lower School Tutor Guidelines (grading, all subjects) →
         </a>
       </Reveal>
+    </div>
     </div>
   );
 }

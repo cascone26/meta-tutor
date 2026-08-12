@@ -41,3 +41,44 @@ export function SkyIcon({ size = 20, className, style }: IconProps) {
     </svg>
   );
 }
+
+// Decorative "doodle" illustrations for the RCA scene backdrop — same single-stroke
+// hand-drawn feel as the icons above, just bigger and meant to sit in the page's
+// margins as ambient scenery rather than as functional UI icons.
+
+export function CloudDoodle({ size = 20, className, style }: IconProps) {
+  return (
+    <svg width={size} height={size * 0.55} viewBox="0 0 40 22" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" className={className} style={style}>
+      <path d="M8 18a5.5 5.5 0 0 1 .3-11A7 7 0 0 1 21.5 5.2 6 6 0 0 1 30 10.5 5.5 5.5 0 0 1 29 18H8z" />
+    </svg>
+  );
+}
+
+export function TreeDoodle({ size = 20, className, style }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 60 70" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" className={className} style={style}>
+      <path d="M30 68V44" />
+      <path d="M30 55c-4-2-9-1-11 3M30 50c4-1.5 8-.5 10 2.5" />
+      <path
+        d="M30 44c-10 0-18-7-18-16 0-7 4.5-12.5 11-14C24 8 27.5 5 32 5.5c5 .5 8 4.5 7.5 9 5 .5 8.5 5 8.5 10 0 4-2 7.5-5.5 9.5C43 39.5 37 44 30 44z"
+      />
+      <path d="M20.5 15c.6-.7 1.6-.7 2.2 0M23.5 15c.6-.7 1.6-.7 2.2 0" />
+    </svg>
+  );
+}
+
+export function FlowerDoodle({ size = 20, className, style }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 32" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" className={className} style={style}>
+      <path d="M12 30v-11" />
+      <path d="M12 19c-2-1-4 0-4.5 2" />
+      <circle cx="12" cy="8.5" r="8" />
+      <circle cx="12" cy="6" r="2" />
+      <circle cx="8.5" cy="8.2" r="2" />
+      <circle cx="15.5" cy="8.2" r="2" />
+      <circle cx="9.6" cy="11.5" r="2" />
+      <circle cx="14.4" cy="11.5" r="2" />
+      <circle cx="12" cy="9" r="1.4" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}

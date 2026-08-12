@@ -8,8 +8,14 @@ export default function RcaLayout({ children }: { children: React.ReactNode }) {
     <div
       className="h-full overflow-y-auto relative"
       style={{
+        // backgroundAttachment: "local" is the actual fix here — without it, the
+        // gradient is pinned to the visible viewport frame of this scrolling box
+        // (CSS's default "scroll" attachment) and never visibly progresses as you
+        // scroll. "local" makes it scroll WITH the content across its full height,
+        // so you genuinely travel from sky-blue to earthy-green as you scroll down.
         background:
-          "linear-gradient(180deg, #9fd0f2 0%, #c3e4f7 10%, #e3f1fa 22%, #f8f6ee 36%, #f5f0dd 48%, #eef1d8 60%, #dde8bd 74%, #c3d9a0 88%, #a9c483 100%)",
+          "linear-gradient(180deg, #9fd0f2 0%, #c3e4f7 8%, #e3f1fa 18%, #f8f6ee 30%, #f5f0dd 42%, #eef1d8 55%, #dde8bd 68%, #c3d9a0 82%, #a9c483 94%, #8fae6e 100%)",
+        backgroundAttachment: "local",
         color: "#33402c",
       }}
     >

@@ -7,6 +7,8 @@ export type Subject = {
   accentDark: string;
   bg: string;
   status: "live" | "building";
+  /** Route stays live (Cris can still use /metaphysics directly) — just not listed on Jacob's hub. */
+  hiddenFromHub?: boolean;
 };
 
 // An "umbrella" owns multiple stations under one roof (e.g. RCA owns 10 classes) and
@@ -43,6 +45,7 @@ export const subjects: Subject[] = [
     accentDark: "#a594c0",
     bg: "#f8f7f4",
     status: "live",
+    hiddenFromHub: true,
   },
   {
     id: "chess",
