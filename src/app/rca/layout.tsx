@@ -13,8 +13,13 @@ export default function RcaLayout({ children }: { children: React.ReactNode }) {
         // (CSS's default "scroll" attachment) and never visibly progresses as you
         // scroll. "local" makes it scroll WITH the content across its full height,
         // so you genuinely travel from sky-blue to earthy-green as you scroll down.
+        //
+        // Stops are banded on purpose, not evenly spaced — real horizons don't
+        // fade sky into ground across the whole scene, sky holds its color for a
+        // stretch, then there's a genuinely quick crossover band, then ground
+        // holds its color. This mimics that instead of one long even blend.
         background:
-          "linear-gradient(180deg, #9fd0f2 0%, #c3e4f7 8%, #e3f1fa 18%, #f8f6ee 30%, #f5f0dd 42%, #eef1d8 55%, #dde8bd 68%, #c3d9a0 82%, #a9c483 94%, #8fae6e 100%)",
+          "linear-gradient(180deg, #8ec8ef 0%, #9fd0f2 20%, #a8d4f0 40%, #bfe0e6 48%, #ddeadb 54%, #e8edc6 60%, #d3dfa6 66%, #b3cc84 78%, #96b56a 90%, #82a259 100%)",
         backgroundAttachment: "local",
         color: "#33402c",
       }}

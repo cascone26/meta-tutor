@@ -154,6 +154,17 @@ body {
   0%, 100% { transform: rotate(0deg); }
   50% { transform: rotate(8deg); }
 }
+/* Ground crawl — horizontal-only drift, no rotation. Flying creatures (birds,
+   butterflies) get the wander paths with rotation; things that walk on the
+   ground (bugs, ants) look wrong tumbling through the air like that. */
+@keyframes crawl {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(26px); }
+}
+@keyframes antMarch {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-2px); }
+}
 @keyframes fallDown {
   from { transform: translateY(0); }
   to { transform: translateY(190px); }

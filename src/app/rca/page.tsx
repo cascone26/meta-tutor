@@ -3,7 +3,7 @@ import { rcaClasses, rcaSchedule, gradingGuidelinesUrl, nextTeachingDay } from "
 import { rcaContent } from "@/lib/rca-content";
 import {
   SkyIcon, LeafIcon, ButterflyIcon, BirdIcon,
-  CloudDoodle, TreeDoodle, FlowerDoodle, BugDoodle, AntHillDoodle, GroundLineDoodle,
+  CloudDoodle, TreeDoodle, FlowerDoodle, BugDoodle, AntHillDoodle, AntDoodle, PondDoodle, GroundLineDoodle,
 } from "@/components/rca/NatureIcons";
 import Reveal from "@/components/Reveal";
 import RcaDashboard from "@/components/rca/RcaDashboard";
@@ -33,21 +33,45 @@ export default function RcaPage() {
       <BirdIcon size={16} className="hidden md:block absolute pointer-events-none" style={{ top: "3%", right: "16%", color: "#4a7a8a", opacity: 0.55, animation: "wander3 10s ease-in-out infinite 0.3s", transform: "scaleX(-1)" }} />
       <BirdIcon size={12} className="hidden md:block absolute pointer-events-none" style={{ top: "10%", right: "28%", color: "#5a7a8a", opacity: 0.45, animation: "wander1 13s ease-in-out infinite 1.5s" }} />
 
-      {/* Middle zone — butterflies + bugs wander across a real path, not just bob */}
+      {/* Middle zone — only flying things (butterflies). Bugs/ants live on the
+          ground below, not up here — a ladybug tumbling through the air on a
+          rotating wander path just looked wrong. */}
       <ButterflyIcon size={26} className="hidden md:block absolute pointer-events-none" style={{ top: "26%", right: "3%", color: "#7a5a8a", opacity: 0.55, animation: "wander1 8s ease-in-out infinite" }} />
       <ButterflyIcon size={20} className="hidden md:block absolute pointer-events-none" style={{ top: "38%", left: "2%", color: "#c9843a", opacity: 0.5, animation: "wander2 10s ease-in-out infinite 0.6s" }} />
-      <BugDoodle size={22} className="hidden md:block absolute pointer-events-none" style={{ top: "50%", right: "6%", color: "#a04a4a", opacity: 0.5, animation: "wander3 7s ease-in-out infinite" }} />
       <ButterflyIcon size={18} className="hidden md:block absolute pointer-events-none" style={{ top: "60%", left: "5%", color: "#3f7ea6", opacity: 0.5, animation: "wander2 9s ease-in-out infinite 1.1s" }} />
       <ButterflyIcon size={16} className="hidden md:block absolute pointer-events-none" style={{ top: "18%", left: "40%", color: "#c9843a", opacity: 0.4, animation: "wander3 11s ease-in-out infinite 0.4s" }} />
-      <BugDoodle size={16} className="hidden md:block absolute pointer-events-none" style={{ top: "68%", left: "12%", color: "#5a7a4a", opacity: 0.45, animation: "wander1 8.5s ease-in-out infinite 0.9s" }} />
 
-      {/* Ground zone — tree, flowers, ant hill, all rooted on a ground line */}
+      {/* Ground zone — tree, pond further back, a real flower bed, and an ant hill
+          with an actual marching line instead of just a mound sitting there. */}
       <GroundLineDoodle size={340} className="hidden md:block absolute pointer-events-none" style={{ top: "92%", left: "0%", color: "#6b8e5a", opacity: 0.4 }} />
+
+      {/* Pond — smaller + more muted + higher up in the ground zone to read as further back */}
+      <PondDoodle size={150} className="hidden md:block absolute pointer-events-none" style={{ top: "74%", left: "8%", color: "#3f7ea6", opacity: 0.35 }} />
+
       <TreeDoodle size={130} className="hidden md:block absolute pointer-events-none" style={{ top: "76%", right: "2%", color: "#4f6a41", opacity: 0.55, animation: "sway 7s ease-in-out infinite", transformOrigin: "bottom center" }} />
+
+      {/* Ladybugs — crawling on the ground near the flowers, not flying */}
+      <BugDoodle size={20} className="hidden md:block absolute pointer-events-none" style={{ top: "89%", left: "30%", color: "#a04a4a", opacity: 0.55, animation: "crawl 6s ease-in-out infinite" }} />
+      <BugDoodle size={15} className="hidden md:block absolute pointer-events-none" style={{ top: "95%", left: "44%", color: "#5a7a4a", opacity: 0.5, animation: "crawl 7.5s ease-in-out infinite 1s" }} />
+
+      {/* Flower bed */}
       <FlowerDoodle size={46} className="hidden md:block absolute pointer-events-none" style={{ top: "88%", left: "4%", color: "#7a5a8a", opacity: 0.65, animation: "sway 5s ease-in-out infinite", transformOrigin: "bottom center" }} />
       <FlowerDoodle size={34} className="hidden md:block absolute pointer-events-none" style={{ top: "91%", left: "9%", color: "#c9843a", opacity: 0.6, animation: "sway 4.5s ease-in-out infinite 0.3s", transformOrigin: "bottom center" }} />
       <FlowerDoodle size={40} className="hidden md:block absolute pointer-events-none" style={{ top: "89%", right: "16%", color: "#5a7a4a", opacity: 0.6, animation: "sway 5.5s ease-in-out infinite 0.6s", transformOrigin: "bottom center" }} />
-      <AntHillDoodle size={56} className="hidden md:block absolute pointer-events-none" style={{ top: "93%", left: "20%", color: "#8a6a3a", opacity: 0.55 }} />
+      <FlowerDoodle size={30} className="hidden md:block absolute pointer-events-none" style={{ top: "94%", left: "34%", color: "#3f7ea6", opacity: 0.55, animation: "sway 5s ease-in-out infinite 0.5s", transformOrigin: "bottom center" }} />
+      <FlowerDoodle size={38} className="hidden md:block absolute pointer-events-none" style={{ top: "90%", right: "34%", color: "#c9843a", opacity: 0.6, animation: "sway 4.8s ease-in-out infinite 0.7s", transformOrigin: "bottom center" }} />
+      <FlowerDoodle size={26} className="hidden md:block absolute pointer-events-none" style={{ top: "96%", right: "6%", color: "#7a5a8a", opacity: 0.55, animation: "sway 5.3s ease-in-out infinite 0.2s", transformOrigin: "bottom center" }} />
+      <FlowerDoodle size={32} className="hidden md:block absolute pointer-events-none" style={{ top: "93%", left: "22%", color: "#5a7a4a", opacity: 0.55, animation: "sway 4.6s ease-in-out infinite 0.9s", transformOrigin: "bottom center" }} />
+
+      {/* Ant hill — bigger, more opaque, with an actual marching line of ants
+          trailing away from it instead of just sitting there empty */}
+      <AntHillDoodle size={92} className="hidden md:block absolute pointer-events-none" style={{ top: "90%", left: "18%", color: "#8a6a3a", opacity: 0.7 }} />
+      <AntDoodle size={14} className="hidden md:block absolute pointer-events-none" style={{ top: "96%", left: "24%", color: "#5a3a1a", opacity: 0.65, animation: "antMarch 0.5s ease-in-out infinite" }} />
+      <AntDoodle size={14} className="hidden md:block absolute pointer-events-none" style={{ top: "97%", left: "27%", color: "#5a3a1a", opacity: 0.65, animation: "antMarch 0.5s ease-in-out infinite 0.1s" }} />
+      <AntDoodle size={14} className="hidden md:block absolute pointer-events-none" style={{ top: "97.5%", left: "30.5%", color: "#5a3a1a", opacity: 0.6, animation: "antMarch 0.5s ease-in-out infinite 0.2s" }} />
+      <AntDoodle size={14} className="hidden md:block absolute pointer-events-none" style={{ top: "98%", left: "34%", color: "#5a3a1a", opacity: 0.6, animation: "antMarch 0.5s ease-in-out infinite 0.3s" }} />
+      <AntDoodle size={13} className="hidden md:block absolute pointer-events-none" style={{ top: "97.2%", left: "21%", color: "#5a3a1a", opacity: 0.6, animation: "antMarch 0.5s ease-in-out infinite 0.4s", transform: "scaleX(-1)" }} />
+      <AntDoodle size={13} className="hidden md:block absolute pointer-events-none" style={{ top: "98.3%", left: "17%", color: "#5a3a1a", opacity: 0.55, animation: "antMarch 0.5s ease-in-out infinite 0.5s", transform: "scaleX(-1)" }} />
 
     <div className="max-w-2xl mx-auto px-5 py-8 pb-24 relative z-[1]">
       <div className="flex items-center gap-2 mb-1" style={{ animation: "fadeUpIn 0.6s cubic-bezier(0.16,1,0.3,1) both" }}>

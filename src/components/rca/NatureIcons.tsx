@@ -130,6 +130,30 @@ export function AntHillDoodle({ size = 20, className, style }: IconProps) {
   );
 }
 
+export function AntDoodle({ size = 16, className, style }: IconProps) {
+  return (
+    <svg width={size} height={size * 0.5} viewBox="0 0 28 14" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" className={className} style={style}>
+      <circle cx="5" cy="7" r="2" />
+      <circle cx="13" cy="7" r="2.6" />
+      <circle cx="22" cy="7" r="3" />
+      <path d="M3.2 5c-1-1-1.8-1.3-2.8-1.2" />
+      <path d="M11 5l-2.5-2M11 7H7M11 9l-2.5 2" />
+      <path d="M20 5l2.5-2M20 9l2.5 2" />
+    </svg>
+  );
+}
+
+export function PondDoodle({ size = 20, className, style }: IconProps) {
+  return (
+    <svg width={size} height={size * 0.5} viewBox="0 0 60 30" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" className={className} style={style}>
+      <ellipse cx="30" cy="18" rx="26" ry="9" />
+      <path d="M12 16c3-1.2 5 1 8-.2M28 20c3-1.2 5 1 8-.2" />
+      <ellipse cx="41" cy="13.5" rx="5.5" ry="2.3" />
+      <path d="M41 13.5c0-1 .8-1.6 1.8-1.6" />
+    </svg>
+  );
+}
+
 export function FlameIcon({ size = 20, className, style }: IconProps) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className} style={style}>
