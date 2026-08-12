@@ -1,7 +1,10 @@
 import Link from "next/link";
 import { rcaClasses, rcaSchedule, gradingGuidelinesUrl, nextTeachingDay } from "@/lib/rca";
 import { rcaContent } from "@/lib/rca-content";
-import { SkyIcon, LeafIcon, ButterflyIcon, CloudDoodle, TreeDoodle, FlowerDoodle } from "@/components/rca/NatureIcons";
+import {
+  SkyIcon, LeafIcon, ButterflyIcon, BirdIcon,
+  CloudDoodle, TreeDoodle, FlowerDoodle, BugDoodle, AntHillDoodle, GroundLineDoodle,
+} from "@/components/rca/NatureIcons";
 import Reveal from "@/components/Reveal";
 
 // Next-teaching-day needs a fresh Date() per request, not baked in at build time.
@@ -15,14 +18,31 @@ export default function RcaPage() {
 
   return (
     <div className="relative">
-      {/* Doodle scene — sits in the page's own flow so it appears at the right narrative
-          depth as you scroll (clouds up top, tree mid-page, flowers down in the earthy zone). */}
-      <CloudDoodle size={90} className="hidden md:block absolute pointer-events-none" style={{ top: "1%", left: "3%", color: "#ffffff", opacity: 0.8, animation: "drift 45s linear infinite alternate" }} />
-      <CloudDoodle size={64} className="hidden md:block absolute pointer-events-none" style={{ top: "3.5%", right: "5%", color: "#ffffff", opacity: 0.7, animation: "drift 60s linear infinite alternate-reverse" }} />
-      <TreeDoodle size={130} className="hidden md:block absolute pointer-events-none" style={{ top: "44%", right: "2%", color: "#4f6a41", opacity: 0.55, animation: "sway 7s ease-in-out infinite", transformOrigin: "bottom center" }} />
-      <FlowerDoodle size={46} className="hidden md:block absolute pointer-events-none" style={{ top: "82%", left: "4%", color: "#7a5a8a", opacity: 0.65, animation: "sway 5s ease-in-out infinite", transformOrigin: "bottom center" }} />
-      <FlowerDoodle size={34} className="hidden md:block absolute pointer-events-none" style={{ top: "87%", left: "9%", color: "#c9843a", opacity: 0.6, animation: "sway 4.5s ease-in-out infinite 0.3s", transformOrigin: "bottom center" }} />
-      <FlowerDoodle size={40} className="hidden md:block absolute pointer-events-none" style={{ top: "90%", right: "5%", color: "#5a7a4a", opacity: 0.6, animation: "sway 5.5s ease-in-out infinite 0.6s", transformOrigin: "bottom center" }} />
+      {/* Doodle scene — sits in the page's own flow so each critter is where it'd actually
+          be: sky things up top, flying things through the middle, ground things at the
+          bottom in the earthy zone (a ground line to root them, tree/flowers/ant hill on it). */}
+
+      {/* Sky zone — clouds + birds */}
+      <CloudDoodle size={90} className="hidden md:block absolute pointer-events-none" style={{ top: "1%", left: "3%", color: "#ffffff", opacity: 0.85, animation: "drift 45s linear infinite alternate" }} />
+      <CloudDoodle size={64} className="hidden md:block absolute pointer-events-none" style={{ top: "3.5%", right: "5%", color: "#ffffff", opacity: 0.75, animation: "drift 60s linear infinite alternate-reverse" }} />
+      <CloudDoodle size={48} className="hidden md:block absolute pointer-events-none" style={{ top: "7%", left: "14%", color: "#ffffff", opacity: 0.6, animation: "drift 50s linear infinite alternate" }} />
+      <BirdIcon size={18} className="hidden md:block absolute pointer-events-none" style={{ top: "2.5%", left: "20%", color: "#2f5e7a", opacity: 0.6, animation: "bob 4s ease-in-out infinite" }} />
+      <BirdIcon size={14} className="hidden md:block absolute pointer-events-none" style={{ top: "5%", left: "24%", color: "#2f5e7a", opacity: 0.5, animation: "bob 4.5s ease-in-out infinite 0.5s" }} />
+      <BirdIcon size={16} className="hidden md:block absolute pointer-events-none" style={{ top: "3%", right: "16%", color: "#4a7a8a", opacity: 0.55, animation: "bob 5s ease-in-out infinite 0.2s", transform: "scaleX(-1)" }} />
+
+      {/* Middle zone — butterflies + bugs, between sky and ground */}
+      <ButterflyIcon size={26} className="hidden md:block absolute pointer-events-none" style={{ top: "26%", right: "3%", color: "#7a5a8a", opacity: 0.55, animation: "floatSlow 8s ease-in-out infinite" }} />
+      <ButterflyIcon size={20} className="hidden md:block absolute pointer-events-none" style={{ top: "38%", left: "2%", color: "#c9843a", opacity: 0.5, animation: "floatSlower 9s ease-in-out infinite 0.4s" }} />
+      <BugDoodle size={22} className="hidden md:block absolute pointer-events-none" style={{ top: "50%", right: "6%", color: "#a04a4a", opacity: 0.5, animation: "bob 5s ease-in-out infinite" }} />
+      <ButterflyIcon size={18} className="hidden md:block absolute pointer-events-none" style={{ top: "60%", left: "5%", color: "#3f7ea6", opacity: 0.5, animation: "floatSlow 7s ease-in-out infinite 0.6s" }} />
+
+      {/* Ground zone — tree, flowers, ant hill, all rooted on a ground line */}
+      <GroundLineDoodle size={340} className="hidden md:block absolute pointer-events-none" style={{ top: "92%", left: "0%", color: "#6b8e5a", opacity: 0.4 }} />
+      <TreeDoodle size={130} className="hidden md:block absolute pointer-events-none" style={{ top: "76%", right: "2%", color: "#4f6a41", opacity: 0.55, animation: "sway 7s ease-in-out infinite", transformOrigin: "bottom center" }} />
+      <FlowerDoodle size={46} className="hidden md:block absolute pointer-events-none" style={{ top: "88%", left: "4%", color: "#7a5a8a", opacity: 0.65, animation: "sway 5s ease-in-out infinite", transformOrigin: "bottom center" }} />
+      <FlowerDoodle size={34} className="hidden md:block absolute pointer-events-none" style={{ top: "91%", left: "9%", color: "#c9843a", opacity: 0.6, animation: "sway 4.5s ease-in-out infinite 0.3s", transformOrigin: "bottom center" }} />
+      <FlowerDoodle size={40} className="hidden md:block absolute pointer-events-none" style={{ top: "89%", right: "16%", color: "#5a7a4a", opacity: 0.6, animation: "sway 5.5s ease-in-out infinite 0.6s", transformOrigin: "bottom center" }} />
+      <AntHillDoodle size={56} className="hidden md:block absolute pointer-events-none" style={{ top: "93%", left: "20%", color: "#8a6a3a", opacity: 0.55 }} />
 
     <div className="max-w-2xl mx-auto px-5 py-8 pb-24 relative z-[1]">
       <div className="flex items-center gap-2 mb-1" style={{ animation: "fadeUpIn 0.6s cubic-bezier(0.16,1,0.3,1) both" }}>

@@ -82,3 +82,36 @@ export function FlowerDoodle({ size = 20, className, style }: IconProps) {
     </svg>
   );
 }
+
+export function BugDoodle({ size = 20, className, style }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" className={className} style={style}>
+      <circle cx="12" cy="14" r="7" />
+      <circle cx="12" cy="5.5" r="2.8" />
+      <path d="M12 7.5v13.5" />
+      <path d="M7 10l-3-2M17 10l3-2M6 16l-3 1M18 16l3 1" />
+      <circle cx="8.7" cy="12.5" r="1" fill="currentColor" stroke="none" />
+      <circle cx="15.3" cy="12.5" r="1" fill="currentColor" stroke="none" />
+      <circle cx="12" cy="17.5" r="1" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+
+export function AntHillDoodle({ size = 20, className, style }: IconProps) {
+  return (
+    <svg width={size} height={size * 0.7} viewBox="0 0 40 28" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" className={className} style={style}>
+      <path d="M4 24c8-1 24-1 32 0" />
+      <path d="M9 24c.5-9 6-16 11-16s10.5 7 11 16" />
+      <circle cx="20" cy="16" r="1.1" fill="currentColor" stroke="none" />
+      <path d="M2 24l2.5-2M4.5 24l-1.5-3" />
+    </svg>
+  );
+}
+
+export function GroundLineDoodle({ size = 20, className, style }: IconProps) {
+  return (
+    <svg width={size} height={size * 0.05} viewBox="0 0 300 12" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" preserveAspectRatio="none" className={className} style={style}>
+      <path d="M0 7c30-4 60 4 90 0s60-6 90-1 60 5 90 0 30-3 30-3" />
+    </svg>
+  );
+}

@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { subjects, umbrellas } from "@/lib/subjects";
-import { nextTeachingDay, rcaSchedule } from "@/lib/rca";
 
 type ThemeId = "dark" | "light";
 
@@ -11,7 +10,7 @@ const THEMES: Record<ThemeId, {
   pageBg: string; text: string; eyebrow: string; muted: string; headlineGradient: string;
   cardBg: string; cardBorder: string; badgeBg: string; badgeText: string;
   toggleBg: string; toggleBorder: string; toggleIcon: string;
-  orb1: string; orb2: string; orb3: string; chipBg: string; chipBorder: string; chipText: string;
+  orb1: string; orb2: string; orb3: string;
 }> = {
   dark: {
     pageBg: "radial-gradient(ellipse 120% 80% at 50% -10%, #1c1f2e 0%, #0a0a0d 55%, #060607 100%)",
@@ -21,7 +20,6 @@ const THEMES: Record<ThemeId, {
     badgeBg: "rgba(255,255,255,0.06)", badgeText: "#8a8580",
     toggleBg: "rgba(255,255,255,0.06)", toggleBorder: "rgba(255,255,255,0.12)", toggleIcon: "#e0c07a",
     orb1: "#3f6b4f66", orb2: "#7c6b9a5c", orb3: "#c9a24d44",
-    chipBg: "rgba(255,255,255,0.05)", chipBorder: "rgba(255,255,255,0.1)", chipText: "#b8c8dc",
   },
   light: {
     pageBg: "radial-gradient(ellipse 120% 80% at 50% -10%, #eef4fb 0%, #f6f4ee 55%, #fbfaf6 100%)",
@@ -31,7 +29,6 @@ const THEMES: Record<ThemeId, {
     badgeBg: "rgba(30,32,40,0.06)", badgeText: "#6b7280",
     toggleBg: "rgba(30,32,40,0.05)", toggleBorder: "rgba(30,32,40,0.1)", toggleIcon: "#c9843a",
     orb1: "#3f6b4f2e", orb2: "#7c6b9a28", orb3: "#c9a24d2e",
-    chipBg: "rgba(255,255,255,0.55)", chipBorder: "rgba(30,32,40,0.08)", chipText: "#46536b",
   },
 };
 
@@ -58,9 +55,6 @@ export default function HubContent({ firstName }: { firstName: string | null }) 
 
   const t = THEMES[theme];
   const visibleSubjects = subjects.filter((s) => !s.hiddenFromHub);
-  const next = nextTeachingDay();
-  const nextLabel = next.toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric" });
-  const isToday = next.toDateString() === new Date().toDateString();
 
   return (
     <div
@@ -88,21 +82,19 @@ export default function HubContent({ firstName }: { firstName: string | null }) 
           </p>
           <h1
             className="text-4xl font-bold mb-3 tracking-tight"
-            style={{ background: t.headlineGradient, WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent" }}
+            style={{
+              backgroundImage: t.headlineGradient,
+              WebkitBackgroundClip: "text",
+              backgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              color: "transparent",
+            }}
           >
             {mounted && firstName ? `${greeting}, ${firstName}.` : "Where to today?"}
           </h1>
           <p className="text-sm" style={{ color: t.muted }}>
             {mounted && firstName ? "Where to today?" : "Pick a subject. Each one tracks your progress and tells you what to work on."}
           </p>
-        </div>
-
-        <div
-          className="flex items-center justify-center gap-2 text-xs mb-8 mx-auto w-fit px-4 py-2 rounded-full"
-          style={{ background: t.chipBg, border: `1px solid ${t.chipBorder}`, color: t.chipText, animation: "fadeUpIn 0.6s cubic-bezier(0.16,1,0.3,1) 60ms both" }}
-        >
-          <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: isToday ? "#7ac48a" : t.chipText, boxShadow: isToday ? "0 0 8px #7ac48a" : "none" }} />
-          {isToday ? "You're on campus today" : "Next at RCA"}: {nextLabel} · {rcaSchedule.startTime}–{rcaSchedule.endTime}
         </div>
 
         {umbrellas.length > 0 && (
