@@ -3,11 +3,14 @@
 import { useEffect, useState } from "react";
 import { FlameIcon } from "./NatureIcons";
 
+type ModeStat = { mode: string; label: string; count: number; avgPercentage: number };
+
 type Progress = {
   streak: { current: number; longest: number; activeToday: boolean };
   last14: { date: string; weekday: string; active: boolean }[];
   totalSessions: number;
   topWeakAreas: string[];
+  modeStats: ModeStat[];
 };
 
 // The "tracking, streaks, days" dashboard — aggregates across ALL RCA classes
@@ -36,7 +39,8 @@ export default function RcaDashboard() {
     );
   }
 
-  const { streak, last14, topWeakAreas } = progress;
+  const { streak, last14, topWeakAreas, modeStats } = progress;
+  const bestMode = modeStats.length > 1 ? [...modeStats].sort((a, b) => b.avgPercentage - a.avgPercentage)[0] : null;
 
   return (
     <div
@@ -71,6 +75,26 @@ export default function RcaDashboard() {
           </div>
         ))}
       </div>
+
+      {modeStats.length > 0 && (
+        <div style={{ borderTop: "1px solid #e6e0d0" }} className="pt-3 mb-3">
+          <p className="text-xs font-semibold mb-1.5" style={{ color: "#2f5e7a" }}>
+            What you're actually using
+            {bestMode && <span style={{ color: "#8a9a7c", fontWeight: 400 }}> — {bestMode.label} is working best ({bestMode.avgPercentage}%)</span>}
+          </p>
+          <div className="space-y-1">
+            {modeStats.map((m) => (
+              <div key={m.mode} className="flex items-center gap-2 text-xs">
+                <span className="w-28 shrink-0" style={{ color: "#3a4a34" }}>{m.label}</span>
+                <div className="flex-1 rounded-full overflow-hidden" style={{ height: 6, background: "rgba(107,142,90,0.15)" }}>
+                  <div style={{ width: `${m.avgPercentage}%`, height: "100%", background: m.mode === bestMode?.mode ? "#c9843a" : "#6b8e5a" }} />
+                </div>
+                <span style={{ color: "#8a9a7c", width: 60, textAlign: "right" }}>{m.count}× · {m.avgPercentage}%</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {topWeakAreas.length > 0 && (
         <div style={{ borderTop: "1px solid #e6e0d0" }} className="pt-3">

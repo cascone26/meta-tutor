@@ -4,7 +4,15 @@ import { getSupabase } from "@/lib/supabase";
 import { rcaClasses } from "@/lib/rca";
 import { computeStreak } from "@/lib/rca-streak";
 
-type HistoryRow = { subject: string; weak_categories: string[]; created_at: string };
+type HistoryRow = { subject: string; mode: string; weak_categories: string[]; created_at: string; percentage: number };
+
+const MODE_LABEL: Record<string, string> = {
+  "understanding-check": "Understanding check",
+  "speed-drill": "Speed drill",
+  "multiple-choice": "Multiple choice",
+  match: "Match",
+  gravity: "Gravity",
+};
 
 export async function GET() {
   const session = await auth();
@@ -15,7 +23,7 @@ export async function GET() {
 
   const { data, error } = await supabase
     .from("mt_quiz_history")
-    .select("subject, weak_categories, created_at")
+    .select("subject, mode, weak_categories, created_at, percentage")
     .eq("user_email", session.user.email)
     .in("subject", subjects)
     .order("created_at", { ascending: false })
@@ -44,5 +52,22 @@ export async function GET() {
   }
   const topWeakAreas = Object.entries(catCounts).sort((a, b) => b[1] - a[1]).slice(0, 6).map(([c]) => c);
 
-  return NextResponse.json({ streak, last14, totalSessions: rows.length, topWeakAreas });
+  // Per-mode breakdown — "what am I actually using, and what's working" —
+  // count + average accuracy per practice mode across every class.
+  const modeAgg: Record<string, { count: number; sumPct: number }> = {};
+  for (const r of rows) {
+    if (!modeAgg[r.mode]) modeAgg[r.mode] = { count: 0, sumPct: 0 };
+    modeAgg[r.mode].count += 1;
+    modeAgg[r.mode].sumPct += r.percentage;
+  }
+  const modeStats = Object.entries(modeAgg)
+    .map(([mode, v]) => ({
+      mode,
+      label: MODE_LABEL[mode] || mode,
+      count: v.count,
+      avgPercentage: Math.round(v.sumPct / v.count),
+    }))
+    .sort((a, b) => b.count - a.count);
+
+  return NextResponse.json({ streak, last14, totalSessions: rows.length, topWeakAreas, modeStats });
 }

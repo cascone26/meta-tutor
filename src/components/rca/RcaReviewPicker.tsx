@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { rcaClasses } from "@/lib/rca";
 import { rcaContent } from "@/lib/rca-content";
-import UnderstandingCheck from "./UnderstandingCheck";
+import PracticeHub from "./PracticeHub";
 import { LeafIcon } from "./NatureIcons";
 
 // Cross-class spaced review — the RCA equivalent of the Riemann station's
@@ -59,7 +59,7 @@ export default function RcaReviewPicker() {
       </div>
 
       {cls && lessonN !== null && (
-        <UnderstandingCheck key={`${cls.id}-${lessonN}`} subjectId={cls.id} subjectName={cls.name} lessonN={lessonN} />
+        <PracticeHub key={`${cls.id}-${lessonN}`} subjectId={cls.id} subjectName={cls.name} lessonN={lessonN} />
       )}
     </div>
   );

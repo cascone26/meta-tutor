@@ -11,7 +11,7 @@ type Phase = "idle" | "loading" | "card" | "done" | "error";
 // separate from the slower AI-graded "Test my understanding". Games teach retrieval
 // speed under mild time pressure; the comprehension check tests depth. Different
 // research-backed mechanics, kept as different modes rather than one blended thing.
-export default function SpeedDrill({ subjectId, subjectName }: { subjectId: string; subjectName: string }) {
+export default function SpeedDrill({ subjectId, subjectName, lessonN }: { subjectId: string; subjectName: string; lessonN?: number }) {
   const progressKey = `rca-${subjectId}`;
   const [phase, setPhase] = useState<Phase>("idle");
   const [errorMsg, setErrorMsg] = useState("");
@@ -37,7 +37,7 @@ export default function SpeedDrill({ subjectId, subjectName }: { subjectId: stri
       const res = await fetch("/api/rca-understanding", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action: "generate", subjectId }),
+        body: JSON.stringify({ action: "generate", subjectId, lessonN }),
       });
       const data = await res.json();
       if (!res.ok || data.error || !data.questions?.length) {

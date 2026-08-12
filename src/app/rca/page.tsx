@@ -24,19 +24,22 @@ export default function RcaPage() {
           be: sky things up top, flying things through the middle, ground things at the
           bottom in the earthy zone (a ground line to root them, tree/flowers/ant hill on it). */}
 
-      {/* Sky zone — clouds + birds */}
-      <CloudDoodle size={90} className="hidden md:block absolute pointer-events-none" style={{ top: "1%", left: "3%", color: "#ffffff", opacity: 0.85, animation: "drift 45s linear infinite alternate" }} />
-      <CloudDoodle size={64} className="hidden md:block absolute pointer-events-none" style={{ top: "3.5%", right: "5%", color: "#ffffff", opacity: 0.75, animation: "drift 60s linear infinite alternate-reverse" }} />
-      <CloudDoodle size={48} className="hidden md:block absolute pointer-events-none" style={{ top: "7%", left: "14%", color: "#ffffff", opacity: 0.6, animation: "drift 50s linear infinite alternate" }} />
-      <BirdIcon size={18} className="hidden md:block absolute pointer-events-none" style={{ top: "2.5%", left: "20%", color: "#2f5e7a", opacity: 0.6, animation: "bob 4s ease-in-out infinite" }} />
-      <BirdIcon size={14} className="hidden md:block absolute pointer-events-none" style={{ top: "5%", left: "24%", color: "#2f5e7a", opacity: 0.5, animation: "bob 4.5s ease-in-out infinite 0.5s" }} />
-      <BirdIcon size={16} className="hidden md:block absolute pointer-events-none" style={{ top: "3%", right: "16%", color: "#4a7a8a", opacity: 0.55, animation: "bob 5s ease-in-out infinite 0.2s", transform: "scaleX(-1)" }} />
+      {/* Sky zone — clouds drift, birds actually fly wandering loops */}
+      <CloudDoodle size={90} className="hidden md:block absolute pointer-events-none" style={{ top: "1%", left: "3%", color: "#ffffff", opacity: 0.85, animation: "drift 32s linear infinite alternate" }} />
+      <CloudDoodle size={64} className="hidden md:block absolute pointer-events-none" style={{ top: "3.5%", right: "5%", color: "#ffffff", opacity: 0.75, animation: "drift 40s linear infinite alternate-reverse" }} />
+      <CloudDoodle size={48} className="hidden md:block absolute pointer-events-none" style={{ top: "7%", left: "14%", color: "#ffffff", opacity: 0.6, animation: "drift 36s linear infinite alternate" }} />
+      <BirdIcon size={18} className="hidden md:block absolute pointer-events-none" style={{ top: "2.5%", left: "20%", color: "#2f5e7a", opacity: 0.6, animation: "wander1 9s ease-in-out infinite" }} />
+      <BirdIcon size={14} className="hidden md:block absolute pointer-events-none" style={{ top: "5%", left: "24%", color: "#2f5e7a", opacity: 0.5, animation: "wander2 11s ease-in-out infinite 0.8s" }} />
+      <BirdIcon size={16} className="hidden md:block absolute pointer-events-none" style={{ top: "3%", right: "16%", color: "#4a7a8a", opacity: 0.55, animation: "wander3 10s ease-in-out infinite 0.3s", transform: "scaleX(-1)" }} />
+      <BirdIcon size={12} className="hidden md:block absolute pointer-events-none" style={{ top: "10%", right: "28%", color: "#5a7a8a", opacity: 0.45, animation: "wander1 13s ease-in-out infinite 1.5s" }} />
 
-      {/* Middle zone — butterflies + bugs, between sky and ground */}
-      <ButterflyIcon size={26} className="hidden md:block absolute pointer-events-none" style={{ top: "26%", right: "3%", color: "#7a5a8a", opacity: 0.55, animation: "floatSlow 8s ease-in-out infinite" }} />
-      <ButterflyIcon size={20} className="hidden md:block absolute pointer-events-none" style={{ top: "38%", left: "2%", color: "#c9843a", opacity: 0.5, animation: "floatSlower 9s ease-in-out infinite 0.4s" }} />
-      <BugDoodle size={22} className="hidden md:block absolute pointer-events-none" style={{ top: "50%", right: "6%", color: "#a04a4a", opacity: 0.5, animation: "bob 5s ease-in-out infinite" }} />
-      <ButterflyIcon size={18} className="hidden md:block absolute pointer-events-none" style={{ top: "60%", left: "5%", color: "#3f7ea6", opacity: 0.5, animation: "floatSlow 7s ease-in-out infinite 0.6s" }} />
+      {/* Middle zone — butterflies + bugs wander across a real path, not just bob */}
+      <ButterflyIcon size={26} className="hidden md:block absolute pointer-events-none" style={{ top: "26%", right: "3%", color: "#7a5a8a", opacity: 0.55, animation: "wander1 8s ease-in-out infinite" }} />
+      <ButterflyIcon size={20} className="hidden md:block absolute pointer-events-none" style={{ top: "38%", left: "2%", color: "#c9843a", opacity: 0.5, animation: "wander2 10s ease-in-out infinite 0.6s" }} />
+      <BugDoodle size={22} className="hidden md:block absolute pointer-events-none" style={{ top: "50%", right: "6%", color: "#a04a4a", opacity: 0.5, animation: "wander3 7s ease-in-out infinite" }} />
+      <ButterflyIcon size={18} className="hidden md:block absolute pointer-events-none" style={{ top: "60%", left: "5%", color: "#3f7ea6", opacity: 0.5, animation: "wander2 9s ease-in-out infinite 1.1s" }} />
+      <ButterflyIcon size={16} className="hidden md:block absolute pointer-events-none" style={{ top: "18%", left: "40%", color: "#c9843a", opacity: 0.4, animation: "wander3 11s ease-in-out infinite 0.4s" }} />
+      <BugDoodle size={16} className="hidden md:block absolute pointer-events-none" style={{ top: "68%", left: "12%", color: "#5a7a4a", opacity: 0.45, animation: "wander1 8.5s ease-in-out infinite 0.9s" }} />
 
       {/* Ground zone — tree, flowers, ant hill, all rooted on a ground line */}
       <GroundLineDoodle size={340} className="hidden md:block absolute pointer-events-none" style={{ top: "92%", left: "0%", color: "#6b8e5a", opacity: 0.4 }} />

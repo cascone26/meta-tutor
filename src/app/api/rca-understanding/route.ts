@@ -27,6 +27,33 @@ Respond with ONLY valid JSON, no markdown fences: {"result":"correct"|"partial"|
 - partial: right idea but missing something specific or has a minor error
 - incorrect: wrong, or doesn't address the actual question`;
 
+// Short term/fact pairs — built for game modes (Match, Gravity-typing) where the
+// answer has to be short enough to click-match or type under time pressure. This
+// maps directly onto how memory-work-heavy this curriculum actually is: Latin
+// vocabulary, Catechism facts, phonogram sounds, historical names/dates.
+const GENERATE_SHORT_SYSTEM = `You are building short flashcard-style term/fact pairs from ONE lesson, for Jacob (a tutor at Regina Caeli Academy) to drill against for speed.
+
+Generate 6 pairs matched to the SUBJECT:
+- Math (Saxon): a short math fact/term and its value or one-line rule.
+- Latin / LOE: a specific Latin word/saying/phonogram and its short translation/meaning (NOT a full sentence).
+- Religion / History / Science: a specific term, name, date, or fact and a short answer (1-5 words).
+- Music: a term (hymn title, notation symbol) and its short meaning.
+
+CRITICAL: every "answer" must be SHORT — ideally 1-4 words, never more than 6. These get typed under a countdown timer, so long answers make the game unplayable. If the real answer is naturally longer, pick the single most essential word/phrase instead.
+
+Respond with ONLY valid JSON, no markdown fences: {"cards":[{"term":"...","answer":"..."}]}
+Exactly 6 cards, no duplicates.`;
+
+// Multiple-choice — same underlying question style as the open-ended check, but
+// with 3 plausible wrong answers so it can be a fast click-through quiz instead of
+// typed/AI-graded. Distractors should be genuinely plausible, not obviously wrong.
+const GENERATE_MC_SYSTEM = `You are building a multiple-choice quiz from ONE lesson, for Jacob (a tutor at Regina Caeli Academy) prepping to teach it.
+
+Generate 5 questions matched to the SUBJECT (math problems for Saxon, grammar/translation for Latin/LOE, content facts for Religion/History/Science, hymn/notation facts for Music). Each question needs exactly 4 answer options where exactly ONE is correct and the other 3 are plausible, specific, real wrong answers (not jokes, not "none of the above") — the kind a tutor could actually second-guess.
+
+Respond with ONLY valid JSON, no markdown fences: {"questions":[{"question":"...","options":["...","...","...","..."],"correctIndex":0}]}
+correctIndex is 0-3, the index of the right option within that question's options array. Shuffle which index is correct across questions — don't always put it first.`;
+
 export async function POST(req: NextRequest) {
   const session = await auth();
   if (!session) return new Response("Unauthorized", { status: 401 });
@@ -46,6 +73,46 @@ export async function POST(req: NextRequest) {
         max_tokens: 1024,
         system: GENERATE_SYSTEM,
         messages: [{ role: "user", content: `${grounding}\n\nGenerate the 4-question self-check for the ${label} above. JSON only.` }],
+      });
+      const text = response.content[0].type === "text" ? response.content[0].text : "";
+      try {
+        const parsed = JSON.parse(stripJsonFences(text));
+        if (!parsed.questions || !Array.isArray(parsed.questions) || parsed.questions.length === 0) {
+          return Response.json({ questions: [], error: "Model returned no questions — try again." });
+        }
+        return Response.json(parsed);
+      } catch {
+        return Response.json({ questions: [], error: `Couldn't parse the model's response: "${text.slice(0, 150)}"` });
+      }
+    }
+
+    if (body.action === "generate-short") {
+      const grounding = buildClassGrounding(body.subjectId, body.lessonN);
+      const response = await anthropic.messages.create({
+        model: process.env.CLAUDE_MODEL || "claude-haiku-4-5-20251001",
+        max_tokens: 700,
+        system: GENERATE_SHORT_SYSTEM,
+        messages: [{ role: "user", content: `${grounding}\n\nGenerate the 6 short term/fact cards for this lesson. JSON only.` }],
+      });
+      const text = response.content[0].type === "text" ? response.content[0].text : "";
+      try {
+        const parsed = JSON.parse(stripJsonFences(text));
+        if (!parsed.cards || !Array.isArray(parsed.cards) || parsed.cards.length === 0) {
+          return Response.json({ cards: [], error: "Model returned no cards — try again." });
+        }
+        return Response.json(parsed);
+      } catch {
+        return Response.json({ cards: [], error: `Couldn't parse the model's response: "${text.slice(0, 150)}"` });
+      }
+    }
+
+    if (body.action === "generate-mc") {
+      const grounding = buildClassGrounding(body.subjectId, body.lessonN);
+      const response = await anthropic.messages.create({
+        model: process.env.CLAUDE_MODEL || "claude-haiku-4-5-20251001",
+        max_tokens: 1400,
+        system: GENERATE_MC_SYSTEM,
+        messages: [{ role: "user", content: `${grounding}\n\nGenerate the 5-question multiple-choice quiz for this lesson. JSON only.` }],
       });
       const text = response.content[0].type === "text" ? response.content[0].text : "";
       try {
