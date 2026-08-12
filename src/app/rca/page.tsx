@@ -217,7 +217,7 @@ export default function RcaPage() {
           { size: 30, top: "44%", left: "48%", right: undefined, color: "#3f7ea6", d: "5s", delay: "0.5s" },
           { size: 34, top: "58%", left: "60%", right: undefined, color: "#c9843a", d: "4.5s", delay: "0.3s" },
           { size: 38, top: "46%", left: "70%", right: undefined, color: "#c9843a", d: "4.8s", delay: "0.7s" },
-          { size: 26, top: "78%", left: "83%", right: undefined, color: "#7a5a8a", d: "5.3s", delay: "0.2s" },
+          { size: 26, top: "78%", left: "73%", right: undefined, color: "#7a5a8a", d: "5.3s", delay: "0.2s" },
         ] as { size: number; top: string; left?: string; right?: string; color: string; d: string; delay: string }[]).map((f, i) => (
           <div key={i}>
             <div
