@@ -45,33 +45,83 @@ export default function RcaPage() {
           with an actual marching line instead of just a mound sitting there. */}
       <GroundLineDoodle size={340} className="hidden md:block absolute pointer-events-none" style={{ top: "92%", left: "0%", color: "#6b8e5a", opacity: 0.4 }} />
 
-      {/* Pond — smaller + more muted + higher up in the ground zone to read as further back */}
-      <PondDoodle size={150} className="hidden md:block absolute pointer-events-none" style={{ top: "74%", left: "8%", color: "#3f7ea6", opacity: 0.35 }} />
+      {/* Pond — smaller + muted for "further back," but pulled down to overlap the
+          same ground cluster as everything else instead of floating alone in
+          its own separate zone well above the rest, plus a soft contact shadow */}
+      <PondDoodle
+        size={150}
+        className="hidden md:block absolute pointer-events-none"
+        style={{ top: "81%", left: "6%", color: "#3f7ea6", opacity: 0.38, filter: "drop-shadow(2px 5px 4px rgba(20,40,50,0.15))" }}
+      />
 
-      <TreeDoodle size={130} className="hidden md:block absolute pointer-events-none" style={{ top: "76%", right: "2%", color: "#4f6a41", opacity: 0.55, animation: "sway 7s ease-in-out infinite", transformOrigin: "bottom center" }} />
+      <TreeDoodle
+        size={130}
+        className="hidden md:block absolute pointer-events-none"
+        style={{ top: "76%", right: "2%", color: "#4f6a41", opacity: 0.55, animation: "sway 7s ease-in-out infinite", transformOrigin: "bottom center", filter: "drop-shadow(3px 10px 5px rgba(20,30,10,0.22))" }}
+      />
 
       {/* Ladybugs — crawling on the ground near the flowers, not flying */}
       <BugDoodle size={20} className="hidden md:block absolute pointer-events-none" style={{ top: "89%", left: "30%", color: "#a04a4a", opacity: 0.55, animation: "crawl 6s ease-in-out infinite" }} />
       <BugDoodle size={15} className="hidden md:block absolute pointer-events-none" style={{ top: "95%", left: "44%", color: "#5a7a4a", opacity: 0.5, animation: "crawl 7.5s ease-in-out infinite 1s" }} />
 
-      {/* Flower bed */}
-      <FlowerDoodle size={46} className="hidden md:block absolute pointer-events-none" style={{ top: "88%", left: "4%", color: "#7a5a8a", opacity: 0.65, animation: "sway 5s ease-in-out infinite", transformOrigin: "bottom center" }} />
-      <FlowerDoodle size={34} className="hidden md:block absolute pointer-events-none" style={{ top: "91%", left: "9%", color: "#c9843a", opacity: 0.6, animation: "sway 4.5s ease-in-out infinite 0.3s", transformOrigin: "bottom center" }} />
-      <FlowerDoodle size={40} className="hidden md:block absolute pointer-events-none" style={{ top: "89%", right: "16%", color: "#5a7a4a", opacity: 0.6, animation: "sway 5.5s ease-in-out infinite 0.6s", transformOrigin: "bottom center" }} />
-      <FlowerDoodle size={30} className="hidden md:block absolute pointer-events-none" style={{ top: "94%", left: "34%", color: "#3f7ea6", opacity: 0.55, animation: "sway 5s ease-in-out infinite 0.5s", transformOrigin: "bottom center" }} />
-      <FlowerDoodle size={38} className="hidden md:block absolute pointer-events-none" style={{ top: "90%", right: "34%", color: "#c9843a", opacity: 0.6, animation: "sway 4.8s ease-in-out infinite 0.7s", transformOrigin: "bottom center" }} />
-      <FlowerDoodle size={26} className="hidden md:block absolute pointer-events-none" style={{ top: "96%", right: "6%", color: "#7a5a8a", opacity: 0.55, animation: "sway 5.3s ease-in-out infinite 0.2s", transformOrigin: "bottom center" }} />
-      <FlowerDoodle size={32} className="hidden md:block absolute pointer-events-none" style={{ top: "93%", left: "22%", color: "#5a7a4a", opacity: 0.55, animation: "sway 4.6s ease-in-out infinite 0.9s", transformOrigin: "bottom center" }} />
+      {/* Flower bed — each gets a small drop-shadow so it visually sits on the
+          ground instead of floating in front of it */}
+      {[
+        { size: 46, top: "88%", left: "4%", color: "#7a5a8a", d: "5s", delay: "0s" },
+        { size: 34, top: "91%", left: "9%", color: "#c9843a", d: "4.5s", delay: "0.3s" },
+        { size: 40, top: "89%", right: "16%", color: "#5a7a4a", d: "5.5s", delay: "0.6s" },
+        { size: 30, top: "94%", left: "34%", color: "#3f7ea6", d: "5s", delay: "0.5s" },
+        { size: 38, top: "90%", right: "34%", color: "#c9843a", d: "4.8s", delay: "0.7s" },
+        { size: 26, top: "96%", right: "6%", color: "#7a5a8a", d: "5.3s", delay: "0.2s" },
+        { size: 32, top: "93%", left: "22%", color: "#5a7a4a", d: "4.6s", delay: "0.9s" },
+      ].map((f, i) => (
+        <FlowerDoodle
+          key={i}
+          size={f.size}
+          className="hidden md:block absolute pointer-events-none"
+          style={{
+            top: f.top, left: f.left, right: f.right, color: f.color, opacity: 0.62,
+            animation: `sway ${f.d} ease-in-out infinite ${f.delay}`, transformOrigin: "bottom center",
+            filter: "drop-shadow(1.5px 4px 2px rgba(20,30,10,0.18))",
+          }}
+        />
+      ))}
 
-      {/* Ant hill — bigger, more opaque, with an actual marching line of ants
-          trailing away from it instead of just sitting there empty */}
-      <AntHillDoodle size={92} className="hidden md:block absolute pointer-events-none" style={{ top: "90%", left: "18%", color: "#8a6a3a", opacity: 0.7 }} />
-      <AntDoodle size={14} className="hidden md:block absolute pointer-events-none" style={{ top: "96%", left: "24%", color: "#5a3a1a", opacity: 0.65, animation: "antMarch 0.5s ease-in-out infinite" }} />
-      <AntDoodle size={14} className="hidden md:block absolute pointer-events-none" style={{ top: "97%", left: "27%", color: "#5a3a1a", opacity: 0.65, animation: "antMarch 0.5s ease-in-out infinite 0.1s" }} />
-      <AntDoodle size={14} className="hidden md:block absolute pointer-events-none" style={{ top: "97.5%", left: "30.5%", color: "#5a3a1a", opacity: 0.6, animation: "antMarch 0.5s ease-in-out infinite 0.2s" }} />
-      <AntDoodle size={14} className="hidden md:block absolute pointer-events-none" style={{ top: "98%", left: "34%", color: "#5a3a1a", opacity: 0.6, animation: "antMarch 0.5s ease-in-out infinite 0.3s" }} />
-      <AntDoodle size={13} className="hidden md:block absolute pointer-events-none" style={{ top: "97.2%", left: "21%", color: "#5a3a1a", opacity: 0.6, animation: "antMarch 0.5s ease-in-out infinite 0.4s", transform: "scaleX(-1)" }} />
-      <AntDoodle size={13} className="hidden md:block absolute pointer-events-none" style={{ top: "98.3%", left: "17%", color: "#5a3a1a", opacity: 0.55, animation: "antMarch 0.5s ease-in-out infinite 0.5s", transform: "scaleX(-1)" }} />
+      {/* Ant hill — bigger, more opaque, with a real double-file marching trail:
+          12 tiny ants (was 6 relatively large/detailed ones), most heading out,
+          a few heading back in, each bobbing AND drifting forward slightly so
+          the line reads as walking, not just vibrating in place. */}
+      <AntHillDoodle size={92} className="hidden md:block absolute pointer-events-none" style={{ top: "90%", left: "18%", color: "#8a6a3a", opacity: 0.7, filter: "drop-shadow(2px 6px 3px rgba(20,30,10,0.2))" }} />
+      {[
+        { left: "20%", top: "96.3%", d: 0 },
+        { left: "22.2%", top: "96.8%", d: 0.05 },
+        { left: "24.3%", top: "97.1%", d: 0.1 },
+        { left: "26.6%", top: "97.3%", d: 0.15 },
+        { left: "29%", top: "97.4%", d: 0.2 },
+        { left: "31.4%", top: "97.3%", d: 0.25 },
+        { left: "33.8%", top: "97%", d: 0.3 },
+        { left: "36.2%", top: "96.7%", d: 0.35 },
+        { left: "38.6%", top: "96.3%", d: 0.4 },
+      ].map((a) => (
+        <AntDoodle
+          key={a.left}
+          size={8}
+          className="hidden md:block absolute pointer-events-none"
+          style={{ top: a.top, left: a.left, color: "#5a3a1a", opacity: 0.6, animation: `antMarch 0.4s ease-in-out infinite ${a.d}s, crawl 3s ease-in-out infinite ${a.d}s` }}
+        />
+      ))}
+      {[
+        { left: "19%", top: "98.2%", d: 0.1 },
+        { left: "23%", top: "98.5%", d: 0.25 },
+        { left: "27.5%", top: "98.6%", d: 0.4 },
+      ].map((a) => (
+        <AntDoodle
+          key={a.left}
+          size={7}
+          className="hidden md:block absolute pointer-events-none"
+          style={{ top: a.top, left: a.left, color: "#5a3a1a", opacity: 0.5, transform: "scaleX(-1)", animation: `antMarch 0.4s ease-in-out infinite ${a.d}s` }}
+        />
+      ))}
 
     <div className="max-w-2xl mx-auto px-5 py-8 pb-24 relative z-[1]">
       <div className="flex items-center gap-2 mb-1" style={{ animation: "fadeUpIn 0.6s cubic-bezier(0.16,1,0.3,1) both" }}>
