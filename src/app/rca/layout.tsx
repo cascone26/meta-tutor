@@ -1,7 +1,8 @@
 import Link from "next/link";
+import Image from "next/image";
 import RcaAssistant from "@/components/rca/RcaAssistant";
+import RcaNotes from "@/components/rca/RcaNotes";
 import RcaStaleBanner from "@/components/rca/RcaStaleBanner";
-import { BirdIcon } from "@/components/rca/NatureIcons";
 
 export default function RcaLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -53,15 +54,16 @@ export default function RcaLayout({ children }: { children: React.ReactNode }) {
         <Link href="/" className="text-sm transition-opacity hover:opacity-100" style={{ color: "#3f7ea6", opacity: 0.85 }}>
           ← Hub
         </Link>
-        <span className="text-sm font-semibold tracking-wide flex items-center gap-2" style={{ color: "#2f5e7a" }}>
-          <BirdIcon size={16} />
-          Regina Caeli · KSC
+        <span className="flex items-center gap-2">
+          <Image src="/rca-logo.png" alt="Regina Caeli Academy" width={800} height={154} priority style={{ height: 22, width: "auto" }} />
+          <span className="text-sm font-semibold tracking-wide" style={{ color: "#2f5e7a" }}>· KSC</span>
         </span>
         <span className="w-10" />
       </header>
       <RcaStaleBanner />
       <div className="relative z-[1]">{children}</div>
       <RcaAssistant />
+      <RcaNotes />
     </div>
   );
 }

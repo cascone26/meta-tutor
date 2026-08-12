@@ -158,13 +158,18 @@ body {
   0%, 100% { transform: rotate(0deg); }
   50% { transform: rotate(8deg); }
 }
-/* antMarch — a settled vertical "stepping" bob, staggered per-ant so the line
-   ripples like it's walking. Deliberately NOT horizontal: a symmetric
-   translateX(0 -> 26 -> 0) loop (the old "crawl") reads as sliding back and
-   forth in place, not forward progress — killed in favor of this. */
-@keyframes antMarch {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-2px); }
+/* antScurry — a quick scale twitch (NOT a position move in any axis),
+   staggered per-ant so a ripple of tiny "activity" travels along the line.
+   Tried horizontal slide (read as sliding back and forth) and a vertical bob
+   (read as "waving up and down" at this tiny scale, since with nothing else
+   moving a single lone axis of motion always reads as flapping/waving, not
+   walking). A scale pulse has no directional read at all — it just looks like
+   a tiny thing twitching/scurrying in place, which a line of ants viewed from
+   this far away plausibly does. */
+@keyframes antScurry {
+  0%, 100% { transform: scale(1); }
+  40% { transform: scale(1.35); }
+  70% { transform: scale(0.85); }
 }
 @keyframes fallDown {
   from { transform: translateY(0); }

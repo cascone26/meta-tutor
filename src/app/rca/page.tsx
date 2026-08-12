@@ -152,6 +152,20 @@ export default function RcaPage() {
           at the true bottom, and can never land in the middle of the card
           list no matter how many classes/dashboard widgets are above it. */}
       <div data-scene-zone="ground" className="hidden md:block relative pointer-events-none" style={{ height: GROUND_HEIGHT }}>
+      {/* Everything below lives inside a width-CAPPED inner wrapper, not the
+          full browser width. Left/right percentages are relative to this
+          wrapper, so on a wide monitor the same numbers that read as a tight,
+          composed little garden on a laptop don't get stretched into a thin
+          strip of icons scattered across huge dead gaps — the actual bug
+          behind "looks sparse/disconnected" once the positioning-vs-page-
+          height bug was fixed and this rendered at real desktop width for
+          the first time. Capped to roughly the content column's width. */}
+      <div className="relative mx-auto" style={{ maxWidth: 760, height: "100%" }}>
+        {/* A soft, wide, low-contrast patch of warmer ground tying the whole
+            cluster together as "one patch of garden" instead of a scatter of
+            individually-shadowed objects on a flat color field. */}
+        <div className="absolute rounded-full" style={{ top: "20%", left: "0%", width: "88%", height: "85%", background: "radial-gradient(ellipse, rgba(140,120,60,0.1) 0%, transparent 70%)" }} />
+
         <GroundLineDoodle size={340} className="absolute" style={{ top: "18%", left: "0%", color: "#6b8e5a", opacity: 0.4 }} />
 
         {/* Contact shadows — a soft blurred dark ellipse under each grounded
@@ -162,7 +176,7 @@ export default function RcaPage() {
             an already-flat/thin doodle like the pond outline. A separate
             blurred ellipse at the base does. */}
         <div className="absolute rounded-full" style={{ top: "58%", left: "5%", width: 132, height: 22, background: "radial-gradient(ellipse, rgba(20,40,50,0.22) 0%, transparent 75%)", filter: "blur(3px)" }} />
-        <div className="absolute rounded-full" style={{ top: "70%", right: "1%", width: 110, height: 20, background: "radial-gradient(ellipse, rgba(20,30,10,0.28) 0%, transparent 75%)", filter: "blur(3px)" }} />
+        <div className="absolute rounded-full" style={{ top: "70%", right: "7%", width: 110, height: 20, background: "radial-gradient(ellipse, rgba(20,30,10,0.28) 0%, transparent 75%)", filter: "blur(3px)" }} />
         <div className="absolute rounded-full" style={{ top: "76%", left: "15%", width: 84, height: 16, background: "radial-gradient(ellipse, rgba(20,30,10,0.26) 0%, transparent 75%)", filter: "blur(2.5px)" }} />
 
         <PondDoodle
@@ -174,7 +188,7 @@ export default function RcaPage() {
         <TreeDoodle
           size={130}
           className="absolute"
-          style={{ top: "16%", right: "2%", color: "#4f6a41", opacity: 0.55, animation: "sway 7s ease-in-out infinite", transformOrigin: "bottom center" }}
+          style={{ top: "16%", right: "6%", color: "#4f6a41", opacity: 0.55, animation: "sway 7s ease-in-out infinite", transformOrigin: "bottom center" }}
         />
 
         {/* Ladybugs — settled near the flowers: a leg-wiggle (built into
@@ -193,13 +207,18 @@ export default function RcaPage() {
             base (not just a CSS drop-shadow, which is too weak on a thin-stroke
             bloom to read as ground contact) so it sits IN the scene, not on
             top of it. */}
-        {[
-          { size: 40, top: "48%", right: "16%", color: "#5a7a4a", d: "5.5s", delay: "0.6s" },
-          { size: 38, top: "52%", right: "34%", color: "#c9843a", d: "4.8s", delay: "0.7s" },
-          { size: 26, top: "78%", right: "6%", color: "#7a5a8a", d: "5.3s", delay: "0.2s" },
-          { size: 30, top: "40%", left: "42%", color: "#3f7ea6", d: "5s", delay: "0.5s" },
-          { size: 34, top: "62%", right: "42%", color: "#c9843a", d: "4.5s", delay: "0.3s" },
-        ].map((f, i) => (
+        {/* Positions computed against the 760px-max-width container so the
+            spacing math is checkable, not eyeballed: pond+ant-hill cluster
+            occupies roughly 0-40%, tree occupies roughly 77-94% — these five
+            fill the gap between them (38-83%) with clear, calculated gaps
+            around the tree's canopy instead of crowding it. */}
+        {([
+          { size: 40, top: "64%", left: "38%", right: undefined, color: "#5a7a4a", d: "5.5s", delay: "0.6s" },
+          { size: 30, top: "44%", left: "48%", right: undefined, color: "#3f7ea6", d: "5s", delay: "0.5s" },
+          { size: 34, top: "58%", left: "60%", right: undefined, color: "#c9843a", d: "4.5s", delay: "0.3s" },
+          { size: 38, top: "46%", left: "70%", right: undefined, color: "#c9843a", d: "4.8s", delay: "0.7s" },
+          { size: 26, top: "78%", left: "83%", right: undefined, color: "#7a5a8a", d: "5.3s", delay: "0.2s" },
+        ] as { size: number; top: string; left?: string; right?: string; color: string; d: string; delay: string }[]).map((f, i) => (
           <div key={i}>
             <div
               className="absolute rounded-full"
@@ -224,10 +243,13 @@ export default function RcaPage() {
         ))}
 
         {/* Ant hill — a double-file marching trail of 12 tiny ants, most heading
-            out, a few heading back in. Motion is now a settled per-ant vertical
-            "step" bob only (antMarch), staggered so the line ripples like it's
-            walking — the old horizontal slide-and-reverse (crawl) is gone
-            because that read as sliding back and forth in place, not marching. */}
+            out, a few heading back in. Motion is a staggered scale-twitch
+            (antScurry) — a vertical bob read as "waving up and down" once
+            actually seen live (the previous fix over-corrected: killing the
+            back-and-forth slide by leaving ONLY a single vertical axis of
+            motion made that one axis read as flapping, since nothing else
+            was happening to contextualize it as a step). A scale pulse has
+            no directional read, so it just looks like tiny activity. */}
         <AntHillDoodle size={92} className="absolute" style={{ top: "50%", left: "18%", color: "#8a6a3a", opacity: 0.7 }} />
         {[
           { left: "20%", top: "84%", d: 0 },
@@ -244,7 +266,7 @@ export default function RcaPage() {
             key={a.left}
             size={10}
             className="absolute"
-            style={{ top: a.top, left: a.left, color: "#4a2f14", opacity: 0.75, animation: `antMarch 0.4s ease-in-out infinite ${a.d}s` }}
+            style={{ top: a.top, left: a.left, color: "#4a2f14", opacity: 0.75, animation: `antScurry 1.6s ease-in-out infinite ${a.d * 3}s` }}
           />
         ))}
         {[
@@ -256,9 +278,10 @@ export default function RcaPage() {
             key={a.left}
             size={9}
             className="absolute"
-            style={{ top: a.top, left: a.left, color: "#4a2f14", opacity: 0.65, transform: "scaleX(-1)", animation: `antMarch 0.4s ease-in-out infinite ${a.d}s` }}
+            style={{ top: a.top, left: a.left, color: "#4a2f14", opacity: 0.65, transform: "scaleX(-1)", animation: `antScurry 1.6s ease-in-out infinite ${a.d * 3}s` }}
           />
         ))}
+      </div>
       </div>
     </div>
   );

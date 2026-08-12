@@ -97,7 +97,7 @@ async function main() {
 
     const sampleSelectors = [
       { label: "cloud (drift)", selector: '[data-scene-zone="sky"] svg' },
-      { label: "ant (antMarch)", selector: '[data-scene-zone="ground"] svg' },
+      { label: "ant (antScurry)", selector: '[data-scene-zone="ground"] svg' },
     ];
     for (const target of sampleSelectors) {
       const samples = [];
