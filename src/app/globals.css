@@ -158,18 +158,32 @@ body {
   0%, 100% { transform: rotate(0deg); }
   50% { transform: rotate(8deg); }
 }
-/* antScurry — a quick scale twitch (NOT a position move in any axis),
-   staggered per-ant so a ripple of tiny "activity" travels along the line.
-   Tried horizontal slide (read as sliding back and forth) and a vertical bob
-   (read as "waving up and down" at this tiny scale, since with nothing else
-   moving a single lone axis of motion always reads as flapping/waving, not
-   walking). A scale pulse has no directional read at all — it just looks like
-   a tiny thing twitching/scurrying in place, which a line of ants viewed from
-   this far away plausibly does. */
-@keyframes antScurry {
-  0%, 100% { transform: scale(1); }
-  40% { transform: scale(1.35); }
-  70% { transform: scale(0.85); }
+/* crawlLoop — GENUINE horizontal travel (translateX by --crawl-dist, set
+   per-element via inline style), not an in-place twitch. The previous two
+   attempts (antScurry: scale-only, zero position change; bob: vertical-only)
+   were both reactions to "back and forth reads as sliding" — but the actual
+   problem with a plain alternate-direction slide was that it reverses
+   direction while still facing the same way, which reads as gliding on a
+   track. The fix is a visible TURN (scaleX flip) at each end of the walk, so
+   the creature visibly faces the way it's about to go — real bugs pace a
+   patch and turn around at the ends; this is that, not a slide. */
+@keyframes crawlLoop {
+  0% { transform: translateX(0) scaleX(1); }
+  45% { transform: translateX(var(--crawl-dist, 40px)) scaleX(1); }
+  50% { transform: translateX(var(--crawl-dist, 40px)) scaleX(-1); }
+  95% { transform: translateX(0) scaleX(-1); }
+  100% { transform: translateX(0) scaleX(1); }
+}
+/* Same idea, much smaller distance, for the ants — real position movement in
+   a tight local patch (not zero-movement like the old antScurry) while
+   staying inside the marching-LINE formation instead of each ant wandering
+   off and breaking the line shape. */
+@keyframes antCrawl {
+  0% { transform: translateX(0) scaleX(1); }
+  45% { transform: translateX(var(--crawl-dist, 7px)) scaleX(1); }
+  50% { transform: translateX(var(--crawl-dist, 7px)) scaleX(-1); }
+  95% { transform: translateX(0) scaleX(-1); }
+  100% { transform: translateX(0) scaleX(1); }
 }
 @keyframes fallDown {
   from { transform: translateY(0); }

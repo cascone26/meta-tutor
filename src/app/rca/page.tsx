@@ -184,14 +184,15 @@ export default function RcaPage() {
         {/* A genuine atmospheric-perspective cue, not just smaller/higher: a
             slight blur + lower opacity so these actually read as further
             away, the way real distance haze desaturates and softens things. */}
-        <div className="absolute rounded-full" style={{ top: "40%", left: "0%", width: 56, height: 11, background: "radial-gradient(ellipse, rgba(20,30,10,0.14) 0%, transparent 75%)", filter: "blur(2px)" }} />
+        <div className="absolute rounded-full" style={{ top: "28%", left: "0%", width: 56, height: 11, background: "radial-gradient(ellipse, rgba(20,30,10,0.14) 0%, transparent 75%)", filter: "blur(2px)" }} />
         <BushDoodle size={58} className="absolute" style={{ top: "20%", left: "0%", color: "#4f6a41", opacity: 0.5, filter: "blur(0.5px)" }} />
-        <div className="absolute rounded-full" style={{ top: "42%", right: "22%", width: 50, height: 10, background: "radial-gradient(ellipse, rgba(20,30,10,0.14) 0%, transparent 75%)", filter: "blur(2px)" }} />
+        <div className="absolute rounded-full" style={{ top: "24%", right: "22%", width: 50, height: 10, background: "radial-gradient(ellipse, rgba(20,30,10,0.14) 0%, transparent 75%)", filter: "blur(2px)" }} />
         <BushDoodle size={54} className="absolute" style={{ top: "16%", right: "23%", color: "#5a7a4a", opacity: 0.48, filter: "blur(0.5px)" }} />
         {/* A third distant bush, further right — the old back row only had
             two anchors near the pond/tree; with the scene now full-width
             there's real space past the tree that needs its own depth layer,
             not just empty gradient. */}
+        <div className="absolute rounded-full" style={{ top: "30%", right: "2%", width: 42, height: 9, background: "radial-gradient(ellipse, rgba(20,30,10,0.12) 0%, transparent 75%)", filter: "blur(2px)" }} />
         <BushDoodle size={46} className="absolute" style={{ top: "22%", right: "2%", color: "#4f6a41", opacity: 0.4, filter: "blur(0.7px)" }} />
 
         {/* Pond — tight, precisely-fitted shadow (not a wide blurry bar) plus
@@ -210,7 +211,7 @@ export default function RcaPage() {
             brown, no green) so the scene isn't 100% foliage. */}
         <RockDoodle size={32} className="absolute" style={{ top: "52%", left: "11%", opacity: 0.75 }} />
 
-        <div className="absolute rounded-full" style={{ top: "48%", right: "9%", width: 96, height: 15, background: "radial-gradient(ellipse, rgba(20,30,10,0.2) 0%, transparent 75%)", filter: "blur(2.5px)" }} />
+        <div className="absolute rounded-full" style={{ top: "43%", right: "9%", width: 96, height: 15, background: "radial-gradient(ellipse, rgba(20,30,10,0.2) 0%, transparent 75%)", filter: "blur(2.5px)" }} />
         <TreeDoodle
           size={130}
           className="absolute"
@@ -270,7 +271,11 @@ export default function RcaPage() {
             <div
               className="absolute rounded-full"
               style={{
-                top: `calc(${f.top} + ${f.size * 0.95}px)`,
+                // All flower shapes share a 24x32 viewBox (height =
+                // size*1.333) — the old *0.95 multiplier undershot the
+                // actual bottom edge by ~29% of size, so these shadows sat
+                // visibly above the bloom instead of under it.
+                top: `calc(${f.top} + ${f.size * 1.2}px)`,
                 left: `calc(${f.left} + ${f.size * 0.22}px)`,
                 width: f.size * 0.55, height: f.size * 0.16,
                 background: "radial-gradient(ellipse, rgba(20,30,10,0.2) 0%, transparent 75%)",
@@ -288,19 +293,23 @@ export default function RcaPage() {
           </div>
         ))}
 
-        {/* Ladybugs — tucked next to the flower clusters, not floating alone. */}
-        <BugDoodle size={18} className="absolute" style={{ top: "62%", left: "42%", color: "#a04a4a", opacity: 0.85, animation: "bob 3.4s ease-in-out infinite" }} />
-        <div className="absolute rounded-full" style={{ top: "72%", left: "43%", width: 20, height: 5, background: "radial-gradient(ellipse, rgba(20,30,10,0.28) 0%, transparent 75%)", filter: "blur(1.2px)" }} />
-        <BugDoodle size={14} className="absolute" style={{ top: "56%", left: "57%", color: "#5a7a4a", opacity: 0.8, animation: "bob 4s ease-in-out infinite 0.6s" }} />
-        <div className="absolute rounded-full" style={{ top: "64%", left: "57.5%", width: 15, height: 4, background: "radial-gradient(ellipse, rgba(20,30,10,0.24) 0%, transparent 75%)", filter: "blur(1.2px)" }} />
+        {/* Ladybugs — GENUINE crawling now (crawlLoop: real translateX travel
+            with a turn-around flip at each end), not a vertical bob. Shadows
+            recomputed to sit flush with each bug's actual bottom edge (size,
+            not an eyeballed offset) — they were sitting 4-5% below where the
+            bug actually is, reading as a disconnected smudge. */}
+        <BugDoodle size={18} className="absolute" style={{ top: "62%", left: "42%", color: "#a04a4a", opacity: 0.85, animation: "crawlLoop 6s ease-in-out infinite", ["--crawl-dist" as string]: "46px" }} />
+        <div className="absolute rounded-full" style={{ top: "66%", left: "43%", width: 20, height: 5, background: "radial-gradient(ellipse, rgba(20,30,10,0.28) 0%, transparent 75%)", filter: "blur(1.2px)", animation: "crawlLoop 6s ease-in-out infinite", ["--crawl-dist" as string]: "46px" }} />
+        <BugDoodle size={14} className="absolute" style={{ top: "56%", left: "57%", color: "#5a7a4a", opacity: 0.8, animation: "crawlLoop 7s ease-in-out infinite 0.6s", ["--crawl-dist" as string]: "36px" }} />
+        <div className="absolute rounded-full" style={{ top: "59.5%", left: "57.5%", width: 15, height: 4, background: "radial-gradient(ellipse, rgba(20,30,10,0.24) 0%, transparent 75%)", filter: "blur(1.2px)", animation: "crawlLoop 7s ease-in-out infinite 0.6s", ["--crawl-dist" as string]: "36px" }} />
 
-        {/* Ant hill — a double-file marching trail of ants coming down off the
-            hill and crossing the path below it, instead of a separate blurry
-            "trail" mark floating on its own (the previous version, which read
-            as a dirt smear near the hill). Motion is a staggered scale-twitch
-            (antScurry, no directional read at all) so the line ripples with
-            tiny activity without any single ant reading as sliding or waving. */}
-        <div className="absolute rounded-full" style={{ top: "64%", left: "22%", width: 90, height: 14, background: "radial-gradient(ellipse, rgba(20,30,10,0.22) 0%, transparent 75%)", filter: "blur(2.5px)" }} />
+        {/* Ant hill — a double-file marching trail. Motion is now GENUINE
+            small-scale crawling (antCrawl: real translateX + turn-flip) in
+            place of the old antScurry (a scale pulse that never actually
+            moved — which is exactly why it read as "in place," not marching).
+            Shadow moved up to the mound's actual bottom edge (was 6% below
+            it, floating free). */}
+        <div className="absolute rounded-full" style={{ top: "57%", left: "22%", width: 90, height: 14, background: "radial-gradient(ellipse, rgba(20,30,10,0.2) 0%, transparent 75%)", filter: "blur(2px)" }} />
         <AntHillDoodle size={88} className="absolute" style={{ top: "42%", left: "23%", color: "#8a6a3a", opacity: 0.85 }} />
         {/* Debris scattered near the hill so it reads as an actual patch of
             ground the colony lives on, not a bare mound on clean gradient. */}
@@ -323,7 +332,7 @@ export default function RcaPage() {
             key={a.left}
             size={10}
             className="absolute"
-            style={{ top: a.top, left: a.left, color: "#4a2f14", opacity: 0.75, animation: `antScurry 1.6s ease-in-out infinite ${a.d * 3}s` }}
+            style={{ top: a.top, left: a.left, color: "#4a2f14", opacity: 0.75, animation: `antCrawl ${1.4 + a.d}s ease-in-out infinite ${a.d}s`, ["--crawl-dist" as string]: "8px" }}
           />
         ))}
         {[
@@ -335,7 +344,7 @@ export default function RcaPage() {
             key={a.left}
             size={9}
             className="absolute"
-            style={{ top: a.top, left: a.left, color: "#4a2f14", opacity: 0.65, transform: "scaleX(-1)", animation: `antScurry 1.6s ease-in-out infinite ${a.d * 3}s` }}
+            style={{ top: a.top, left: a.left, color: "#4a2f14", opacity: 0.65, animation: `antCrawl ${1.6 + a.d}s ease-in-out infinite ${a.d}s`, ["--crawl-dist" as string]: "-7px" }}
           />
         ))}
 

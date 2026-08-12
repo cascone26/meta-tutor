@@ -182,9 +182,12 @@ export function AntHillDoodle({ size = 20, className, style }: IconProps) {
 export function TwigDoodle({ size = 20, className, style }: IconProps) {
   return (
     <svg width={size} height={size * 0.4} viewBox="0 0 40 16" fill="none" className={className} style={style}>
-      <path d="M2 12c8-2 16 2 24-4 4-3 8-3 12-1" stroke="#6b4a2a" strokeWidth="1.6" strokeLinecap="round" />
-      <ellipse cx="14" cy="8.5" rx="2.6" ry="1.3" fill="#5a7a4a" fillOpacity="0.7" transform="rotate(-25 14 8.5)" />
-      <ellipse cx="22" cy="5.5" rx="2.2" ry="1.1" fill="#6b8e5a" fillOpacity="0.7" transform="rotate(15 22 5.5)" />
+      {/* Leaf flecks sized up relative to the stem (were 2.6/2.2 radius — too
+          small to read as anything but noise on a thin wavy line, which is
+          exactly why this read as a stray squiggle/worm instead of debris). */}
+      <path d="M2 12c8-2 16 2 24-4 4-3 8-3 12-1" stroke="#6b4a2a" strokeWidth="1.4" strokeLinecap="round" />
+      <ellipse cx="13" cy="8" rx="3.8" ry="2" fill="#5a7a4a" fillOpacity="0.85" transform="rotate(-25 13 8)" />
+      <ellipse cx="22" cy="4.5" rx="3.2" ry="1.7" fill="#6b8e5a" fillOpacity="0.85" transform="rotate(15 22 4.5)" />
     </svg>
   );
 }
