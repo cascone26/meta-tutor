@@ -13,7 +13,16 @@ const RESULT_COLOR: Record<string, string> = {
   incorrect: "#a04a4a",
 };
 
-export default function UnderstandingCheck({ subjectId, subjectName }: { subjectId: string; subjectName: string }) {
+export default function UnderstandingCheck({
+  subjectId,
+  subjectName,
+  lessonN,
+}: {
+  subjectId: string;
+  subjectName: string;
+  /** Review mode — grounds the quiz on this specific past lesson instead of wherever the schedule currently sits. */
+  lessonN?: number;
+}) {
   const progressKey = `rca-${subjectId}`;
 
   const [phase, setPhase] = useState<"idle" | "loading" | "quiz" | "evaluating" | "result" | "done" | "error">("idle");
@@ -39,7 +48,7 @@ export default function UnderstandingCheck({ subjectId, subjectName }: { subject
       const res = await fetch("/api/rca-understanding", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action: "generate", subjectId }),
+        body: JSON.stringify({ action: "generate", subjectId, lessonN }),
       });
       if (!res.ok) {
         setErrorMsg(`Request failed (${res.status}). ${res.status === 401 ? "You may need to log in again." : "Try again in a moment."}`);
@@ -125,13 +134,15 @@ export default function UnderstandingCheck({ subjectId, subjectName }: { subject
     <div className="rounded-2xl p-4 mb-6" style={{ background: "#fbf8f0", border: "1px solid #d9e4d3" }}>
       <h2 className="text-sm font-semibold mb-1 flex items-center gap-2" style={{ color: "#2f5e7a" }}>
         <LeafIcon size={14} />
-        Test my understanding
+        {lessonN ? `Review Lesson ${lessonN}` : "Test my understanding"}
       </h2>
 
       {phase === "idle" && (
         <>
           <p className="text-xs mb-3" style={{ color: "#8a9a7c" }}>
-            4 questions on this week&apos;s lesson — checks whether you actually understand it well enough to teach it.
+            {lessonN
+              ? "4 questions on that lesson specifically — a quick spaced-repetition check so it doesn't fade."
+              : "4 questions on this week's lesson — checks whether you actually understand it well enough to teach it."}
           </p>
           <button
             onClick={start}

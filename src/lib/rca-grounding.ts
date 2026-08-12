@@ -15,7 +15,10 @@ function buildGeneralGrounding(): string {
   return `CONTEXT: Regina Caeli Academy (KSC, Overland Park KS) — a Catholic classical homeschool hybrid. Jacob is the 6th Grade Lead plus Music 3-4 tutor, on campus ${rcaSchedule.days.join(" & ")} (his real teaching days/deadlines) ${rcaSchedule.startTime}-${rcaSchedule.endTime}. He's not currently viewing a specific class page, so answer generally across his full teaching load unless he names a subject.\n\nHIS CLASSES:\n${list}\n\n${STALE_CONTENT_NOTE}`;
 }
 
-export function buildClassGrounding(subjectId: string | undefined): string {
+// `lessonNOverride` lets a caller ground on a SPECIFIC past lesson instead of
+// wherever the schedule currently sits — used by the cross-class review picker,
+// which re-quizzes an earlier lesson independent of today's date.
+export function buildClassGrounding(subjectId: string | undefined, lessonNOverride?: number): string {
   if (!subjectId || subjectId === "general") return buildGeneralGrounding();
 
   const cls = getRcaClass(subjectId);
@@ -26,9 +29,12 @@ export function buildClassGrounding(subjectId: string | undefined): string {
 
   const content = rcaContent[cls.id];
   if (content) {
-    const n = currentLessonNumber(content.lessons.length, content.totalWeeks);
+    const n = lessonNOverride && lessonNOverride >= 1 && lessonNOverride <= content.lessons.length
+      ? lessonNOverride
+      : currentLessonNumber(content.lessons.length, content.totalWeeks);
     const lesson = content.lessons.find((l) => l.n === n);
-    grounding += `\n${content.overview}\n\nCURRENT LESSON (Lesson ${n} of ${content.lessons.length}):\n`;
+    const label = lessonNOverride ? "REVIEW LESSON" : "CURRENT LESSON";
+    grounding += `\n${content.overview}\n\n${label} (Lesson ${n} of ${content.lessons.length}):\n`;
     if (lesson) {
       for (const s of lesson.sections) grounding += `${s.label}: ${s.text}\n`;
       if (lesson.note) grounding += `Note: ${lesson.note}\n`;

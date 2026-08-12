@@ -39,12 +39,13 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
 
     if (body.action === "generate") {
-      const grounding = buildClassGrounding(body.subjectId);
+      const grounding = buildClassGrounding(body.subjectId, body.lessonN);
+      const label = body.lessonN ? "REVIEW LESSON" : "CURRENT LESSON";
       const response = await anthropic.messages.create({
         model: process.env.CLAUDE_MODEL || "claude-haiku-4-5-20251001",
         max_tokens: 1024,
         system: GENERATE_SYSTEM,
-        messages: [{ role: "user", content: `${grounding}\n\nGenerate the 4-question self-check for the CURRENT LESSON above. JSON only.` }],
+        messages: [{ role: "user", content: `${grounding}\n\nGenerate the 4-question self-check for the ${label} above. JSON only.` }],
       });
       const text = response.content[0].type === "text" ? response.content[0].text : "";
       try {

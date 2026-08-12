@@ -108,6 +108,14 @@ export function AntHillDoodle({ size = 20, className, style }: IconProps) {
   );
 }
 
+export function FlameIcon({ size = 20, className, style }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className} style={style}>
+      <path d="M12 2.5c1 3 .5 4.5-.8 6-1.3 1.5-2.7 2.5-2.7 5a5.5 5.5 0 0 0 11 0c0-2.5-1.2-4-2.5-5.3.3 2-.5 3-1.5 3.3-.3-3-1.5-6-3.5-9z" />
+    </svg>
+  );
+}
+
 export function GroundLineDoodle({ size = 20, className, style }: IconProps) {
   return (
     <svg width={size} height={size * 0.05} viewBox="0 0 300 12" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" preserveAspectRatio="none" className={className} style={style}>
