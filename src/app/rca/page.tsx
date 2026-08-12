@@ -4,7 +4,7 @@ import { rcaContent } from "@/lib/rca-content";
 import {
   SkyIcon, LeafIcon, ButterflyIcon, BirdIcon,
   CloudDoodle, TreeDoodle, FlowerDoodle, TulipDoodle, DaisyDoodle, BugDoodle, AntHillDoodle, AntDoodle, PondDoodle, GroundLineDoodle,
-  BushDoodle, RockDoodle, GrassTuftDoodle, ReedDoodle, PathDoodle,
+  BushDoodle, RockDoodle, GrassTuftDoodle, ReedDoodle, PathDoodle, TwigDoodle,
 } from "@/components/rca/NatureIcons";
 import Reveal from "@/components/Reveal";
 import RcaDashboard from "@/components/rca/RcaDashboard";
@@ -153,38 +153,46 @@ export default function RcaPage() {
           at the true bottom, and can never land in the middle of the card
           list no matter how many classes/dashboard widgets are above it. */}
       <div data-scene-zone="ground" className="hidden md:block relative pointer-events-none" style={{ height: GROUND_HEIGHT }}>
-      {/* Everything below lives inside a width-CAPPED inner wrapper, not the
-          full browser width. Left/right percentages are relative to this
-          wrapper, so on a wide monitor the same numbers that read as a tight,
-          composed little garden on a laptop don't get stretched into a thin
-          strip of icons scattered across huge dead gaps — the actual bug
-          behind "looks sparse/disconnected" once the positioning-vs-page-
-          height bug was fixed and this rendered at real desktop width for
-          the first time. Capped to roughly the content column's width. */}
-      <div className="relative mx-auto" style={{ maxWidth: 760, height: "100%" }}>
+      {/* Spans the FULL width now, not a centered content-width column — capping
+          it earlier was meant to fix "sparse/scattered on a wide monitor," but
+          it just relocated the problem into two large dead margins on either
+          side of an island. The real fix for sparseness is density (the path,
+          clusters, and repeated grass below all now scale with the actual
+          container width), not artificially narrowing the canvas. */}
+      <div className="relative" style={{ width: "100%", height: "100%" }}>
         {/* A soft, wide, low-contrast patch of warmer ground tying the whole
             cluster together as "one patch of garden" instead of a scatter of
             individually-shadowed objects on a flat color field. */}
-        <div className="absolute rounded-full" style={{ top: "20%", left: "0%", width: "88%", height: "85%", background: "radial-gradient(ellipse, rgba(140,120,60,0.1) 0%, transparent 70%)" }} />
+        <div className="absolute rounded-full" style={{ top: "20%", left: "0%", width: "94%", height: "85%", background: "radial-gradient(ellipse, rgba(140,120,60,0.1) 0%, transparent 70%)" }} />
 
-        <GroundLineDoodle size={340} className="absolute" style={{ top: "12%", left: "0%", color: "#6b8e5a", opacity: 0.4 }} />
+        <GroundLineDoodle className="absolute" style={{ top: "12%", left: 0, width: "100%", height: 18, color: "#6b8e5a", opacity: 0.4 }} />
 
         {/* A winding dirt path — the connective tissue the whole scene was
             missing. Every element used to be independently positioned by
             percentage math with nothing actually tying them together; this
             gives the eye one line to follow through the garden, and gives the
             ant trail (below) a real reason to exist instead of being its own
-            disconnected smear mark. */}
-        <PathDoodle size={730} className="absolute" style={{ top: "66%", left: "1%" }} />
+            disconnected smear mark. Full-width now via CSS width:100% instead
+            of a fixed px size, so it actually spans edge to edge regardless
+            of monitor width. */}
+        <PathDoodle className="absolute" style={{ top: "66%", left: 0, width: "100%", height: 90 }} />
 
         {/* Back row — bushes are placed TOUCHING the pond and tree behind them
             (not floating alone in empty space, the earlier attempt), smaller
             and more muted, a real near/far depth cue instead of everything on
             one baseline. */}
-        <div className="absolute rounded-full" style={{ top: "40%", left: "0%", width: 56, height: 11, background: "radial-gradient(ellipse, rgba(20,30,10,0.16) 0%, transparent 75%)", filter: "blur(2px)" }} />
-        <BushDoodle size={58} className="absolute" style={{ top: "20%", left: "0%", color: "#4f6a41", opacity: 0.6 }} />
-        <div className="absolute rounded-full" style={{ top: "42%", right: "22%", width: 50, height: 10, background: "radial-gradient(ellipse, rgba(20,30,10,0.16) 0%, transparent 75%)", filter: "blur(2px)" }} />
-        <BushDoodle size={54} className="absolute" style={{ top: "16%", right: "23%", color: "#5a7a4a", opacity: 0.58 }} />
+        {/* A genuine atmospheric-perspective cue, not just smaller/higher: a
+            slight blur + lower opacity so these actually read as further
+            away, the way real distance haze desaturates and softens things. */}
+        <div className="absolute rounded-full" style={{ top: "40%", left: "0%", width: 56, height: 11, background: "radial-gradient(ellipse, rgba(20,30,10,0.14) 0%, transparent 75%)", filter: "blur(2px)" }} />
+        <BushDoodle size={58} className="absolute" style={{ top: "20%", left: "0%", color: "#4f6a41", opacity: 0.5, filter: "blur(0.5px)" }} />
+        <div className="absolute rounded-full" style={{ top: "42%", right: "22%", width: 50, height: 10, background: "radial-gradient(ellipse, rgba(20,30,10,0.14) 0%, transparent 75%)", filter: "blur(2px)" }} />
+        <BushDoodle size={54} className="absolute" style={{ top: "16%", right: "23%", color: "#5a7a4a", opacity: 0.48, filter: "blur(0.5px)" }} />
+        {/* A third distant bush, further right — the old back row only had
+            two anchors near the pond/tree; with the scene now full-width
+            there's real space past the tree that needs its own depth layer,
+            not just empty gradient. */}
+        <BushDoodle size={46} className="absolute" style={{ top: "22%", right: "2%", color: "#4f6a41", opacity: 0.4, filter: "blur(0.7px)" }} />
 
         {/* Pond — tight, precisely-fitted shadow (not a wide blurry bar) plus
             reeds clustered at its back-right edge, the single most
@@ -214,15 +222,23 @@ export default function RcaPage() {
             gradient. Each gets a very subtle sway so the whole base feels
             alive without any single blade reading as "waving." */}
         {[
-          { left: "4%", size: 20, color: "#5a7a4a", d: "3.2s" },
-          { left: "15%", size: 24, color: "#6b8e5a", d: "3.6s" },
+          { left: "1%", size: 20, color: "#5a7a4a", d: "3.2s" },
+          { left: "9%", size: 18, color: "#6b8e5a", d: "3.5s" },
+          { left: "17%", size: 24, color: "#6b8e5a", d: "3.6s" },
+          { left: "24%", size: 18, color: "#5a7a4a", d: "3.3s" },
           { left: "34%", size: 18, color: "#5a7a4a", d: "3s" },
+          { left: "40%", size: 22, color: "#6b8e5a", d: "3.7s" },
           { left: "48%", size: 22, color: "#6b8e5a", d: "3.4s" },
+          { left: "53%", size: 18, color: "#5a7a4a", d: "3.9s" },
           { left: "58%", size: 18, color: "#5a7a4a", d: "3.8s" },
+          { left: "63%", size: 20, color: "#6b8e5a", d: "3.2s" },
           { left: "67%", size: 24, color: "#6b8e5a", d: "3.1s" },
+          { left: "74%", size: 18, color: "#5a7a4a", d: "3.6s" },
           { left: "80%", size: 20, color: "#5a7a4a", d: "3.5s" },
+          { left: "86%", size: 22, color: "#6b8e5a", d: "3.9s" },
           { left: "90%", size: 22, color: "#6b8e5a", d: "3.3s" },
-          { left: "97%", size: 18, color: "#5a7a4a", d: "3.7s" },
+          { left: "94%", size: 18, color: "#5a7a4a", d: "3.4s" },
+          { left: "98%", size: 18, color: "#5a7a4a", d: "3.7s" },
         ].map((g, i) => (
           <GrassTuftDoodle
             key={i}
@@ -242,9 +258,13 @@ export default function RcaPage() {
           // Cluster B — mid-path
           { Shape: FlowerDoodle, size: 32, top: "44%", left: "56%", color: "#3f7ea6", d: "5s", delay: "0.5s" },
           { Shape: TulipDoodle, size: 24, top: "52%", left: "59%", color: "#c9843a", d: "4.3s", delay: "0.4s" },
-          // Cluster C — by the tree
+          // Cluster C — approaching the tree
           { Shape: FlowerDoodle, size: 34, top: "42%", left: "70%", color: "#7a5a8a", d: "4.8s", delay: "0.7s" },
           { Shape: DaisyDoodle, size: 24, top: "50%", left: "73%", color: "#5a7a4a", d: "5.2s", delay: "0.1s" },
+          // Cluster D — past the tree, filling the width that opened up once
+          // the scene went full-width instead of a centered 760px column.
+          { Shape: TulipDoodle, size: 28, top: "48%", left: "84%", color: "#7a5a8a", d: "5.1s", delay: "0.3s" },
+          { Shape: DaisyDoodle, size: 22, top: "56%", left: "87%", color: "#c9843a", d: "4.4s", delay: "0.5s" },
         ] as { Shape: typeof FlowerDoodle; size: number; top: string; left: string; color: string; d: string; delay: string }[]).map((f, i) => (
           <div key={i}>
             <div
@@ -282,6 +302,10 @@ export default function RcaPage() {
             tiny activity without any single ant reading as sliding or waving. */}
         <div className="absolute rounded-full" style={{ top: "64%", left: "22%", width: 90, height: 14, background: "radial-gradient(ellipse, rgba(20,30,10,0.22) 0%, transparent 75%)", filter: "blur(2.5px)" }} />
         <AntHillDoodle size={88} className="absolute" style={{ top: "42%", left: "23%", color: "#8a6a3a", opacity: 0.85 }} />
+        {/* Debris scattered near the hill so it reads as an actual patch of
+            ground the colony lives on, not a bare mound on clean gradient. */}
+        <TwigDoodle size={30} className="absolute" style={{ top: "68%", left: "34%", opacity: 0.7, transform: "rotate(-8deg)" }} />
+        <TwigDoodle size={22} className="absolute" style={{ top: "58%", left: "18%", opacity: 0.6, transform: "rotate(20deg) scaleX(-1)" }} />
         {[
           { left: "25%", top: "60%", d: 0 },
           { left: "27%", top: "62%", d: 0.05 },
@@ -292,6 +316,8 @@ export default function RcaPage() {
           { left: "37%", top: "63.5%", d: 0.3 },
           { left: "39%", top: "62%", d: 0.35 },
           { left: "41%", top: "60.5%", d: 0.4 },
+          { left: "43%", top: "59%", d: 0.45 },
+          { left: "45%", top: "58%", d: 0.5 },
         ].map((a) => (
           <AntDoodle
             key={a.left}
@@ -312,6 +338,25 @@ export default function RcaPage() {
             style={{ top: a.top, left: a.left, color: "#4a2f14", opacity: 0.65, transform: "scaleX(-1)", animation: `antScurry 1.6s ease-in-out infinite ${a.d * 3}s` }}
           />
         ))}
+
+        {/* Foreground blur — two oversized, soft-focus, edge-cropped foliage
+            shapes at the very front of the scene. This is the actual biggest
+            lever for "real depth" in a flat illustration: something close and
+            slightly out of focus in the extreme foreground is what a camera
+            with shallow depth of field does, and it's the strongest possible
+            cue that everything else is further back — much stronger than
+            spacing/shadows/scale alone, which is all the previous rounds
+            tried. Painted last so it renders on top of everything. */}
+        <BushDoodle
+          size={220}
+          className="absolute pointer-events-none"
+          style={{ top: "82%", left: "-6%", color: "#3f5a34", opacity: 0.55, filter: "blur(5px)" }}
+        />
+        <BushDoodle
+          size={190}
+          className="absolute pointer-events-none"
+          style={{ top: "85%", right: "-5%", color: "#3f5a34", opacity: 0.5, filter: "blur(5px)" }}
+        />
       </div>
       </div>
     </div>

@@ -28,6 +28,27 @@ export default function RcaAssistant() {
     if (open) endRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, open]);
 
+  // Only one of the two floating panels (this + RcaNotes) can be open at a
+  // time — they anchor to nearly the same corner, so open-together just
+  // stacks two ~380px panels on top of each other. Coordinated via a plain
+  // window event (same pattern as EXPLAIN_DIFFERENTLY_EVENT elsewhere in the
+  // RCA station) rather than lifting shared state into the layout.
+  useEffect(() => {
+    function onOtherPanelOpen(e: Event) {
+      if ((e as CustomEvent).detail !== "assistant") setOpen(false);
+    }
+    window.addEventListener("rca-panel-open", onOtherPanelOpen);
+    return () => window.removeEventListener("rca-panel-open", onOtherPanelOpen);
+  }, []);
+
+  function toggleOpen() {
+    setOpen((v) => {
+      const next = !v;
+      if (next) window.dispatchEvent(new CustomEvent("rca-panel-open", { detail: "assistant" }));
+      return next;
+    });
+  }
+
   async function send(content: string) {
     if (!content.trim() || loading) return;
     const next = [...messages, { role: "user" as const, content: content.trim() }];
@@ -78,7 +99,7 @@ export default function RcaAssistant() {
   return (
     <>
       <button
-        onClick={() => setOpen((v) => !v)}
+        onClick={toggleOpen}
         aria-label={open ? "Close assistant" : "Open assistant"}
         className="fixed bottom-5 right-5 z-30 flex items-center justify-center rounded-full shadow-lg transition-transform hover:scale-105"
         style={{ width: 52, height: 52, background: "#3f7ea6", color: "#fff" }}

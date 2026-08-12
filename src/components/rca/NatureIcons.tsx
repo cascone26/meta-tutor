@@ -176,6 +176,19 @@ export function AntHillDoodle({ size = 20, className, style }: IconProps) {
   );
 }
 
+// A fallen twig with a couple of leaf flecks — small debris scattered near
+// the ant hill so the colony reads as living in an actual patch of ground
+// with stuff on it, not a bare mound floating on clean gradient.
+export function TwigDoodle({ size = 20, className, style }: IconProps) {
+  return (
+    <svg width={size} height={size * 0.4} viewBox="0 0 40 16" fill="none" className={className} style={style}>
+      <path d="M2 12c8-2 16 2 24-4 4-3 8-3 12-1" stroke="#6b4a2a" strokeWidth="1.6" strokeLinecap="round" />
+      <ellipse cx="14" cy="8.5" rx="2.6" ry="1.3" fill="#5a7a4a" fillOpacity="0.7" transform="rotate(-25 14 8.5)" />
+      <ellipse cx="22" cy="5.5" rx="2.2" ry="1.1" fill="#6b8e5a" fillOpacity="0.7" transform="rotate(15 22 5.5)" />
+    </svg>
+  );
+}
+
 // At the tiny size these actually render, fine anatomical detail (legs,
 // antennae, 3 separate segments) just disappears into noise — what reads as
 // "ant" at that scale is a small dark speck with a slight waist, repeated many

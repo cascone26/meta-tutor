@@ -3,6 +3,7 @@
 import { useState, useEffect, useMemo, useRef } from "react";
 import { usePathname } from "next/navigation";
 import { rcaClasses, getRcaClass } from "@/lib/rca";
+import { formatMarkdown } from "@/lib/sanitize-markdown";
 
 type RcaNote = {
   id: string;
@@ -47,6 +48,7 @@ export default function RcaNotes() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [classId, setClassId] = useState("general");
+  const [preview, setPreview] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const slug = pathname.startsWith("/rca/") ? pathname.split("/")[2] : undefined;
@@ -58,6 +60,24 @@ export default function RcaNotes() {
       if (saved) setNotes(JSON.parse(saved));
     } catch {}
   }, []);
+
+  // Only one of the two floating panels (this + RcaAssistant) can be open at
+  // a time — see the matching effect in RcaAssistant.tsx for why.
+  useEffect(() => {
+    function onOtherPanelOpen(e: Event) {
+      if ((e as CustomEvent).detail !== "notes") setOpen(false);
+    }
+    window.addEventListener("rca-panel-open", onOtherPanelOpen);
+    return () => window.removeEventListener("rca-panel-open", onOtherPanelOpen);
+  }, []);
+
+  function toggleOpen() {
+    setOpen((v) => {
+      const next = !v;
+      if (next) window.dispatchEvent(new CustomEvent("rca-panel-open", { detail: "notes" }));
+      return next;
+    });
+  }
 
   function persist(next: RcaNote[]) {
     setNotes(next);
@@ -74,6 +94,7 @@ export default function RcaNotes() {
     setTitle("");
     setContent("");
     setClassId(currentClass?.id ?? "general");
+    setPreview(false);
     setTimeout(() => textareaRef.current?.focus(), 0);
   }
 
@@ -83,6 +104,7 @@ export default function RcaNotes() {
     setTitle(note.title);
     setContent(note.content);
     setClassId(note.classId);
+    setPreview(false);
   }
 
   function cancelForm() {
@@ -90,6 +112,35 @@ export default function RcaNotes() {
     setEditingId(null);
     setTitle("");
     setContent("");
+    setPreview(false);
+  }
+
+  // Inserts/wraps markdown syntax around the current selection (or a
+  // placeholder, if nothing's selected) — same markdown flavor the rest of
+  // the app already renders (formatMarkdown/prose, used for AI feedback), so
+  // notes get real formatting without building a separate rich-text editor.
+  function applyFormat(type: "bold" | "italic" | "underline" | "heading" | "bullet" | "numbered") {
+    const ta = textareaRef.current;
+    if (!ta) return;
+    const start = ta.selectionStart;
+    const end = ta.selectionEnd;
+    const selected = content.slice(start, end);
+    let insertText = selected;
+
+    if (type === "bold") insertText = `**${selected || "bold text"}**`;
+    else if (type === "italic") insertText = `*${selected || "italic text"}*`;
+    else if (type === "underline") insertText = `__${selected || "underlined text"}__`;
+    else if (type === "heading") insertText = `## ${selected || "Heading"}`;
+    else if (type === "bullet") insertText = (selected || "list item").split("\n").map((l) => `- ${l}`).join("\n");
+    else if (type === "numbered") insertText = (selected || "list item").split("\n").map((l, i) => `${i + 1}. ${l}`).join("\n");
+
+    const next = content.slice(0, start) + insertText + content.slice(end);
+    setContent(next);
+    setTimeout(() => {
+      ta.focus();
+      const pos = start + insertText.length;
+      ta.setSelectionRange(pos, pos);
+    }, 0);
   }
 
   function save() {
@@ -128,7 +179,7 @@ export default function RcaNotes() {
   return (
     <>
       <button
-        onClick={() => setOpen((v) => !v)}
+        onClick={toggleOpen}
         aria-label={open ? "Close notes" : "Open notes"}
         className="fixed bottom-5 z-30 flex items-center justify-center rounded-full shadow-lg transition-transform hover:scale-105"
         style={{ right: 80, width: 52, height: 52, background: "#6b8e5a", color: "#fff" }}
@@ -186,15 +237,44 @@ export default function RcaNotes() {
                   <option key={c.id} value={c.id}>{c.name}</option>
                 ))}
               </select>
-              <textarea
-                ref={textareaRef}
-                value={content}
-                onChange={(e) => setContent(e.target.value)}
-                placeholder="Jot it down…"
-                rows={6}
-                className="rounded-lg px-3 py-2 text-sm outline-none resize-y"
-                style={{ background: "#fff", border: "1px solid #d9e4d3", color: "#2f3a2a" }}
-              />
+              {/* Formatting toolbar — inserts the same markdown syntax the
+                  rest of the app already renders (formatMarkdown), so notes
+                  get real bold/italic/underline/headings/lists without a
+                  separate rich-text editor. Preview toggle shows the actual
+                  rendered result before saving. */}
+              <div className="flex items-center gap-1 flex-wrap">
+                <button type="button" onClick={() => applyFormat("bold")} className="text-xs font-bold px-2 py-1 rounded-md" style={{ background: "#eef2e2", color: "#4f6a41" }} title="Bold">B</button>
+                <button type="button" onClick={() => applyFormat("italic")} className="text-xs italic px-2 py-1 rounded-md" style={{ background: "#eef2e2", color: "#4f6a41" }} title="Italic">I</button>
+                <button type="button" onClick={() => applyFormat("underline")} className="text-xs underline px-2 py-1 rounded-md" style={{ background: "#eef2e2", color: "#4f6a41" }} title="Underline">U</button>
+                <button type="button" onClick={() => applyFormat("heading")} className="text-xs font-bold px-2 py-1 rounded-md" style={{ background: "#eef2e2", color: "#4f6a41" }} title="Heading">H</button>
+                <button type="button" onClick={() => applyFormat("bullet")} className="text-xs px-2 py-1 rounded-md" style={{ background: "#eef2e2", color: "#4f6a41" }} title="Bullet list">• List</button>
+                <button type="button" onClick={() => applyFormat("numbered")} className="text-xs px-2 py-1 rounded-md" style={{ background: "#eef2e2", color: "#4f6a41" }} title="Numbered list">1. List</button>
+                <button
+                  type="button"
+                  onClick={() => setPreview((v) => !v)}
+                  className="text-xs px-2 py-1 rounded-md ml-auto font-medium"
+                  style={{ background: preview ? "#6b8e5a" : "#eef2e2", color: preview ? "#fff" : "#4f6a41" }}
+                >
+                  {preview ? "Edit" : "Preview"}
+                </button>
+              </div>
+              {preview ? (
+                <div
+                  className="prose rounded-lg px-3 py-2 text-sm overflow-y-auto"
+                  style={{ background: "#fff", border: "1px solid #d9e4d3", color: "#2f3a2a", minHeight: 132, maxHeight: 220 }}
+                  dangerouslySetInnerHTML={{ __html: formatMarkdown(content) || "<p style='opacity:0.5'>Nothing to preview yet.</p>" }}
+                />
+              ) : (
+                <textarea
+                  ref={textareaRef}
+                  value={content}
+                  onChange={(e) => setContent(e.target.value)}
+                  placeholder="Jot it down… **bold**, *italic*, __underline__, - bullets, ## headings"
+                  rows={6}
+                  className="rounded-lg px-3 py-2 text-sm outline-none resize-y"
+                  style={{ background: "#fff", border: "1px solid #d9e4d3", color: "#2f3a2a" }}
+                />
+              )}
               <div className="flex gap-2 justify-end">
                 <button onClick={cancelForm} className="text-xs px-3 py-1.5 rounded-full font-medium" style={{ color: "#8a9a7c" }}>
                   Cancel

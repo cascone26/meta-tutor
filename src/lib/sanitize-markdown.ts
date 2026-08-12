@@ -6,10 +6,12 @@ export function formatMarkdown(text: string): string {
     .replace(/^### (.+)$/gm, "<h3>$1</h3>")
     .replace(/^## (.+)$/gm, "<h2>$1</h2>")
     .replace(/^# (.+)$/gm, "<h1>$1</h1>")
-    // Bold and italic
+    // Bold, italic, underline (double-underscore, doesn't collide with the
+    // single/double-asterisk bold+italic syntax above)
     .replace(/\*\*\*(.+?)\*\*\*/g, "<strong><em>$1</em></strong>")
     .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
     .replace(/\*(.+?)\*/g, "<em>$1</em>")
+    .replace(/__(.+?)__/g, "<u>$1</u>")
     // Code
     .replace(/`(.+?)`/g, "<code>$1</code>")
     // Blockquotes
@@ -24,7 +26,7 @@ export function formatMarkdown(text: string): string {
     .replace(/\n/g, "<br/>");
 
   return DOMPurify.sanitize(html, {
-    ALLOWED_TAGS: ["h1", "h2", "h3", "strong", "em", "code", "blockquote", "ul", "ol", "li", "br", "p"],
+    ALLOWED_TAGS: ["h1", "h2", "h3", "strong", "em", "u", "code", "blockquote", "ul", "ol", "li", "br", "p"],
     ALLOWED_ATTR: [],
   });
 }
