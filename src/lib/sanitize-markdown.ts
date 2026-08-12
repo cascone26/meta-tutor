@@ -12,6 +12,7 @@ export function formatMarkdown(text: string): string {
     .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
     .replace(/\*(.+?)\*/g, "<em>$1</em>")
     .replace(/__(.+?)__/g, "<u>$1</u>")
+    .replace(/~~(.+?)~~/g, "<s>$1</s>")
     // Code
     .replace(/`(.+?)`/g, "<code>$1</code>")
     // Blockquotes
@@ -26,7 +27,7 @@ export function formatMarkdown(text: string): string {
     .replace(/\n/g, "<br/>");
 
   return DOMPurify.sanitize(html, {
-    ALLOWED_TAGS: ["h1", "h2", "h3", "strong", "em", "u", "code", "blockquote", "ul", "ol", "li", "br", "p"],
+    ALLOWED_TAGS: ["h1", "h2", "h3", "strong", "em", "u", "s", "code", "blockquote", "ul", "ol", "li", "br", "p"],
     ALLOWED_ATTR: [],
   });
 }

@@ -49,7 +49,16 @@ export default function RcaNotes() {
   const [content, setContent] = useState("");
   const [classId, setClassId] = useState("general");
   const [preview, setPreview] = useState(false);
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  // Snapshot of the form's state the moment it opened, so Cancel/Escape/
+  // switching notes can tell whether there's actually unsaved work to warn
+  // about — editing then bailing out should never silently lose text, the
+  // same guarantee a real document editor gives you. State, not a ref: it
+  // needs to participate in the isDirty comparison during render, and refs
+  // aren't safe to read there.
+  const [initialForm, setInitialForm] = useState({ title: "", content: "", classId: "general" });
+  const isDirty = title !== initialForm.title || content !== initialForm.content || classId !== initialForm.classId;
 
   const slug = pathname.startsWith("/rca/") ? pathname.split("/")[2] : undefined;
   const currentClass = slug ? getRcaClass(slug) : undefined;
@@ -90,59 +99,114 @@ export default function RcaNotes() {
     }
   }
 
+  // Both entry points into the form go through here so isDirty always has a
+  // real baseline to compare against, and so switching straight from editing
+  // one note to starting/opening another always asks first if there's
+  // unsaved work (not just the Cancel button).
+  function guardUnsaved(after: () => void) {
+    if ((adding || editingId) && isDirty) {
+      if (!window.confirm("Discard unsaved changes to this note?")) return;
+    }
+    after();
+  }
+
   function startAdd() {
-    setAdding(true);
-    setEditingId(null);
-    setTitle("");
-    setContent("");
-    setClassId(currentClass?.id ?? "general");
-    setPreview(false);
-    setTimeout(() => textareaRef.current?.focus(), 0);
+    guardUnsaved(() => {
+      setAdding(true);
+      setEditingId(null);
+      setTitle("");
+      setContent("");
+      const initClassId = currentClass?.id ?? "general";
+      setClassId(initClassId);
+      setPreview(false);
+      setInitialForm({ title: "", content: "", classId: initClassId });
+      setTimeout(() => textareaRef.current?.focus(), 0);
+    });
   }
 
   function startEdit(note: RcaNote) {
-    setEditingId(note.id);
-    setAdding(false);
-    setTitle(note.title);
-    setContent(note.content);
-    setClassId(note.classId);
-    setPreview(false);
+    guardUnsaved(() => {
+      setEditingId(note.id);
+      setAdding(false);
+      setTitle(note.title);
+      setContent(note.content);
+      setClassId(note.classId);
+      setPreview(false);
+      setInitialForm({ title: note.title, content: note.content, classId: note.classId });
+    });
   }
 
-  function cancelForm() {
+  function cancelForm(skipGuard = false) {
+    if (!skipGuard && isDirty && !window.confirm("Discard unsaved changes to this note?")) return;
     setAdding(false);
     setEditingId(null);
     setTitle("");
     setContent("");
     setPreview(false);
   }
+
+  type FormatType = "bold" | "italic" | "underline" | "strikethrough" | "heading" | "bullet" | "numbered";
 
   // Inserts/wraps markdown syntax around the current selection (or a
   // placeholder, if nothing's selected) — same markdown flavor the rest of
   // the app already renders (formatMarkdown/prose, used for AI feedback), so
   // notes get real formatting without building a separate rich-text editor.
-  function applyFormat(type: "bold" | "italic" | "underline" | "heading" | "bullet" | "numbered") {
+  // Takes an explicit (start, end, value) triple rather than reading
+  // ta.selectionStart directly, so keyboard shortcuts (fired from onKeyDown,
+  // where the selection is still valid) and toolbar clicks share one path.
+  function applyFormat(type: FormatType, start: number, end: number, value: string) {
     const ta = textareaRef.current;
     if (!ta) return;
-    const start = ta.selectionStart;
-    const end = ta.selectionEnd;
-    const selected = content.slice(start, end);
+    const selected = value.slice(start, end);
     let insertText = selected;
 
     if (type === "bold") insertText = `**${selected || "bold text"}**`;
     else if (type === "italic") insertText = `*${selected || "italic text"}*`;
     else if (type === "underline") insertText = `__${selected || "underlined text"}__`;
+    else if (type === "strikethrough") insertText = `~~${selected || "strikethrough text"}~~`;
     else if (type === "heading") insertText = `## ${selected || "Heading"}`;
     else if (type === "bullet") insertText = (selected || "list item").split("\n").map((l) => `- ${l}`).join("\n");
     else if (type === "numbered") insertText = (selected || "list item").split("\n").map((l, i) => `${i + 1}. ${l}`).join("\n");
 
-    const next = content.slice(0, start) + insertText + content.slice(end);
+    const next = value.slice(0, start) + insertText + value.slice(end);
     setContent(next);
     setTimeout(() => {
       ta.focus();
       const pos = start + insertText.length;
       ta.setSelectionRange(pos, pos);
     }, 0);
+  }
+
+  function applyFormatFromToolbar(type: FormatType) {
+    const ta = textareaRef.current;
+    if (!ta) return;
+    applyFormat(type, ta.selectionStart, ta.selectionEnd, content);
+  }
+
+  // Real keyboard shortcuts, including the actual Google Docs bindings for
+  // lists (Cmd/Ctrl+Shift+7/8) — this is the headline ask: notes should feel
+  // like a real editor, not a plain textarea with buttons bolted on.
+  function handleKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
+    const mod = e.metaKey || e.ctrlKey;
+    const ta = e.currentTarget;
+
+    if (mod && !e.shiftKey && e.key.toLowerCase() === "b") { e.preventDefault(); applyFormat("bold", ta.selectionStart, ta.selectionEnd, content); return; }
+    if (mod && !e.shiftKey && e.key.toLowerCase() === "i") { e.preventDefault(); applyFormat("italic", ta.selectionStart, ta.selectionEnd, content); return; }
+    if (mod && !e.shiftKey && e.key.toLowerCase() === "u") { e.preventDefault(); applyFormat("underline", ta.selectionStart, ta.selectionEnd, content); return; }
+    if (mod && e.shiftKey && e.key.toLowerCase() === "x") { e.preventDefault(); applyFormat("strikethrough", ta.selectionStart, ta.selectionEnd, content); return; }
+    if (mod && e.shiftKey && e.key === "8") { e.preventDefault(); applyFormat("bullet", ta.selectionStart, ta.selectionEnd, content); return; }
+    if (mod && e.shiftKey && e.key === "7") { e.preventDefault(); applyFormat("numbered", ta.selectionStart, ta.selectionEnd, content); return; }
+    if (mod && e.key === "Enter") { e.preventDefault(); save(); return; }
+    if (e.key === "Escape") { e.preventDefault(); cancelForm(); return; }
+    if (e.key === "Tab") {
+      // Real editors indent on Tab instead of losing focus to the next
+      // element, which is what a plain textarea does by default.
+      e.preventDefault();
+      const start = ta.selectionStart, end = ta.selectionEnd;
+      const next = content.slice(0, start) + "  " + content.slice(end);
+      setContent(next);
+      setTimeout(() => ta.setSelectionRange(start + 2, start + 2), 0);
+    }
   }
 
   function save() {
@@ -158,11 +222,20 @@ export default function RcaNotes() {
       const note: RcaNote = { id: now.toString(), title: title.trim() || "Untitled", content: content.trim(), classId, pinned: false, createdAt: now, updatedAt: now };
       persist([note, ...notes]);
     }
-    cancelForm();
+    cancelForm(true); // just saved — nothing left to discard, skip the unsaved-changes prompt
   }
 
   function remove(id: string) {
     persist(notes.filter((n) => n.id !== id));
+    setConfirmDeleteId(null);
+  }
+
+  function requestDelete(id: string) {
+    if (confirmDeleteId === id) {
+      remove(id);
+    } else {
+      setConfirmDeleteId(id);
+    }
   }
 
   function togglePin(id: string) {
@@ -215,7 +288,14 @@ export default function RcaNotes() {
               >
                 + New
               </button>
-              <button onClick={() => setOpen(false)} className="text-sm" style={{ color: "#6b8e6a" }} aria-label="Close">✕</button>
+              <button
+                onClick={() => guardUnsaved(() => { cancelForm(true); setOpen(false); setConfirmDeleteId(null); })}
+                className="text-sm"
+                style={{ color: "#6b8e6a" }}
+                aria-label="Close"
+              >
+                ✕
+              </button>
             </div>
           </div>
 
@@ -242,15 +322,19 @@ export default function RcaNotes() {
               {/* Formatting toolbar — inserts the same markdown syntax the
                   rest of the app already renders (formatMarkdown), so notes
                   get real bold/italic/underline/headings/lists without a
-                  separate rich-text editor. Preview toggle shows the actual
-                  rendered result before saving. */}
+                  separate rich-text editor. Every button has a real keyboard
+                  shortcut behind it too (handleKeyDown on the textarea) —
+                  the same bindings Google Docs uses for bold/italic/
+                  underline/lists, not made-up ones. Preview toggle shows the
+                  actual rendered result before saving. */}
               <div className="flex items-center gap-1 flex-wrap">
-                <button type="button" onClick={() => applyFormat("bold")} className="text-xs font-bold px-2 py-1 rounded-md" style={{ background: "#eef2e2", color: "#4f6a41" }} title="Bold">B</button>
-                <button type="button" onClick={() => applyFormat("italic")} className="text-xs italic px-2 py-1 rounded-md" style={{ background: "#eef2e2", color: "#4f6a41" }} title="Italic">I</button>
-                <button type="button" onClick={() => applyFormat("underline")} className="text-xs underline px-2 py-1 rounded-md" style={{ background: "#eef2e2", color: "#4f6a41" }} title="Underline">U</button>
-                <button type="button" onClick={() => applyFormat("heading")} className="text-xs font-bold px-2 py-1 rounded-md" style={{ background: "#eef2e2", color: "#4f6a41" }} title="Heading">H</button>
-                <button type="button" onClick={() => applyFormat("bullet")} className="text-xs px-2 py-1 rounded-md" style={{ background: "#eef2e2", color: "#4f6a41" }} title="Bullet list">• List</button>
-                <button type="button" onClick={() => applyFormat("numbered")} className="text-xs px-2 py-1 rounded-md" style={{ background: "#eef2e2", color: "#4f6a41" }} title="Numbered list">1. List</button>
+                <button type="button" onClick={() => applyFormatFromToolbar("bold")} className="text-xs font-bold px-2 py-1 rounded-md" style={{ background: "#eef2e2", color: "#4f6a41" }} title="Bold (⌘B)">B</button>
+                <button type="button" onClick={() => applyFormatFromToolbar("italic")} className="text-xs italic px-2 py-1 rounded-md" style={{ background: "#eef2e2", color: "#4f6a41" }} title="Italic (⌘I)">I</button>
+                <button type="button" onClick={() => applyFormatFromToolbar("underline")} className="text-xs underline px-2 py-1 rounded-md" style={{ background: "#eef2e2", color: "#4f6a41" }} title="Underline (⌘U)">U</button>
+                <button type="button" onClick={() => applyFormatFromToolbar("strikethrough")} className="text-xs px-2 py-1 rounded-md" style={{ background: "#eef2e2", color: "#4f6a41", textDecoration: "line-through" }} title="Strikethrough (⌘⇧X)">S</button>
+                <button type="button" onClick={() => applyFormatFromToolbar("heading")} className="text-xs font-bold px-2 py-1 rounded-md" style={{ background: "#eef2e2", color: "#4f6a41" }} title="Heading">H</button>
+                <button type="button" onClick={() => applyFormatFromToolbar("bullet")} className="text-xs px-2 py-1 rounded-md" style={{ background: "#eef2e2", color: "#4f6a41" }} title="Bullet list (⌘⇧8)">• List</button>
+                <button type="button" onClick={() => applyFormatFromToolbar("numbered")} className="text-xs px-2 py-1 rounded-md" style={{ background: "#eef2e2", color: "#4f6a41" }} title="Numbered list (⌘⇧7)">1. List</button>
                 <button
                   type="button"
                   onClick={() => setPreview((v) => !v)}
@@ -271,14 +355,21 @@ export default function RcaNotes() {
                   ref={textareaRef}
                   value={content}
                   onChange={(e) => setContent(e.target.value)}
-                  placeholder="Jot it down… **bold**, *italic*, __underline__, - bullets, ## headings"
+                  onKeyDown={handleKeyDown}
+                  placeholder="Jot it down… **bold**, *italic*, __underline__, ~~strike~~, - bullets, ## headings. ⌘B/⌘I/⌘U/⌘⇧X, ⌘⇧8 bullets, ⌘⇧7 numbered, ⌘↵ save, Esc cancel."
                   rows={6}
                   className="rounded-lg px-3 py-2 text-sm outline-none resize-y"
                   style={{ background: "#fff", border: "1px solid #d9e4d3", color: "#2f3a2a" }}
                 />
               )}
+              <div className="flex items-center justify-between">
+                <span className="text-[10px]" style={{ color: content.length > MAX_NOTE_SIZE * 0.9 ? "#c47a7a" : "#a8b39c" }}>
+                  {content.length.toLocaleString()} / {MAX_NOTE_SIZE.toLocaleString()} chars
+                </span>
+                <span className="text-[10px]" style={{ color: "#a8b39c" }}>⌘↵ to save · Esc to cancel</span>
+              </div>
               <div className="flex gap-2 justify-end">
-                <button onClick={cancelForm} className="text-xs px-3 py-1.5 rounded-full font-medium" style={{ color: "#8a9a7c" }}>
+                <button onClick={() => cancelForm()} className="text-xs px-3 py-1.5 rounded-full font-medium" style={{ color: "#8a9a7c" }}>
                   Cancel
                 </button>
                 <button
@@ -354,9 +445,20 @@ export default function RcaNotes() {
                     <button onClick={() => startEdit(n)} className="p-1 rounded-lg hover:opacity-60" style={{ color: "#8a9a7c" }} title="Edit">
                       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" /><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" /></svg>
                     </button>
-                    <button onClick={() => remove(n.id)} className="p-1 rounded-lg hover:opacity-60" style={{ color: "#c47a7a" }} title="Delete">
-                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2" /></svg>
-                    </button>
+                    {confirmDeleteId === n.id ? (
+                      <>
+                        <button onClick={() => remove(n.id)} className="text-[10px] px-1.5 py-1 rounded-lg font-semibold" style={{ background: "#c47a7a", color: "#fff" }}>
+                          Confirm?
+                        </button>
+                        <button onClick={() => setConfirmDeleteId(null)} className="p-1 rounded-lg hover:opacity-60" style={{ color: "#8a9a7c" }} title="Cancel delete">
+                          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12" /></svg>
+                        </button>
+                      </>
+                    ) : (
+                      <button onClick={() => requestDelete(n.id)} className="p-1 rounded-lg hover:opacity-60" style={{ color: "#c47a7a" }} title="Delete (click twice to confirm)">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2" /></svg>
+                      </button>
+                    )}
                   </div>
                 </div>
               </div>

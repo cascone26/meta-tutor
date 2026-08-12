@@ -62,7 +62,7 @@ export default function RcaPage() {
         <h1 className="text-2xl font-bold tracking-tight">Regina Caeli Academy</h1>
       </div>
       <p className="text-sm mb-6" style={{ color: "#5c6b52", animation: "fadeUpIn 0.6s cubic-bezier(0.16,1,0.3,1) 80ms both" }}>
-        6th Grade Lead + Music 3-4 — {rcaSchedule.center}
+        6th Grade Lead Tutor
       </p>
 
       <Reveal><DailyVerse /></Reveal>
