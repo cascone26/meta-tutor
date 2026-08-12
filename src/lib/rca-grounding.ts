@@ -10,6 +10,14 @@ export const STALE_CONTENT_NOTE =
   "versions have not been issued to Jacob yet. Pacing/structure should carry over, but flag to Jacob if he " +
   "asks about specific dates, since those are last year's.";
 
+const CURRENT_CONTENT_NOTE =
+  "This class's lesson content below is from RCA's real 2026-2027 curriculum doc (arrived 2026-08-12), not a placeholder — dates/pacing are this year's.";
+
+// Saxon Math and LOE Essentials C are separate, per-student docs RCA hasn't
+// sent for 2026-2027 yet — everything else (Religion/CLA/Latin/History/
+// Science) was rebuilt from the real doc on 2026-08-12.
+const STILL_STALE_CLASS_IDS = new Set(["saxon-76", "loe-essentials-c"]);
+
 function buildScheduleNote(): string {
   const next = getNextScheduleItem();
   if (next.kind === "event") {
@@ -22,7 +30,7 @@ function buildScheduleNote(): string {
 function buildGeneralGrounding(): string {
   const list = rcaClasses.map((c) => `- ${c.name} (${c.grade}, ${c.area})`).join("\n");
   const scheduleNote = buildScheduleNote();
-  return `CONTEXT: Regina Caeli Academy (KSC, Overland Park KS) — a Catholic classical homeschool hybrid. Jacob is the 6th Grade Lead plus Music 3-4 tutor, on campus ${rcaSchedule.days.join(" & ")} (his real teaching days/deadlines once the term starts) ${rcaSchedule.startTime}-${rcaSchedule.endTime}. He's not currently viewing a specific class page, so answer generally across his full teaching load unless he names a subject.\n\n${scheduleNote}\n\nHIS CLASSES:\n${list}\n\n${STALE_CONTENT_NOTE}`;
+  return `CONTEXT: Regina Caeli Academy (KSC, Overland Park KS) — a Catholic classical homeschool hybrid. Jacob is the 6th Grade Lead plus Music 3-4 tutor, on campus ${rcaSchedule.days.join(" & ")} (his real teaching days/deadlines once the term starts) ${rcaSchedule.startTime}-${rcaSchedule.endTime}. He's not currently viewing a specific class page, so answer generally across his full teaching load unless he names a subject.\n\n${scheduleNote}\n\nHIS CLASSES:\n${list}\n\n${CURRENT_CONTENT_NOTE} Saxon Math and LOE Essentials C are the exception — RCA hasn't sent their 2026-2027 docs yet, so those two are still on 2025-2026 placeholder pacing; flag it if Jacob asks about dates for either.`;
 }
 
 // `lessonNOverride` lets a caller ground on a SPECIFIC past lesson instead of
@@ -51,7 +59,7 @@ export function buildClassGrounding(subjectId: string | undefined, lessonNOverri
       for (const s of lesson.sections) grounding += `${s.label}: ${s.text}\n`;
       if (lesson.note) grounding += `Note: ${lesson.note}\n`;
     }
-    grounding += `\n${STALE_CONTENT_NOTE}`;
+    grounding += `\n${STILL_STALE_CLASS_IDS.has(cls.id) ? STALE_CONTENT_NOTE : CURRENT_CONTENT_NOTE}`;
   } else if (cls.lessonPlanUrl) {
     grounding += `\nFull lesson plan content hasn't been pulled into this app yet — the master doc lives at ${cls.lessonPlanUrl}. Answer from general knowledge of the subject/grade level and RCA's classical, Catholic approach, and say so if asked something only the doc would answer.\n`;
   }

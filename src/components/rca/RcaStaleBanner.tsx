@@ -1,8 +1,11 @@
 import { LeafIcon } from "./NatureIcons";
 
-// Visible on every RCA page — content is transcribed from RCA's 2025-2026 docs since
-// 2026-2027's haven't been issued. Loud on purpose: this was previously only mentioned
-// in code comments/PROCESS.md, which Jacob never sees.
+// Visible on every RCA page. Updated 2026-08-12: the real 2026-2027 6th Grade
+// master doc (Religion/CLA+Poetry/Latin/History/Science) arrived and this app's
+// content for those five was rebuilt from it. Math (Saxon) and LOE Essentials C
+// are separate, per-student docs RCA hasn't sent yet, so those two are still on
+// last year's placeholder pacing. Loud on purpose: this was previously only
+// mentioned in code comments/PROCESS.md, which Jacob never sees.
 export default function RcaStaleBanner() {
   return (
     <div
@@ -11,8 +14,9 @@ export default function RcaStaleBanner() {
     >
       <LeafIcon size={13} style={{ marginTop: 1, flexShrink: 0 }} />
       <span>
-        Curriculum content below is transcribed from RCA&apos;s <strong>2025-2026</strong> lesson plans —
-        2026-2027&apos;s haven&apos;t been sent yet. Pacing/structure should carry over; treat specific dates as last year&apos;s.
+        Religion, Classical Language Arts, Latin, History, and Science are on the real <strong>2026-2027</strong> pacing
+        (RCA&apos;s doc arrived 2026-08-12). <strong>Saxon Math</strong> and <strong>LOE Essentials C</strong> are separate,
+        per-student docs RCA hasn&apos;t sent yet — those two are still last year&apos;s placeholder; treat their dates as 2025-2026&apos;s.
       </span>
     </div>
   );

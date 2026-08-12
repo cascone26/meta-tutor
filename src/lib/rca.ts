@@ -90,7 +90,7 @@ export const rcaClasses: RcaClass[] = [
     name: "Classical Language Arts 6",
     grade: "6th",
     area: "Academic",
-    summary: "Narration-essay writing cycles: outline, draft, self-edit, revise, submit for feedback.",
+    summary: "Narration-essay writing cycles (8/year) + poetry memorization (4 poems, stanza-by-stanza with recitation quizzes).",
     books: [],
     lessonPlanUrl: sixthGradeMasterDoc,
     driveUrls: [
@@ -104,7 +104,7 @@ export const rcaClasses: RcaClass[] = [
     name: "Religion 6",
     grade: "6th",
     area: "Academic",
-    summary: "Baltimore Catechism memory work + Gospel of Mark, read sequentially across the year.",
+    summary: "Baltimore Catechism memory work + sequential Gospel reading — Mark in the fall, Luke in the spring.",
     books: [],
     lessonPlanUrl: sixthGradeMasterDoc,
     driveUrls: [
@@ -118,7 +118,7 @@ export const rcaClasses: RcaClass[] = [
     name: "History 6",
     grade: "6th",
     area: "Academic",
-    summary: "Ancient history — Book of the Ancient World, note-taking, maps, paragraph writing, timeline.",
+    summary: "Ancient Egypt (fall) then Ancient Near East/Israel (spring) — maps, paragraph writing, and a research paper each semester.",
     books: [],
     lessonPlanUrl: sixthGradeMasterDoc,
     driveUrls: [
@@ -132,7 +132,7 @@ export const rcaClasses: RcaClass[] = [
     name: "Science 6",
     grade: "6th",
     area: "Academic",
-    summary: "Behold and See 6 — reading, workbook, hands-on experiments, Science Notebook.",
+    summary: "Behold and See 6 — matter/forces/machines (fall), biomes and astronomy (spring), plus a Science Fair project.",
     books: [],
     lessonPlanUrl: sixthGradeMasterDoc,
     driveUrls: [
