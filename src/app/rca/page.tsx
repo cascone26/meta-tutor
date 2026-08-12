@@ -9,6 +9,7 @@ import {
 import Reveal from "@/components/Reveal";
 import RcaDashboard from "@/components/rca/RcaDashboard";
 import RcaReviewPicker from "@/components/rca/RcaReviewPicker";
+import DailyVerse from "@/components/rca/DailyVerse";
 
 // Next-teaching-day needs a fresh Date() per request, not baked in at build time.
 export const dynamic = "force-dynamic";
@@ -64,6 +65,7 @@ export default function RcaPage() {
         6th Grade Lead + Music 3-4 — {rcaSchedule.center}
       </p>
 
+      <Reveal><DailyVerse /></Reveal>
       <Reveal><RcaDashboard /></Reveal>
 
       <div

@@ -142,21 +142,30 @@ export function DaisyDoodle({ size = 20, className, style }: IconProps) {
 // with a slight offset — an alternating scuttle instead of a rigid body gliding.
 // Body is now FILLED (was pure outline + 3 tiny dots, which read as a faint ring,
 // not a bug) with a dark head/spots for contrast against whatever body color.
+// Side-profile now, not top-down. The old top-down version (a centered head
+// circle + symmetric legs on both sides) had NO left-right asymmetry, so the
+// scaleX(-1) flip in crawlLoop's turn-around was mirroring a shape that looks
+// identical either way — the bug never visibly "faced" a direction, which is
+// exactly why it read as sliding back and forth instead of walking and
+// turning. This shape has a real front (a distinct head+antennae at the
+// right) and a real back (the wider dome), so the flip actually reorients it.
 export function BugDoodle({ size = 20, className, style }: IconProps) {
   return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" strokeLinecap="round" strokeLinejoin="round" className={className} style={style}>
-      <circle cx="12" cy="14" r="7" fill="currentColor" fillOpacity="0.8" stroke="currentColor" strokeWidth="1.2" strokeOpacity="0.6" />
-      <circle cx="12" cy="5.5" r="2.8" fill="#2a2420" />
-      <path d="M12 7.5v13.5" stroke="#2a2420" strokeWidth="1.2" strokeOpacity="0.55" />
-      <g style={{ transformOrigin: "12px 13px", animation: "legWiggle 0.35s ease-in-out infinite" }}>
-        <path d="M7 10l-3-2M6 16l-3 1" stroke="#2a2420" strokeWidth="1.2" />
+    <svg width={size} height={size * (20 / 28)} viewBox="0 0 28 20" fill="none" strokeLinecap="round" strokeLinejoin="round" className={className} style={style}>
+      <path d="M3 15c-1-6 4-11 11-11s10 5 9 11c-1 3-6 4-10 4s-9-1-10-4z" fill="currentColor" fillOpacity="0.85" stroke="currentColor" strokeWidth="1" strokeOpacity="0.5" />
+      <path d="M13 4.5v11" stroke="#2a2420" strokeWidth="1" strokeOpacity="0.4" />
+      <circle cx="8" cy="8.5" r="1.3" fill="#2a2420" />
+      <circle cx="8" cy="13.5" r="1.3" fill="#2a2420" />
+      <circle cx="16" cy="9" r="1.3" fill="#2a2420" />
+      {/* Head + antennae — the front, at the right by default */}
+      <circle cx="22" cy="9" r="3" fill="#2a2420" />
+      <path d="M23 6.3c.7-1 1.7-1.3 2.5-1M24.2 7.3c.6-1.1 1.5-1.7 2.3-1.7" stroke="#2a2420" strokeWidth="1" />
+      <g style={{ transformOrigin: "10px 16px", animation: "legWiggle 0.35s ease-in-out infinite" }}>
+        <path d="M6 16l-2 3M10 17l-1 3" stroke="#2a2420" strokeWidth="1.2" />
       </g>
-      <g style={{ transformOrigin: "12px 13px", animation: "legWiggle 0.35s ease-in-out infinite 0.18s" }}>
-        <path d="M17 10l3-2M18 16l3 1" stroke="#2a2420" strokeWidth="1.2" />
+      <g style={{ transformOrigin: "16px 16px", animation: "legWiggle 0.35s ease-in-out infinite 0.18s" }}>
+        <path d="M15 17l0 3M19 16l2 3" stroke="#2a2420" strokeWidth="1.2" />
       </g>
-      <circle cx="8.7" cy="12.5" r="1.3" fill="#2a2420" />
-      <circle cx="15.3" cy="12.5" r="1.3" fill="#2a2420" />
-      <circle cx="12" cy="17.5" r="1.3" fill="#2a2420" />
     </svg>
   );
 }

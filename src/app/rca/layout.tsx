@@ -7,7 +7,7 @@ import RcaStaleBanner from "@/components/rca/RcaStaleBanner";
 export default function RcaLayout({ children }: { children: React.ReactNode }) {
   return (
     <div
-      className="h-full overflow-y-auto relative"
+      className="h-full overflow-y-auto overflow-x-hidden relative"
       style={{
         // backgroundAttachment: "local" is the actual fix here — without it, the
         // gradient is pinned to the visible viewport frame of this scrolling box

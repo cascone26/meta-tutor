@@ -28,25 +28,18 @@ export default function RcaAssistant() {
     if (open) endRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, open]);
 
-  // Only one of the two floating panels (this + RcaNotes) can be open at a
-  // time — they anchor to nearly the same corner, so open-together just
-  // stacks two ~380px panels on top of each other. Coordinated via a plain
-  // window event (same pattern as EXPLAIN_DIFFERENTLY_EVENT elsewhere in the
-  // RCA station) rather than lifting shared state into the layout.
+  // Both this panel and RcaNotes can be open at once — they anchor near the
+  // same corner, so this panel (the rightmost of the two buttons) always
+  // broadcasts its own open state; RcaNotes listens and shifts itself left
+  // to sit beside this one instead of underneath it. Plain window event (same
+  // pattern as EXPLAIN_DIFFERENTLY_EVENT elsewhere in the RCA station) rather
+  // than lifting shared state into the layout.
   useEffect(() => {
-    function onOtherPanelOpen(e: Event) {
-      if ((e as CustomEvent).detail !== "assistant") setOpen(false);
-    }
-    window.addEventListener("rca-panel-open", onOtherPanelOpen);
-    return () => window.removeEventListener("rca-panel-open", onOtherPanelOpen);
-  }, []);
+    window.dispatchEvent(new CustomEvent("rca-panel-change", { detail: { source: "assistant", open } }));
+  }, [open]);
 
   function toggleOpen() {
-    setOpen((v) => {
-      const next = !v;
-      if (next) window.dispatchEvent(new CustomEvent("rca-panel-open", { detail: "assistant" }));
-      return next;
-    });
+    setOpen((v) => !v);
   }
 
   async function send(content: string) {

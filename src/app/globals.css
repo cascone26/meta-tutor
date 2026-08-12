@@ -45,6 +45,16 @@ html.dark {
   --font-mono: var(--font-geist-mono);
 }
 
+html, body {
+  /* position:fixed decorative elements (RCA's atmosphere blobs, scene
+     foreground blur shapes) are positioned relative to the viewport, not
+     their DOM parent — a parent's overflow-x:hidden does NOT clip them, only
+     the true root (html/body) does. Without this, those intentionally
+     edge-bleeding decorative shapes were adding real horizontal scroll to
+     the whole page. */
+  overflow-x: hidden;
+}
+
 body {
   background: var(--background);
   color: var(--foreground);

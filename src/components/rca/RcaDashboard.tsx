@@ -28,16 +28,10 @@ export default function RcaDashboard() {
       .finally(() => setLoading(false));
   }, []);
 
-  if (loading) return null;
-  if (!progress || progress.totalSessions === 0) {
-    return (
-      <div className="rounded-2xl p-5 mb-8" style={{ background: "rgba(251,248,240,0.75)", border: "1px solid #d9e4d3", backdropFilter: "blur(10px)" }}>
-        <p className="text-sm" style={{ color: "#5c6b52" }}>
-          Run your first understanding-check on any class below and this turns into a real streak + activity tracker.
-        </p>
-      </div>
-    );
-  }
+  // No placeholder box for the empty state anymore — DailyVerse (rendered
+  // just above this on the page) already fills that "first thing you see"
+  // slot, so an empty streak card here would just be redundant filler.
+  if (loading || !progress || progress.totalSessions === 0) return null;
 
   const { streak, last14, topWeakAreas, modeStats } = progress;
   const bestMode = modeStats.length > 1 ? [...modeStats].sort((a, b) => b.avgPercentage - a.avgPercentage)[0] : null;
@@ -79,7 +73,7 @@ export default function RcaDashboard() {
       {modeStats.length > 0 && (
         <div style={{ borderTop: "1px solid #e6e0d0" }} className="pt-3 mb-3">
           <p className="text-xs font-semibold mb-1.5" style={{ color: "#2f5e7a" }}>
-            What you're actually using
+            What you&apos;re actually using
             {bestMode && <span style={{ color: "#8a9a7c", fontWeight: 400 }}> — {bestMode.label} is working best ({bestMode.avgPercentage}%)</span>}
           </p>
           <div className="space-y-1">

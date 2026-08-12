@@ -61,22 +61,24 @@ export default function RcaNotes() {
     } catch {}
   }, []);
 
-  // Only one of the two floating panels (this + RcaAssistant) can be open at
-  // a time — see the matching effect in RcaAssistant.tsx for why.
+  // Both this panel and RcaAssistant can be open at once now — the assistant
+  // button sits to this one's right (closer to the corner), so when its
+  // panel is also open, shift this one further left to sit beside it instead
+  // of stacking directly underneath (which is what "should still be able to
+  // open both at once" was reacting to — an earlier version made them
+  // mutually-exclusive instead of actually solving the overlap).
+  const [assistantOpen, setAssistantOpen] = useState(false);
   useEffect(() => {
-    function onOtherPanelOpen(e: Event) {
-      if ((e as CustomEvent).detail !== "notes") setOpen(false);
+    function onPanelChange(e: Event) {
+      const detail = (e as CustomEvent).detail;
+      if (detail?.source === "assistant") setAssistantOpen(detail.open);
     }
-    window.addEventListener("rca-panel-open", onOtherPanelOpen);
-    return () => window.removeEventListener("rca-panel-open", onOtherPanelOpen);
+    window.addEventListener("rca-panel-change", onPanelChange);
+    return () => window.removeEventListener("rca-panel-change", onPanelChange);
   }, []);
 
   function toggleOpen() {
-    setOpen((v) => {
-      const next = !v;
-      if (next) window.dispatchEvent(new CustomEvent("rca-panel-open", { detail: "notes" }));
-      return next;
-    });
+    setOpen((v) => !v);
   }
 
   function persist(next: RcaNote[]) {
@@ -197,8 +199,8 @@ export default function RcaNotes() {
 
       {open && (
         <div
-          className="fixed bottom-[76px] z-30 flex flex-col rounded-2xl shadow-xl overflow-hidden"
-          style={{ right: 20, width: "min(380px, calc(100vw - 2.5rem))", maxHeight: "75vh", background: "#fbf8f0", border: "1px solid #d9e4d3" }}
+          className="fixed bottom-[76px] z-30 flex flex-col rounded-2xl shadow-xl overflow-hidden transition-[right] duration-200"
+          style={{ right: assistantOpen ? 400 : 20, width: "min(380px, calc(100vw - 2.5rem))", maxHeight: "75vh", background: "#fbf8f0", border: "1px solid #d9e4d3" }}
         >
           <div className="px-4 py-3 flex items-center justify-between" style={{ background: "#eef2e2", borderBottom: "1px solid #d9e4d3" }}>
             <div>
