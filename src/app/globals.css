@@ -108,6 +108,10 @@ body {
   0%, 100% { transform: translate(0, 0); }
   50% { transform: translate(-18px, 16px); }
 }
+/* One-directional only — never pair this with animation-direction:alternate.
+   A cloud/blob that reverses direction every cycle reads as sliding back and
+   forth, not drifting. Slow duration + small travel distance makes the loop
+   restart (100% -> 0%) an imperceptible snap instead of a visible jump. */
 @keyframes drift {
   0% { transform: translateX(0); }
   100% { transform: translateX(60px); }
@@ -154,13 +158,10 @@ body {
   0%, 100% { transform: rotate(0deg); }
   50% { transform: rotate(8deg); }
 }
-/* Ground crawl — horizontal-only drift, no rotation. Flying creatures (birds,
-   butterflies) get the wander paths with rotation; things that walk on the
-   ground (bugs, ants) look wrong tumbling through the air like that. */
-@keyframes crawl {
-  0%, 100% { transform: translateX(0); }
-  50% { transform: translateX(26px); }
-}
+/* antMarch — a settled vertical "stepping" bob, staggered per-ant so the line
+   ripples like it's walking. Deliberately NOT horizontal: a symmetric
+   translateX(0 -> 26 -> 0) loop (the old "crawl") reads as sliding back and
+   forth in place, not forward progress — killed in favor of this. */
 @keyframes antMarch {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-2px); }

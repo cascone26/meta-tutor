@@ -28,12 +28,12 @@ export default function RcaLayout({ children }: { children: React.ReactNode }) {
       <div
         aria-hidden
         className="pointer-events-none fixed rounded-full"
-        style={{ width: 340, height: 180, top: "4%", left: "8%", background: "radial-gradient(ellipse, #ffffffaa 0%, transparent 70%)", filter: "blur(30px)", animation: "drift 40s linear infinite alternate" }}
+        style={{ width: 340, height: 180, top: "4%", left: "8%", background: "radial-gradient(ellipse, #ffffffaa 0%, transparent 70%)", filter: "blur(30px)", animation: "drift 40s linear infinite" }}
       />
       <div
         aria-hidden
         className="pointer-events-none fixed rounded-full"
-        style={{ width: 260, height: 140, top: "9%", right: "12%", background: "radial-gradient(ellipse, #ffffff88 0%, transparent 70%)", filter: "blur(26px)", animation: "drift 55s linear infinite alternate-reverse" }}
+        style={{ width: 260, height: 140, top: "9%", right: "12%", background: "radial-gradient(ellipse, #ffffff88 0%, transparent 70%)", filter: "blur(26px)", animation: "drift 55s linear infinite reverse" }}
       />
       <div
         aria-hidden

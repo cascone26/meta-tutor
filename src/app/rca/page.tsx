@@ -18,112 +18,43 @@ export default function RcaPage() {
   const next = getNextScheduleItem();
   const nextLabel = next.date.toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric" });
 
+  // Ground-scene layout constants — used by both the JSX below and by the
+  // verification harness (scripts/verify-scene.mjs) reasoning about expected
+  // geometry, so keep numbers here rather than scattered magic strings.
+  const GROUND_HEIGHT = 260;
+  const SKY_HEIGHT = 1100;
+
   return (
     <div className="relative">
-      {/* Doodle scene — sits in the page's own flow so each critter is where it'd actually
-          be: sky things up top, flying things through the middle, ground things at the
-          bottom in the earthy zone (a ground line to root them, tree/flowers/ant hill on it). */}
+      {/* Sky + middle band — a FIXED-HEIGHT container (not 100%/full-page), so
+          the top:% positions of everything inside it are always measured
+          against this one constant regardless of how many class cards render
+          below. This is the fix for the old bug: clouds/birds/butterflies used
+          to be absolute against the page's OWN total height (which grows with
+          every card), which is exactly why ground-zone doodles were landing in
+          the middle of the card list on a real content-length page instead of
+          the isolated short mockups they were tuned against. This band sits
+          behind the content (z-index below the z-[1] content column) so cards
+          always paint on top and nothing can visually intrude on card text. */}
+      <div aria-hidden data-scene-zone="sky" className="hidden md:block absolute inset-x-0 top-0 pointer-events-none overflow-hidden" style={{ height: SKY_HEIGHT, zIndex: 0 }}>
+        <CloudDoodle size={90} className="absolute" style={{ top: "1%", left: "3%", color: "#ffffff", opacity: 0.85, animation: "drift 34s linear infinite" }} />
+        <CloudDoodle size={64} className="absolute" style={{ top: "3.5%", right: "5%", color: "#ffffff", opacity: 0.75, animation: "drift 42s linear infinite reverse" }} />
+        <CloudDoodle size={48} className="absolute" style={{ top: "7%", left: "14%", color: "#ffffff", opacity: 0.6, animation: "drift 38s linear infinite" }} />
+        <BirdIcon size={18} className="absolute" style={{ top: "2.5%", left: "20%", color: "#2f5e7a", opacity: 0.6, animation: "wander1 9s ease-in-out infinite" }} />
+        <BirdIcon size={14} className="absolute" style={{ top: "5%", left: "24%", color: "#2f5e7a", opacity: 0.5, animation: "wander2 11s ease-in-out infinite 0.8s" }} />
+        <BirdIcon size={16} className="absolute" style={{ top: "3%", right: "16%", color: "#4a7a8a", opacity: 0.55, animation: "wander3 10s ease-in-out infinite 0.3s", transform: "scaleX(-1)" }} />
+        <BirdIcon size={12} className="absolute" style={{ top: "10%", right: "28%", color: "#5a7a8a", opacity: 0.45, animation: "wander1 13s ease-in-out infinite 1.5s" }} />
 
-      {/* Sky zone — clouds drift, birds actually fly wandering loops */}
-      <CloudDoodle size={90} className="hidden md:block absolute pointer-events-none" style={{ top: "1%", left: "3%", color: "#ffffff", opacity: 0.85, animation: "drift 32s linear infinite alternate" }} />
-      <CloudDoodle size={64} className="hidden md:block absolute pointer-events-none" style={{ top: "3.5%", right: "5%", color: "#ffffff", opacity: 0.75, animation: "drift 40s linear infinite alternate-reverse" }} />
-      <CloudDoodle size={48} className="hidden md:block absolute pointer-events-none" style={{ top: "7%", left: "14%", color: "#ffffff", opacity: 0.6, animation: "drift 36s linear infinite alternate" }} />
-      <BirdIcon size={18} className="hidden md:block absolute pointer-events-none" style={{ top: "2.5%", left: "20%", color: "#2f5e7a", opacity: 0.6, animation: "wander1 9s ease-in-out infinite" }} />
-      <BirdIcon size={14} className="hidden md:block absolute pointer-events-none" style={{ top: "5%", left: "24%", color: "#2f5e7a", opacity: 0.5, animation: "wander2 11s ease-in-out infinite 0.8s" }} />
-      <BirdIcon size={16} className="hidden md:block absolute pointer-events-none" style={{ top: "3%", right: "16%", color: "#4a7a8a", opacity: 0.55, animation: "wander3 10s ease-in-out infinite 0.3s", transform: "scaleX(-1)" }} />
-      <BirdIcon size={12} className="hidden md:block absolute pointer-events-none" style={{ top: "10%", right: "28%", color: "#5a7a8a", opacity: 0.45, animation: "wander1 13s ease-in-out infinite 1.5s" }} />
+        {/* Butterflies — spread through the rest of this same fixed band, so
+            "the middle zone" is a real, bounded stretch of the page instead
+            of a percentage of unknown total length. */}
+        <ButterflyIcon size={26} className="absolute" style={{ top: "26%", right: "3%", color: "#7a5a8a", opacity: 0.55, animation: "wander1 8s ease-in-out infinite" }} />
+        <ButterflyIcon size={20} className="absolute" style={{ top: "38%", left: "2%", color: "#c9843a", opacity: 0.5, animation: "wander2 10s ease-in-out infinite 0.6s" }} />
+        <ButterflyIcon size={18} className="absolute" style={{ top: "60%", left: "5%", color: "#3f7ea6", opacity: 0.5, animation: "wander2 9s ease-in-out infinite 1.1s" }} />
+        <ButterflyIcon size={16} className="absolute" style={{ top: "18%", left: "40%", color: "#c9843a", opacity: 0.4, animation: "wander3 11s ease-in-out infinite 0.4s" }} />
+      </div>
 
-      {/* Middle zone — only flying things (butterflies). Bugs/ants live on the
-          ground below, not up here — a ladybug tumbling through the air on a
-          rotating wander path just looked wrong. */}
-      <ButterflyIcon size={26} className="hidden md:block absolute pointer-events-none" style={{ top: "26%", right: "3%", color: "#7a5a8a", opacity: 0.55, animation: "wander1 8s ease-in-out infinite" }} />
-      <ButterflyIcon size={20} className="hidden md:block absolute pointer-events-none" style={{ top: "38%", left: "2%", color: "#c9843a", opacity: 0.5, animation: "wander2 10s ease-in-out infinite 0.6s" }} />
-      <ButterflyIcon size={18} className="hidden md:block absolute pointer-events-none" style={{ top: "60%", left: "5%", color: "#3f7ea6", opacity: 0.5, animation: "wander2 9s ease-in-out infinite 1.1s" }} />
-      <ButterflyIcon size={16} className="hidden md:block absolute pointer-events-none" style={{ top: "18%", left: "40%", color: "#c9843a", opacity: 0.4, animation: "wander3 11s ease-in-out infinite 0.4s" }} />
-
-      {/* Ground zone — tree, pond further back, a real flower bed, and an ant hill
-          with an actual marching line instead of just a mound sitting there. */}
-      <GroundLineDoodle size={340} className="hidden md:block absolute pointer-events-none" style={{ top: "92%", left: "0%", color: "#6b8e5a", opacity: 0.4 }} />
-
-      {/* Pond — smaller + muted for "further back," but pulled down to overlap the
-          same ground cluster as everything else instead of floating alone in
-          its own separate zone well above the rest, plus a soft contact shadow */}
-      <PondDoodle
-        size={150}
-        className="hidden md:block absolute pointer-events-none"
-        style={{ top: "81%", left: "6%", color: "#3f7ea6", opacity: 0.38, filter: "drop-shadow(2px 5px 4px rgba(20,40,50,0.15))" }}
-      />
-
-      <TreeDoodle
-        size={130}
-        className="hidden md:block absolute pointer-events-none"
-        style={{ top: "76%", right: "2%", color: "#4f6a41", opacity: 0.55, animation: "sway 7s ease-in-out infinite", transformOrigin: "bottom center", filter: "drop-shadow(3px 10px 5px rgba(20,30,10,0.22))" }}
-      />
-
-      {/* Ladybugs — crawling on the ground near the flowers, not flying */}
-      <BugDoodle size={20} className="hidden md:block absolute pointer-events-none" style={{ top: "89%", left: "30%", color: "#a04a4a", opacity: 0.55, animation: "crawl 6s ease-in-out infinite" }} />
-      <BugDoodle size={15} className="hidden md:block absolute pointer-events-none" style={{ top: "95%", left: "44%", color: "#5a7a4a", opacity: 0.5, animation: "crawl 7.5s ease-in-out infinite 1s" }} />
-
-      {/* Flower bed — each gets a small drop-shadow so it visually sits on the
-          ground instead of floating in front of it */}
-      {[
-        { size: 46, top: "88%", left: "4%", color: "#7a5a8a", d: "5s", delay: "0s" },
-        { size: 34, top: "91%", left: "9%", color: "#c9843a", d: "4.5s", delay: "0.3s" },
-        { size: 40, top: "89%", right: "16%", color: "#5a7a4a", d: "5.5s", delay: "0.6s" },
-        { size: 30, top: "94%", left: "34%", color: "#3f7ea6", d: "5s", delay: "0.5s" },
-        { size: 38, top: "90%", right: "34%", color: "#c9843a", d: "4.8s", delay: "0.7s" },
-        { size: 26, top: "96%", right: "6%", color: "#7a5a8a", d: "5.3s", delay: "0.2s" },
-        { size: 32, top: "93%", left: "22%", color: "#5a7a4a", d: "4.6s", delay: "0.9s" },
-      ].map((f, i) => (
-        <FlowerDoodle
-          key={i}
-          size={f.size}
-          className="hidden md:block absolute pointer-events-none"
-          style={{
-            top: f.top, left: f.left, right: f.right, color: f.color, opacity: 0.62,
-            animation: `sway ${f.d} ease-in-out infinite ${f.delay}`, transformOrigin: "bottom center",
-            filter: "drop-shadow(1.5px 4px 2px rgba(20,30,10,0.18))",
-          }}
-        />
-      ))}
-
-      {/* Ant hill — bigger, more opaque, with a real double-file marching trail:
-          12 tiny ants (was 6 relatively large/detailed ones), most heading out,
-          a few heading back in, each bobbing AND drifting forward slightly so
-          the line reads as walking, not just vibrating in place. */}
-      <AntHillDoodle size={92} className="hidden md:block absolute pointer-events-none" style={{ top: "90%", left: "18%", color: "#8a6a3a", opacity: 0.7, filter: "drop-shadow(2px 6px 3px rgba(20,30,10,0.2))" }} />
-      {[
-        { left: "20%", top: "96.3%", d: 0 },
-        { left: "22.2%", top: "96.8%", d: 0.05 },
-        { left: "24.3%", top: "97.1%", d: 0.1 },
-        { left: "26.6%", top: "97.3%", d: 0.15 },
-        { left: "29%", top: "97.4%", d: 0.2 },
-        { left: "31.4%", top: "97.3%", d: 0.25 },
-        { left: "33.8%", top: "97%", d: 0.3 },
-        { left: "36.2%", top: "96.7%", d: 0.35 },
-        { left: "38.6%", top: "96.3%", d: 0.4 },
-      ].map((a) => (
-        <AntDoodle
-          key={a.left}
-          size={8}
-          className="hidden md:block absolute pointer-events-none"
-          style={{ top: a.top, left: a.left, color: "#5a3a1a", opacity: 0.6, animation: `antMarch 0.4s ease-in-out infinite ${a.d}s, crawl 3s ease-in-out infinite ${a.d}s` }}
-        />
-      ))}
-      {[
-        { left: "19%", top: "98.2%", d: 0.1 },
-        { left: "23%", top: "98.5%", d: 0.25 },
-        { left: "27.5%", top: "98.6%", d: 0.4 },
-      ].map((a) => (
-        <AntDoodle
-          key={a.left}
-          size={7}
-          className="hidden md:block absolute pointer-events-none"
-          style={{ top: a.top, left: a.left, color: "#5a3a1a", opacity: 0.5, transform: "scaleX(-1)", animation: `antMarch 0.4s ease-in-out infinite ${a.d}s` }}
-        />
-      ))}
-
-    <div className="max-w-2xl mx-auto px-5 py-8 pb-24 relative z-[1]">
+    <div className="max-w-2xl mx-auto px-5 py-8 pb-0 relative z-[1]">
       <div className="flex items-center gap-2 mb-1" style={{ animation: "fadeUpIn 0.6s cubic-bezier(0.16,1,0.3,1) both" }}>
         <ButterflyIcon size={24} style={{ color: "#3f7ea6", animation: "floatSlow 6s ease-in-out infinite" }} />
         <h1 className="text-2xl font-bold tracking-tight">Regina Caeli Academy</h1>
@@ -213,6 +144,122 @@ export default function RcaPage() {
         </a>
       </Reveal>
     </div>
+
+      {/* Ground scene — a real block placed AFTER all real content, in normal
+          document flow, with its OWN fixed height. This is the other half of
+          the positioning fix above: since this sits after the last card
+          instead of floating at top:X% of the whole page, it always renders
+          at the true bottom, and can never land in the middle of the card
+          list no matter how many classes/dashboard widgets are above it. */}
+      <div data-scene-zone="ground" className="hidden md:block relative pointer-events-none" style={{ height: GROUND_HEIGHT }}>
+        <GroundLineDoodle size={340} className="absolute" style={{ top: "18%", left: "0%", color: "#6b8e5a", opacity: 0.4 }} />
+
+        {/* Contact shadows — a soft blurred dark ellipse under each grounded
+            element's actual base, sized to its footprint. This is what makes
+            something read as "sitting on the ground" instead of "floating in
+            front of the ground" — drop-shadow alone (the previous attempt)
+            casts a shadow from the shape's silhouette, which doesn't work for
+            an already-flat/thin doodle like the pond outline. A separate
+            blurred ellipse at the base does. */}
+        <div className="absolute rounded-full" style={{ top: "58%", left: "5%", width: 132, height: 22, background: "radial-gradient(ellipse, rgba(20,40,50,0.22) 0%, transparent 75%)", filter: "blur(3px)" }} />
+        <div className="absolute rounded-full" style={{ top: "70%", right: "1%", width: 110, height: 20, background: "radial-gradient(ellipse, rgba(20,30,10,0.28) 0%, transparent 75%)", filter: "blur(3px)" }} />
+        <div className="absolute rounded-full" style={{ top: "76%", left: "15%", width: 84, height: 16, background: "radial-gradient(ellipse, rgba(20,30,10,0.26) 0%, transparent 75%)", filter: "blur(2.5px)" }} />
+
+        <PondDoodle
+          size={150}
+          className="absolute"
+          style={{ top: "36%", left: "6%", color: "#3f7ea6", opacity: 0.4 }}
+        />
+
+        <TreeDoodle
+          size={130}
+          className="absolute"
+          style={{ top: "16%", right: "2%", color: "#4f6a41", opacity: 0.55, animation: "sway 7s ease-in-out infinite", transformOrigin: "bottom center" }}
+        />
+
+        {/* Ladybugs — settled near the flowers: a leg-wiggle (built into
+            BugDoodle) plus a faint bob reads as "alive and pottering around,"
+            not sliding back and forth in place. Each gets the same blurred
+            contact-shadow ellipse as the pond/tree/hill — a CSS drop-shadow
+            on a thin-stroke outline doesn't read as ground contact, verified
+            by an actual render check (the pond looked "floating" with only
+            drop-shadow; the ellipse trick is what fixed it). */}
+        <BugDoodle size={20} className="absolute" style={{ top: "58%", left: "30%", color: "#a04a4a", opacity: 0.55, animation: "bob 3.4s ease-in-out infinite" }} />
+        <div className="absolute rounded-full" style={{ top: "68%", left: "31%", width: 22, height: 6, background: "radial-gradient(ellipse, rgba(20,30,10,0.22) 0%, transparent 75%)", filter: "blur(1.5px)" }} />
+        <BugDoodle size={15} className="absolute" style={{ top: "72%", left: "44%", color: "#5a7a4a", opacity: 0.5, animation: "bob 4s ease-in-out infinite 0.6s" }} />
+        <div className="absolute rounded-full" style={{ top: "80%", left: "44.5%", width: 16, height: 5, background: "radial-gradient(ellipse, rgba(20,30,10,0.2) 0%, transparent 75%)", filter: "blur(1.5px)" }} />
+
+        {/* Flower bed — each gets a real blurred contact-shadow ellipse at its
+            base (not just a CSS drop-shadow, which is too weak on a thin-stroke
+            bloom to read as ground contact) so it sits IN the scene, not on
+            top of it. */}
+        {[
+          { size: 40, top: "48%", right: "16%", color: "#5a7a4a", d: "5.5s", delay: "0.6s" },
+          { size: 38, top: "52%", right: "34%", color: "#c9843a", d: "4.8s", delay: "0.7s" },
+          { size: 26, top: "78%", right: "6%", color: "#7a5a8a", d: "5.3s", delay: "0.2s" },
+          { size: 30, top: "40%", left: "42%", color: "#3f7ea6", d: "5s", delay: "0.5s" },
+          { size: 34, top: "62%", right: "42%", color: "#c9843a", d: "4.5s", delay: "0.3s" },
+        ].map((f, i) => (
+          <div key={i}>
+            <div
+              className="absolute rounded-full"
+              style={{
+                top: `calc(${f.top} + ${f.size * 0.95}px)`,
+                left: f.left ? `calc(${f.left} + ${f.size * 0.22}px)` : undefined,
+                right: f.right ? `calc(${f.right} + ${f.size * 0.22}px)` : undefined,
+                width: f.size * 0.55, height: f.size * 0.16,
+                background: "radial-gradient(ellipse, rgba(20,30,10,0.22) 0%, transparent 75%)",
+                filter: "blur(2px)",
+              }}
+            />
+            <FlowerDoodle
+              size={f.size}
+              className="absolute"
+              style={{
+                top: f.top, left: f.left, right: f.right, color: f.color, opacity: 0.62,
+                animation: `sway ${f.d} ease-in-out infinite ${f.delay}`, transformOrigin: "bottom center",
+              }}
+            />
+          </div>
+        ))}
+
+        {/* Ant hill — a double-file marching trail of 12 tiny ants, most heading
+            out, a few heading back in. Motion is now a settled per-ant vertical
+            "step" bob only (antMarch), staggered so the line ripples like it's
+            walking — the old horizontal slide-and-reverse (crawl) is gone
+            because that read as sliding back and forth in place, not marching. */}
+        <AntHillDoodle size={92} className="absolute" style={{ top: "50%", left: "18%", color: "#8a6a3a", opacity: 0.7 }} />
+        {[
+          { left: "20%", top: "84%", d: 0 },
+          { left: "22.2%", top: "86%", d: 0.05 },
+          { left: "24.3%", top: "87%", d: 0.1 },
+          { left: "26.6%", top: "88%", d: 0.15 },
+          { left: "29%", top: "88.5%", d: 0.2 },
+          { left: "31.4%", top: "88%", d: 0.25 },
+          { left: "33.8%", top: "87%", d: 0.3 },
+          { left: "36.2%", top: "86%", d: 0.35 },
+          { left: "38.6%", top: "84%", d: 0.4 },
+        ].map((a) => (
+          <AntDoodle
+            key={a.left}
+            size={10}
+            className="absolute"
+            style={{ top: a.top, left: a.left, color: "#4a2f14", opacity: 0.75, animation: `antMarch 0.4s ease-in-out infinite ${a.d}s` }}
+          />
+        ))}
+        {[
+          { left: "19%", top: "90%", d: 0.1 },
+          { left: "23%", top: "91%", d: 0.25 },
+          { left: "27.5%", top: "91.5%", d: 0.4 },
+        ].map((a) => (
+          <AntDoodle
+            key={a.left}
+            size={9}
+            className="absolute"
+            style={{ top: a.top, left: a.left, color: "#4a2f14", opacity: 0.65, transform: "scaleX(-1)", animation: `antMarch 0.4s ease-in-out infinite ${a.d}s` }}
+          />
+        ))}
+      </div>
     </div>
   );
 }
@@ -241,6 +288,7 @@ function ClassCard({ id, name, summary, hasContent }: { id: string; name: string
   return (
     <Link
       href={`/rca/${id}`}
+      data-card="true"
       className="group flex items-center justify-between rounded-2xl px-4 py-3.5 transition-all duration-300 hover:-translate-y-0.5"
       style={{
         background: "rgba(251,248,240,0.7)",
