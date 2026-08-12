@@ -4,6 +4,7 @@ import { rcaContent } from "@/lib/rca-content";
 import {
   SkyIcon, LeafIcon, ButterflyIcon, BirdIcon,
   CloudDoodle, TreeDoodle, FlowerDoodle, TulipDoodle, DaisyDoodle, BugDoodle, AntHillDoodle, AntDoodle, PondDoodle, GroundLineDoodle, TrailDoodle,
+  BushDoodle, RockDoodle, GrassTuftDoodle,
 } from "@/components/rca/NatureIcons";
 import Reveal from "@/components/Reveal";
 import RcaDashboard from "@/components/rca/RcaDashboard";
@@ -21,7 +22,7 @@ export default function RcaPage() {
   // Ground-scene layout constants — used by both the JSX below and by the
   // verification harness (scripts/verify-scene.mjs) reasoning about expected
   // geometry, so keep numbers here rather than scattered magic strings.
-  const GROUND_HEIGHT = 260;
+  const GROUND_HEIGHT = 380;
   const SKY_HEIGHT = 1100;
 
   return (
@@ -179,17 +180,45 @@ export default function RcaPage() {
         <div className="absolute rounded-full" style={{ top: "70%", right: "7%", width: 110, height: 20, background: "radial-gradient(ellipse, rgba(20,30,10,0.28) 0%, transparent 75%)", filter: "blur(3px)" }} />
         <div className="absolute rounded-full" style={{ top: "76%", left: "15%", width: 84, height: 16, background: "radial-gradient(ellipse, rgba(20,30,10,0.26) 0%, transparent 75%)", filter: "blur(2.5px)" }} />
 
+        {/* Back row — bushes sit higher/smaller than the pond/tree/flowers in
+            front of them, a cheap but real depth cue (further-back things are
+            higher in frame and slightly smaller/more muted), not just more
+            stuff crammed onto one baseline. */}
+        <div className="absolute rounded-full" style={{ top: "44%", left: "0%", width: 78, height: 14, background: "radial-gradient(ellipse, rgba(20,30,10,0.2) 0%, transparent 75%)", filter: "blur(2.5px)" }} />
+        <BushDoodle size={72} className="absolute" style={{ top: "24%", left: "0%", color: "#4f6a41", opacity: 0.65 }} />
+        <div className="absolute rounded-full" style={{ top: "48%", right: "31%", width: 68, height: 13, background: "radial-gradient(ellipse, rgba(20,30,10,0.2) 0%, transparent 75%)", filter: "blur(2.5px)" }} />
+        <BushDoodle size={64} className="absolute" style={{ top: "28%", right: "30%", color: "#5a7a4a", opacity: 0.6 }} />
+
         <PondDoodle
           size={150}
           className="absolute"
           style={{ top: "36%", left: "6%", color: "#3f7ea6", opacity: 0.85 }}
         />
 
+        {/* Pebbles at the pond's edge — a small material change (flat grey-
+            brown, no green) so the scene isn't 100% foliage, and it visually
+            anchors the pond's near edge to solid ground. */}
+        <RockDoodle size={34} className="absolute" style={{ top: "58%", left: "13%", opacity: 0.75 }} />
+
         <TreeDoodle
           size={130}
           className="absolute"
           style={{ top: "16%", right: "6%", color: "#4f6a41", opacity: 0.9, animation: "sway 7s ease-in-out infinite", transformOrigin: "bottom center" }}
         />
+
+        {/* Front-row grass texture along the very base of the scene — the
+            actual ground SURFACE, not just icons dropped on a flat gradient. */}
+        {[
+          { left: "6%", size: 20, color: "#5a7a4a" },
+          { left: "16%", size: 24, color: "#6b8e5a" },
+          { left: "42%", size: 22, color: "#5a7a4a" },
+          { left: "54%", size: 18, color: "#6b8e5a" },
+          { left: "64%", size: 24, color: "#5a7a4a" },
+          { left: "88%", size: 22, color: "#6b8e5a" },
+          { left: "96%", size: 20, color: "#5a7a4a" },
+        ].map((g, i) => (
+          <GrassTuftDoodle key={i} size={g.size} className="absolute" style={{ top: "93%", left: g.left, color: g.color, opacity: 0.6 }} />
+        ))}
 
         {/* Ladybugs — settled near the flowers: a leg-wiggle (built into
             BugDoodle) plus a faint bob reads as "alive and pottering around,"

@@ -1,6 +1,8 @@
 // Simple single-stroke line-art icons for the RCA nature theme. Deliberately not
 // emoji — plain SVG so color/weight stay consistent with the rest of the theme.
 
+import { useId } from "react";
+
 type IconProps = { size?: number; className?: string; style?: React.CSSProperties };
 
 // Redesigned as two separate wing strokes around a body point (was one fused
@@ -193,17 +195,74 @@ export function AntDoodle({ size = 8, className, style }: IconProps) {
 // as facial features (eyes/nose/mouth) regardless of their exact shape — that's
 // too strong a gestalt to design around. Stripped to the minimum that can't
 // pattern-match to a face: one irregular water outline, one lily pad crossing
-// the rim, nothing else inside the body. Water fill bumped way up (was 0.14,
-// which on the real page read as a near-invisible thin outline, not a pond —
-// the lily pad looked like it was floating disconnected above nothing because
-// the "water" under it wasn't actually visible) and the lily pad is now filled
-// too so it visibly sits ON water instead of just outlining a loop in the air.
+// the rim, nothing else inside the body.
+//
+// Depth is a radial gradient (deep/saturated center fading to a paler shallow
+// edge — the standard illustration convention for a body of water, not a flat
+// single fill), a defined darker bank-line rim so the pond reads as set INTO
+// the ground rather than painted on top of it, one faint ripple arc, and an
+// offset light highlight ellipse for a hint of surface shine. useId() keeps
+// the gradient id collision-safe if this ever renders more than once.
 export function PondDoodle({ size = 20, className, style }: IconProps) {
+  const gradId = useId();
   return (
-    <svg width={size} height={size * 0.5} viewBox="0 0 60 30" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" className={className} style={style}>
-      <path d="M5 19c-1-7 7-12 15-11s12 1 19 4 10 6 9 10-11 6-20 6S6 25 5 19z" fill="currentColor" fillOpacity="0.62" />
-      <ellipse cx="43" cy="9" rx="5.5" ry="2.1" fill="currentColor" fillOpacity="0.4" />
+    <svg width={size} height={size * 0.5} viewBox="0 0 60 30" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" className={className} style={style}>
+      <defs>
+        <radialGradient id={gradId} cx="44%" cy="42%" r="65%">
+          <stop offset="0%" stopColor="currentColor" stopOpacity="0.95" />
+          <stop offset="55%" stopColor="currentColor" stopOpacity="0.62" />
+          <stop offset="100%" stopColor="currentColor" stopOpacity="0.32" />
+        </radialGradient>
+      </defs>
+      <path
+        d="M5 19c-1-7 7-12 15-11s12 1 19 4 10 6 9 10-11 6-20 6S6 25 5 19z"
+        fill={`url(#${gradId})`}
+        stroke="currentColor"
+        strokeOpacity="0.6"
+      />
+      <path d="M10 13c8-3.5 20-3.5 29 2" stroke="currentColor" strokeOpacity="0.22" strokeWidth="1" fill="none" />
+      <ellipse cx="18" cy="14.5" rx="6.5" ry="2.3" fill="#ffffff" fillOpacity="0.3" stroke="none" />
+      <ellipse cx="43" cy="9" rx="5.5" ry="2.1" fill="currentColor" fillOpacity="0.55" />
       <path d="M43 9c0-1 .7-1.5 1.6-1.6" />
+    </svg>
+  );
+}
+
+// Short filled foliage cluster, no trunk — same "overlapping circles" canopy
+// technique as TreeDoodle, just lower and denser, for a shrub/hedge instead of
+// a tree. Adds plant variety at ground level beyond "one tree, five flowers."
+export function BushDoodle({ size = 20, className, style }: IconProps) {
+  return (
+    <svg width={size} height={size * 0.65} viewBox="0 0 50 32" fill="none" className={className} style={style}>
+      <circle cx="14" cy="19" r="10" fill="currentColor" fillOpacity="0.6" stroke="currentColor" strokeWidth="1" strokeOpacity="0.4" />
+      <circle cx="28" cy="14" r="12" fill="currentColor" fillOpacity="0.66" stroke="currentColor" strokeWidth="1" strokeOpacity="0.4" />
+      <circle cx="38" cy="20" r="9" fill="currentColor" fillOpacity="0.58" stroke="currentColor" strokeWidth="1" strokeOpacity="0.4" />
+    </svg>
+  );
+}
+
+// A small filled pebble cluster — garden-edge detail, distinct material (flat
+// grey-brown, no green) so the scene isn't 100% foliage.
+export function RockDoodle({ size = 20, className, style }: IconProps) {
+  return (
+    <svg width={size} height={size * 0.55} viewBox="0 0 40 22" fill="none" className={className} style={style}>
+      <path d="M2 20c-1-5 3-9 8-9s7 3 8 6c3-2 7-1 8 2 1 2-1 4-4 4H6c-2 0-3.5-1-4-3z" fill="#8a8478" fillOpacity="0.75" />
+      <path d="M22 20c0-4 3-6 6-6s6 2 6 6" fill="#a29c8e" fillOpacity="0.7" />
+    </svg>
+  );
+}
+
+// A small clump of grass blades — ground texture scattered along the base of
+// the scene so it reads as an actual meadow surface, not bare gradient with
+// icons dropped on it.
+export function GrassTuftDoodle({ size = 20, className, style }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" className={className} style={style}>
+      <path d="M6 22c0-6 1-10 2-13" />
+      <path d="M12 22c0-7-1-11 0-15" />
+      <path d="M18 22c0-6-1-10-2-13" />
+      <path d="M9 22c0-5 2-8 4-10" />
+      <path d="M15 22c0-5-2-8-4-10" />
     </svg>
   );
 }
