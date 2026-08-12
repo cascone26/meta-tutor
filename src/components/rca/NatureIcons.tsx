@@ -3,23 +3,38 @@
 
 type IconProps = { size?: number; className?: string; style?: React.CSSProperties };
 
+// Redesigned as two separate wing strokes around a body point (was one fused
+// silhouette path) specifically so each wing can flap independently via
+// flapWingY — a static shape sliding around a path reads as "on a string";
+// this actually beats its wings while it travels.
 export function BirdIcon({ size = 20, className, style }: IconProps) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className} style={style}>
-      <path d="M3 12c2-2.5 4.5-3 6-1.5.7-2 2.7-3 5-2.5C17 6 19.5 6.3 21 8.5c-1.3-.3-2.3 0-3 1 1.7.3 2.6 1.2 3 2.5-1.3-.6-2.4-.6-3.3 0-.6 2.5-2.7 4.3-5.7 4.3-3.4 0-6-2-9-4.3z" />
-      <circle cx="17" cy="9" r="0.6" fill="currentColor" stroke="none" />
+      <circle cx="12" cy="12" r="1.3" fill="currentColor" stroke="none" />
+      <g style={{ transformOrigin: "12px 12px", animation: "flapWingY 0.5s ease-in-out infinite" }}>
+        <path d="M12 12C9.2 10 5.6 9.2 2.3 10.8" />
+      </g>
+      <g style={{ transformOrigin: "12px 12px", animation: "flapWingY 0.5s ease-in-out infinite" }}>
+        <path d="M12 12C14.8 10 18.4 9.2 21.7 10.8" />
+      </g>
     </svg>
   );
 }
 
+// Wings grouped left/right (upper+lower stroke each) so flapWingX folds them
+// toward the body and back out — same original path data, just regrouped.
 export function ButterflyIcon({ size = 20, className, style }: IconProps) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className} style={style}>
       <path d="M12 6v13" />
-      <path d="M12 8c-1-3-4-4.5-6.5-3.5C3.5 5.3 3 8 4.5 10c1.2 1.6 3.2 2.2 5 1.5" />
-      <path d="M12 8c1-3 4-4.5 6.5-3.5C20.5 5.3 21 8 19.5 10c-1.2 1.6-3.2 2.2-5 1.5" />
-      <path d="M12 12c-1.3-1.7-3.7-2.2-5.5-1C4.8 12.2 4.3 14.7 5.8 16.3c1 1.1 2.6 1.4 4 .9" />
-      <path d="M12 12c1.3-1.7 3.7-2.2 5.5-1 1.7 1.2 2.2 3.7.7 5.3-1 1.1-2.6 1.4-4 .9" />
+      <g style={{ transformOrigin: "12px 9px", animation: "flapWingX 0.7s ease-in-out infinite" }}>
+        <path d="M12 8c-1-3-4-4.5-6.5-3.5C3.5 5.3 3 8 4.5 10c1.2 1.6 3.2 2.2 5 1.5" />
+        <path d="M12 12c-1.3-1.7-3.7-2.2-5.5-1C4.8 12.2 4.3 14.7 5.8 16.3c1 1.1 2.6 1.4 4 .9" />
+      </g>
+      <g style={{ transformOrigin: "12px 9px", animation: "flapWingX 0.7s ease-in-out infinite" }}>
+        <path d="M12 8c1-3 4-4.5 6.5-3.5C20.5 5.3 21 8 19.5 10c-1.2 1.6-3.2 2.2-5 1.5" />
+        <path d="M12 12c1.3-1.7 3.7-2.2 5.5-1 1.7 1.2 2.2 3.7.7 5.3-1 1.1-2.6 1.4-4 .9" />
+      </g>
     </svg>
   );
 }
@@ -83,13 +98,20 @@ export function FlowerDoodle({ size = 20, className, style }: IconProps) {
   );
 }
 
+// Legs split into left/right pairs (was one fused 4-stroke path) so they wiggle
+// with a slight offset — an alternating scuttle instead of a rigid body gliding.
 export function BugDoodle({ size = 20, className, style }: IconProps) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" className={className} style={style}>
       <circle cx="12" cy="14" r="7" />
       <circle cx="12" cy="5.5" r="2.8" />
       <path d="M12 7.5v13.5" />
-      <path d="M7 10l-3-2M17 10l3-2M6 16l-3 1M18 16l3 1" />
+      <g style={{ transformOrigin: "12px 13px", animation: "legWiggle 0.35s ease-in-out infinite" }}>
+        <path d="M7 10l-3-2M6 16l-3 1" />
+      </g>
+      <g style={{ transformOrigin: "12px 13px", animation: "legWiggle 0.35s ease-in-out infinite 0.18s" }}>
+        <path d="M17 10l3-2M18 16l3 1" />
+      </g>
       <circle cx="8.7" cy="12.5" r="1" fill="currentColor" stroke="none" />
       <circle cx="15.3" cy="12.5" r="1" fill="currentColor" stroke="none" />
       <circle cx="12" cy="17.5" r="1" fill="currentColor" stroke="none" />

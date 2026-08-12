@@ -138,6 +138,22 @@ body {
   85% { transform: translate(-30px, -50px) rotate(-5deg); }
   100% { transform: translate(0, 0) rotate(0deg); }
 }
+/* Part-based creature animation — these animate a SUB-ELEMENT inside an icon
+   (a wing group, a leg group), composed together with a parent "wander" travel
+   animation on the outer icon. The creature moves AND visibly flaps/scuttles,
+   instead of a static shape just sliding around like it's on a string. */
+@keyframes flapWingX {
+  0%, 100% { transform: scaleX(1); }
+  50% { transform: scaleX(0.32); }
+}
+@keyframes flapWingY {
+  0%, 100% { transform: scaleY(1); }
+  50% { transform: scaleY(0.3); }
+}
+@keyframes legWiggle {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(8deg); }
+}
 @keyframes fallDown {
   from { transform: translateY(0); }
   to { transform: translateY(190px); }
