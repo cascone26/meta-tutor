@@ -194,15 +194,16 @@ export function AntDoodle({ size = 8, className, style }: IconProps) {
 // Verified via render loop: ANY two internal marks inside an oval outline read
 // as facial features (eyes/nose/mouth) regardless of their exact shape — that's
 // too strong a gestalt to design around. Stripped to the minimum that can't
-// pattern-match to a face: one irregular water outline, one lily pad crossing
+// pattern-match to a face: one irregular water outline, lily pads crossing
 // the rim, nothing else inside the body.
 //
 // Depth is a radial gradient (deep/saturated center fading to a paler shallow
-// edge — the standard illustration convention for a body of water, not a flat
-// single fill), a defined darker bank-line rim so the pond reads as set INTO
-// the ground rather than painted on top of it, one faint ripple arc, and an
-// offset light highlight ellipse for a hint of surface shine. useId() keeps
-// the gradient id collision-safe if this ever renders more than once.
+// edge), a defined bank rim, one ripple line, and a highlight for shine. Lily
+// pads are now placed at the water shape's actual visual center (was cx=43 —
+// right at the shape's ambiguous outer edge, which is why it read as a loop
+// floating disconnected next to the pond rather than sitting IN it) — two
+// pads, sizes staggered, both clearly inside the body regardless of the exact
+// hand-drawn outline bounds. useId() keeps the gradient id collision-safe.
 export function PondDoodle({ size = 20, className, style }: IconProps) {
   const gradId = useId();
   return (
@@ -221,9 +222,56 @@ export function PondDoodle({ size = 20, className, style }: IconProps) {
         strokeOpacity="0.6"
       />
       <path d="M10 13c8-3.5 20-3.5 29 2" stroke="currentColor" strokeOpacity="0.22" strokeWidth="1" fill="none" />
-      <ellipse cx="18" cy="14.5" rx="6.5" ry="2.3" fill="#ffffff" fillOpacity="0.3" stroke="none" />
-      <ellipse cx="43" cy="9" rx="5.5" ry="2.1" fill="currentColor" fillOpacity="0.55" />
-      <path d="M43 9c0-1 .7-1.5 1.6-1.6" />
+      <ellipse cx="19" cy="15" rx="6.5" ry="2.3" fill="#ffffff" fillOpacity="0.28" stroke="none" />
+      <ellipse cx="27" cy="17.5" rx="6.5" ry="2.5" fill="currentColor" fillOpacity="0.55" stroke="currentColor" strokeOpacity="0.5" strokeWidth="1" />
+      <path d="M27 17.5c0-1 .8-1.6 1.8-1.7" stroke="currentColor" strokeOpacity="0.5" strokeWidth="1" />
+      <ellipse cx="17" cy="20.5" rx="4.2" ry="1.7" fill="currentColor" fillOpacity="0.5" stroke="currentColor" strokeOpacity="0.5" strokeWidth="0.8" />
+    </svg>
+  );
+}
+
+// Cattail-style reeds at a pond's edge — the single most recognizable "this is
+// a pond, not a puddle" motif in garden illustration. Three stalks, staggered
+// heights/rotations so they don't look like one stamp repeated.
+export function ReedDoodle({ size = 20, className, style }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 32" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" className={className} style={style}>
+      <path d="M6 30c0-10 1-16 3-22" />
+      <path d="M12 30c0-12-1-18 1-24" />
+      <path d="M17 30c0-9 2-14 4-19" />
+      <ellipse cx="9.3" cy="7.5" rx="1.6" ry="4" fill="currentColor" fillOpacity="0.75" stroke="none" transform="rotate(-15 9.3 7.5)" />
+      <ellipse cx="13.3" cy="5.8" rx="1.6" ry="4.5" fill="currentColor" fillOpacity="0.75" stroke="none" transform="rotate(5 13.3 5.8)" />
+      <ellipse cx="20.3" cy="10.5" rx="1.4" ry="3.5" fill="currentColor" fillOpacity="0.75" stroke="none" transform="rotate(-10 20.3 10.5)" />
+    </svg>
+  );
+}
+
+// A winding dirt path — the connective tissue the whole scene was missing.
+// Every element used to be an independent sticker positioned by percentage
+// math with nothing tying them together; this gives the eye an actual line to
+// follow through the garden, and gives the ant trail a reason to exist (ants
+// crossing a real path, not floating in isolation). Two overlapping strokes —
+// a wide, very faint "worn edge" halo behind a narrower tan "trodden" core —
+// reads as a soft-edged dirt path rather than a hard-edged shape.
+export function PathDoodle({ size = 20, className, style }: IconProps) {
+  return (
+    <svg width={size} height={size * 0.12} viewBox="0 0 700 84" fill="none" preserveAspectRatio="none" className={className} style={style}>
+      <path
+        d="M0 50c70-16 120 8 190 0s130-20 200-8 140 18 210 6 70-10 100-4"
+        stroke="#8a6a3a"
+        strokeWidth="34"
+        strokeLinecap="round"
+        strokeOpacity="0.1"
+        fill="none"
+      />
+      <path
+        d="M0 50c70-16 120 8 190 0s130-20 200-8 140 18 210 6 70-10 100-4"
+        stroke="#c9a86a"
+        strokeWidth="26"
+        strokeLinecap="round"
+        strokeOpacity="0.32"
+        fill="none"
+      />
     </svg>
   );
 }

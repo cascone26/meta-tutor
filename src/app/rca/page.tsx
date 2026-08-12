@@ -3,8 +3,8 @@ import { rcaClasses, rcaSchedule, gradingGuidelinesUrl, getNextScheduleItem } fr
 import { rcaContent } from "@/lib/rca-content";
 import {
   SkyIcon, LeafIcon, ButterflyIcon, BirdIcon,
-  CloudDoodle, TreeDoodle, FlowerDoodle, TulipDoodle, DaisyDoodle, BugDoodle, AntHillDoodle, AntDoodle, PondDoodle, GroundLineDoodle, TrailDoodle,
-  BushDoodle, RockDoodle, GrassTuftDoodle,
+  CloudDoodle, TreeDoodle, FlowerDoodle, TulipDoodle, DaisyDoodle, BugDoodle, AntHillDoodle, AntDoodle, PondDoodle, GroundLineDoodle,
+  BushDoodle, RockDoodle, GrassTuftDoodle, ReedDoodle, PathDoodle,
 } from "@/components/rca/NatureIcons";
 import Reveal from "@/components/Reveal";
 import RcaDashboard from "@/components/rca/RcaDashboard";
@@ -167,98 +167,93 @@ export default function RcaPage() {
             individually-shadowed objects on a flat color field. */}
         <div className="absolute rounded-full" style={{ top: "20%", left: "0%", width: "88%", height: "85%", background: "radial-gradient(ellipse, rgba(140,120,60,0.1) 0%, transparent 70%)" }} />
 
-        <GroundLineDoodle size={340} className="absolute" style={{ top: "18%", left: "0%", color: "#6b8e5a", opacity: 0.4 }} />
+        <GroundLineDoodle size={340} className="absolute" style={{ top: "12%", left: "0%", color: "#6b8e5a", opacity: 0.4 }} />
 
-        {/* Contact shadows — a soft blurred dark ellipse under each grounded
-            element's actual base, sized to its footprint. This is what makes
-            something read as "sitting on the ground" instead of "floating in
-            front of the ground" — drop-shadow alone (the previous attempt)
-            casts a shadow from the shape's silhouette, which doesn't work for
-            an already-flat/thin doodle like the pond outline. A separate
-            blurred ellipse at the base does. */}
-        <div className="absolute rounded-full" style={{ top: "58%", left: "5%", width: 132, height: 22, background: "radial-gradient(ellipse, rgba(20,40,50,0.22) 0%, transparent 75%)", filter: "blur(3px)" }} />
-        <div className="absolute rounded-full" style={{ top: "70%", right: "7%", width: 110, height: 20, background: "radial-gradient(ellipse, rgba(20,30,10,0.28) 0%, transparent 75%)", filter: "blur(3px)" }} />
-        <div className="absolute rounded-full" style={{ top: "76%", left: "15%", width: 84, height: 16, background: "radial-gradient(ellipse, rgba(20,30,10,0.26) 0%, transparent 75%)", filter: "blur(2.5px)" }} />
+        {/* A winding dirt path — the connective tissue the whole scene was
+            missing. Every element used to be independently positioned by
+            percentage math with nothing actually tying them together; this
+            gives the eye one line to follow through the garden, and gives the
+            ant trail (below) a real reason to exist instead of being its own
+            disconnected smear mark. */}
+        <PathDoodle size={730} className="absolute" style={{ top: "66%", left: "1%" }} />
 
-        {/* Back row — bushes sit higher/smaller than the pond/tree/flowers in
-            front of them, a cheap but real depth cue (further-back things are
-            higher in frame and slightly smaller/more muted), not just more
-            stuff crammed onto one baseline. */}
-        <div className="absolute rounded-full" style={{ top: "44%", left: "0%", width: 78, height: 14, background: "radial-gradient(ellipse, rgba(20,30,10,0.2) 0%, transparent 75%)", filter: "blur(2.5px)" }} />
-        <BushDoodle size={72} className="absolute" style={{ top: "24%", left: "0%", color: "#4f6a41", opacity: 0.65 }} />
-        <div className="absolute rounded-full" style={{ top: "48%", right: "31%", width: 68, height: 13, background: "radial-gradient(ellipse, rgba(20,30,10,0.2) 0%, transparent 75%)", filter: "blur(2.5px)" }} />
-        <BushDoodle size={64} className="absolute" style={{ top: "28%", right: "30%", color: "#5a7a4a", opacity: 0.6 }} />
+        {/* Back row — bushes are placed TOUCHING the pond and tree behind them
+            (not floating alone in empty space, the earlier attempt), smaller
+            and more muted, a real near/far depth cue instead of everything on
+            one baseline. */}
+        <div className="absolute rounded-full" style={{ top: "40%", left: "0%", width: 56, height: 11, background: "radial-gradient(ellipse, rgba(20,30,10,0.16) 0%, transparent 75%)", filter: "blur(2px)" }} />
+        <BushDoodle size={58} className="absolute" style={{ top: "20%", left: "0%", color: "#4f6a41", opacity: 0.6 }} />
+        <div className="absolute rounded-full" style={{ top: "42%", right: "22%", width: 50, height: 10, background: "radial-gradient(ellipse, rgba(20,30,10,0.16) 0%, transparent 75%)", filter: "blur(2px)" }} />
+        <BushDoodle size={54} className="absolute" style={{ top: "16%", right: "23%", color: "#5a7a4a", opacity: 0.58 }} />
 
+        {/* Pond — tight, precisely-fitted shadow (not a wide blurry bar) plus
+            reeds clustered at its back-right edge, the single most
+            recognizable "this is a pond" cue in garden illustration. */}
+        <div className="absolute rounded-full" style={{ top: "52%", left: "8%", width: 118, height: 16, background: "radial-gradient(ellipse, rgba(20,40,50,0.18) 0%, transparent 75%)", filter: "blur(2.5px)" }} />
         <PondDoodle
           size={150}
           className="absolute"
-          style={{ top: "36%", left: "6%", color: "#3f7ea6", opacity: 0.85 }}
+          style={{ top: "32%", left: "6%", color: "#3f7ea6", opacity: 0.85 }}
         />
+        <ReedDoodle size={34} className="absolute" style={{ top: "24%", left: "23%", color: "#5a7a4a", opacity: 0.8 }} />
+        <ReedDoodle size={28} className="absolute" style={{ top: "27%", left: "27%", color: "#4f6a41", opacity: 0.75 }} />
 
-        {/* Pebbles at the pond's edge — a small material change (flat grey-
-            brown, no green) so the scene isn't 100% foliage, and it visually
-            anchors the pond's near edge to solid ground. */}
-        <RockDoodle size={34} className="absolute" style={{ top: "58%", left: "13%", opacity: 0.75 }} />
+        {/* Pebbles at the pond's front edge — a material change (flat grey-
+            brown, no green) so the scene isn't 100% foliage. */}
+        <RockDoodle size={32} className="absolute" style={{ top: "52%", left: "11%", opacity: 0.75 }} />
 
+        <div className="absolute rounded-full" style={{ top: "48%", right: "9%", width: 96, height: 15, background: "radial-gradient(ellipse, rgba(20,30,10,0.2) 0%, transparent 75%)", filter: "blur(2.5px)" }} />
         <TreeDoodle
           size={130}
           className="absolute"
-          style={{ top: "16%", right: "6%", color: "#4f6a41", opacity: 0.9, animation: "sway 7s ease-in-out infinite", transformOrigin: "bottom center" }}
+          style={{ top: "10%", right: "6%", color: "#4f6a41", opacity: 0.9, animation: "sway 7s ease-in-out infinite", transformOrigin: "bottom center" }}
         />
 
-        {/* Front-row grass texture along the very base of the scene — the
-            actual ground SURFACE, not just icons dropped on a flat gradient. */}
+        {/* Front-row grass texture along the very base of the scene, below
+            the path — the actual ground SURFACE, not icons on a bare
+            gradient. Each gets a very subtle sway so the whole base feels
+            alive without any single blade reading as "waving." */}
         {[
-          { left: "6%", size: 20, color: "#5a7a4a" },
-          { left: "16%", size: 24, color: "#6b8e5a" },
-          { left: "42%", size: 22, color: "#5a7a4a" },
-          { left: "54%", size: 18, color: "#6b8e5a" },
-          { left: "64%", size: 24, color: "#5a7a4a" },
-          { left: "88%", size: 22, color: "#6b8e5a" },
-          { left: "96%", size: 20, color: "#5a7a4a" },
+          { left: "4%", size: 20, color: "#5a7a4a", d: "3.2s" },
+          { left: "15%", size: 24, color: "#6b8e5a", d: "3.6s" },
+          { left: "34%", size: 18, color: "#5a7a4a", d: "3s" },
+          { left: "48%", size: 22, color: "#6b8e5a", d: "3.4s" },
+          { left: "58%", size: 18, color: "#5a7a4a", d: "3.8s" },
+          { left: "67%", size: 24, color: "#6b8e5a", d: "3.1s" },
+          { left: "80%", size: 20, color: "#5a7a4a", d: "3.5s" },
+          { left: "90%", size: 22, color: "#6b8e5a", d: "3.3s" },
+          { left: "97%", size: 18, color: "#5a7a4a", d: "3.7s" },
         ].map((g, i) => (
-          <GrassTuftDoodle key={i} size={g.size} className="absolute" style={{ top: "93%", left: g.left, color: g.color, opacity: 0.6 }} />
+          <GrassTuftDoodle
+            key={i}
+            size={g.size}
+            className="absolute"
+            style={{ top: "90%", left: g.left, color: g.color, opacity: 0.6, animation: `sway ${g.d} ease-in-out infinite`, transformOrigin: "bottom center" }}
+          />
         ))}
 
-        {/* Ladybugs — settled near the flowers: a leg-wiggle (built into
-            BugDoodle) plus a faint bob reads as "alive and pottering around,"
-            not sliding back and forth in place. Each gets the same blurred
-            contact-shadow ellipse as the pond/tree/hill — a CSS drop-shadow
-            on a thin-stroke outline doesn't read as ground contact, verified
-            by an actual render check (the pond looked "floating" with only
-            drop-shadow; the ellipse trick is what fixed it). */}
-        <BugDoodle size={20} className="absolute" style={{ top: "58%", left: "30%", color: "#a04a4a", opacity: 0.85, animation: "bob 3.4s ease-in-out infinite" }} />
-        <div className="absolute rounded-full" style={{ top: "68%", left: "31%", width: 22, height: 6, background: "radial-gradient(ellipse, rgba(20,30,10,0.32) 0%, transparent 75%)", filter: "blur(1.2px)" }} />
-        <BugDoodle size={15} className="absolute" style={{ top: "72%", left: "44%", color: "#5a7a4a", opacity: 0.8, animation: "bob 4s ease-in-out infinite 0.6s" }} />
-        <div className="absolute rounded-full" style={{ top: "80%", left: "44.5%", width: 16, height: 5, background: "radial-gradient(ellipse, rgba(20,30,10,0.2) 0%, transparent 75%)", filter: "blur(1.5px)" }} />
-
-        {/* Flower bed — each gets a real blurred contact-shadow ellipse at its
-            base (not just a CSS drop-shadow, which is too weak on a thin-stroke
-            bloom to read as ground contact) so it sits IN the scene, not on
-            top of it. */}
-        {/* Positions computed against the 760px-max-width container so the
-            spacing math is checkable, not eyeballed: pond+ant-hill cluster
-            occupies roughly 0-40%, tree occupies roughly 77-94% — these five
-            fill the gap between them (38-83%) with clear, calculated gaps
-            around the tree's canopy instead of crowding it. Three distinct
-            shapes (round bloom / tulip / daisy) instead of one icon repeated
-            five times recolored — a real flower bed has shape variety. */}
+        {/* Flower CLUSTERS, not single evenly-spaced stems — real flower beds
+            clump. Three clusters of 2 (near the ant hill / mid-path / by the
+            tree) instead of five isolated singles spread across the width. */}
         {([
-          { Shape: DaisyDoodle, size: 40, top: "64%", left: "38%", right: undefined, color: "#5a7a4a", d: "5.5s", delay: "0.6s" },
-          { Shape: FlowerDoodle, size: 30, top: "44%", left: "48%", right: undefined, color: "#3f7ea6", d: "5s", delay: "0.5s" },
-          { Shape: TulipDoodle, size: 34, top: "58%", left: "60%", right: undefined, color: "#c9843a", d: "4.5s", delay: "0.3s" },
-          { Shape: FlowerDoodle, size: 38, top: "46%", left: "70%", right: undefined, color: "#7a5a8a", d: "4.8s", delay: "0.7s" },
-          { Shape: TulipDoodle, size: 26, top: "78%", left: "73%", right: undefined, color: "#c9843a", d: "5.3s", delay: "0.2s" },
-        ] as { Shape: typeof FlowerDoodle; size: number; top: string; left?: string; right?: string; color: string; d: string; delay: string }[]).map((f, i) => (
+          // Cluster A — by the ant hill
+          { Shape: DaisyDoodle, size: 36, top: "50%", left: "44%", color: "#5a7a4a", d: "5.5s", delay: "0.6s" },
+          { Shape: TulipDoodle, size: 26, top: "58%", left: "48%", color: "#c9843a", d: "4.6s", delay: "0.2s" },
+          // Cluster B — mid-path
+          { Shape: FlowerDoodle, size: 32, top: "44%", left: "56%", color: "#3f7ea6", d: "5s", delay: "0.5s" },
+          { Shape: TulipDoodle, size: 24, top: "52%", left: "59%", color: "#c9843a", d: "4.3s", delay: "0.4s" },
+          // Cluster C — by the tree
+          { Shape: FlowerDoodle, size: 34, top: "42%", left: "70%", color: "#7a5a8a", d: "4.8s", delay: "0.7s" },
+          { Shape: DaisyDoodle, size: 24, top: "50%", left: "73%", color: "#5a7a4a", d: "5.2s", delay: "0.1s" },
+        ] as { Shape: typeof FlowerDoodle; size: number; top: string; left: string; color: string; d: string; delay: string }[]).map((f, i) => (
           <div key={i}>
             <div
               className="absolute rounded-full"
               style={{
                 top: `calc(${f.top} + ${f.size * 0.95}px)`,
-                left: f.left ? `calc(${f.left} + ${f.size * 0.22}px)` : undefined,
-                right: f.right ? `calc(${f.right} + ${f.size * 0.22}px)` : undefined,
+                left: `calc(${f.left} + ${f.size * 0.22}px)`,
                 width: f.size * 0.55, height: f.size * 0.16,
-                background: "radial-gradient(ellipse, rgba(20,30,10,0.22) 0%, transparent 75%)",
+                background: "radial-gradient(ellipse, rgba(20,30,10,0.2) 0%, transparent 75%)",
                 filter: "blur(2px)",
               }}
             />
@@ -266,33 +261,37 @@ export default function RcaPage() {
               size={f.size}
               className="absolute"
               style={{
-                top: f.top, left: f.left, right: f.right, color: f.color, opacity: 0.85,
+                top: f.top, left: f.left, color: f.color, opacity: 0.85,
                 animation: `sway ${f.d} ease-in-out infinite ${f.delay}`, transformOrigin: "bottom center",
               }}
             />
           </div>
         ))}
 
-        {/* Ant hill — a double-file marching trail of 12 tiny ants, most heading
-            out, a few heading back in. Motion is a staggered scale-twitch
-            (antScurry) — a vertical bob read as "waving up and down" once
-            actually seen live (the previous fix over-corrected: killing the
-            back-and-forth slide by leaving ONLY a single vertical axis of
-            motion made that one axis read as flapping, since nothing else
-            was happening to contextualize it as a step). A scale pulse has
-            no directional read, so it just looks like tiny activity. */}
-        <AntHillDoodle size={92} className="absolute" style={{ top: "50%", left: "18%", color: "#8a6a3a", opacity: 0.85 }} />
-        <TrailDoodle size={230} className="absolute" style={{ top: "89%", left: "18%", color: "#6b4a2a", opacity: 0.3 }} />
+        {/* Ladybugs — tucked next to the flower clusters, not floating alone. */}
+        <BugDoodle size={18} className="absolute" style={{ top: "62%", left: "42%", color: "#a04a4a", opacity: 0.85, animation: "bob 3.4s ease-in-out infinite" }} />
+        <div className="absolute rounded-full" style={{ top: "72%", left: "43%", width: 20, height: 5, background: "radial-gradient(ellipse, rgba(20,30,10,0.28) 0%, transparent 75%)", filter: "blur(1.2px)" }} />
+        <BugDoodle size={14} className="absolute" style={{ top: "56%", left: "57%", color: "#5a7a4a", opacity: 0.8, animation: "bob 4s ease-in-out infinite 0.6s" }} />
+        <div className="absolute rounded-full" style={{ top: "64%", left: "57.5%", width: 15, height: 4, background: "radial-gradient(ellipse, rgba(20,30,10,0.24) 0%, transparent 75%)", filter: "blur(1.2px)" }} />
+
+        {/* Ant hill — a double-file marching trail of ants coming down off the
+            hill and crossing the path below it, instead of a separate blurry
+            "trail" mark floating on its own (the previous version, which read
+            as a dirt smear near the hill). Motion is a staggered scale-twitch
+            (antScurry, no directional read at all) so the line ripples with
+            tiny activity without any single ant reading as sliding or waving. */}
+        <div className="absolute rounded-full" style={{ top: "64%", left: "22%", width: 90, height: 14, background: "radial-gradient(ellipse, rgba(20,30,10,0.22) 0%, transparent 75%)", filter: "blur(2.5px)" }} />
+        <AntHillDoodle size={88} className="absolute" style={{ top: "42%", left: "23%", color: "#8a6a3a", opacity: 0.85 }} />
         {[
-          { left: "20%", top: "84%", d: 0 },
-          { left: "22.2%", top: "86%", d: 0.05 },
-          { left: "24.3%", top: "87%", d: 0.1 },
-          { left: "26.6%", top: "88%", d: 0.15 },
-          { left: "29%", top: "88.5%", d: 0.2 },
-          { left: "31.4%", top: "88%", d: 0.25 },
-          { left: "33.8%", top: "87%", d: 0.3 },
-          { left: "36.2%", top: "86%", d: 0.35 },
-          { left: "38.6%", top: "84%", d: 0.4 },
+          { left: "25%", top: "60%", d: 0 },
+          { left: "27%", top: "62%", d: 0.05 },
+          { left: "29%", top: "63.5%", d: 0.1 },
+          { left: "31%", top: "64.5%", d: 0.15 },
+          { left: "33%", top: "65%", d: 0.2 },
+          { left: "35%", top: "64.5%", d: 0.25 },
+          { left: "37%", top: "63.5%", d: 0.3 },
+          { left: "39%", top: "62%", d: 0.35 },
+          { left: "41%", top: "60.5%", d: 0.4 },
         ].map((a) => (
           <AntDoodle
             key={a.left}
@@ -302,9 +301,9 @@ export default function RcaPage() {
           />
         ))}
         {[
-          { left: "19%", top: "90%", d: 0.1 },
-          { left: "23%", top: "91%", d: 0.25 },
-          { left: "27.5%", top: "91.5%", d: 0.4 },
+          { left: "24%", top: "67%", d: 0.1 },
+          { left: "28%", top: "68.5%", d: 0.25 },
+          { left: "32.5%", top: "69%", d: 0.4 },
         ].map((a) => (
           <AntDoodle
             key={a.left}
