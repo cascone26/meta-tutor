@@ -3,7 +3,7 @@ import { rcaClasses, rcaSchedule, gradingGuidelinesUrl, getNextScheduleItem } fr
 import { rcaContent } from "@/lib/rca-content";
 import {
   SkyIcon, LeafIcon, ButterflyIcon, BirdIcon,
-  CloudDoodle, TreeDoodle, FlowerDoodle, BugDoodle, AntHillDoodle, AntDoodle, PondDoodle, GroundLineDoodle,
+  CloudDoodle, TreeDoodle, FlowerDoodle, TulipDoodle, DaisyDoodle, BugDoodle, AntHillDoodle, AntDoodle, PondDoodle, GroundLineDoodle, TrailDoodle,
 } from "@/components/rca/NatureIcons";
 import Reveal from "@/components/Reveal";
 import RcaDashboard from "@/components/rca/RcaDashboard";
@@ -182,13 +182,13 @@ export default function RcaPage() {
         <PondDoodle
           size={150}
           className="absolute"
-          style={{ top: "36%", left: "6%", color: "#3f7ea6", opacity: 0.4 }}
+          style={{ top: "36%", left: "6%", color: "#3f7ea6", opacity: 0.85 }}
         />
 
         <TreeDoodle
           size={130}
           className="absolute"
-          style={{ top: "16%", right: "6%", color: "#4f6a41", opacity: 0.55, animation: "sway 7s ease-in-out infinite", transformOrigin: "bottom center" }}
+          style={{ top: "16%", right: "6%", color: "#4f6a41", opacity: 0.9, animation: "sway 7s ease-in-out infinite", transformOrigin: "bottom center" }}
         />
 
         {/* Ladybugs — settled near the flowers: a leg-wiggle (built into
@@ -198,9 +198,9 @@ export default function RcaPage() {
             on a thin-stroke outline doesn't read as ground contact, verified
             by an actual render check (the pond looked "floating" with only
             drop-shadow; the ellipse trick is what fixed it). */}
-        <BugDoodle size={20} className="absolute" style={{ top: "58%", left: "30%", color: "#a04a4a", opacity: 0.55, animation: "bob 3.4s ease-in-out infinite" }} />
+        <BugDoodle size={20} className="absolute" style={{ top: "58%", left: "30%", color: "#a04a4a", opacity: 0.85, animation: "bob 3.4s ease-in-out infinite" }} />
         <div className="absolute rounded-full" style={{ top: "68%", left: "31%", width: 22, height: 6, background: "radial-gradient(ellipse, rgba(20,30,10,0.32) 0%, transparent 75%)", filter: "blur(1.2px)" }} />
-        <BugDoodle size={15} className="absolute" style={{ top: "72%", left: "44%", color: "#5a7a4a", opacity: 0.5, animation: "bob 4s ease-in-out infinite 0.6s" }} />
+        <BugDoodle size={15} className="absolute" style={{ top: "72%", left: "44%", color: "#5a7a4a", opacity: 0.8, animation: "bob 4s ease-in-out infinite 0.6s" }} />
         <div className="absolute rounded-full" style={{ top: "80%", left: "44.5%", width: 16, height: 5, background: "radial-gradient(ellipse, rgba(20,30,10,0.2) 0%, transparent 75%)", filter: "blur(1.5px)" }} />
 
         {/* Flower bed — each gets a real blurred contact-shadow ellipse at its
@@ -211,14 +211,16 @@ export default function RcaPage() {
             spacing math is checkable, not eyeballed: pond+ant-hill cluster
             occupies roughly 0-40%, tree occupies roughly 77-94% — these five
             fill the gap between them (38-83%) with clear, calculated gaps
-            around the tree's canopy instead of crowding it. */}
+            around the tree's canopy instead of crowding it. Three distinct
+            shapes (round bloom / tulip / daisy) instead of one icon repeated
+            five times recolored — a real flower bed has shape variety. */}
         {([
-          { size: 40, top: "64%", left: "38%", right: undefined, color: "#5a7a4a", d: "5.5s", delay: "0.6s" },
-          { size: 30, top: "44%", left: "48%", right: undefined, color: "#3f7ea6", d: "5s", delay: "0.5s" },
-          { size: 34, top: "58%", left: "60%", right: undefined, color: "#c9843a", d: "4.5s", delay: "0.3s" },
-          { size: 38, top: "46%", left: "70%", right: undefined, color: "#c9843a", d: "4.8s", delay: "0.7s" },
-          { size: 26, top: "78%", left: "73%", right: undefined, color: "#7a5a8a", d: "5.3s", delay: "0.2s" },
-        ] as { size: number; top: string; left?: string; right?: string; color: string; d: string; delay: string }[]).map((f, i) => (
+          { Shape: DaisyDoodle, size: 40, top: "64%", left: "38%", right: undefined, color: "#5a7a4a", d: "5.5s", delay: "0.6s" },
+          { Shape: FlowerDoodle, size: 30, top: "44%", left: "48%", right: undefined, color: "#3f7ea6", d: "5s", delay: "0.5s" },
+          { Shape: TulipDoodle, size: 34, top: "58%", left: "60%", right: undefined, color: "#c9843a", d: "4.5s", delay: "0.3s" },
+          { Shape: FlowerDoodle, size: 38, top: "46%", left: "70%", right: undefined, color: "#7a5a8a", d: "4.8s", delay: "0.7s" },
+          { Shape: TulipDoodle, size: 26, top: "78%", left: "73%", right: undefined, color: "#c9843a", d: "5.3s", delay: "0.2s" },
+        ] as { Shape: typeof FlowerDoodle; size: number; top: string; left?: string; right?: string; color: string; d: string; delay: string }[]).map((f, i) => (
           <div key={i}>
             <div
               className="absolute rounded-full"
@@ -231,11 +233,11 @@ export default function RcaPage() {
                 filter: "blur(2px)",
               }}
             />
-            <FlowerDoodle
+            <f.Shape
               size={f.size}
               className="absolute"
               style={{
-                top: f.top, left: f.left, right: f.right, color: f.color, opacity: 0.62,
+                top: f.top, left: f.left, right: f.right, color: f.color, opacity: 0.85,
                 animation: `sway ${f.d} ease-in-out infinite ${f.delay}`, transformOrigin: "bottom center",
               }}
             />
@@ -250,7 +252,8 @@ export default function RcaPage() {
             motion made that one axis read as flapping, since nothing else
             was happening to contextualize it as a step). A scale pulse has
             no directional read, so it just looks like tiny activity. */}
-        <AntHillDoodle size={92} className="absolute" style={{ top: "50%", left: "18%", color: "#8a6a3a", opacity: 0.7 }} />
+        <AntHillDoodle size={92} className="absolute" style={{ top: "50%", left: "18%", color: "#8a6a3a", opacity: 0.85 }} />
+        <TrailDoodle size={230} className="absolute" style={{ top: "89%", left: "18%", color: "#6b4a2a", opacity: 0.3 }} />
         {[
           { left: "20%", top: "84%", d: 0 },
           { left: "22.2%", top: "86%", d: 0.05 },

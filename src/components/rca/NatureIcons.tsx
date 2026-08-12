@@ -71,68 +71,105 @@ export function CloudDoodle({ size = 20, className, style }: IconProps) {
 
 // Canopy is 4 overlapping circles (the standard "foliage cluster" technique every
 // simple tree icon uses), not one smooth outline — a single wobbly path read as an
-// abstract blob/balloon, not a tree. This reads as foliage at a glance instead.
+// abstract blob/balloon, not a tree. Canopy circles are now actually FILLED (was
+// pure outline, which at real scale on the live page read as a big pale clover,
+// not foliage) and the trunk gets its own brown color so it doesn't just blend
+// into the same currentColor as the leaves — a tree needs two materials, not one.
 export function TreeDoodle({ size = 20, className, style }: IconProps) {
   return (
-    <svg width={size} height={size} viewBox="0 0 60 70" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" className={className} style={style}>
-      <path d="M30 68V47" />
-      <path d="M30 58c-4-2-8-1-10 3M30 54c4-1.5 7-.5 9 2.5" />
-      <circle cx="21" cy="32" r="11" />
-      <circle cx="39" cy="32" r="11" />
-      <circle cx="30" cy="21" r="12.5" />
-      <circle cx="30" cy="38" r="10.5" />
-      <path d="M20 14c.7-.6 1.6-.6 2.2.1M24 12c.7-.6 1.6-.6 2.2.1" />
+    <svg width={size} height={size} viewBox="0 0 60 70" fill="none" strokeLinecap="round" strokeLinejoin="round" className={className} style={style}>
+      <path d="M30 68V47" stroke="#6b4a2a" strokeWidth="2.4" />
+      <path d="M30 58c-4-2-8-1-10 3M30 54c4-1.5 7-.5 9 2.5" stroke="#6b4a2a" strokeWidth="1.6" />
+      <circle cx="21" cy="32" r="11" fill="currentColor" fillOpacity="0.6" stroke="currentColor" strokeWidth="1.2" strokeOpacity="0.5" />
+      <circle cx="39" cy="32" r="11" fill="currentColor" fillOpacity="0.6" stroke="currentColor" strokeWidth="1.2" strokeOpacity="0.5" />
+      <circle cx="30" cy="21" r="12.5" fill="currentColor" fillOpacity="0.68" stroke="currentColor" strokeWidth="1.2" strokeOpacity="0.5" />
+      <circle cx="30" cy="38" r="10.5" fill="currentColor" fillOpacity="0.6" stroke="currentColor" strokeWidth="1.2" strokeOpacity="0.5" />
     </svg>
   );
 }
 
+// Three distinct flower silhouettes (round bloom / tulip cup / daisy petals) so a
+// five-flower bed doesn't read as one icon copy-pasted and recolored — real flower
+// beds have shape variety, not just color variety. All get FILLED petals (was pure
+// outline circles, which is what made every flower read as a "lollipop" — a stick
+// with a faint ring on top — instead of an actual bloom), and every stem is the
+// same muted green regardless of petal color, same as real stems are.
+const STEM = "#5a7a4a";
+
 export function FlowerDoodle({ size = 20, className, style }: IconProps) {
   return (
-    <svg width={size} height={size} viewBox="0 0 24 32" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" className={className} style={style}>
-      <path d="M12 30v-11" />
-      <path d="M12 19c-2-1-4 0-4.5 2" />
-      <circle cx="12" cy="8.5" r="8" />
-      <circle cx="12" cy="6" r="2" />
-      <circle cx="8.5" cy="8.2" r="2" />
-      <circle cx="15.5" cy="8.2" r="2" />
-      <circle cx="9.6" cy="11.5" r="2" />
-      <circle cx="14.4" cy="11.5" r="2" />
-      <circle cx="12" cy="9" r="1.4" fill="currentColor" stroke="none" />
+    <svg width={size} height={size} viewBox="0 0 24 32" fill="none" strokeLinecap="round" className={className} style={style}>
+      <path d="M12 30v-11" stroke={STEM} strokeWidth="1.3" />
+      <path d="M12 19c-2-1-4 0-4.5 2" stroke={STEM} strokeWidth="1.3" />
+      <circle cx="12" cy="6" r="3" fill="currentColor" fillOpacity="0.85" />
+      <circle cx="8" cy="8.5" r="3" fill="currentColor" fillOpacity="0.85" />
+      <circle cx="16" cy="8.5" r="3" fill="currentColor" fillOpacity="0.85" />
+      <circle cx="9.2" cy="12" r="3" fill="currentColor" fillOpacity="0.85" />
+      <circle cx="14.8" cy="12" r="3" fill="currentColor" fillOpacity="0.85" />
+      <circle cx="12" cy="9.3" r="1.8" fill="#fbf8f0" />
+      <circle cx="12" cy="9.3" r="1.2" fill="#c9843a" />
+    </svg>
+  );
+}
+
+export function TulipDoodle({ size = 20, className, style }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 32" fill="none" strokeLinecap="round" className={className} style={style}>
+      <path d="M12 30v-13" stroke={STEM} strokeWidth="1.3" />
+      <path d="M12 20c-2 0-4-1.5-4.5-4" stroke={STEM} strokeWidth="1.3" />
+      <path d="M7 12c0-4 2-7 5-7s5 3 5 7c0 1.6-1.1 2.6-2.4 2.6H9.4C8.1 14.6 7 13.6 7 12z" fill="currentColor" fillOpacity="0.85" />
+    </svg>
+  );
+}
+
+export function DaisyDoodle({ size = 20, className, style }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 32" fill="none" strokeLinecap="round" className={className} style={style}>
+      <path d="M12 30v-12" stroke={STEM} strokeWidth="1.3" />
+      {[0, 45, 90, 135, 180, 225, 270, 315].map((deg) => (
+        <g key={deg} transform={`rotate(${deg} 12 12)`}>
+          <ellipse cx="12" cy="6.5" rx="1.9" ry="4.8" fill="currentColor" fillOpacity="0.85" />
+        </g>
+      ))}
+      <circle cx="12" cy="12" r="2.6" fill="#c9843a" />
     </svg>
   );
 }
 
 // Legs split into left/right pairs (was one fused 4-stroke path) so they wiggle
 // with a slight offset — an alternating scuttle instead of a rigid body gliding.
+// Body is now FILLED (was pure outline + 3 tiny dots, which read as a faint ring,
+// not a bug) with a dark head/spots for contrast against whatever body color.
 export function BugDoodle({ size = 20, className, style }: IconProps) {
   return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" className={className} style={style}>
-      <circle cx="12" cy="14" r="7" />
-      <circle cx="12" cy="5.5" r="2.8" />
-      <path d="M12 7.5v13.5" />
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" strokeLinecap="round" strokeLinejoin="round" className={className} style={style}>
+      <circle cx="12" cy="14" r="7" fill="currentColor" fillOpacity="0.8" stroke="currentColor" strokeWidth="1.2" strokeOpacity="0.6" />
+      <circle cx="12" cy="5.5" r="2.8" fill="#2a2420" />
+      <path d="M12 7.5v13.5" stroke="#2a2420" strokeWidth="1.2" strokeOpacity="0.55" />
       <g style={{ transformOrigin: "12px 13px", animation: "legWiggle 0.35s ease-in-out infinite" }}>
-        <path d="M7 10l-3-2M6 16l-3 1" />
+        <path d="M7 10l-3-2M6 16l-3 1" stroke="#2a2420" strokeWidth="1.2" />
       </g>
       <g style={{ transformOrigin: "12px 13px", animation: "legWiggle 0.35s ease-in-out infinite 0.18s" }}>
-        <path d="M17 10l3-2M18 16l3 1" />
+        <path d="M17 10l3-2M18 16l3 1" stroke="#2a2420" strokeWidth="1.2" />
       </g>
-      <circle cx="8.7" cy="12.5" r="1" fill="currentColor" stroke="none" />
-      <circle cx="15.3" cy="12.5" r="1" fill="currentColor" stroke="none" />
-      <circle cx="12" cy="17.5" r="1" fill="currentColor" stroke="none" />
+      <circle cx="8.7" cy="12.5" r="1.3" fill="#2a2420" />
+      <circle cx="15.3" cy="12.5" r="1.3" fill="#2a2420" />
+      <circle cx="12" cy="17.5" r="1.3" fill="#2a2420" />
     </svg>
   );
 }
 
-// The mound is now an actually FILLED shape (was pure stroke outline, which at a
-// distance just reads as a thin arc/rainbow, not a solid mound of dirt) plus a
-// couple of texture marks so it reads as ground, not a line.
+// The mound is a FILLED shape with texture marks re-colored dark brown (was
+// currentColor at low opacity, which nearly vanished once layered on top of the
+// mound's own now-much-more-opaque fill — texture needs to contrast against its
+// base, not match it) so it reads as a solid mound of dirt with real detail.
 export function AntHillDoodle({ size = 20, className, style }: IconProps) {
   return (
-    <svg width={size} height={size * 0.7} viewBox="0 0 40 28" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" className={className} style={style}>
-      <path d="M4 25c8-1 24-1 32 0" />
-      <path d="M8 25c0-8.5 5.2-15.5 12-15.5S32 16.5 32 25z" fill="currentColor" fillOpacity="0.28" />
-      <circle cx="20" cy="15.5" r="1.4" fill="currentColor" stroke="none" />
-      <path d="M13 21c1-.4 2-.2 2.4.6M27 20c-1-.4-2-.2-2.4.6M17 11.5c.7-.3 1.4 0 1.7.7" />
+    <svg width={size} height={size * 0.7} viewBox="0 0 40 28" fill="none" strokeLinecap="round" strokeLinejoin="round" className={className} style={style}>
+      <path d="M4 25c8-1 24-1 32 0" stroke="currentColor" strokeWidth="1.3" strokeOpacity="0.5" />
+      <path d="M8 25c0-8.5 5.2-15.5 12-15.5S32 16.5 32 25z" fill="currentColor" fillOpacity="0.6" stroke="currentColor" strokeWidth="1.3" strokeOpacity="0.4" />
+      <circle cx="20" cy="15.5" r="1.4" fill="#3a2510" />
+      <path d="M13 21c1-.4 2-.2 2.4.6M27 20c-1-.4-2-.2-2.4.6M17 11.5c.7-.3 1.4 0 1.7.7" stroke="#3a2510" strokeWidth="1.1" strokeOpacity="0.55" />
     </svg>
   );
 }
@@ -156,12 +193,16 @@ export function AntDoodle({ size = 8, className, style }: IconProps) {
 // as facial features (eyes/nose/mouth) regardless of their exact shape — that's
 // too strong a gestalt to design around. Stripped to the minimum that can't
 // pattern-match to a face: one irregular water outline, one lily pad crossing
-// the rim, nothing else inside the body.
+// the rim, nothing else inside the body. Water fill bumped way up (was 0.14,
+// which on the real page read as a near-invisible thin outline, not a pond —
+// the lily pad looked like it was floating disconnected above nothing because
+// the "water" under it wasn't actually visible) and the lily pad is now filled
+// too so it visibly sits ON water instead of just outlining a loop in the air.
 export function PondDoodle({ size = 20, className, style }: IconProps) {
   return (
     <svg width={size} height={size * 0.5} viewBox="0 0 60 30" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" className={className} style={style}>
-      <path d="M5 19c-1-7 7-12 15-11s12 1 19 4 10 6 9 10-11 6-20 6S6 25 5 19z" fill="currentColor" fillOpacity="0.14" />
-      <ellipse cx="43" cy="9" rx="5.5" ry="2.1" />
+      <path d="M5 19c-1-7 7-12 15-11s12 1 19 4 10 6 9 10-11 6-20 6S6 25 5 19z" fill="currentColor" fillOpacity="0.62" />
+      <ellipse cx="43" cy="9" rx="5.5" ry="2.1" fill="currentColor" fillOpacity="0.4" />
       <path d="M43 9c0-1 .7-1.5 1.6-1.6" />
     </svg>
   );
@@ -171,6 +212,17 @@ export function FlameIcon({ size = 20, className, style }: IconProps) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className} style={style}>
       <path d="M12 2.5c1 3 .5 4.5-.8 6-1.3 1.5-2.7 2.5-2.7 5a5.5 5.5 0 0 0 11 0c0-2.5-1.2-4-2.5-5.3.3 2-.5 3-1.5 3.3-.3-3-1.5-6-3.5-9z" />
+    </svg>
+  );
+}
+
+// A faint worn-dirt groove under the ant line — connective tissue so the eye
+// reads "a line of ants following a path" even when the individual ants
+// (necessarily tiny) are hard to resolve on their own.
+export function TrailDoodle({ size = 20, className, style }: IconProps) {
+  return (
+    <svg width={size} height={size * 0.12} viewBox="0 0 200 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" preserveAspectRatio="none" className={className} style={style}>
+      <path d="M2 14c20-4 40 3 60-1s40-7 60-2 40 4 76-3" />
     </svg>
   );
 }
