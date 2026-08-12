@@ -185,7 +185,7 @@ export default function RcaPage() {
             by an actual render check (the pond looked "floating" with only
             drop-shadow; the ellipse trick is what fixed it). */}
         <BugDoodle size={20} className="absolute" style={{ top: "58%", left: "30%", color: "#a04a4a", opacity: 0.55, animation: "bob 3.4s ease-in-out infinite" }} />
-        <div className="absolute rounded-full" style={{ top: "68%", left: "31%", width: 22, height: 6, background: "radial-gradient(ellipse, rgba(20,30,10,0.22) 0%, transparent 75%)", filter: "blur(1.5px)" }} />
+        <div className="absolute rounded-full" style={{ top: "68%", left: "31%", width: 22, height: 6, background: "radial-gradient(ellipse, rgba(20,30,10,0.32) 0%, transparent 75%)", filter: "blur(1.2px)" }} />
         <BugDoodle size={15} className="absolute" style={{ top: "72%", left: "44%", color: "#5a7a4a", opacity: 0.5, animation: "bob 4s ease-in-out infinite 0.6s" }} />
         <div className="absolute rounded-full" style={{ top: "80%", left: "44.5%", width: 16, height: 5, background: "radial-gradient(ellipse, rgba(20,30,10,0.2) 0%, transparent 75%)", filter: "blur(1.5px)" }} />
 
