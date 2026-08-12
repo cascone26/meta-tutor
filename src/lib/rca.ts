@@ -23,6 +23,33 @@ export const rcaSchedule = {
   termEnd: "2027-05-31",
 };
 
+// Real calendar events that override the generic Mon/Thu pattern — training
+// days, setup days, orientation, etc. Sourced from Dr. Jennings' KSC staff
+// emails (2026-08-10 "Staff Training This Week", 2026-08-11 "Schedules and
+// students in FACTS"), not guessed. Add to this as new emails come in.
+export type RcaEvent = { date: string; label: string; detail: string; time: string };
+
+export const rcaEvents: RcaEvent[] = [
+  {
+    date: "2026-08-12",
+    label: "All-Staff Training",
+    detail: "Mandatory for all staff. Bring: lunch, notebook, phone (2-step verification for clock-in), iSolved login, laptop.",
+    time: "8:00 AM – 5:00 PM",
+  },
+  {
+    date: "2026-08-13",
+    label: "Lead Tutor Training + Center Set-Up + Meet & Greet",
+    detail: "Training 8-5. Center Set-Up at 1:00 PM (come help if not already there). Tutor Meet & Greet at 4:00 PM. Parent Orientation follows, ~5:00 PM.",
+    time: "8:00 AM – 5:00 PM",
+  },
+  {
+    date: "2026-08-14",
+    label: "Optional Prep Day",
+    detail: "Not mandatory. Set up your classroom (plan to put everything back at day's end), adapt lesson plans, copy materials, prep FACTS gradebooks — at the center or from home.",
+    time: "Optional",
+  },
+];
+
 export const gradingGuidelinesUrl =
   "https://docs.google.com/document/d/189zthhuCpUCKdGQ7JZoq3nkGx0LNHpYqyMIUTyh6ark/edit?usp=sharing";
 
@@ -143,16 +170,43 @@ export function getRcaClass(id: string): RcaClass | undefined {
   return rcaClasses.find((c) => c.id === id);
 }
 
-/** Monday & Thursday are the real deadlines — the only two days Jacob is actually on
- * campus teaching. Returns the next one (today counts if it's Mon/Thu). */
-export function nextTeachingDay(today: Date = new Date()): Date {
+export type ScheduleItem =
+  | { kind: "event"; date: Date; label: string; detail: string; time: string; isToday: boolean }
+  | { kind: "teaching"; date: Date; isToday: boolean };
+
+/** What's actually happening next — checks real calendar events (training week,
+ * setup day, etc.) BEFORE falling back to the generic Mon/Thu teaching pattern,
+ * and refuses to claim a "teaching day" before the term has actually started.
+ * This replaces the old nextTeachingDay(), which just always returned the next
+ * Mon/Thu regardless of whether that day was actually a normal teaching day —
+ * that's how "Next teaching day: Thursday" got shown during staff training week. */
+export function getNextScheduleItem(today: Date = new Date()): ScheduleItem {
+  const todayKey = today.toISOString().slice(0, 10);
+  const termStart = new Date(rcaSchedule.termStart + "T00:00:00");
+
+  const upcoming = [...rcaEvents].sort((a, b) => a.date.localeCompare(b.date)).find((ev) => ev.date >= todayKey);
+  if (upcoming) {
+    return {
+      kind: "event",
+      date: new Date(upcoming.date + "T00:00:00"),
+      label: upcoming.label,
+      detail: upcoming.detail,
+      time: upcoming.time,
+      isToday: upcoming.date === todayKey,
+    };
+  }
+
+  if (today < termStart) {
+    return { kind: "teaching", date: termStart, isToday: false };
+  }
+
   const day = today.getDay(); // 0=Sun, 1=Mon, ..., 4=Thu
   const daysUntilMon = (1 - day + 7) % 7;
   const daysUntilThu = (4 - day + 7) % 7;
   const offset = Math.min(daysUntilMon, daysUntilThu);
   const next = new Date(today);
   next.setDate(today.getDate() + offset);
-  return next;
+  return { kind: "teaching", date: next, isToday: offset === 0 };
 }
 
 /** Roughly which lesson we're on, given the term started `rcaSchedule.termStart` and these

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { rcaClasses, rcaSchedule, gradingGuidelinesUrl, nextTeachingDay } from "@/lib/rca";
+import { rcaClasses, rcaSchedule, gradingGuidelinesUrl, getNextScheduleItem } from "@/lib/rca";
 import { rcaContent } from "@/lib/rca-content";
 import {
   SkyIcon, LeafIcon, ButterflyIcon, BirdIcon,
@@ -15,8 +15,8 @@ export const dynamic = "force-dynamic";
 export default function RcaPage() {
   const academic = rcaClasses.filter((c) => c.area === "Academic");
   const specials = rcaClasses.filter((c) => c.area === "Specials");
-  const next = nextTeachingDay();
-  const nextLabel = next.toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric" });
+  const next = getNextScheduleItem();
+  const nextLabel = next.date.toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric" });
 
   return (
     <div className="relative">
@@ -98,13 +98,33 @@ export default function RcaPage() {
           <SkyIcon size={16} />
           Weekly schedule
         </h2>
-        <p className="text-sm" style={{ color: "#3a4a34" }}>
-          <strong>Monday &amp; Thursday</strong> are the deadlines — the only two days actually on campus.
-          {" "}{rcaSchedule.startTime} – {rcaSchedule.endTime}.
-        </p>
-        <p className="text-sm mt-1.5 font-semibold" style={{ color: "#2f5e7a" }}>
-          Next teaching day: {nextLabel}
-        </p>
+        {next.kind === "event" ? (
+          <>
+            <div
+              className="rounded-xl px-3 py-2 mb-2"
+              style={{ background: next.isToday ? "rgba(201,132,58,0.15)" : "rgba(63,126,166,0.1)", border: `1px solid ${next.isToday ? "rgba(201,132,58,0.35)" : "rgba(63,126,166,0.25)"}` }}
+            >
+              <p className="text-sm font-semibold" style={{ color: next.isToday ? "#8a6a2e" : "#2f5e7a" }}>
+                {next.isToday ? "Today" : nextLabel}: {next.label}
+              </p>
+              <p className="text-xs mt-0.5" style={{ color: "#5c6b52" }}>{next.time}</p>
+              <p className="text-xs mt-1" style={{ color: "#5c6b52" }}>{next.detail}</p>
+            </div>
+            <p className="text-xs" style={{ color: "#8a9a7c" }}>
+              Not a normal teaching day — this is training/setup week. Real classes start {new Date(rcaSchedule.termStart + "T00:00:00").toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric" })}, the regular <strong>Monday &amp; Thursday</strong> pattern kicks in from there.
+            </p>
+          </>
+        ) : (
+          <p className="text-sm" style={{ color: "#3a4a34" }}>
+            <strong>Monday &amp; Thursday</strong> are the deadlines — the only two days actually on campus.
+            {" "}{rcaSchedule.startTime} – {rcaSchedule.endTime}.
+          </p>
+        )}
+        {next.kind === "teaching" && (
+          <p className="text-sm mt-1.5 font-semibold" style={{ color: "#2f5e7a" }}>
+            {next.isToday ? "Today's the day" : "Next teaching day"}: {nextLabel}
+          </p>
+        )}
         <p className="text-xs mt-1" style={{ color: "#8a9a7c" }}>{rcaSchedule.address}</p>
         <p className="text-xs mt-2" style={{ color: "#8a9a7c" }}>
           Term: {rcaSchedule.termStart} – {rcaSchedule.termEnd}. Per-class block times aren&apos;t set yet.

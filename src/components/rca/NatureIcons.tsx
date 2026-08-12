@@ -137,15 +137,17 @@ export function AntHillDoodle({ size = 20, className, style }: IconProps) {
   );
 }
 
-export function AntDoodle({ size = 16, className, style }: IconProps) {
+// At the tiny size these actually render, fine anatomical detail (legs,
+// antennae, 3 separate segments) just disappears into noise — what reads as
+// "ant" at that scale is a small dark speck with a slight waist, repeated many
+// times in a line. Simplified to two filled blobs instead of a stroked outline
+// (filled reads as "solid tiny thing" immediately; outlines read as empty rings
+// at small size).
+export function AntDoodle({ size = 8, className, style }: IconProps) {
   return (
-    <svg width={size} height={size * 0.5} viewBox="0 0 28 14" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" className={className} style={style}>
-      <circle cx="5" cy="7" r="2" />
-      <circle cx="13" cy="7" r="2.6" />
-      <circle cx="22" cy="7" r="3" />
-      <path d="M3.2 5c-1-1-1.8-1.3-2.8-1.2" />
-      <path d="M11 5l-2.5-2M11 7H7M11 9l-2.5 2" />
-      <path d="M20 5l2.5-2M20 9l2.5 2" />
+    <svg width={size} height={size * 0.5} viewBox="0 0 20 10" fill="currentColor" stroke="none" className={className} style={style}>
+      <ellipse cx="5.5" cy="5" rx="2.3" ry="1.9" />
+      <ellipse cx="13" cy="5" rx="3.2" ry="2.4" />
     </svg>
   );
 }

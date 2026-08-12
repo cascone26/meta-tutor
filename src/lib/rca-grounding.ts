@@ -2,7 +2,7 @@
 // understanding-check quiz (/api/rca-understanding) — one place that knows how to
 // describe a class + its current lesson to the model.
 
-import { getRcaClass, rcaClasses, rcaSchedule, currentLessonNumber } from "@/lib/rca";
+import { getRcaClass, rcaClasses, rcaSchedule, currentLessonNumber, getNextScheduleItem } from "@/lib/rca";
 import { rcaContent } from "@/lib/rca-content";
 
 export const STALE_CONTENT_NOTE =
@@ -10,9 +10,19 @@ export const STALE_CONTENT_NOTE =
   "versions have not been issued to Jacob yet. Pacing/structure should carry over, but flag to Jacob if he " +
   "asks about specific dates, since those are last year's.";
 
+function buildScheduleNote(): string {
+  const next = getNextScheduleItem();
+  if (next.kind === "event") {
+    const when = next.isToday ? "TODAY" : next.date.toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric" });
+    return `SCHEDULE NOTE: This is training/setup week, not normal teaching — ${when} is "${next.label}" (${next.time}). ${next.detail} Regular Mon/Thu teaching starts ${rcaSchedule.termStart}. If Jacob asks about "today" or "next class," answer from this real event, not the generic Mon/Thu pattern.`;
+  }
+  return "";
+}
+
 function buildGeneralGrounding(): string {
   const list = rcaClasses.map((c) => `- ${c.name} (${c.grade}, ${c.area})`).join("\n");
-  return `CONTEXT: Regina Caeli Academy (KSC, Overland Park KS) — a Catholic classical homeschool hybrid. Jacob is the 6th Grade Lead plus Music 3-4 tutor, on campus ${rcaSchedule.days.join(" & ")} (his real teaching days/deadlines) ${rcaSchedule.startTime}-${rcaSchedule.endTime}. He's not currently viewing a specific class page, so answer generally across his full teaching load unless he names a subject.\n\nHIS CLASSES:\n${list}\n\n${STALE_CONTENT_NOTE}`;
+  const scheduleNote = buildScheduleNote();
+  return `CONTEXT: Regina Caeli Academy (KSC, Overland Park KS) — a Catholic classical homeschool hybrid. Jacob is the 6th Grade Lead plus Music 3-4 tutor, on campus ${rcaSchedule.days.join(" & ")} (his real teaching days/deadlines once the term starts) ${rcaSchedule.startTime}-${rcaSchedule.endTime}. He's not currently viewing a specific class page, so answer generally across his full teaching load unless he names a subject.\n\n${scheduleNote}\n\nHIS CLASSES:\n${list}\n\n${STALE_CONTENT_NOTE}`;
 }
 
 // `lessonNOverride` lets a caller ground on a SPECIFIC past lesson instead of
@@ -24,7 +34,9 @@ export function buildClassGrounding(subjectId: string | undefined, lessonNOverri
   const cls = getRcaClass(subjectId);
   if (!cls) return buildGeneralGrounding();
 
-  let grounding = `CLASS: ${cls.name} (${cls.grade}, ${cls.area}) at Regina Caeli Academy — a Catholic classical homeschool hybrid. Jacob (the tutor) meets this class Mon & Thu (his real teaching days/deadlines) as part of his on-campus schedule.\nSUMMARY: ${cls.summary}\n`;
+  let grounding = `CLASS: ${cls.name} (${cls.grade}, ${cls.area}) at Regina Caeli Academy — a Catholic classical homeschool hybrid. Jacob (the tutor) meets this class Mon & Thu (his real teaching days/deadlines, once the term starts) as part of his on-campus schedule.\nSUMMARY: ${cls.summary}\n`;
+  const scheduleNote = buildScheduleNote();
+  if (scheduleNote) grounding += `\n${scheduleNote}\n`;
   if (cls.books.length) grounding += `BOOKS: ${cls.books.join(", ")}\n`;
 
   const content = rcaContent[cls.id];
