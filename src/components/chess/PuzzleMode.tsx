@@ -76,7 +76,7 @@ export default function PuzzleMode({ prefs }: { prefs: ChessPrefs }) {
   );
 
   return (
-    <div className="flex flex-col md:flex-row gap-6 max-w-4xl mx-auto px-5 py-6">
+    <div className="flex flex-col md:flex-row items-start gap-6 max-w-4xl mx-auto px-5 py-6">
       <div className="w-full md:w-[420px] shrink-0" style={{ width: `min(100%, ${prefs.boardSizePct * 4.2}px)` }}>
         <Chessboard
           options={{

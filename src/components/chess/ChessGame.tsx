@@ -437,7 +437,7 @@ export default function ChessGame() {
         </button>
       </div>
 
-      <div className="flex flex-col md:flex-row gap-4 max-w-4xl mx-auto px-5 py-6">
+      <div className="flex flex-col md:flex-row items-start gap-4 max-w-4xl mx-auto px-5 py-6">
         <EvalBar evaluation={liveEval?.eval ?? null} sideToMove={liveEval?.sideToMove ?? sideToMove} />
 
         <div className="w-full md:w-[420px] shrink-0" style={{ maxWidth: `${prefs.boardSizePct}%` }}>
