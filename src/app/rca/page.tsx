@@ -206,7 +206,11 @@ export default function RcaPage() {
             against nearby background, well under the ~60-90pt that reads
             clearly. Roughly doubled the opacity and cut blur across every
             shadow in this scene to fix that. */}
-        <div className="absolute rounded-full" style={{ top: "52%", left: "8%", width: 118, height: 16, background: "radial-gradient(ellipse, rgba(15,30,38,0.38) 0%, transparent 72%)", filter: "blur(1.5px)" }} />
+        {/* left computed to center under the pond's actual bbox (pond's own
+            left:6%, width 150; shadow width 118) — was an independently
+            guessed 8%, which measured ~24px off-center from the pond's real
+            visual center when checked against real getBoundingClientRect(). */}
+        <div className="absolute rounded-full" style={{ top: "52%", left: "calc(6% + 16px)", width: 118, height: 16, background: "radial-gradient(ellipse, rgba(15,30,38,0.38) 0%, transparent 72%)", filter: "blur(1.5px)" }} />
         <PondDoodle
           size={150}
           className="absolute"
@@ -219,7 +223,17 @@ export default function RcaPage() {
             brown, no green) so the scene isn't 100% foliage. */}
         <RockDoodle size={32} className="absolute" style={{ top: "52%", left: "11%", opacity: 0.75 }} />
 
-        <div className="absolute rounded-full" style={{ top: "43%", right: "9%", width: 96, height: 15, background: "radial-gradient(ellipse, rgba(20,30,10,0.38) 0%, transparent 72%)", filter: "blur(1.5px)" }} />
+        {/* Pixel-measured this shadow as ~24px off the tree's real visual
+            center (getBoundingClientRect() on the live page, not eyeballed) —
+            under the actual trunk it was only ~34pt RGB contrast from bare
+            background (imperceptible); the shadow ellipse itself measured
+            ~67pt where it actually sat, just in the wrong spot. right/top
+            computed to center under TreeDoodle's own box (right:6%, size 130;
+            shadow width 96 -> +17px; the SVG's 60x70 viewBox inside a square
+            130x130 box is letterboxed left/right but NOT top/bottom, since
+            height is the constraining dimension, so no vertical adjustment
+            needed beyond touching the box's real bottom edge). */}
+        <div className="absolute rounded-full" style={{ top: "44%", right: "calc(6% + 17px)", width: 96, height: 15, background: "radial-gradient(ellipse, rgba(20,30,10,0.38) 0%, transparent 72%)", filter: "blur(1.5px)" }} />
         <TreeDoodle
           size={130}
           className="absolute"
@@ -306,10 +320,16 @@ export default function RcaPage() {
             recomputed to sit flush with each bug's actual bottom edge (size,
             not an eyeballed offset) — they were sitting 4-5% below where the
             bug actually is, reading as a disconnected smudge. */}
-        <BugDoodle size={18} className="absolute" style={{ top: "62%", left: "42%", color: "#a04a4a", opacity: 0.85, animation: "crawlLoop 6s ease-in-out infinite", ["--crawl-dist" as string]: "46px" }} />
-        <div className="absolute rounded-full" style={{ top: "66%", left: "43%", width: 20, height: 5, background: "radial-gradient(ellipse, rgba(20,30,10,0.48) 0%, transparent 72%)", filter: "blur(0.8px)", animation: "crawlLoop 6s ease-in-out infinite", ["--crawl-dist" as string]: "46px" }} />
-        <BugDoodle size={14} className="absolute" style={{ top: "56%", left: "57%", color: "#5a7a4a", opacity: 0.8, animation: "crawlLoop 7s ease-in-out infinite 0.6s", ["--crawl-dist" as string]: "36px" }} />
-        <div className="absolute rounded-full" style={{ top: "59.5%", left: "57.5%", width: 15, height: 4, background: "radial-gradient(ellipse, rgba(20,30,10,0.44) 0%, transparent 72%)", filter: "blur(0.8px)", animation: "crawlLoop 7s ease-in-out infinite 0.6s", ["--crawl-dist" as string]: "36px" }} />
+        {/* Shadow left values matched to each bug's own left (measured: the
+            old 43%/57.5% sat 7-15px off the bug's real center — huge
+            relative to an 18px-wide bug, which is exactly why it read as a
+            disconnected smudge). Durations/delays deliberately un-aligned
+            (5.4s/8.1s, not a clean multiple) so the two bugs' dart-pause
+            rhythms drift in and out of sync instead of moving in lockstep. */}
+        <BugDoodle size={18} className="absolute" style={{ top: "62%", left: "42%", color: "#a04a4a", opacity: 0.85, animation: "crawlLoop 5.4s ease-in-out infinite", ["--crawl-dist" as string]: "46px" }} />
+        <div className="absolute rounded-full" style={{ top: "66%", left: "42%", width: 20, height: 5, background: "radial-gradient(ellipse, rgba(20,30,10,0.48) 0%, transparent 72%)", filter: "blur(0.8px)", animation: "crawlLoop 5.4s ease-in-out infinite", ["--crawl-dist" as string]: "46px" }} />
+        <BugDoodle size={14} className="absolute" style={{ top: "56%", left: "57%", color: "#5a7a4a", opacity: 0.8, animation: "crawlLoop 8.1s ease-in-out infinite 2.3s", ["--crawl-dist" as string]: "36px" }} />
+        <div className="absolute rounded-full" style={{ top: "59.5%", left: "57%", width: 15, height: 4, background: "radial-gradient(ellipse, rgba(20,30,10,0.44) 0%, transparent 72%)", filter: "blur(0.8px)", animation: "crawlLoop 8.1s ease-in-out infinite 2.3s", ["--crawl-dist" as string]: "36px" }} />
 
         {/* Ant hill — a double-file marching trail. Motion is now GENUINE
             small-scale crawling (antCrawl: real translateX + turn-flip) in
@@ -317,42 +337,48 @@ export default function RcaPage() {
             moved — which is exactly why it read as "in place," not marching).
             Shadow moved up to the mound's actual bottom edge (was 6% below
             it, floating free). */}
-        <div className="absolute rounded-full" style={{ top: "57%", left: "22%", width: 90, height: 14, background: "radial-gradient(ellipse, rgba(20,30,10,0.4) 0%, transparent 72%)", filter: "blur(1.2px)" }} />
+        <div className="absolute rounded-full" style={{ top: "57%", left: "23%", width: 90, height: 14, background: "radial-gradient(ellipse, rgba(20,30,10,0.4) 0%, transparent 72%)", filter: "blur(1.2px)" }} />
         <AntHillDoodle size={88} className="absolute" style={{ top: "42%", left: "23%", color: "#8a6a3a", opacity: 0.85 }} />
         {/* Debris scattered near the hill so it reads as an actual patch of
             ground the colony lives on, not a bare mound on clean gradient. */}
         <TwigDoodle size={30} className="absolute" style={{ top: "68%", left: "34%", opacity: 0.7, transform: "rotate(-8deg)" }} />
         <TwigDoodle size={22} className="absolute" style={{ top: "58%", left: "18%", opacity: 0.6, transform: "rotate(20deg) scaleX(-1)" }} />
+        {/* duration/delay/dist all hand-varied and deliberately NOT tied to
+            one shared linear parameter — the old version drove all three off
+            the same 0.05-step `d` value, which makes every ant exactly
+            0.05s slower AND 0.05s more delayed than its neighbor: a
+            textbook traveling-wave pattern, the single biggest reason this
+            read as a synchronized conveyor belt instead of a real colony. */}
         {[
-          { left: "25%", top: "60%", d: 0 },
-          { left: "27%", top: "62%", d: 0.05 },
-          { left: "29%", top: "63.5%", d: 0.1 },
-          { left: "31%", top: "64.5%", d: 0.15 },
-          { left: "33%", top: "65%", d: 0.2 },
-          { left: "35%", top: "64.5%", d: 0.25 },
-          { left: "37%", top: "63.5%", d: 0.3 },
-          { left: "39%", top: "62%", d: 0.35 },
-          { left: "41%", top: "60.5%", d: 0.4 },
-          { left: "43%", top: "59%", d: 0.45 },
-          { left: "45%", top: "58%", d: 0.5 },
+          { left: "25%", top: "60%", dur: 1.5, delay: 0, dist: 7 },
+          { left: "27%", top: "62%", dur: 1.9, delay: 0.35, dist: 9 },
+          { left: "29%", top: "63.5%", dur: 1.6, delay: 0.1, dist: 8 },
+          { left: "31%", top: "64.5%", dur: 2.1, delay: 0.6, dist: 6 },
+          { left: "33%", top: "65%", dur: 1.4, delay: 0.2, dist: 9 },
+          { left: "35%", top: "64.5%", dur: 1.8, delay: 0.5, dist: 7 },
+          { left: "37%", top: "63.5%", dur: 1.5, delay: 0.05, dist: 8 },
+          { left: "39%", top: "62%", dur: 2.0, delay: 0.4, dist: 6 },
+          { left: "41%", top: "60.5%", dur: 1.7, delay: 0.15, dist: 9 },
+          { left: "43%", top: "59%", dur: 1.4, delay: 0.55, dist: 7 },
+          { left: "45%", top: "58%", dur: 1.9, delay: 0.25, dist: 8 },
         ].map((a) => (
           <AntDoodle
             key={a.left}
             size={10}
             className="absolute"
-            style={{ top: a.top, left: a.left, color: "#4a2f14", opacity: 0.75, animation: `antCrawl ${1.4 + a.d}s ease-in-out infinite ${a.d}s`, ["--crawl-dist" as string]: "8px" }}
+            style={{ top: a.top, left: a.left, color: "#4a2f14", opacity: 0.75, animation: `antCrawl ${a.dur}s ease-in-out infinite ${a.delay}s`, ["--crawl-dist" as string]: `${a.dist}px` }}
           />
         ))}
         {[
-          { left: "24%", top: "67%", d: 0.1 },
-          { left: "28%", top: "68.5%", d: 0.25 },
-          { left: "32.5%", top: "69%", d: 0.4 },
+          { left: "24%", top: "67%", dur: 1.7, delay: 0.3, dist: -6 },
+          { left: "28%", top: "68.5%", dur: 2.0, delay: 0.05, dist: -8 },
+          { left: "32.5%", top: "69%", dur: 1.5, delay: 0.5, dist: -7 },
         ].map((a) => (
           <AntDoodle
             key={a.left}
             size={9}
             className="absolute"
-            style={{ top: a.top, left: a.left, color: "#4a2f14", opacity: 0.65, animation: `antCrawl ${1.6 + a.d}s ease-in-out infinite ${a.d}s`, ["--crawl-dist" as string]: "-7px" }}
+            style={{ top: a.top, left: a.left, color: "#4a2f14", opacity: 0.65, animation: `antCrawl ${a.dur}s ease-in-out infinite ${a.delay}s`, ["--crawl-dist" as string]: `${a.dist}px` }}
           />
         ))}
 
