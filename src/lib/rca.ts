@@ -57,6 +57,49 @@ export const rcaEvents: RcaEvent[] = [
   },
 ];
 
+// Single source of truth for "when is RCA closed" beyond the training-week
+// rcaEvents above — used by both getNextScheduleItem() below and the
+// calendar view (rca-calendar.ts). Before this, that knowledge only
+// existed as prose comments inside the Saxon lesson-pacing generator,
+// invisible to the rest of the app — which is exactly why
+// getNextScheduleItem() could show the wrong thing during a real break
+// (found 2026-08-13, sick-him audit).
+//
+// HONESTY: these closure date RANGES are REASONED ESTIMATES (standard US
+// school-year placement — Labor Day, a fall week, Thanksgiving week, two
+// weeks at Christmas, a mid-February week, two weeks at Easter), not dates
+// confirmed against an actual RCA-published 2026-2027 academic calendar. No
+// such document turned up in Jacob's email, and the one doc that might have
+// it (6th Grade Tutor Resource Manual) requires his own RCA login to read
+// (401 via WebFetch) — matches the note below that most RCA docs are
+// access-restricted. If RCA sends the real calendar, swap these dates and
+// delete this note. Every place these render UI carries an "estimated" flag
+// so Jacob can tell real from reasoned at a glance.
+export type RcaClosure = { start: string; end: string; label: string; estimated: boolean };
+
+export const RCA_CLOSURES: RcaClosure[] = [
+  { start: "2026-09-07", end: "2026-09-07", label: "Labor Day", estimated: true },
+  { start: "2026-10-12", end: "2026-10-16", label: "Fall Break", estimated: true },
+  { start: "2026-11-23", end: "2026-11-27", label: "Thanksgiving Break", estimated: true },
+  { start: "2026-12-21", end: "2027-01-01", label: "Christmas Break", estimated: true },
+  { start: "2027-02-15", end: "2027-02-19", label: "Mid-Winter Break", estimated: true },
+  { start: "2027-03-29", end: "2027-04-09", label: "Easter Break", estimated: true },
+];
+
+// Informational, not a closure — classes still meet CLT testing week.
+export const CLT_TESTING_WEEK = { start: "2027-04-19", end: "2027-04-23", estimated: true };
+
+function dateKey(d: Date): string {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+
+/** Is this date inside a real (or estimated) closure range? Checked by key
+ * string comparison, not Date math, to sidestep timezone drift entirely. */
+export function getClosure(date: Date): RcaClosure | undefined {
+  const key = dateKey(date);
+  return RCA_CLOSURES.find((c) => key >= c.start && key <= c.end);
+}
+
 export const gradingGuidelinesUrl =
   "https://docs.google.com/document/d/189zthhuCpUCKdGQ7JZoq3nkGx0LNHpYqyMIUTyh6ark/edit?usp=sharing";
 
@@ -218,6 +261,7 @@ export function getRcaClass(id: string): RcaClass | undefined {
 
 export type ScheduleItem =
   | { kind: "event"; date: Date; label: string; detail: string; time: string; isToday: boolean }
+  | { kind: "closure"; date: Date; label: string; estimated: boolean; isToday: boolean }
   | { kind: "teaching"; date: Date; isToday: boolean };
 
 /** What's actually happening next — checks real calendar events (training week,
@@ -225,7 +269,13 @@ export type ScheduleItem =
  * and refuses to claim a "teaching day" before the term has actually started.
  * This replaces the old nextTeachingDay(), which just always returned the next
  * Mon/Thu regardless of whether that day was actually a normal teaching day —
- * that's how "Next teaching day: Thursday" got shown during staff training week. */
+ * that's how "Next teaching day: Thursday" got shown during staff training week.
+ *
+ * Also checks RCA_CLOSURES now (fall break, Thanksgiving, etc.) — previously
+ * this only knew about the 3-entry rcaEvents list, so opening the app during
+ * an actual break (e.g. Thanksgiving week) would compute a "next teaching
+ * day" INSIDE that break instead of recognizing it as closed (found
+ * 2026-08-13, sick-him audit). */
 export function getNextScheduleItem(today: Date = new Date()): ScheduleItem {
   // Local date, NOT toISOString() — that converts to UTC, which silently
   // rolls "today" over to tomorrow's date in the evening (Central time
@@ -246,17 +296,27 @@ export function getNextScheduleItem(today: Date = new Date()): ScheduleItem {
     };
   }
 
+  const closure = getClosure(today);
+  if (closure) {
+    return { kind: "closure", date: today, label: closure.label, estimated: closure.estimated, isToday: true };
+  }
+
   if (today < termStart) {
     return { kind: "teaching", date: termStart, isToday: false };
   }
 
-  const day = today.getDay(); // 0=Sun, 1=Mon, ..., 4=Thu
-  const daysUntilMon = (1 - day + 7) % 7;
-  const daysUntilThu = (4 - day + 7) % 7;
-  const offset = Math.min(daysUntilMon, daysUntilThu);
-  const next = new Date(today);
-  next.setDate(today.getDate() + offset);
-  return { kind: "teaching", date: next, isToday: offset === 0 };
+  // Walk forward day-by-day (not just Mon/Thu math) so a closure sitting
+  // between today and the next Mon/Thu is actually skipped instead of
+  // silently landing inside it.
+  for (let i = 0; i <= 21; i++) {
+    const d = new Date(today);
+    d.setDate(today.getDate() + i);
+    const day = d.getDay();
+    if (day !== 1 && day !== 4) continue; // Mon=1, Thu=4
+    if (getClosure(d)) continue;
+    return { kind: "teaching", date: d, isToday: i === 0 };
+  }
+  return { kind: "teaching", date: today, isToday: true }; // unreachable in practice
 }
 
 /** Roughly which lesson we're on, given the term started `rcaSchedule.termStart` and these

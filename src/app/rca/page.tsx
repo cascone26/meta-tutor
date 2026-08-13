@@ -98,6 +98,16 @@ export default function RcaPage() {
               Not a normal teaching day — this is training/setup week. Real classes start {new Date(rcaSchedule.termStart + "T00:00:00").toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric" })}, the regular <strong>Monday &amp; Thursday</strong> pattern kicks in from there.
             </p>
           </>
+        ) : next.kind === "closure" ? (
+          <div
+            className="rounded-xl px-3 py-2 mb-2"
+            style={{ background: "rgba(63,126,166,0.1)", border: "1px solid rgba(63,126,166,0.25)" }}
+          >
+            <p className="text-sm font-semibold" style={{ color: "#2f5e7a" }}>
+              Today: {next.label} — no class
+              {next.estimated && <span className="text-[10px] font-normal ml-1.5" style={{ color: "#c9843a" }}>(estimated, not confirmed)</span>}
+            </p>
+          </div>
         ) : (
           <p className="text-sm" style={{ color: "#3a4a34" }}>
             <strong>Monday &amp; Thursday</strong> are the deadlines — the only two days actually on campus.

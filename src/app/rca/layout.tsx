@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import RcaAssistant from "@/components/rca/RcaAssistant";
 import RcaNotes from "@/components/rca/RcaNotes";
+import CalendarPopup from "@/components/rca/CalendarPopup";
 
 export default function RcaLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -62,6 +63,7 @@ export default function RcaLayout({ children }: { children: React.ReactNode }) {
       <div className="relative z-[1]">{children}</div>
       <RcaAssistant />
       <RcaNotes />
+      <CalendarPopup />
     </div>
   );
 }
