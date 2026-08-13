@@ -186,15 +186,25 @@ export default function RcaPage() {
         {/* A genuine atmospheric-perspective cue, not just smaller/higher: a
             slight blur + lower opacity so these actually read as further
             away, the way real distance haze desaturates and softens things. */}
-        <div className="absolute rounded-full" style={{ top: "28%", left: "0%", width: 56, height: 11, background: "radial-gradient(ellipse, rgba(20,30,10,0.32) 0%, transparent 72%)", filter: "blur(1.2px)" }} />
+        {/* Every shadow offset in this scene is now derived from a REAL
+            measurement, not eyeballed: rendered each doodle live and called
+            SVGGraphicsElement.getBBox() to find where its artwork actually
+            stops inside its viewBox (every shape has real empty padding
+            below the drawn content — e.g. BushDoodle's circles bottom out at
+            29/32 of its viewBox, not 32/32). "floating" shadows were shadows
+            positioned as if bottomFillRatio=1.0 for every shape, which is
+            wrong for all of them. offsetPx = renderedHeight * bottomFillRatio.
+            BushDoodle: renderedHeight=size*0.65, bottomFillRatio=0.9063 ->
+            offsetPx = size*0.5891. */}
+        <div className="absolute rounded-full" style={{ top: "calc(20% + 34px)", left: "0%", width: 56, height: 11, background: "radial-gradient(ellipse, rgba(20,30,10,0.32) 0%, transparent 72%)", filter: "blur(1.2px)" }} />
         <BushDoodle size={58} className="absolute" style={{ top: "20%", left: "0%", color: "#4f6a41", opacity: 0.5, filter: "blur(0.5px)" }} />
-        <div className="absolute rounded-full" style={{ top: "24%", right: "22%", width: 50, height: 10, background: "radial-gradient(ellipse, rgba(20,30,10,0.32) 0%, transparent 72%)", filter: "blur(1.2px)" }} />
+        <div className="absolute rounded-full" style={{ top: "calc(16% + 32px)", right: "calc(23% + 2px)", width: 50, height: 10, background: "radial-gradient(ellipse, rgba(20,30,10,0.32) 0%, transparent 72%)", filter: "blur(1.2px)" }} />
         <BushDoodle size={54} className="absolute" style={{ top: "16%", right: "23%", color: "#5a7a4a", opacity: 0.48, filter: "blur(0.5px)" }} />
         {/* A third distant bush, further right — the old back row only had
             two anchors near the pond/tree; with the scene now full-width
             there's real space past the tree that needs its own depth layer,
             not just empty gradient. */}
-        <div className="absolute rounded-full" style={{ top: "30%", right: "2%", width: 42, height: 9, background: "radial-gradient(ellipse, rgba(20,30,10,0.28) 0%, transparent 72%)", filter: "blur(1.2px)" }} />
+        <div className="absolute rounded-full" style={{ top: "calc(22% + 27px)", right: "calc(2% + 2px)", width: 42, height: 9, background: "radial-gradient(ellipse, rgba(20,30,10,0.28) 0%, transparent 72%)", filter: "blur(1.2px)" }} />
         <BushDoodle size={46} className="absolute" style={{ top: "22%", right: "2%", color: "#4f6a41", opacity: 0.4, filter: "blur(0.7px)" }} />
 
         {/* Pond — tight, precisely-fitted shadow (not a wide blurry bar) plus
@@ -206,11 +216,15 @@ export default function RcaPage() {
             against nearby background, well under the ~60-90pt that reads
             clearly. Roughly doubled the opacity and cut blur across every
             shadow in this scene to fix that. */}
-        {/* left computed to center under the pond's actual bbox (pond's own
-            left:6%, width 150; shadow width 118) — was an independently
-            guessed 8%, which measured ~24px off-center from the pond's real
-            visual center when checked against real getBoundingClientRect(). */}
-        <div className="absolute rounded-full" style={{ top: "52%", left: "calc(6% + 16px)", width: 118, height: 16, background: "radial-gradient(ellipse, rgba(15,30,38,0.38) 0%, transparent 72%)", filter: "blur(1.5px)" }} />
+        {/* left centers under the pond's real bbox (measured via
+            getBoundingClientRect). top uses the pond's REAL bottomFillRatio
+            (0.9333, from getBBox — the blob path's own bottom edge lands at
+            y=28 of a 30-tall viewBox, not y=30) instead of assuming the
+            drawn shape fills its whole box: offsetPx = size*0.5*0.9333. The
+            previous version anchored to the full box bottom, which is
+            exactly why the shadow read as detached/floating below the pond
+            in Jacob's screenshot even after the horizontal fix. */}
+        <div className="absolute rounded-full" style={{ top: "calc(32% + 70px)", left: "calc(6% + 16px)", width: 118, height: 16, background: "radial-gradient(ellipse, rgba(15,30,38,0.38) 0%, transparent 72%)", filter: "blur(1.5px)" }} />
         <PondDoodle
           size={150}
           className="absolute"
@@ -223,17 +237,13 @@ export default function RcaPage() {
             brown, no green) so the scene isn't 100% foliage. */}
         <RockDoodle size={32} className="absolute" style={{ top: "52%", left: "11%", opacity: 0.75 }} />
 
-        {/* Pixel-measured this shadow as ~24px off the tree's real visual
-            center (getBoundingClientRect() on the live page, not eyeballed) —
-            under the actual trunk it was only ~34pt RGB contrast from bare
-            background (imperceptible); the shadow ellipse itself measured
-            ~67pt where it actually sat, just in the wrong spot. right/top
-            computed to center under TreeDoodle's own box (right:6%, size 130;
-            shadow width 96 -> +17px; the SVG's 60x70 viewBox inside a square
-            130x130 box is letterboxed left/right but NOT top/bottom, since
-            height is the constraining dimension, so no vertical adjustment
-            needed beyond touching the box's real bottom edge). */}
-        <div className="absolute rounded-full" style={{ top: "44%", right: "calc(6% + 17px)", width: 96, height: 15, background: "radial-gradient(ellipse, rgba(20,30,10,0.38) 0%, transparent 72%)", filter: "blur(1.5px)" }} />
+        {/* right centers under the tree's real box (measured). top uses the
+            tree's real bottomFillRatio (0.9714, from getBBox — the trunk's
+            own tip lands at y=68 of a 70-tall viewBox): offsetPx =
+            size*0.9714. Close to the full box this time (trunk nearly
+            reaches the bottom), but "close" still wasn't exact, and every
+            other shape in the scene needed a real, not approximate, fix. */}
+        <div className="absolute rounded-full" style={{ top: "calc(10% + 126px)", right: "calc(6% + 17px)", width: 96, height: 15, background: "radial-gradient(ellipse, rgba(20,30,10,0.38) 0%, transparent 72%)", filter: "blur(1.5px)" }} />
         <TreeDoodle
           size={130}
           className="absolute"
@@ -293,11 +303,18 @@ export default function RcaPage() {
             <div
               className="absolute rounded-full"
               style={{
-                // All flower shapes share a 24x32 viewBox (height =
-                // size*1.333) — the old *0.95 multiplier undershot the
-                // actual bottom edge by ~29% of size, so these shadows sat
-                // visibly above the bloom instead of under it.
-                top: `calc(${f.top} + ${f.size * 1.2}px)`,
+                // All flower shapes share a 24x32 viewBox, rendered at
+                // width=height=size (square box; content is narrower than
+                // the box so it's letterboxed left/right, filling the full
+                // box height 1:1 with the viewBox). getBBox() on the real
+                // rendered stem shows the artwork's own bottom edge lands at
+                // y=30 of that 32-tall viewBox, not y=32 — so the correct
+                // multiplier is size*(30/32)=size*0.9375. The previous
+                // *1.2 wasn't a real measurement (comment claimed a "0.95
+                // undershoot fix" that was never actually verified against
+                // the rendered shape) and overshot PAST the box entirely,
+                // which is exactly why these read as floating.
+                top: `calc(${f.top} + ${f.size * 0.9375}px)`,
                 left: `calc(${f.left} + ${f.size * 0.22}px)`,
                 width: f.size * 0.55, height: f.size * 0.16,
                 background: "radial-gradient(ellipse, rgba(20,30,10,0.4) 0%, transparent 72%)",
@@ -326,10 +343,13 @@ export default function RcaPage() {
             disconnected smudge). Durations/delays deliberately un-aligned
             (5.4s/8.1s, not a clean multiple) so the two bugs' dart-pause
             rhythms drift in and out of sync instead of moving in lockstep. */}
+        {/* top uses BugDoodle's real bottomFillRatio (~1.0 — the legs' stroke
+            extends just past the nominal viewBox, so it effectively fills
+            it): offsetPx = size*(20/28)*1.0. */}
         <BugDoodle size={18} className="absolute" style={{ top: "62%", left: "42%", color: "#a04a4a", opacity: 0.85, animation: "crawlLoop 5.4s ease-in-out infinite", ["--crawl-dist" as string]: "46px" }} />
-        <div className="absolute rounded-full" style={{ top: "66%", left: "42%", width: 20, height: 5, background: "radial-gradient(ellipse, rgba(20,30,10,0.48) 0%, transparent 72%)", filter: "blur(0.8px)", animation: "crawlLoop 5.4s ease-in-out infinite", ["--crawl-dist" as string]: "46px" }} />
+        <div className="absolute rounded-full" style={{ top: "calc(62% + 13px)", left: "42%", width: 20, height: 5, background: "radial-gradient(ellipse, rgba(20,30,10,0.48) 0%, transparent 72%)", filter: "blur(0.8px)", animation: "crawlLoop 5.4s ease-in-out infinite", ["--crawl-dist" as string]: "46px" }} />
         <BugDoodle size={14} className="absolute" style={{ top: "56%", left: "57%", color: "#5a7a4a", opacity: 0.8, animation: "crawlLoop 8.1s ease-in-out infinite 2.3s", ["--crawl-dist" as string]: "36px" }} />
-        <div className="absolute rounded-full" style={{ top: "59.5%", left: "57%", width: 15, height: 4, background: "radial-gradient(ellipse, rgba(20,30,10,0.44) 0%, transparent 72%)", filter: "blur(0.8px)", animation: "crawlLoop 8.1s ease-in-out infinite 2.3s", ["--crawl-dist" as string]: "36px" }} />
+        <div className="absolute rounded-full" style={{ top: "calc(56% + 10px)", left: "57%", width: 15, height: 4, background: "radial-gradient(ellipse, rgba(20,30,10,0.44) 0%, transparent 72%)", filter: "blur(0.8px)", animation: "crawlLoop 8.1s ease-in-out infinite 2.3s", ["--crawl-dist" as string]: "36px" }} />
 
         {/* Ant hill — a double-file marching trail. Motion is now GENUINE
             small-scale crawling (antCrawl: real translateX + turn-flip) in
@@ -337,7 +357,10 @@ export default function RcaPage() {
             moved — which is exactly why it read as "in place," not marching).
             Shadow moved up to the mound's actual bottom edge (was 6% below
             it, floating free). */}
-        <div className="absolute rounded-full" style={{ top: "57%", left: "23%", width: 90, height: 14, background: "radial-gradient(ellipse, rgba(20,30,10,0.4) 0%, transparent 72%)", filter: "blur(1.2px)" }} />
+        {/* top uses AntHillDoodle's real bottomFillRatio (0.8929, from
+            getBBox — the mound's own base line sits at y=25 of a 28-tall
+            viewBox): offsetPx = size*0.7*0.8929. */}
+        <div className="absolute rounded-full" style={{ top: "calc(42% + 55px)", left: "23%", width: 90, height: 14, background: "radial-gradient(ellipse, rgba(20,30,10,0.4) 0%, transparent 72%)", filter: "blur(1.2px)" }} />
         <AntHillDoodle size={88} className="absolute" style={{ top: "42%", left: "23%", color: "#8a6a3a", opacity: 0.85 }} />
         {/* Debris scattered near the hill so it reads as an actual patch of
             ground the colony lives on, not a bare mound on clean gradient. */}
