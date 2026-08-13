@@ -1,8 +1,29 @@
 "use client";
 
 import { useState } from "react";
-import type { SubjectContent } from "@/lib/rca-content/types";
+import type { Lesson, SubjectContent } from "@/lib/rca-content/types";
 import { currentLessonNumber } from "@/lib/rca";
+
+const WEEKDAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+
+// Some subjects (Saxon 7/6) pace one lesson PER CALENDAR WEEKDAY (matching
+// Saxon's real daily-homework structure), so lesson N doesn't line up with
+// Jacob's actual Mon/Thu in-center days at all — a fixed "jump ~2 lessons"
+// heuristic can land on a Wednesday. Others bundle a whole week's Mon+Thu
+// content into ONE lesson entry (e.g. LOE has both a "Monday" and a
+// "Thursday" section on the SAME entry) — there's no single weekday to seek,
+// every lesson already IS a work day. Distinguish the two by how many
+// distinct weekdays show up on the entry: exactly one means single-day
+// (Saxon); zero or two+ means a full-week bundle — never skip those.
+function lessonWeekday(lesson: Lesson): string | null {
+  const found = new Set<string>();
+  for (const s of lesson.sections) {
+    if (WEEKDAYS.includes(s.label)) found.add(s.label);
+    const lead = s.text.split(" — ")[0];
+    if (WEEKDAYS.includes(lead)) found.add(lead);
+  }
+  return found.size === 1 ? [...found][0] : null;
+}
 
 // Double-chevron — same stroke style as the rest of the icon set, used for
 // the "skip to next day of work" jump so it reads as distinct from the
@@ -26,13 +47,19 @@ export default function LessonViewer({ content }: { content: SubjectContent }) {
   // a toggle keeps it scannable without losing anything.
   const [overviewOpen, setOverviewOpen] = useState(false);
 
-  // RCA meets 2x/week (Mon & Thu, per rcaSchedule.days) — a "day of work" is
-  // roughly one week's worth of lessons split across those two sessions, not
-  // a single lesson. Mirrors currentLessonNumber()'s own default (1 lesson/
-  // week when totalWeeks isn't set) so the jump size stays consistent with
-  // how "today's lesson" is computed elsewhere in this station.
-  const effectiveWeeks = content.totalWeeks ?? total;
-  const lessonsPerDay = Math.max(1, Math.round(total / effectiveWeeks / 2));
+  // Find the next lesson that's actually tagged Monday or Thursday (Jacob's
+  // real in-center days). If this subject's lessons don't carry weekday tags
+  // at all (each lesson already bundles a full Mon+Thu week), just advance
+  // one lesson — that IS the next work day for those subjects.
+  function nextWorkDayN(from: number): number {
+    for (let i = from + 1; i <= total; i++) {
+      const l = content.lessons.find((x) => x.n === i);
+      if (!l) continue;
+      const wd = lessonWeekday(l);
+      if (wd === null || wd === "Monday" || wd === "Thursday") return i;
+    }
+    return total;
+  }
 
   return (
     <div className="rounded-2xl p-4 mb-6" style={{ background: "#fbf8f0", border: "1px solid #d9e4d3" }}>
@@ -68,9 +95,9 @@ export default function LessonViewer({ content }: { content: SubjectContent }) {
             Next →
           </button>
           <button
-            onClick={() => setN((v) => Math.min(total, v + lessonsPerDay))}
+            onClick={() => setN((v) => nextWorkDayN(v))}
             disabled={n >= total}
-            title={`Skip ahead ~${lessonsPerDay} lesson${lessonsPerDay === 1 ? "" : "s"} to the next work day (Mon/Thu)`}
+            title="Jump to the next lesson that actually falls on a Monday or Thursday (your real in-center days)"
             className="flex items-center gap-0.5 text-xs px-2 py-1 rounded-full disabled:opacity-30"
             style={{ color: "#fff", background: "#3f7ea6" }}
           >
