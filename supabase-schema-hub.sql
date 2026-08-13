@@ -40,3 +40,15 @@ alter table mt_quiz_history enable row level security;
 
 create policy "Service role full access" on mt_wrong_answers for all using (true);
 create policy "Service role full access" on mt_quiz_history for all using (true);
+
+-- Added 2026-08-13 (sick-him audit): rate-limit.ts was in-memory before this, which
+-- reset on every serverless cold start — a different Vercel instance meant a fresh
+-- counter, so the 75/day cap didn't actually hold across a real day of traffic.
+create table mt_rate_limit (
+  user_key text primary key,
+  count int not null default 1,
+  reset_at timestamptz not null
+);
+
+alter table mt_rate_limit enable row level security;
+create policy "Service role full access" on mt_rate_limit for all using (true);
