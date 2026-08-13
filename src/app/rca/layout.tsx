@@ -2,7 +2,6 @@ import Link from "next/link";
 import Image from "next/image";
 import RcaAssistant from "@/components/rca/RcaAssistant";
 import RcaNotes from "@/components/rca/RcaNotes";
-import RcaStaleBanner from "@/components/rca/RcaStaleBanner";
 
 export default function RcaLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -60,7 +59,6 @@ export default function RcaLayout({ children }: { children: React.ReactNode }) {
         </span>
         <span className="w-10" />
       </header>
-      <RcaStaleBanner />
       <div className="relative z-[1]">{children}</div>
       <RcaAssistant />
       <RcaNotes />

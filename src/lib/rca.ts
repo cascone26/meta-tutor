@@ -64,9 +64,9 @@ export const rcaClasses: RcaClass[] = [
     name: "Saxon 7/6",
     grade: "6th",
     area: "Academic",
-    summary: "Saxon Math 7/6 — 120 lessons over 33 weeks: daily concepts, mixed practice, investigations, tests.",
+    summary: "Saxon Math 7/6 — 120 lessons over 33 weeks: daily concepts and mixed practice, 10 cumulative tests, 12 investigations, faith-reflection openers.",
     books: ["Saxon Math 7/6"],
-    lessonPlanUrl: "https://docs.google.com/document/d/1HR-89Rkri-uCICMPVNaXhidS8NQ1QxO9pxtpLnc6fhc/edit?usp=sharing",
+    lessonPlanUrl: "https://docs.google.com/document/d/1UvFCFhXCS-DoD4QZYBOrg7EMQx0vlu48XPg_NthdqI4/edit?usp=sharing",
     driveUrls: [
       { label: "Tutor Resources", url: "https://drive.google.com/drive/folders/134sGerTmpk4Uxml9zxNAtv_A2lUfdsTd?usp=drive_link" },
       { label: "Parent & Tutor Folder", url: "https://drive.google.com/drive/folders/1g5JgqvINFeinxNur0z92LCbQbUJkkCCU?usp=drive_link" },
@@ -77,9 +77,9 @@ export const rcaClasses: RcaClass[] = [
     name: "LOE Essentials C",
     grade: "6th",
     area: "Academic",
-    summary: "Logic of English — phonograms, spelling rules, grammar, and vocabulary, one unit/week.",
+    summary: "Logic of English Essentials C — 30 units of phonograms, spelling, grammar, and vocabulary, with Thursday dictation assessments and concurrent cursive practice.",
     books: ["Logic of English Essentials"],
-    lessonPlanUrl: "https://docs.google.com/document/d/1x76kbzJih9tjj1nHEUp9y6clScgyoC_H_WO0ZTP0ce4/edit?usp=sharing",
+    lessonPlanUrl: "https://docs.google.com/document/d/1_-48gBlz8-bdBnzyoH4rvSC5RBudEetZzOD7C0Nv0LI/edit?usp=sharing",
     driveUrls: [
       { label: "Tutor Resources", url: "https://drive.google.com/drive/folders/1EIYfu1k9G4QC--WmuNG7H5MROZY2rqHM?usp=drive_link" },
       { label: "Parent & Tutor Folder", url: "https://drive.google.com/drive/folders/1kx1O0lQO6MVxE0dM_HsnN4Dr8P-5v2Rm?usp=drive_link" },
