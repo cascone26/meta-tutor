@@ -181,7 +181,11 @@ export type ScheduleItem =
  * Mon/Thu regardless of whether that day was actually a normal teaching day —
  * that's how "Next teaching day: Thursday" got shown during staff training week. */
 export function getNextScheduleItem(today: Date = new Date()): ScheduleItem {
-  const todayKey = today.toISOString().slice(0, 10);
+  // Local date, NOT toISOString() — that converts to UTC, which silently
+  // rolls "today" over to tomorrow's date in the evening (Central time
+  // crosses UTC midnight around 7pm), comparing against rcaEvents' plain
+  // local-calendar-date strings a day early.
+  const todayKey = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
   const termStart = new Date(rcaSchedule.termStart + "T00:00:00");
 
   const upcoming = [...rcaEvents].sort((a, b) => a.date.localeCompare(b.date)).find((ev) => ev.date >= todayKey);
