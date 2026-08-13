@@ -30,7 +30,13 @@ export default function RcaClassPage({ params }: { params: Promise<{ slug: strin
           ← All RCA classes
         </Link>
         <h1 className="text-2xl font-bold tracking-tight mt-2 mb-1">{cls.name}</h1>
-        <p className="text-sm mb-4" style={{ color: "#5c6b52" }}>{cls.grade} · {cls.area}</p>
+        <p className="text-sm mb-1" style={{ color: "#5c6b52" }}>{cls.grade} · {cls.area}</p>
+        {(cls.block || cls.room) && (
+          <p className="text-xs mb-3 flex items-center gap-1.5" style={{ color: "#3f7ea6" }}>
+            {(cls.days ?? ["Monday", "Thursday"]).join(" & ")}{cls.block ? `, ${cls.block}` : ""}
+            {cls.room && <span style={{ color: "#8a9a7c" }}>· {cls.room}</span>}
+          </p>
+        )}
         <p className="text-sm mb-4" style={{ color: "#3a4a34" }}>{cls.summary}</p>
       </div>
 

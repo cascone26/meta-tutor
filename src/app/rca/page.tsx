@@ -111,7 +111,7 @@ export default function RcaPage() {
         )}
         <p className="text-xs mt-1" style={{ color: "#8a9a7c" }}>{rcaSchedule.address}</p>
         <p className="text-xs mt-2" style={{ color: "#8a9a7c" }}>
-          Term: {rcaSchedule.termStart} – {rcaSchedule.termEnd}. Per-class block times aren&apos;t set yet.
+          Term: {rcaSchedule.termStart} – {rcaSchedule.termEnd}. Block times below are real (KSC staff schedule, printed 2026-08-13).
         </p>
       </div>
 
@@ -119,7 +119,7 @@ export default function RcaPage() {
       <div className="grid gap-2.5 mb-8">
         {academic.map((c, i) => (
           <Reveal key={c.id} delay={i * 60}>
-            <ClassCard id={c.id} name={c.name} summary={c.summary} hasContent={c.id in rcaContent} />
+            <ClassCard id={c.id} name={c.name} summary={c.summary} hasContent={c.id in rcaContent} block={c.block} room={c.room} days={c.days} />
           </Reveal>
         ))}
       </div>
@@ -128,7 +128,7 @@ export default function RcaPage() {
       <div className="grid gap-2.5 mb-8">
         {specials.map((c, i) => (
           <Reveal key={c.id} delay={i * 60}>
-            <ClassCard id={c.id} name={c.name} summary={c.summary} hasContent={c.id in rcaContent} />
+            <ClassCard id={c.id} name={c.name} summary={c.summary} hasContent={c.id in rcaContent} block={c.block} room={c.room} days={c.days} />
           </Reveal>
         ))}
       </div>
@@ -400,7 +400,12 @@ function SectionHeader({ icon, label, sublabel }: { icon: React.ReactNode; label
   );
 }
 
-function ClassCard({ id, name, summary, hasContent }: { id: string; name: string; summary: string; hasContent: boolean }) {
+function ClassCard({
+  id, name, summary, hasContent, block, room, days,
+}: {
+  id: string; name: string; summary: string; hasContent: boolean;
+  block?: string; room?: string; days?: readonly string[];
+}) {
   return (
     <Link
       href={`/rca/${id}`}
@@ -414,11 +419,16 @@ function ClassCard({ id, name, summary, hasContent }: { id: string; name: string
       }}
     >
       <div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
           <span className="text-sm font-semibold" style={{ color: "#33402c" }}>{name}</span>
           {hasContent && (
             <span className="text-[10px] px-1.5 py-0.5 rounded-full font-medium uppercase tracking-wide" style={{ background: "#e6f0dd", color: "#5a7a4a" }}>
               Lesson viewer
+            </span>
+          )}
+          {(block || room) && (
+            <span className="text-[10px]" style={{ color: "#3f7ea6" }}>
+              {(days ?? ["Monday", "Thursday"]).map((d) => d.slice(0, 3)).join("/")}{block ? ` ${block}` : ""}{room ? ` · ${room}` : ""}
             </span>
           )}
         </div>

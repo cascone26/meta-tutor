@@ -11,6 +11,13 @@ export type RcaClass = {
   books: string[];
   lessonPlanUrl?: string;
   driveUrls?: { label: string; url: string }[];
+  /** Real block time, from KSC's official 2026-2027 staff schedule (printed 2026-08-13). */
+  block?: string;
+  /** Real room assignment, same source. */
+  room?: string;
+  /** Which of rcaSchedule.days this class actually meets on, if not both — e.g. PE 5-6 is
+   * Monday-only and Music 3-4 is Thursday-only on the real schedule (they share Block 6). */
+  days?: readonly ("Monday" | "Thursday")[];
 };
 
 export const rcaSchedule = {
@@ -66,6 +73,8 @@ export const rcaClasses: RcaClass[] = [
     area: "Academic",
     summary: "Saxon Math 7/6 — 120 lessons over 33 weeks: daily concepts and mixed practice, 10 cumulative tests, 12 investigations, faith-reflection openers.",
     books: ["Saxon Math 7/6"],
+    block: "9:00 – 9:55 AM",
+    room: "St. Monica",
     lessonPlanUrl: "https://docs.google.com/document/d/1UvFCFhXCS-DoD4QZYBOrg7EMQx0vlu48XPg_NthdqI4/edit?usp=sharing",
     driveUrls: [
       { label: "Tutor Resources", url: "https://drive.google.com/drive/folders/134sGerTmpk4Uxml9zxNAtv_A2lUfdsTd?usp=drive_link" },
@@ -79,6 +88,8 @@ export const rcaClasses: RcaClass[] = [
     area: "Academic",
     summary: "Logic of English Essentials C — 30 units of phonograms, spelling, grammar, and vocabulary, with Thursday dictation assessments and concurrent cursive practice.",
     books: ["Logic of English Essentials"],
+    block: "10:55 – 11:55 AM",
+    room: "St. Monica",
     lessonPlanUrl: "https://docs.google.com/document/d/1_-48gBlz8-bdBnzyoH4rvSC5RBudEetZzOD7C0Nv0LI/edit?usp=sharing",
     driveUrls: [
       { label: "Tutor Resources", url: "https://drive.google.com/drive/folders/1EIYfu1k9G4QC--WmuNG7H5MROZY2rqHM?usp=drive_link" },
@@ -92,6 +103,8 @@ export const rcaClasses: RcaClass[] = [
     area: "Academic",
     summary: "Narration-essay writing cycles (8/year) + poetry memorization (4 poems, stanza-by-stanza with recitation quizzes).",
     books: [],
+    block: "12:45 – 1:00 PM",
+    room: "St. Monica",
     lessonPlanUrl: sixthGradeMasterDoc,
     driveUrls: [
       { label: "6th Grade Tutor Resource Manual", url: sixthGradeTrm },
@@ -106,6 +119,8 @@ export const rcaClasses: RcaClass[] = [
     area: "Academic",
     summary: "Baltimore Catechism memory work + sequential Gospel reading — Mark in the fall, Luke in the spring.",
     books: [],
+    block: "10:10 – 10:55 AM",
+    room: "St. Monica",
     lessonPlanUrl: sixthGradeMasterDoc,
     driveUrls: [
       { label: "6th Grade Tutor Resource Manual", url: sixthGradeTrm },
@@ -120,6 +135,8 @@ export const rcaClasses: RcaClass[] = [
     area: "Academic",
     summary: "Ancient Egypt (fall) then Ancient Near East/Israel (spring) — maps, paragraph writing, and a research paper each semester.",
     books: [],
+    block: "1:55 – 2:40 PM",
+    room: "St. Monica",
     lessonPlanUrl: sixthGradeMasterDoc,
     driveUrls: [
       { label: "6th Grade Tutor Resource Manual", url: sixthGradeTrm },
@@ -134,6 +151,8 @@ export const rcaClasses: RcaClass[] = [
     area: "Academic",
     summary: "Behold and See 6 — matter/forces/machines (fall), biomes and astronomy (spring), plus a Science Fair project.",
     books: [],
+    block: "1:55 – 2:40 PM",
+    room: "St. Monica",
     lessonPlanUrl: sixthGradeMasterDoc,
     driveUrls: [
       { label: "6th Grade Tutor Resource Manual", url: sixthGradeTrm },
@@ -148,6 +167,8 @@ export const rcaClasses: RcaClass[] = [
     area: "Academic",
     summary: "First Form Latin — weekly lessons, memory work (sayings/grammar/vocab), Form Drills, quizzes every 2-3 weeks. Vocab/grammar drills and quizzing live here (folded in from the old standalone Latin station).",
     books: ["First Form Latin"],
+    block: "10:10 – 10:55 AM",
+    room: "St. Monica",
     lessonPlanUrl: sixthGradeMasterDoc,
     driveUrls: [
       { label: "6th Grade Tutor Resource Manual", url: sixthGradeTrm },
@@ -162,7 +183,32 @@ export const rcaClasses: RcaClass[] = [
     area: "Specials",
     summary: "Singing (rounds + Latin hymns/chants) + recorder. Year B, 32 lessons, ~1 lesson/week.",
     books: ["Lingua Angelica Songbook (tutor only)", "Essential Elements — Recorder Classroom Method (tutor + students)"],
+    block: "2:40 – 3:25 PM",
+    room: "St. Gianna",
+    days: ["Thursday"], // shares Block 6 with PE 5-6, which takes the Monday slot
     lessonPlanUrl: "https://docs.google.com/document/d/1FupKLzgdbmjjpU6ifTUyCConhd5xmkpvGXBZXA_BGpM/edit?usp=sharing",
+  },
+  {
+    id: "pe-1-2",
+    name: "PE 1-2",
+    grade: "1st-2nd",
+    area: "Specials",
+    summary: "Physical education for 1st-2nd grade — Monday only.",
+    books: [],
+    block: "1:00 – 1:45 PM",
+    room: "St. Sebastian",
+    days: ["Monday"],
+  },
+  {
+    id: "pe-5-6",
+    name: "PE 5-6",
+    grade: "5th-6th",
+    area: "Specials",
+    summary: "Physical education for 5th-6th grade — Monday only.",
+    books: [],
+    block: "2:40 – 3:25 PM",
+    room: "St. Sebastian",
+    days: ["Monday"], // shares Block 6 with Music 3-4, which takes the Thursday slot
   },
 ];
 

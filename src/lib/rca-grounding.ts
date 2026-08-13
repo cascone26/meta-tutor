@@ -18,7 +18,9 @@ function buildScheduleNote(): string {
 }
 
 function buildGeneralGrounding(): string {
-  const list = rcaClasses.map((c) => `- ${c.name} (${c.grade}, ${c.area})`).join("\n");
+  const list = rcaClasses
+    .map((c) => `- ${c.name} (${c.grade}, ${c.area})${c.block ? ` — ${(c.days ?? rcaSchedule.days).join("/")}, ${c.block}${c.room ? `, ${c.room}` : ""}` : ""}`)
+    .join("\n");
   const scheduleNote = buildScheduleNote();
   return `CONTEXT: Regina Caeli Academy (KSC, Overland Park KS) — a Catholic classical homeschool hybrid. Jacob is the 6th Grade Lead plus Music 3-4 tutor, on campus ${rcaSchedule.days.join(" & ")} (his real teaching days/deadlines once the term starts) ${rcaSchedule.startTime}-${rcaSchedule.endTime}. He's not currently viewing a specific class page, so answer generally across his full teaching load unless he names a subject.\n\n${scheduleNote}\n\nHIS CLASSES:\n${list}\n\n${CURRENT_CONTENT_NOTE}`;
 }
@@ -32,7 +34,8 @@ export function buildClassGrounding(subjectId: string | undefined, lessonNOverri
   const cls = getRcaClass(subjectId);
   if (!cls) return buildGeneralGrounding();
 
-  let grounding = `CLASS: ${cls.name} (${cls.grade}, ${cls.area}) at Regina Caeli Academy — a Catholic classical homeschool hybrid. Jacob (the tutor) meets this class Mon & Thu (his real teaching days/deadlines, once the term starts) as part of his on-campus schedule.\nSUMMARY: ${cls.summary}\n`;
+  const meetDays = (cls.days ?? rcaSchedule.days).join(" & ");
+  let grounding = `CLASS: ${cls.name} (${cls.grade}, ${cls.area}) at Regina Caeli Academy — a Catholic classical homeschool hybrid. Jacob (the tutor) meets this class ${meetDays}${cls.block ? `, ${cls.block}` : ""}${cls.room ? ` in ${cls.room}` : ""} as part of his on-campus schedule.\nSUMMARY: ${cls.summary}\n`;
   const scheduleNote = buildScheduleNote();
   if (scheduleNote) grounding += `\n${scheduleNote}\n`;
   if (cls.books.length) grounding += `BOOKS: ${cls.books.join(", ")}\n`;
