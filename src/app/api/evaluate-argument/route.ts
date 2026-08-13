@@ -50,7 +50,7 @@ Evaluate their reconstruction. Respond with JSON only.`,
       ],
     });
 
-    const text = response.content[0].type === "text" ? response.content[0].text : "";
+    const text = response.content[0]?.type === "text" ? response.content[0].text : "";
 
     try {
       const parsed = JSON.parse(text);

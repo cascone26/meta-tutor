@@ -42,7 +42,7 @@ Be encouraging but honest. The goal is to help the student identify gaps in thei
       ],
     });
 
-    const text = response.content[0].type === "text" ? response.content[0].text : "";
+    const text = response.content[0]?.type === "text" ? response.content[0].text : "";
 
     try {
       const parsed = JSON.parse(text);

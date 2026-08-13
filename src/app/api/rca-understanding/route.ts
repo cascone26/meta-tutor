@@ -74,7 +74,7 @@ export async function POST(req: NextRequest) {
         system: GENERATE_SYSTEM,
         messages: [{ role: "user", content: `${grounding}\n\nGenerate the 4-question self-check for the ${label} above. JSON only.` }],
       });
-      const text = response.content[0].type === "text" ? response.content[0].text : "";
+      const text = response.content[0]?.type === "text" ? response.content[0].text : "";
       try {
         const parsed = JSON.parse(stripJsonFences(text));
         if (!parsed.questions || !Array.isArray(parsed.questions) || parsed.questions.length === 0) {
@@ -94,7 +94,7 @@ export async function POST(req: NextRequest) {
         system: GENERATE_SHORT_SYSTEM,
         messages: [{ role: "user", content: `${grounding}\n\nGenerate the 6 short term/fact cards for this lesson. JSON only.` }],
       });
-      const text = response.content[0].type === "text" ? response.content[0].text : "";
+      const text = response.content[0]?.type === "text" ? response.content[0].text : "";
       try {
         const parsed = JSON.parse(stripJsonFences(text));
         if (!parsed.cards || !Array.isArray(parsed.cards) || parsed.cards.length === 0) {
@@ -114,7 +114,7 @@ export async function POST(req: NextRequest) {
         system: GENERATE_MC_SYSTEM,
         messages: [{ role: "user", content: `${grounding}\n\nGenerate the 5-question multiple-choice quiz for this lesson. JSON only.` }],
       });
-      const text = response.content[0].type === "text" ? response.content[0].text : "";
+      const text = response.content[0]?.type === "text" ? response.content[0].text : "";
       try {
         const parsed = JSON.parse(stripJsonFences(text));
         if (!parsed.questions || !Array.isArray(parsed.questions) || parsed.questions.length === 0) {
@@ -139,7 +139,7 @@ export async function POST(req: NextRequest) {
           },
         ],
       });
-      const text = response.content[0].type === "text" ? response.content[0].text : "";
+      const text = response.content[0]?.type === "text" ? response.content[0].text : "";
       try {
         return Response.json(JSON.parse(stripJsonFences(text)));
       } catch {

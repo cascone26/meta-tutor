@@ -44,7 +44,7 @@ Respond with ONLY valid JSON: {"argument":"your argument here"}`,
       })),
     });
 
-    const text = response.content[0].type === "text" ? response.content[0].text : "";
+    const text = response.content[0]?.type === "text" ? response.content[0].text : "";
     try {
       return Response.json(JSON.parse(text));
     } catch {

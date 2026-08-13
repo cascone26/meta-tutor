@@ -45,7 +45,7 @@ Generate exactly 4 questions. Questions should:
       ],
     });
 
-    const text = response.content[0].type === "text" ? response.content[0].text : "";
+    const text = response.content[0]?.type === "text" ? response.content[0].text : "";
     try {
       const data = JSON.parse(text);
       setCache(key, data);

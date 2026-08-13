@@ -42,7 +42,7 @@ You must respond with ONLY valid JSON: {"question":"your question here"}`,
       })),
     });
 
-    const text = response.content[0].type === "text" ? response.content[0].text : "";
+    const text = response.content[0]?.type === "text" ? response.content[0].text : "";
     try {
       return Response.json(JSON.parse(text));
     } catch {

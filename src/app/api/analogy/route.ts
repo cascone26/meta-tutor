@@ -45,7 +45,7 @@ Respond with ONLY valid JSON: {"analogy":"the analogy here","explanation":"how i
       ],
     });
 
-    const text = response.content[0].type === "text" ? response.content[0].text : "";
+    const text = response.content[0]?.type === "text" ? response.content[0].text : "";
     try {
       const data = JSON.parse(text);
       setCache(key, data);
