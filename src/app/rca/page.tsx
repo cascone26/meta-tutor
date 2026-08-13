@@ -316,8 +316,8 @@ export default function RcaPage() {
                 // which is exactly why these read as floating.
                 top: `calc(${f.top} + ${f.size * 0.9375}px)`,
                 left: `calc(${f.left} + ${f.size * 0.22}px)`,
-                width: f.size * 0.55, height: f.size * 0.16,
-                background: "radial-gradient(ellipse, rgba(20,30,10,0.4) 0%, rgba(20,30,10,0.4) 45%, transparent 85%)",
+                width: f.size * 0.7, height: f.size * 0.2,
+                background: "radial-gradient(ellipse, rgba(20,30,10,0.52) 0%, rgba(20,30,10,0.52) 45%, transparent 85%)",
                 filter: "blur(1.2px)",
               }}
             />
@@ -347,9 +347,9 @@ export default function RcaPage() {
             extends just past the nominal viewBox, so it effectively fills
             it): offsetPx = size*(20/28)*1.0. */}
         <BugDoodle size={18} className="absolute" style={{ top: "62%", left: "42%", color: "#a04a4a", opacity: 0.85, animation: "crawlLoop 5.4s ease-in-out infinite", ["--crawl-dist" as string]: "46px" }} />
-        <div className="absolute rounded-full" style={{ top: "calc(62% + 13px)", left: "42%", width: 20, height: 5, background: "radial-gradient(ellipse, rgba(20,30,10,0.48) 0%, rgba(20,30,10,0.48) 45%, transparent 85%)", filter: "blur(0.8px)", animation: "crawlLoop 5.4s ease-in-out infinite", ["--crawl-dist" as string]: "46px" }} />
+        <div className="absolute rounded-full" style={{ top: "calc(62% + 13px)", left: "42%", width: 24, height: 6, background: "radial-gradient(ellipse, rgba(20,30,10,0.58) 0%, rgba(20,30,10,0.58) 45%, transparent 85%)", filter: "blur(0.8px)", animation: "crawlLoop 5.4s ease-in-out infinite", ["--crawl-dist" as string]: "46px" }} />
         <BugDoodle size={14} className="absolute" style={{ top: "56%", left: "57%", color: "#5a7a4a", opacity: 0.8, animation: "crawlLoop 8.1s ease-in-out infinite 2.3s", ["--crawl-dist" as string]: "36px" }} />
-        <div className="absolute rounded-full" style={{ top: "calc(56% + 10px)", left: "57%", width: 15, height: 4, background: "radial-gradient(ellipse, rgba(20,30,10,0.44) 0%, rgba(20,30,10,0.44) 45%, transparent 85%)", filter: "blur(0.8px)", animation: "crawlLoop 8.1s ease-in-out infinite 2.3s", ["--crawl-dist" as string]: "36px" }} />
+        <div className="absolute rounded-full" style={{ top: "calc(56% + 10px)", left: "57%", width: 18, height: 5, background: "radial-gradient(ellipse, rgba(20,30,10,0.54) 0%, rgba(20,30,10,0.54) 45%, transparent 85%)", filter: "blur(0.8px)", animation: "crawlLoop 8.1s ease-in-out infinite 2.3s", ["--crawl-dist" as string]: "36px" }} />
 
         {/* Ant hill — a double-file marching trail. Motion is now GENUINE
             small-scale crawling (antCrawl: real translateX + turn-flip) in
@@ -360,7 +360,7 @@ export default function RcaPage() {
         {/* top uses AntHillDoodle's real bottomFillRatio (0.8929, from
             getBBox — the mound's own base line sits at y=25 of a 28-tall
             viewBox): offsetPx = size*0.7*0.8929. */}
-        <div className="absolute rounded-full" style={{ top: "calc(42% + 55px)", left: "23%", width: 90, height: 14, background: "radial-gradient(ellipse, rgba(20,30,10,0.4) 0%, rgba(20,30,10,0.4) 45%, transparent 85%)", filter: "blur(1.2px)" }} />
+        <div className="absolute rounded-full" style={{ top: "calc(42% + 55px)", left: "23%", width: 96, height: 17, background: "radial-gradient(ellipse, rgba(20,30,10,0.52) 0%, rgba(20,30,10,0.52) 45%, transparent 85%)", filter: "blur(1.2px)" }} />
         <AntHillDoodle size={88} className="absolute" style={{ top: "42%", left: "23%", color: "#8a6a3a", opacity: 0.85 }} />
         {/* Debris scattered near the hill so it reads as an actual patch of
             ground the colony lives on, not a bare mound on clean gradient. */}
