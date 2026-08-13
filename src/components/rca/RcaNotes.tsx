@@ -21,10 +21,12 @@ const MAX_NOTE_SIZE = 20000; // quick notes, not document dumps — keep it snap
 // contentEditable is a real WYSIWYG surface (like Docs/Gmail), so formatting
 // applies live instead of showing as literal "**bold**" markdown syntax in a
 // plain textarea — that literal-syntax look is what read as "not working."
-const ALLOWED_TAGS = ["b", "strong", "i", "em", "u", "s", "strike", "h1", "h2", "h3", "ul", "ol", "li", "br", "div", "p", "blockquote", "span"];
+const ALLOWED_TAGS = ["b", "strong", "i", "em", "u", "s", "strike", "h1", "h2", "h3", "ul", "ol", "li", "br", "div", "p", "blockquote", "span", "a"];
 
 function sanitizeHtml(html: string): string {
-  return DOMPurify.sanitize(html, { ALLOWED_TAGS, ALLOWED_ATTR: [] });
+  // href is allowed (for Insert Link) — DOMPurify still blocks javascript:/data:
+  // URI schemes on it by default, so this doesn't open an XSS hole.
+  return DOMPurify.sanitize(html, { ALLOWED_TAGS, ALLOWED_ATTR: ["href", "target", "rel"] });
 }
 
 function stripHtml(html: string): string {
@@ -65,6 +67,9 @@ export default function RcaNotes() {
   const [content, setContent] = useState("");
   const [classId, setClassId] = useState("general");
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+  // Expand mode swaps the small floating panel for a near-fullscreen one with a
+  // much taller editor — same editor/toolbar, just more room to actually write in.
+  const [expanded, setExpanded] = useState(false);
   const editorRef = useRef<HTMLDivElement>(null);
   // Snapshot of the form's state the moment it opened, so Cancel/Escape/
   // switching notes can tell whether there's actually unsaved work to warn
@@ -181,6 +186,23 @@ export default function RcaNotes() {
     setContent(sanitizeHtml(el.innerHTML));
   }
 
+  // formatBlock wants the bracketed form ("<h1>") for reliable cross-browser
+  // behavior (bare "h1" is Chrome-only) — "" switches back to a plain paragraph.
+  function setHeading(level: "" | "h1" | "h2" | "h3") {
+    exec("formatBlock", level ? `<${level}>` : "<p>");
+  }
+
+  function insertLink() {
+    const url = window.prompt("Link URL:", "https://");
+    if (!url) return;
+    exec("createLink", url);
+  }
+
+  function clearFormat() {
+    exec("removeFormat");
+    exec("formatBlock", "<p>");
+  }
+
   // Real keyboard shortcuts, including the actual Google Docs bindings for
   // lists (Cmd/Ctrl+Shift+7/8) — this is the headline ask: notes should feel
   // like a real editor, not a plain textarea with buttons bolted on.
@@ -193,6 +215,7 @@ export default function RcaNotes() {
     if (mod && e.shiftKey && e.key.toLowerCase() === "x") { e.preventDefault(); exec("strikeThrough"); return; }
     if (mod && e.shiftKey && e.key === "8") { e.preventDefault(); exec("insertUnorderedList"); return; }
     if (mod && e.shiftKey && e.key === "7") { e.preventDefault(); exec("insertOrderedList"); return; }
+    if (mod && e.key.toLowerCase() === "k") { e.preventDefault(); insertLink(); return; }
     if (mod && e.key === "Enter") { e.preventDefault(); save(); return; }
     if (e.key === "Escape") { e.preventDefault(); cancelForm(); return; }
     if (e.key === "Tab") {
@@ -268,8 +291,12 @@ export default function RcaNotes() {
 
       {open && (
         <div
-          className="fixed bottom-[76px] z-30 flex flex-col rounded-2xl shadow-xl overflow-hidden transition-[right] duration-200"
-          style={{ right: assistantOpen ? 400 : 20, width: "min(380px, calc(100vw - 2.5rem))", maxHeight: "75vh", background: "#fbf8f0", border: "1px solid #d9e4d3" }}
+          className={expanded
+            ? "fixed inset-4 md:inset-10 z-40 flex flex-col rounded-2xl shadow-xl overflow-hidden"
+            : "fixed bottom-[76px] z-30 flex flex-col rounded-2xl shadow-xl overflow-hidden transition-[right] duration-200"}
+          style={expanded
+            ? { background: "#fbf8f0", border: "1px solid #d9e4d3" }
+            : { right: assistantOpen ? 400 : 20, width: "min(380px, calc(100vw - 2.5rem))", maxHeight: "75vh", background: "#fbf8f0", border: "1px solid #d9e4d3" }}
         >
           <div className="px-4 py-3 flex items-center justify-between" style={{ background: "#eef2e2", borderBottom: "1px solid #d9e4d3" }}>
             <div>
@@ -285,7 +312,20 @@ export default function RcaNotes() {
                 + New
               </button>
               <button
-                onClick={() => guardUnsaved(() => { cancelForm(true); setOpen(false); setConfirmDeleteId(null); })}
+                onClick={() => setExpanded((v) => !v)}
+                className="p-1 rounded-lg hover:opacity-60"
+                style={{ color: "#6b8e6a" }}
+                aria-label={expanded ? "Shrink notes panel" : "Expand notes panel"}
+                title={expanded ? "Shrink" : "Expand — more room to write"}
+              >
+                {expanded ? (
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M8 3v3a2 2 0 0 1-2 2H3M21 8h-3a2 2 0 0 1-2-2V3M3 16h3a2 2 0 0 1 2 2v3M16 21v-3a2 2 0 0 1 2-2h3" /></svg>
+                ) : (
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" /></svg>
+                )}
+              </button>
+              <button
+                onClick={() => guardUnsaved(() => { cancelForm(true); setOpen(false); setConfirmDeleteId(null); setExpanded(false); })}
                 className="text-sm"
                 style={{ color: "#6b8e6a" }}
                 aria-label="Close"
@@ -296,7 +336,7 @@ export default function RcaNotes() {
           </div>
 
           {(adding || editingId) ? (
-            <div className="p-3 flex flex-col gap-2" style={{ borderBottom: "1px solid #d9e4d3" }}>
+            <div className={`p-3 flex flex-col gap-2 ${expanded ? "flex-1 min-h-0" : ""}`} style={{ borderBottom: "1px solid #d9e4d3" }}>
               <input
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
@@ -323,18 +363,38 @@ export default function RcaNotes() {
                   (handleKeyDown on the editor) — the same bindings Google Docs
                   uses for bold/italic/underline/lists, not made-up ones. */}
               <div className="flex items-center gap-1 flex-wrap">
+                <select
+                  onMouseDown={(e) => e.preventDefault()}
+                  onChange={(e) => { setHeading(e.target.value as "" | "h1" | "h2" | "h3"); e.target.value = ""; }}
+                  defaultValue=""
+                  className="text-xs px-1.5 py-1 rounded-md outline-none font-medium"
+                  style={{ background: "#eef2e2", color: "#4f6a41", border: "none" }}
+                  title="Heading"
+                >
+                  <option value="">Normal text</option>
+                  <option value="h1">Heading 1</option>
+                  <option value="h2">Heading 2</option>
+                  <option value="h3">Heading 3</option>
+                </select>
+                <span className="w-px h-4 mx-0.5" style={{ background: "#d9e4d3" }} />
                 <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => exec("bold")} className="text-xs font-bold px-2 py-1 rounded-md" style={{ background: "#eef2e2", color: "#4f6a41" }} title="Bold (⌘B)">B</button>
                 <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => exec("italic")} className="text-xs italic px-2 py-1 rounded-md" style={{ background: "#eef2e2", color: "#4f6a41" }} title="Italic (⌘I)">I</button>
                 <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => exec("underline")} className="text-xs underline px-2 py-1 rounded-md" style={{ background: "#eef2e2", color: "#4f6a41" }} title="Underline (⌘U)">U</button>
                 <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => exec("strikeThrough")} className="text-xs px-2 py-1 rounded-md" style={{ background: "#eef2e2", color: "#4f6a41", textDecoration: "line-through" }} title="Strikethrough (⌘⇧X)">S</button>
-                <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => exec("formatBlock", "h3")} className="text-xs font-bold px-2 py-1 rounded-md" style={{ background: "#eef2e2", color: "#4f6a41" }} title="Heading">H</button>
+                <span className="w-px h-4 mx-0.5" style={{ background: "#d9e4d3" }} />
                 <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => exec("insertUnorderedList")} className="text-xs px-2 py-1 rounded-md" style={{ background: "#eef2e2", color: "#4f6a41" }} title="Bullet list (⌘⇧8)">• List</button>
                 <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => exec("insertOrderedList")} className="text-xs px-2 py-1 rounded-md" style={{ background: "#eef2e2", color: "#4f6a41" }} title="Numbered list (⌘⇧7)">1. List</button>
+                <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => exec("formatBlock", "<blockquote>")} className="text-xs px-2 py-1 rounded-md" style={{ background: "#eef2e2", color: "#4f6a41" }} title="Quote">&ldquo;&rdquo;</button>
+                <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={insertLink} className="text-xs px-2 py-1 rounded-md" style={{ background: "#eef2e2", color: "#4f6a41" }} title="Insert link (⌘K)">🔗</button>
+                <span className="w-px h-4 mx-0.5" style={{ background: "#d9e4d3" }} />
+                <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => exec("undo")} className="text-xs px-2 py-1 rounded-md" style={{ background: "#eef2e2", color: "#4f6a41" }} title="Undo (⌘Z)">↶</button>
+                <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => exec("redo")} className="text-xs px-2 py-1 rounded-md" style={{ background: "#eef2e2", color: "#4f6a41" }} title="Redo (⌘⇧Z)">↷</button>
+                <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={clearFormat} className="text-xs px-2 py-1 rounded-md ml-auto" style={{ background: "#eef2e2", color: "#4f6a41" }} title="Clear formatting">Clear</button>
               </div>
-              <div className="relative">
+              <div className="relative flex-1 min-h-0">
                 {stripHtml(content).trim() === "" && (
                   <div className="absolute inset-0 px-3 py-2 text-sm pointer-events-none" style={{ color: "#a8b39c" }}>
-                    Jot it down… ⌘B/⌘I/⌘U/⌘⇧X bold/italic/underline/strike · ⌘⇧8/⌘⇧7 lists · ⌘↵ save · Esc cancel
+                    Jot it down… ⌘B/⌘I/⌘U/⌘⇧X bold/italic/underline/strike · ⌘⇧8/⌘⇧7 lists · ⌘K link · ⌘↵ save · Esc cancel
                   </div>
                 )}
                 <div
@@ -344,7 +404,14 @@ export default function RcaNotes() {
                   onInput={(e) => setContent(sanitizeHtml((e.target as HTMLDivElement).innerHTML))}
                   onKeyDown={handleKeyDown}
                   className="rounded-lg px-3 py-2 text-sm outline-none overflow-y-auto"
-                  style={{ background: "#fff", border: "1px solid #d9e4d3", color: "#2f3a2a", minHeight: 132, maxHeight: 220 }}
+                  style={{
+                    background: "#fff",
+                    border: "1px solid #d9e4d3",
+                    color: "#2f3a2a",
+                    height: expanded ? "100%" : undefined,
+                    minHeight: expanded ? undefined : 132,
+                    maxHeight: expanded ? undefined : 220,
+                  }}
                 />
               </div>
               <div className="flex items-center justify-between">

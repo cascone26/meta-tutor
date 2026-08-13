@@ -106,7 +106,7 @@ export default function RcaPage() {
         )}
         {next.kind === "teaching" && (
           <p className="text-sm mt-1.5 font-semibold" style={{ color: "#2f5e7a" }}>
-            {next.isToday ? "Today's the day" : "Next teaching day"}: {nextLabel}
+            {next.isToday ? "Today's the day" : "Next work day"}: {nextLabel}
           </p>
         )}
         <p className="text-xs mt-1" style={{ color: "#8a9a7c" }}>{rcaSchedule.address}</p>
