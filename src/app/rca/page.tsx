@@ -234,7 +234,15 @@ export default function RcaPage() {
             previous version anchored to the full box bottom, which is
             exactly why the shadow read as detached/floating below the pond
             in Jacob's screenshot even after the horizontal fix. */}
-        <div className="absolute rounded-full" style={{ top: "calc(32% + 62px)", left: "calc(6% + 16px)", width: 118, height: 16, background: "radial-gradient(ellipse, rgba(15,30,38,0.38) 0%, rgba(15,30,38,0.38) 45%, transparent 85%)", filter: "blur(1.5px)" }} />
+        {/* PondDoodle was rebuilt (see NatureIcons.tsx) to remove the bright
+            glossy highlight that was making it read as a floating bead
+            regardless of shadow tuning — that highlight added a visible
+            bank/rim reaching further down (y=29 of 30, not y=25), so this
+            offset is recomputed from a fresh getBBox() measurement
+            (bottomFillRatio 0.9667, not 0.9333). Shadow also widened to
+            near the pond's own width (140 vs 118) and de-blurred (1px, not
+            1.5) so it reads as a solid contact mark, not a soft smudge. */}
+        <div className="absolute rounded-full" style={{ top: "calc(32% + 62.5px)", left: "calc(6% - 5px)", width: 140, height: 20, background: "radial-gradient(ellipse, rgba(15,30,38,0.42) 0%, rgba(15,30,38,0.42) 45%, transparent 85%)", filter: "blur(1px)" }} />
         <PondDoodle
           size={150}
           className="absolute"

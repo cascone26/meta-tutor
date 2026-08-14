@@ -1,8 +1,6 @@
 // Simple single-stroke line-art icons for the RCA nature theme. Deliberately not
 // emoji — plain SVG so color/weight stay consistent with the rest of the theme.
 
-import { useId } from "react";
-
 type IconProps = { size?: number; className?: string; style?: React.CSSProperties };
 
 // Redesigned as two separate wing strokes around a body point (was one fused
@@ -228,29 +226,54 @@ export function AntDoodle({ size = 8, className, style }: IconProps) {
 // right at the shape's ambiguous outer edge, which is why it read as a loop
 // floating disconnected next to the pond rather than sitting IN it) — two
 // pads, sizes staggered, both clearly inside the body regardless of the exact
-// hand-drawn outline bounds. useId() keeps the gradient id collision-safe.
+// hand-drawn outline bounds.
+// Rebuilt 2026-08-13: the previous version's bright off-center white
+// specular highlight (a classic "glossy sphere/marble" rendering cue — a
+// light-colored ellipse offset from center, mimicking a light source
+// hitting a RAISED curved surface) was the actual reason this read as a
+// floating bead no matter how the shadow beneath it was tuned. Three
+// rounds of shadow-position/gradient fixes never touched this because the
+// problem was the object's own rendering, not its shadow. Flat water
+// viewed from this angle doesn't have a dramatic specular highlight — it
+// has a darker, more uniform surface with a visible bank/rim at the edge
+// (the actual cue that grounds something: a boundary where it meets the
+// land) and subtle ripple lines, not a bright glossy dome.
 export function PondDoodle({ size = 20, className, style }: IconProps) {
-  const gradId = useId();
   return (
     <svg width={size} height={size * 0.5} viewBox="0 0 60 30" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" className={className} style={style}>
-      <defs>
-        <radialGradient id={gradId} cx="44%" cy="42%" r="65%">
-          <stop offset="0%" stopColor="currentColor" stopOpacity="0.95" />
-          <stop offset="55%" stopColor="currentColor" stopOpacity="0.62" />
-          <stop offset="100%" stopColor="currentColor" stopOpacity="0.32" />
-        </radialGradient>
-      </defs>
+      {/* A visible darker bank/rim OUTSIDE the water body — the actual
+          "this sits in the ground, not on top of it" cue, drawn first so
+          the water body paints over its inner edge. */}
+      <path
+        d="M3 19.5c-1.2-7.5 7.5-13 16-12s13 1.2 20 4.3 11 6.5 9.7 11S37 29 27 29 4.2 25 3 19.5z"
+        fill="#5a4a2e"
+        fillOpacity="0.35"
+        stroke="none"
+      />
+      {/* FLAT fill, no gradient at all — any brightness variance (even a
+          "realistic deeper-water" radial gradient) kept reading as a
+          glossy specular highlight to independent review, no matter how
+          it was tuned. A single uniform opacity is the only way to fully
+          remove that "raised glossy solid" cue. */}
       <path
         d="M5 19c-1-7 7-12 15-11s12 1 19 4 10 6 9 10-11 6-20 6S6 25 5 19z"
-        fill={`url(#${gradId})`}
+        fill="currentColor"
+        fillOpacity="0.72"
         stroke="currentColor"
-        strokeOpacity="0.6"
+        strokeOpacity="0.65"
       />
-      <path d="M10 13c8-3.5 20-3.5 29 2" stroke="currentColor" strokeOpacity="0.22" strokeWidth="1" fill="none" />
-      <ellipse cx="19" cy="15" rx="6.5" ry="2.3" fill="#ffffff" fillOpacity="0.28" stroke="none" />
-      <ellipse cx="27" cy="17.5" rx="6.5" ry="2.5" fill="currentColor" fillOpacity="0.55" stroke="currentColor" strokeOpacity="0.5" strokeWidth="1" />
-      <path d="M27 17.5c0-1 .8-1.6 1.8-1.7" stroke="currentColor" strokeOpacity="0.5" strokeWidth="1" />
-      <ellipse cx="17" cy="20.5" rx="4.2" ry="1.7" fill="currentColor" fillOpacity="0.5" stroke="currentColor" strokeOpacity="0.5" strokeWidth="0.8" />
+      {/* Ripple lines — flat, low-contrast, same hue as the water, no
+          light-source implication. */}
+      <path d="M10 13c8-3.5 20-3.5 29 2" stroke="currentColor" strokeOpacity="0.2" strokeWidth="1" fill="none" />
+      <path d="M9 21c7 2.5 17 2.5 25-0.5" stroke="currentColor" strokeOpacity="0.15" strokeWidth="1" fill="none" />
+      {/* Lily pads — a distinct GREEN, not a lighter tint of the water's
+          own blue. The previous version used currentColor at lower
+          opacity than the water around it, which made a "lily pad" read
+          as a lighter patch — exactly the "hotspot" look this whole
+          redesign is trying to kill, just relocated instead of removed. */}
+      <ellipse cx="27" cy="17.5" rx="6.5" ry="2.5" fill="#5a7a4a" fillOpacity="0.8" stroke="#3f5a34" strokeOpacity="0.4" strokeWidth="1" />
+      <path d="M27 17.5c0-1 .8-1.6 1.8-1.7" stroke="#3f5a34" strokeOpacity="0.4" strokeWidth="1" />
+      <ellipse cx="17" cy="20.5" rx="4.2" ry="1.7" fill="#5a7a4a" fillOpacity="0.75" stroke="#3f5a34" strokeOpacity="0.4" strokeWidth="0.8" />
     </svg>
   );
 }
