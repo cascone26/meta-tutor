@@ -196,57 +196,41 @@ export default function RcaPage() {
         {/* A genuine atmospheric-perspective cue, not just smaller/higher: a
             slight blur + lower opacity so these actually read as further
             away, the way real distance haze desaturates and softens things. */}
-        {/* Every shadow offset in this scene is now derived from a REAL
-            measurement, not eyeballed: rendered each doodle live and called
-            SVGGraphicsElement.getBBox() to find where its artwork actually
-            stops inside its viewBox (every shape has real empty padding
-            below the drawn content — e.g. BushDoodle's circles bottom out at
-            29/32 of its viewBox, not 32/32). "floating" shadows were shadows
-            positioned as if bottomFillRatio=1.0 for every shape, which is
-            wrong for all of them. offsetPx = renderedHeight * bottomFillRatio.
-            BushDoodle: renderedHeight=size*0.65, bottomFillRatio=0.9063 ->
-            offsetPx = size*0.5891. */}
-        <div className="absolute rounded-full" style={{ top: "calc(20% + 28.5px)", left: "0%", width: 56, height: 11, background: "radial-gradient(ellipse, rgba(20,30,10,0.42) 0%, rgba(20,30,10,0.42) 45%, transparent 85%)", filter: "blur(1.2px)" }} />
-        <BushDoodle size={58} className="absolute" style={{ top: "20%", left: "0%", color: "#4f6a41", opacity: 0.5, filter: "blur(0.5px)" }} />
-        <div className="absolute rounded-full" style={{ top: "calc(16% + 27px)", right: "calc(23% + 2px)", width: 50, height: 10, background: "radial-gradient(ellipse, rgba(20,30,10,0.42) 0%, rgba(20,30,10,0.42) 45%, transparent 85%)", filter: "blur(1.2px)" }} />
-        <BushDoodle size={54} className="absolute" style={{ top: "16%", right: "23%", color: "#5a7a4a", opacity: 0.48, filter: "blur(0.5px)" }} />
+        {/* Switched every shadow in this scene from a hand-positioned
+            sibling div to CSS drop-shadow directly on the object — it
+            renders an offset+blurred copy of the element's own actual
+            alpha silhouette, so it's physically impossible for it to miss
+            or gap; there's no position math left to get wrong. Four rounds
+            of increasingly precise sibling-div position math (bounding-box
+            centering, getBBox fill-ratio, contact-line centering) all
+            checked out in pixel sampling and Jacob still saw a gap in the
+            real deployed screenshot every time — this replaces that whole
+            approach instead of tuning it a fifth time. */}
+        <BushDoodle size={58} className="absolute" style={{ top: "20%", left: "0%", color: "#4f6a41", opacity: 0.5, filter: "blur(0.5px) drop-shadow(0 3px 1.5px rgba(20,30,10,0.5))" }} />
+        <BushDoodle size={54} className="absolute" style={{ top: "16%", right: "23%", color: "#5a7a4a", opacity: 0.48, filter: "blur(0.5px) drop-shadow(0 3px 1.5px rgba(20,30,10,0.5))" }} />
         {/* A third distant bush, further right — the old back row only had
             two anchors near the pond/tree; with the scene now full-width
             there's real space past the tree that needs its own depth layer,
             not just empty gradient. */}
-        <div className="absolute rounded-full" style={{ top: "calc(22% + 22.5px)", right: "calc(2% + 2px)", width: 42, height: 9, background: "radial-gradient(ellipse, rgba(20,30,10,0.36) 0%, rgba(20,30,10,0.36) 45%, transparent 85%)", filter: "blur(1.2px)" }} />
-        <BushDoodle size={46} className="absolute" style={{ top: "22%", right: "2%", color: "#4f6a41", opacity: 0.4, filter: "blur(0.7px)" }} />
+        <BushDoodle size={46} className="absolute" style={{ top: "22%", right: "2%", color: "#4f6a41", opacity: 0.4, filter: "blur(0.7px) drop-shadow(0 2px 1px rgba(20,30,10,0.45))" }} />
 
-        {/* Pond — tight, precisely-fitted shadow (not a wide blurry bar) plus
-            reeds clustered at its back-right edge, the single most
-            recognizable "this is a pond" cue in garden illustration. Shadow
-            opacity/blur were correctly POSITIONED (verified flush to the
-            pond's actual bottom edge) but too faint to actually read as a
-            shadow at real viewing scale — measured only ~21pt RGB contrast
-            against nearby background, well under the ~60-90pt that reads
-            clearly. Roughly doubled the opacity and cut blur across every
-            shadow in this scene to fix that. */}
-        {/* left centers under the pond's real bbox (measured via
-            getBoundingClientRect). top uses the pond's REAL bottomFillRatio
-            (0.9333, from getBBox — the blob path's own bottom edge lands at
-            y=28 of a 30-tall viewBox, not y=30) instead of assuming the
-            drawn shape fills its whole box: offsetPx = size*0.5*0.9333. The
-            previous version anchored to the full box bottom, which is
-            exactly why the shadow read as detached/floating below the pond
-            in Jacob's screenshot even after the horizontal fix. */}
-        {/* PondDoodle was rebuilt (see NatureIcons.tsx) to remove the bright
-            glossy highlight that was making it read as a floating bead
-            regardless of shadow tuning — that highlight added a visible
-            bank/rim reaching further down (y=29 of 30, not y=25), so this
-            offset is recomputed from a fresh getBBox() measurement
-            (bottomFillRatio 0.9667, not 0.9333). Shadow also widened to
-            near the pond's own width (140 vs 118) and de-blurred (1px, not
-            1.5) so it reads as a solid contact mark, not a soft smudge. */}
-        <div className="absolute rounded-full" style={{ top: "calc(32% + 62.5px)", left: "calc(6% - 5px)", width: 140, height: 20, background: "radial-gradient(ellipse, rgba(15,30,38,0.42) 0%, rgba(15,30,38,0.42) 45%, transparent 85%)", filter: "blur(1px)" }} />
+        {/* Pond — four rounds of hand-positioned sibling-div shadows all
+            genuinely fixed real, verified bugs (bounding-box centering,
+            getBBox fill-ratio math, contact-line centering, then the
+            pond's OWN glossy rendering) and Jacob still saw a floating
+            gap in the real deployed screenshot every time, despite each
+            one checking out in headless-Chrome pixel sampling. Rather than
+            keep hand-tuning position math that isn't translating to what's
+            actually being seen, switched to CSS drop-shadow: it renders an
+            offset+blurred copy of the element's OWN actual alpha silhouette
+            (including the bank/rim shape), not a separately-positioned
+            div that has to be manually aligned to guess where that
+            silhouette's bottom edge falls. It cannot end up with a gap —
+            there's no position math to get wrong. */}
         <PondDoodle
           size={150}
           className="absolute"
-          style={{ top: "32%", left: "6%", color: "#3f7ea6", opacity: 0.85 }}
+          style={{ top: "32%", left: "6%", color: "#3f7ea6", opacity: 0.85, filter: "drop-shadow(0 5px 2px rgba(15,30,38,0.65))" }}
         />
         <ReedDoodle size={34} className="absolute" style={{ top: "24%", left: "23%", color: "#5a7a4a", opacity: 0.8 }} />
         <ReedDoodle size={28} className="absolute" style={{ top: "27%", left: "27%", color: "#4f6a41", opacity: 0.75 }} />
@@ -255,17 +239,10 @@ export default function RcaPage() {
             brown, no green) so the scene isn't 100% foliage. */}
         <RockDoodle size={32} className="absolute" style={{ top: "52%", left: "11%", opacity: 0.75 }} />
 
-        {/* right centers under the tree's real box (measured). top uses the
-            tree's real bottomFillRatio (0.9714, from getBBox — the trunk's
-            own tip lands at y=68 of a 70-tall viewBox): offsetPx =
-            size*0.9714. Close to the full box this time (trunk nearly
-            reaches the bottom), but "close" still wasn't exact, and every
-            other shape in the scene needed a real, not approximate, fix. */}
-        <div className="absolute rounded-full" style={{ top: "calc(10% + 118.5px)", right: "calc(6% + 17px)", width: 96, height: 15, background: "radial-gradient(ellipse, rgba(20,30,10,0.38) 0%, rgba(20,30,10,0.38) 45%, transparent 85%)", filter: "blur(1.5px)" }} />
         <TreeDoodle
           size={130}
           className="absolute"
-          style={{ top: "10%", right: "6%", color: "#4f6a41", opacity: 0.9, animation: "sway 7s ease-in-out infinite", transformOrigin: "bottom center" }}
+          style={{ top: "10%", right: "6%", color: "#4f6a41", opacity: 0.9, animation: "sway 7s ease-in-out infinite", transformOrigin: "bottom center", filter: "drop-shadow(0 5px 2px rgba(20,30,10,0.55))" }}
         />
 
         {/* Front-row grass texture along the very base of the scene, below
@@ -317,40 +294,16 @@ export default function RcaPage() {
           { Shape: TulipDoodle, size: 28, top: "48%", left: "84%", color: "#7a5a8a", d: "5.1s", delay: "0.3s" },
           { Shape: DaisyDoodle, size: 22, top: "56%", left: "87%", color: "#c9843a", d: "4.4s", delay: "0.5s" },
         ] as { Shape: typeof FlowerDoodle; size: number; top: string; left: string; color: string; d: string; delay: string }[]).map((f, i) => (
-          <div key={i}>
-            <div
-              className="absolute rounded-full"
-              style={{
-                // All flower shapes share a 24x32 viewBox, rendered at
-                // width=height=size (square box; content is narrower than
-                // the box so it's letterboxed left/right, filling the full
-                // box height 1:1 with the viewBox). getBBox() on the real
-                // rendered stem shows the artwork's own bottom edge lands at
-                // y=30 of that 32-tall viewBox, not y=32 — so the contact
-                // point is size*(30/32)=size*0.9375. Offset by HALF the
-                // shadow's own height (size*0.1) so the shadow is CENTERED
-                // on that contact point, not merely touching it at its own
-                // top edge — a radial gradient fades in every direction
-                // from its center, so a shadow that only touches at its top
-                // edge is fading to near-transparent exactly where it meets
-                // the object, which is why bounding boxes could measure as
-                // "touching" while it still visibly read as a floating gap.
-                top: `calc(${f.top} + ${f.size * 0.9375 - f.size * 0.1}px)`,
-                left: `calc(${f.left} + ${f.size * 0.22}px)`,
-                width: f.size * 0.7, height: f.size * 0.2,
-                background: "radial-gradient(ellipse, rgba(20,30,10,0.52) 0%, rgba(20,30,10,0.52) 45%, transparent 85%)",
-                filter: "blur(1.2px)",
-              }}
-            />
-            <f.Shape
-              size={f.size}
-              className="absolute"
-              style={{
-                top: f.top, left: f.left, color: f.color, opacity: 0.85,
-                animation: `sway ${f.d} ease-in-out infinite ${f.delay}`, transformOrigin: "bottom center",
-              }}
-            />
-          </div>
+          <f.Shape
+            key={i}
+            size={f.size}
+            className="absolute"
+            style={{
+              top: f.top, left: f.left, color: f.color, opacity: 0.85,
+              animation: `sway ${f.d} ease-in-out infinite ${f.delay}`, transformOrigin: "bottom center",
+              filter: "drop-shadow(0 2px 1px rgba(20,30,10,0.5))",
+            }}
+          />
         ))}
 
         {/* Ladybugs — GENUINE crawling now (crawlLoop: real translateX travel
@@ -358,31 +311,22 @@ export default function RcaPage() {
             recomputed to sit flush with each bug's actual bottom edge (size,
             not an eyeballed offset) — they were sitting 4-5% below where the
             bug actually is, reading as a disconnected smudge. */}
-        {/* Shadow left values matched to each bug's own left (measured: the
-            old 43%/57.5% sat 7-15px off the bug's real center — huge
-            relative to an 18px-wide bug, which is exactly why it read as a
-            disconnected smudge). Durations/delays deliberately un-aligned
-            (5.4s/8.1s, not a clean multiple) so the two bugs' dart-pause
-            rhythms drift in and out of sync instead of moving in lockstep. */}
-        {/* top uses BugDoodle's real bottomFillRatio (~1.0 — the legs' stroke
-            extends just past the nominal viewBox, so it effectively fills
-            it): offsetPx = size*(20/28)*1.0. */}
-        <BugDoodle size={18} className="absolute" style={{ top: "62%", left: "42%", color: "#a04a4a", opacity: 0.85, animation: "crawlLoop 5.4s ease-in-out infinite", ["--crawl-dist" as string]: "46px" }} />
-        <div className="absolute rounded-full" style={{ top: "calc(62% + 10px)", left: "42%", width: 24, height: 6, background: "radial-gradient(ellipse, rgba(20,30,10,0.58) 0%, rgba(20,30,10,0.58) 45%, transparent 85%)", filter: "blur(0.8px)", animation: "crawlLoop 5.4s ease-in-out infinite", ["--crawl-dist" as string]: "46px" }} />
-        <BugDoodle size={14} className="absolute" style={{ top: "56%", left: "57%", color: "#5a7a4a", opacity: 0.8, animation: "crawlLoop 8.1s ease-in-out infinite 2.3s", ["--crawl-dist" as string]: "36px" }} />
-        <div className="absolute rounded-full" style={{ top: "calc(56% + 7.5px)", left: "57%", width: 18, height: 5, background: "radial-gradient(ellipse, rgba(20,30,10,0.54) 0%, rgba(20,30,10,0.54) 45%, transparent 85%)", filter: "blur(0.8px)", animation: "crawlLoop 8.1s ease-in-out infinite 2.3s", ["--crawl-dist" as string]: "36px" }} />
+        {/* drop-shadow lives on the bug itself now, not a separate div that
+            had to duplicate the exact same animation/duration/dist to stay
+            in sync — it automatically follows the element's own transform,
+            so it's guaranteed to move with the bug instead of needing two
+            copies of the same animation tuned to match. Durations/delays
+            deliberately un-aligned (5.4s/8.1s, not a clean multiple) so the
+            two bugs' dart-pause rhythms drift in and out of sync with each
+            other instead of moving in lockstep. */}
+        <BugDoodle size={18} className="absolute" style={{ top: "62%", left: "42%", color: "#a04a4a", opacity: 0.85, animation: "crawlLoop 5.4s ease-in-out infinite", ["--crawl-dist" as string]: "46px", filter: "drop-shadow(0 2px 1px rgba(20,30,10,0.6))" }} />
+        <BugDoodle size={14} className="absolute" style={{ top: "56%", left: "57%", color: "#5a7a4a", opacity: 0.8, animation: "crawlLoop 8.1s ease-in-out infinite 2.3s", ["--crawl-dist" as string]: "36px", filter: "drop-shadow(0 1.5px 1px rgba(20,30,10,0.55))" }} />
 
         {/* Ant hill — a double-file marching trail. Motion is now GENUINE
             small-scale crawling (antCrawl: real translateX + turn-flip) in
             place of the old antScurry (a scale pulse that never actually
-            moved — which is exactly why it read as "in place," not marching).
-            Shadow moved up to the mound's actual bottom edge (was 6% below
-            it, floating free). */}
-        {/* top uses AntHillDoodle's real bottomFillRatio (0.8929, from
-            getBBox — the mound's own base line sits at y=25 of a 28-tall
-            viewBox): offsetPx = size*0.7*0.8929. */}
-        <div className="absolute rounded-full" style={{ top: "calc(42% + 46.5px)", left: "23%", width: 96, height: 17, background: "radial-gradient(ellipse, rgba(20,30,10,0.52) 0%, rgba(20,30,10,0.52) 45%, transparent 85%)", filter: "blur(1.2px)" }} />
-        <AntHillDoodle size={88} className="absolute" style={{ top: "42%", left: "23%", color: "#8a6a3a", opacity: 0.85 }} />
+            moved — which is exactly why it read as "in place," not marching). */}
+        <AntHillDoodle size={88} className="absolute" style={{ top: "42%", left: "23%", color: "#8a6a3a", opacity: 0.85, filter: "drop-shadow(0 4px 1.5px rgba(20,30,10,0.5))" }} />
         {/* Debris scattered near the hill so it reads as an actual patch of
             ground the colony lives on, not a bare mound on clean gradient. */}
         <TwigDoodle size={30} className="absolute" style={{ top: "68%", left: "34%", opacity: 0.7, transform: "rotate(-8deg)" }} />
