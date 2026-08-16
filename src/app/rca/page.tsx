@@ -192,38 +192,57 @@ export default function RcaPage() {
           container width), not artificially narrowing the canvas. */}
       <div className="relative" style={{ width: "100%", height: "100%" }}>
         {/* Real ground TEXTURE, not just individually-shadowed objects on a
-            smooth gradient — this is the actual answer to "still kinda just
-            looks like theres a paper background then 3d paper craft on top"
-            (Jacob, 2026-08-16). Every shadow fix so far made each OBJECT more
-            correct in isolation, but the surface they sit on was still one
-            perfectly smooth CSS gradient with zero grain — which is exactly
-            what makes shadowed cutouts read as stickers glued onto a flat
-            card instead of a continuous world. An SVG fractal-noise filter,
-            tiled across the whole ground zone at very low opacity and
-            multiply-blended, gives the surface itself visible mottling the
-            way real grass/dirt actually has. */}
+            smooth gradient. The first attempt here (an abstract SVG
+            fractal-noise filter, multiply-blended at low opacity) was
+            confirmed by directly looking at the actual rendered page
+            (2026-08-16, "use viewer and freaking look at everything" — Read
+            a real screenshot straight into context via the hook-exempted
+            ~/estate/data/renders/ path, not a flaky third-party vision
+            model) to be flat-out INVISIBLE at real render scale — the ground
+            still looked like one smooth green card. Replaced with an
+            actual tiled pattern of small grass-blade strokes at real,
+            deliberately visible opacity, not a subtle multiply-blend trick. */}
         <div
           aria-hidden
           className="absolute inset-0"
           style={{
             backgroundImage:
-              "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.025' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")",
+              "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='42' height='42'%3E%3Cpath d='M5 40c0-4 1-7 1-10' stroke='%234f6a41' stroke-width='1.4' stroke-linecap='round' fill='none' opacity='0.55'/%3E%3Cpath d='M13 41c0-3 -1-6 0-9' stroke='%235a7a4a' stroke-width='1.3' stroke-linecap='round' fill='none' opacity='0.45'/%3E%3Cpath d='M23 40c0-5 1-8 2-11' stroke='%234f6a41' stroke-width='1.4' stroke-linecap='round' fill='none' opacity='0.5'/%3E%3Cpath d='M31 41c0-3 -1-5 0-8' stroke='%236b8e5a' stroke-width='1.3' stroke-linecap='round' fill='none' opacity='0.45'/%3E%3Cpath d='M38 40c0-4 1-6 1-9' stroke='%235a7a4a' stroke-width='1.3' stroke-linecap='round' fill='none' opacity='0.45'/%3E%3C/svg%3E\")",
             backgroundRepeat: "repeat",
-            mixBlendMode: "multiply",
-            opacity: 0.16,
+            backgroundSize: "42px 42px",
+            opacity: 0.85,
+          }}
+        />
+        {/* A SECOND blade layer, different tile size (67px, not a clean
+            multiple of the first layer's 42px) and different blade count/
+            spacing so the two grids never align into a visible repeat —
+            a single perfectly regular tile reads as wallpaper, not a
+            meadow; two independent grids overlapping breaks that up the
+            same way real grass never grows in a lattice. */}
+        <div
+          aria-hidden
+          className="absolute inset-0"
+          style={{
+            backgroundImage:
+              "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='67' height='67'%3E%3Cpath d='M8 63c0-5 -1-9 0-13' stroke='%235a7a4a' stroke-width='1.5' stroke-linecap='round' fill='none' opacity='0.4'/%3E%3Cpath d='M27 65c0-4 1-7 2-10' stroke='%234f6a41' stroke-width='1.3' stroke-linecap='round' fill='none' opacity='0.35'/%3E%3Cpath d='M48 63c0-6 -1-10 0-14' stroke='%236b8e5a' stroke-width='1.5' stroke-linecap='round' fill='none' opacity='0.4'/%3E%3Cpath d='M60 65c0-3 1-5 1-7' stroke='%235a7a4a' stroke-width='1.3' stroke-linecap='round' fill='none' opacity='0.35'/%3E%3C/svg%3E\")",
+            backgroundRepeat: "repeat",
+            backgroundSize: "67px 67px",
+            backgroundPosition: "15px 8px",
+            opacity: 0.7,
           }}
         />
 
         {/* Several irregular, overlapping color-variation patches — real
             grass isn't one flat tone, it's uneven growth/mowing/sun patches.
-            Replaces the single centered warm-tone blob with a scattered set
-            covering much more of the ground, so no big stretch reads as
-            "unbroken flat gradient." */}
-        <div className="absolute rounded-full" style={{ top: "20%", left: "0%", width: "94%", height: "85%", background: "radial-gradient(ellipse, rgba(140,120,60,0.1) 0%, transparent 70%)" }} />
-        <div className="absolute rounded-full" style={{ top: "-5%", left: "18%", width: "42%", height: "60%", background: "radial-gradient(ellipse, rgba(90,140,80,0.12) 0%, transparent 70%)" }} />
-        <div className="absolute rounded-full" style={{ top: "35%", right: "5%", width: "48%", height: "70%", background: "radial-gradient(ellipse, rgba(160,190,110,0.14) 0%, transparent 70%)" }} />
-        <div className="absolute rounded-full" style={{ top: "50%", left: "38%", width: "30%", height: "50%", background: "radial-gradient(ellipse, rgba(70,110,60,0.1) 0%, transparent 70%)" }} />
-        <div className="absolute rounded-full" style={{ top: "5%", right: "22%", width: "26%", height: "45%", background: "radial-gradient(ellipse, rgba(200,200,130,0.08) 0%, transparent 70%)" }} />
+            First pass here (opacity 0.08-0.14) was ALSO confirmed invisible
+            by the same direct-look check — raised substantially so the
+            variation is actually perceptible, not just measurable in pixel
+            stats that don't correspond to what a human eye picks up. */}
+        <div className="absolute rounded-full" style={{ top: "20%", left: "0%", width: "94%", height: "85%", background: "radial-gradient(ellipse, rgba(140,120,60,0.22) 0%, transparent 70%)" }} />
+        <div className="absolute rounded-full" style={{ top: "-5%", left: "18%", width: "42%", height: "60%", background: "radial-gradient(ellipse, rgba(90,140,80,0.26) 0%, transparent 70%)" }} />
+        <div className="absolute rounded-full" style={{ top: "35%", right: "5%", width: "48%", height: "70%", background: "radial-gradient(ellipse, rgba(160,190,110,0.28) 0%, transparent 70%)" }} />
+        <div className="absolute rounded-full" style={{ top: "50%", left: "38%", width: "30%", height: "50%", background: "radial-gradient(ellipse, rgba(70,110,60,0.22) 0%, transparent 70%)" }} />
+        <div className="absolute rounded-full" style={{ top: "5%", right: "22%", width: "26%", height: "45%", background: "radial-gradient(ellipse, rgba(200,200,130,0.18) 0%, transparent 70%)" }} />
 
         {/* The old horizon hairline was flagged as an artifact back in the
             2026-08-13 audit ("a thin horizon rule that clashes with the
