@@ -96,6 +96,26 @@ export function TreeDoodle({ size = 20, className, style }: IconProps) {
   );
 }
 
+// A second, genuinely different tree — same technique (trunk + overlapping
+// canopy circles) but a taller, leaning, asymmetric silhouette with 5 lobes
+// instead of 4, so a scene with several trees doesn't read as one shape
+// copy-pasted at different sizes (Jacob, 2026-08-16: "make a few more trees,
+// similar-ish looking but different"). The trunk leans, and the canopy mass
+// is offset off-axis from it — real trees aren't perfectly symmetric cones.
+export function TreeDoodleB({ size = 20, className, style }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 60 70" fill="none" strokeLinecap="round" strokeLinejoin="round" className={className} style={style}>
+      <path d="M28 68c1-10 2-18 4-27" stroke="#6b4a2a" strokeWidth="2.2" />
+      <path d="M29 55c-3-2-6-1-8 2M31 49c3-1.2 6-.3 7.5 2.5" stroke="#6b4a2a" strokeWidth="1.4" />
+      <circle cx="19" cy="30" r="9.5" fill="currentColor" fillOpacity="0.6" stroke="currentColor" strokeWidth="1.1" strokeOpacity="0.48" />
+      <circle cx="36" cy="27" r="11.5" fill="currentColor" fillOpacity="0.66" stroke="currentColor" strokeWidth="1.1" strokeOpacity="0.48" />
+      <circle cx="25" cy="17" r="10.5" fill="currentColor" fillOpacity="0.7" stroke="currentColor" strokeWidth="1.1" strokeOpacity="0.48" />
+      <circle cx="30" cy="41" r="9.5" fill="currentColor" fillOpacity="0.58" stroke="currentColor" strokeWidth="1.1" strokeOpacity="0.45" />
+      <circle cx="42" cy="37" r="7.5" fill="currentColor" fillOpacity="0.55" stroke="currentColor" strokeWidth="1.1" strokeOpacity="0.42" />
+    </svg>
+  );
+}
+
 // Three distinct flower silhouettes (round bloom / tulip cup / daisy petals) so a
 // five-flower bed doesn't read as one icon copy-pasted and recolored — real flower
 // beds have shape variety, not just color variety. All get FILLED petals (was pure
@@ -176,17 +196,38 @@ export function BugDoodle({ size = 20, className, style }: IconProps) {
   );
 }
 
-// The mound is a FILLED shape with texture marks re-colored dark brown (was
-// currentColor at low opacity, which nearly vanished once layered on top of the
-// mound's own now-much-more-opaque fill — texture needs to contrast against its
-// base, not match it) so it reads as a solid mound of dirt with real detail.
+// Rebuilt 2026-08-16 (Jacob: "take a look at the ant hill and make it look
+// way better") — the old version had a centered entrance dot flanked by two
+// roughly-symmetric texture marks, which is exactly the "two marks inside an
+// outline read as a face" gestalt already documented and fixed once for the
+// pond (see PondDoodle below) — it read as a sad/confused cartoon face, not
+// a mound of dirt. Fixes: entrance is now an angled OVAL tunnel mouth well
+// off-center (not a centered circle), the mound itself leans asymmetrically
+// (real dirt piles aren't perfect domes — one side shaped by which direction
+// the ants excavate toward), a darker underlayer suggests real volume/shading
+// instead of one flat fill, a small excavated-dirt spill sits at the tunnel
+// mouth (what a real ant hill entrance actually looks like), and every
+// texture mark is now irregular in count/spacing — no symmetric pairs.
 export function AntHillDoodle({ size = 20, className, style }: IconProps) {
   return (
-    <svg width={size} height={size * 0.7} viewBox="0 0 40 28" fill="none" strokeLinecap="round" strokeLinejoin="round" className={className} style={style}>
-      <path d="M4 25c8-1 24-1 32 0" stroke="currentColor" strokeWidth="1.3" strokeOpacity="0.5" />
-      <path d="M8 25c0-8.5 5.2-15.5 12-15.5S32 16.5 32 25z" fill="currentColor" fillOpacity="0.6" stroke="currentColor" strokeWidth="1.3" strokeOpacity="0.4" />
-      <circle cx="20" cy="15.5" r="1.4" fill="#3a2510" />
-      <path d="M13 21c1-.4 2-.2 2.4.6M27 20c-1-.4-2-.2-2.4.6M17 11.5c.7-.3 1.4 0 1.7.7" stroke="#3a2510" strokeWidth="1.1" strokeOpacity="0.55" />
+    <svg width={size} height={size * 0.75} viewBox="0 0 44 30" fill="none" strokeLinecap="round" strokeLinejoin="round" className={className} style={style}>
+      <path d="M3 27.5c6-1.3 12-0.8 18-0.5s14-1 20 0.6" stroke="currentColor" strokeWidth="1.2" strokeOpacity="0.42" />
+      <path d="M6 27c-1-9 6-17.5 15.5-17S35 12.5 34 27z" fill="currentColor" fillOpacity="0.62" stroke="currentColor" strokeWidth="1.3" strokeOpacity="0.4" />
+      {/* Volume shading — a darker patch biased to one side, not a symmetric
+          underlayer, so the mound reads as a real rounded 3D form. */}
+      <path d="M8 27c-0.5-7 2.5-13.5 7.5-16.3-4 4.5-5.5 10.5-4.3 16.3z" fill="#4a3420" fillOpacity="0.28" />
+      {/* Entrance — an angled oval tunnel mouth, off-center, not a centered
+          circle (that centered-dot placement was half of the face problem). */}
+      <ellipse cx="25" cy="14.5" rx="2.8" ry="1.7" fill="#2a1a0c" transform="rotate(-18 25 14.5)" />
+      <ellipse cx="24.3" cy="14.3" rx="1.5" ry="0.8" fill="#170e06" transform="rotate(-18 25 14.5)" />
+      {/* Excavated dirt spilling from the tunnel mouth — a real ant-hill cue. */}
+      <path d="M27 16c2.2 0 4.2 1 4.6 2.6.3 1.3-.8 2.2-2.4 2.1-1.9-.1-3.5-1.4-3.8-3.1z" fill="#8a6a3a" fillOpacity="0.55" />
+      {/* Irregular texture — 5 marks, no symmetric pairs, varied shape/size. */}
+      <path d="M11 22.5c.9-.3 1.8 0 2.1.7" stroke="#3a2510" strokeWidth="1" strokeOpacity="0.5" />
+      <circle cx="19" cy="25" r="0.8" fill="#4a3420" fillOpacity="0.4" />
+      <path d="M29.5 22.5c.8-.4 1.6-.1 1.9.6" stroke="#3a2510" strokeWidth="1" strokeOpacity="0.42" />
+      <circle cx="16" cy="12" r="0.7" fill="#4a3420" fillOpacity="0.35" />
+      <path d="M9.5 25.8c.6-.2 1.2 0 1.4.5" stroke="#3a2510" strokeWidth="0.9" strokeOpacity="0.4" />
     </svg>
   );
 }

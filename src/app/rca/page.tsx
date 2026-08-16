@@ -3,7 +3,7 @@ import { rcaClasses, rcaSchedule, gradingGuidelinesUrl, getNextScheduleItem } fr
 import { rcaContent } from "@/lib/rca-content";
 import {
   SkyIcon, LeafIcon, ButterflyIcon, BirdIcon,
-  CloudDoodle, TreeDoodle, FlowerDoodle, TulipDoodle, DaisyDoodle, BugDoodle, AntHillDoodle, AntDoodle, PondDoodle,
+  CloudDoodle, TreeDoodle, TreeDoodleB, FlowerDoodle, TulipDoodle, DaisyDoodle, BugDoodle, AntHillDoodle, AntDoodle, PondDoodle,
   BushDoodle, RockDoodle, GrassTuftDoodle, ReedDoodle, PathDoodle, TwigDoodle,
 } from "@/components/rca/NatureIcons";
 import Reveal from "@/components/Reveal";
@@ -115,6 +115,23 @@ function GrassField({ count, seed }: { count: number; seed: number }) {
     </svg>
   );
 }
+
+// Real foraging loops for the ant trail (Jacob, 2026-08-16: "a more complex
+// system or loop of movement like walking off screen" — replacing the old
+// small translateX-oscillation). Each is a CLOSED curve relative to the
+// ant's own anchor position (its top/left) — offset-distance 0%->100% via
+// the travelLoop keyframe traces the whole loop forever with no visible
+// snap-back, and offset-rotate:auto faces the ant along its actual travel
+// direction. Sizes vary from a tight local wander to genuinely large loops
+// that exit the visible ground zone before looping back — real ants forage
+// out from the colony and back, not pace a fixed spot.
+const ANT_PATHS = [
+  "path('M0,0 C18,-10 32,4 22,16 C10,26 -8,18 -4,4 C-2,-4 6,-6 0,0 Z')",
+  "path('M0,0 C30,-14 60,2 75,-8 C95,-20 100,8 65,20 C35,30 10,18 0,0 Z')",
+  "path('M0,0 C-25,12 -55,28 -40,44 C-25,58 15,48 8,22 C4,8 8,-4 0,0 Z')",
+  "path('M0,0 C-70,-18 -160,-6 -210,-14 C-260,-22 -250,14 -170,18 C-90,22 -20,10 0,0 Z')",
+  "path('M0,0 C40,-20 90,-4 110,-22 C135,-42 120,20 70,26 C30,30 10,14 0,0 Z')",
+];
 
 export default function RcaPage() {
   const academic = rcaClasses.filter((c) => c.area === "Academic");
@@ -415,6 +432,28 @@ export default function RcaPage() {
           style={{ top: "10%", right: "6%", color: "#4f6a41", opacity: 0.9, animation: "sway 7s ease-in-out infinite", transformOrigin: "bottom center", filter: castShadow(5, 2, "rgba(20,30,10,0.55)") }}
         />
 
+        {/* A few more trees, similar-ish but genuinely different (Jacob,
+            2026-08-16) — not copies of the same tree at different scales.
+            TreeDoodleB is a distinct silhouette (leaning, 5-lobe canopy vs.
+            4). Sized/placed to read as real depth, not just "more trees":
+            the mid-scene one is smaller + slightly blurred + more muted
+            (further back than the hero tree), the small one past it is
+            smaller still and paler (furthest), and this also directly
+            answers the earlier "dead zone between the flowers and the
+            tree" critique — real foliage mass there now, not just grass
+            texture filling a gap. */}
+        <div className="absolute rounded-full" style={{ top: "34%", left: "58%", width: 46, height: 14, background: "radial-gradient(ellipse, rgba(20,30,10,0.3) 0%, transparent 75%)", filter: "blur(2px)" }} />
+        <TreeDoodleB
+          size={78}
+          className="absolute"
+          style={{ top: "16%", left: "58%", color: "#5a7a4a", opacity: 0.68, animation: "sway 8.5s ease-in-out infinite 0.4s", transformOrigin: "bottom center", filter: `blur(0.4px) ${castShadow(3, 1.5, "rgba(20,30,10,0.4)")}` }}
+        />
+        <TreeDoodle
+          size={54}
+          className="absolute"
+          style={{ top: "8%", left: "38%", color: "#8aa085", opacity: 0.45, animation: "sway 9.5s ease-in-out infinite 1.1s", transformOrigin: "bottom center", filter: `blur(0.7px) ${castShadow(2, 1, "rgba(20,30,10,0.3)")}` }}
+        />
+
         {/* Front-row grass texture along the very base of the scene, below
             the path — the actual ground SURFACE, not icons on a bare
             gradient. Each gets a very subtle sway so the whole base feels
@@ -485,21 +524,36 @@ export default function RcaPage() {
           />
         ))}
 
-        {/* Ladybugs — GENUINE crawling now (crawlLoop: real translateX travel
-            with a turn-around flip at each end), not a vertical bob. Shadows
-            recomputed to sit flush with each bug's actual bottom edge (size,
-            not an eyeballed offset) — they were sitting 4-5% below where the
-            bug actually is, reading as a disconnected smudge. */}
-        {/* drop-shadow lives on the bug itself now, not a separate div that
-            had to duplicate the exact same animation/duration/dist to stay
-            in sync — it automatically follows the element's own transform,
-            so it's guaranteed to move with the bug instead of needing two
-            copies of the same animation tuned to match. Durations/delays
-            deliberately un-aligned (5.4s/8.1s, not a clean multiple) so the
-            two bugs' dart-pause rhythms drift in and out of sync with each
-            other instead of moving in lockstep. */}
-        <BugDoodle size={18} className="absolute" style={{ top: "62%", left: "42%", color: "#a04a4a", opacity: 0.85, animation: "crawlLoop 5.4s ease-in-out infinite", ["--crawl-dist" as string]: "46px", filter: castShadow(2, 1, "rgba(20,30,10,0.6)") }} />
-        <BugDoodle size={14} className="absolute" style={{ top: "56%", left: "57%", color: "#5a7a4a", opacity: 0.8, animation: "crawlLoop 8.1s ease-in-out infinite 2.3s", ["--crawl-dist" as string]: "36px", filter: castShadow(1.5, 1, "rgba(20,30,10,0.55)") }} />
+        {/* Ladybugs — real wandering loops now (Jacob, 2026-08-16: "still not
+            loving the just tiny back and forth motions"), not a translateX
+            oscillation. Each gets its own closed offset-path around a flower
+            cluster; offset-rotate:auto reorients the bug to actually face
+            its direction of travel through the curve, replacing the old
+            manual scaleX-flip. Slow, leisurely durations (a ladybug
+            meandering, not marching) and deliberately un-aligned so the two
+            drift in and out of phase instead of moving in lockstep. */}
+        <BugDoodle
+          size={18}
+          className="absolute"
+          style={{
+            top: "62%", left: "42%", color: "#a04a4a", opacity: 0.85,
+            offsetPath: "path('M0,0 C25,-16 55,-6 68,-24 C82,-42 70,10 38,20 C14,28 -10,18 0,0 Z')",
+            offsetRotate: "auto",
+            animation: "travelLoop 16s linear infinite",
+            filter: castShadow(2, 1, "rgba(20,30,10,0.6)"),
+          }}
+        />
+        <BugDoodle
+          size={14}
+          className="absolute"
+          style={{
+            top: "56%", left: "57%", color: "#5a7a4a", opacity: 0.8,
+            offsetPath: "path('M0,0 C-20,14 -42,32 -28,44 C-12,58 20,42 16,18 C13,4 8,-6 0,0 Z')",
+            offsetRotate: "auto",
+            animation: "travelLoop 12.5s linear infinite 2.3s",
+            filter: castShadow(1.5, 1, "rgba(20,30,10,0.55)"),
+          }}
+        />
 
         {/* Ant hill — a double-file marching trail. Motion is now GENUINE
             small-scale crawling (antCrawl: real translateX + turn-flip) in
@@ -518,42 +572,56 @@ export default function RcaPage() {
             flush, not genuinely raised like the flowers/bushes. */}
         <TwigDoodle size={30} className="absolute" style={{ top: "68%", left: "34%", opacity: 0.7, transform: "rotate(-8deg)", filter: castShadow(1, 0.5, "rgba(20,30,10,0.35)") }} />
         <TwigDoodle size={22} className="absolute" style={{ top: "58%", left: "18%", opacity: 0.6, transform: "rotate(20deg) scaleX(-1)", filter: castShadow(1, 0.5, "rgba(20,30,10,0.35)") }} />
-        {/* duration/delay/dist all hand-varied and deliberately NOT tied to
-            one shared linear parameter — the old version drove all three off
-            the same 0.05-step `d` value, which makes every ant exactly
-            0.05s slower AND 0.05s more delayed than its neighbor: a
-            textbook traveling-wave pattern, the single biggest reason this
-            read as a synchronized conveyor belt instead of a real colony. */}
+        {/* Duration/delay hand-varied and deliberately NOT tied to one shared
+            linear parameter — driving every ant off the same 0.05-step value
+            makes each one exactly 0.05s slower AND more delayed than its
+            neighbor, a textbook traveling-wave pattern that's the single
+            biggest reason this read as a synchronized conveyor belt instead
+            of a real colony. Path index cycles through ANT_PATHS so
+            neighboring ants get genuinely different loop shapes/sizes, not
+            just different timing on the same shape. */}
         {[
-          { left: "25%", top: "60%", dur: 1.5, delay: 0, dist: 7 },
-          { left: "27%", top: "62%", dur: 1.9, delay: 0.35, dist: 9 },
-          { left: "29%", top: "63.5%", dur: 1.6, delay: 0.1, dist: 8 },
-          { left: "31%", top: "64.5%", dur: 2.1, delay: 0.6, dist: 6 },
-          { left: "33%", top: "65%", dur: 1.4, delay: 0.2, dist: 9 },
-          { left: "35%", top: "64.5%", dur: 1.8, delay: 0.5, dist: 7 },
-          { left: "37%", top: "63.5%", dur: 1.5, delay: 0.05, dist: 8 },
-          { left: "39%", top: "62%", dur: 2.0, delay: 0.4, dist: 6 },
-          { left: "41%", top: "60.5%", dur: 1.7, delay: 0.15, dist: 9 },
-          { left: "43%", top: "59%", dur: 1.4, delay: 0.55, dist: 7 },
-          { left: "45%", top: "58%", dur: 1.9, delay: 0.25, dist: 8 },
+          { left: "25%", top: "60%", dur: 13, delay: 0, path: 0 },
+          { left: "27%", top: "62%", dur: 19, delay: 2.1, path: 1 },
+          { left: "29%", top: "63.5%", dur: 11, delay: 0.8, path: 2 },
+          { left: "31%", top: "64.5%", dur: 24, delay: 4.6, path: 3 },
+          { left: "33%", top: "65%", dur: 14.5, delay: 1.3, path: 4 },
+          { left: "35%", top: "64.5%", dur: 17, delay: 3.2, path: 0 },
+          { left: "37%", top: "63.5%", dur: 12, delay: 0.4, path: 1 },
+          { left: "39%", top: "62%", dur: 21, delay: 5.5, path: 2 },
+          { left: "41%", top: "60.5%", dur: 15.5, delay: 2.7, path: 3 },
+          { left: "43%", top: "59%", dur: 10.5, delay: 1.9, path: 4 },
+          { left: "45%", top: "58%", dur: 18, delay: 0.6, path: 0 },
         ].map((a) => (
           <AntDoodle
             key={a.left}
             size={10}
             className="absolute"
-            style={{ top: a.top, left: a.left, color: "#4a2f14", opacity: 0.75, animation: `antCrawl ${a.dur}s ease-in-out infinite ${a.delay}s`, ["--crawl-dist" as string]: `${a.dist}px`, filter: castShadow(1, 0.5, "rgba(20,30,10,0.6)") }}
+            style={{
+              top: a.top, left: a.left, color: "#4a2f14", opacity: 0.75,
+              offsetPath: ANT_PATHS[a.path],
+              offsetRotate: "auto",
+              animation: `travelLoop ${a.dur}s linear infinite ${a.delay}s`,
+              filter: castShadow(1, 0.5, "rgba(20,30,10,0.6)"),
+            }}
           />
         ))}
         {[
-          { left: "24%", top: "67%", dur: 1.7, delay: 0.3, dist: -6 },
-          { left: "28%", top: "68.5%", dur: 2.0, delay: 0.05, dist: -8 },
-          { left: "32.5%", top: "69%", dur: 1.5, delay: 0.5, dist: -7 },
+          { left: "24%", top: "67%", dur: 16, delay: 3.4, path: 2 },
+          { left: "28%", top: "68.5%", dur: 22, delay: 0.9, path: 3 },
+          { left: "32.5%", top: "69%", dur: 12.5, delay: 5.1, path: 1 },
         ].map((a) => (
           <AntDoodle
             key={a.left}
             size={9}
             className="absolute"
-            style={{ top: a.top, left: a.left, color: "#4a2f14", opacity: 0.65, animation: `antCrawl ${a.dur}s ease-in-out infinite ${a.delay}s`, ["--crawl-dist" as string]: `${a.dist}px`, filter: castShadow(1, 0.5, "rgba(20,30,10,0.55)") }}
+            style={{
+              top: a.top, left: a.left, color: "#4a2f14", opacity: 0.65,
+              offsetPath: ANT_PATHS[a.path],
+              offsetRotate: "auto",
+              animation: `travelLoop ${a.dur}s linear infinite ${a.delay}s`,
+              filter: castShadow(1, 0.5, "rgba(20,30,10,0.55)"),
+            }}
           />
         ))}
 

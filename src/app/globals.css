@@ -185,32 +185,20 @@ body {
    as a fleet of wind-up toys — the per-instance variety (duration/delay/
    distance/hold-length via animation-timing-function) has to come from each
    element's own inline style, not from the keyframe shape alone. */
-@keyframes crawlLoop {
-  0% { transform: translateX(0) scaleX(1); }
-  8% { transform: translateX(0) scaleX(1); }
-  30% { transform: translateX(var(--crawl-dist, 40px)) scaleX(1); }
-  40% { transform: translateX(var(--crawl-dist, 40px)) scaleX(1); }
-  46% { transform: translateX(var(--crawl-dist, 40px)) scaleX(-1); }
-  58% { transform: translateX(var(--crawl-dist, 40px)) scaleX(-1); }
-  80% { transform: translateX(0) scaleX(-1); }
-  88% { transform: translateX(0) scaleX(-1); }
-  94% { transform: translateX(0) scaleX(1); }
-  100% { transform: translateX(0) scaleX(1); }
-}
-/* Same dart-pause rhythm, tighter distance, for the ants — real position
-   movement in a local patch while staying inside the marching-line
-   formation instead of each ant wandering off and breaking the line shape. */
-@keyframes antCrawl {
-  0% { transform: translateX(0) scaleX(1); }
-  10% { transform: translateX(0) scaleX(1); }
-  32% { transform: translateX(var(--crawl-dist, 7px)) scaleX(1); }
-  42% { transform: translateX(var(--crawl-dist, 7px)) scaleX(1); }
-  47% { transform: translateX(var(--crawl-dist, 7px)) scaleX(-1); }
-  60% { transform: translateX(var(--crawl-dist, 7px)) scaleX(-1); }
-  82% { transform: translateX(0) scaleX(-1); }
-  90% { transform: translateX(0) scaleX(-1); }
-  95% { transform: translateX(0) scaleX(1); }
-  100% { transform: translateX(0) scaleX(1); }
+/* Replaced 2026-08-16 (Jacob: "still not loving the just tiny back and forth
+   motions of all the ladybugs and ants... a more complex system or loop of
+   movement like walking off screen") — crawlLoop/antCrawl only ever did a
+   short translateX-and-scaleX-flip oscillation, which reads as sliding and
+   snapping, not walking. Real movement now comes from the CSS Motion Path
+   API: each ant/bug gets its own `offset-path` (a hand-drawn closed loop,
+   set per-instance in page.tsx, some large enough to genuinely exit the
+   visible ground zone before looping back) plus `offset-rotate: auto`, which
+   automatically reorients the creature to face its actual direction of
+   travel along the curve — no more manual scaleX-flip hack needed. This
+   keyframe just drives progress along whatever path is assigned. */
+@keyframes travelLoop {
+  from { offset-distance: 0%; }
+  to { offset-distance: 100%; }
 }
 @keyframes fallDown {
   from { transform: translateY(0); }

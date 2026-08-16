@@ -97,16 +97,29 @@ async function main() {
 
     const sampleSelectors = [
       { label: "cloud (drift)", selector: '[data-scene-zone="sky"] svg' },
-      { label: "ant (antScurry)", selector: '[data-scene-zone="ground"] svg' },
+      // Targets an actual ant by its unique viewBox, not just "first svg in
+      // the ground zone" — that generic selector started grabbing GrassField
+      // (2026-08-16, an inert background-texture SVG added earlier in DOM
+      // order), silently sampling the wrong element's always-empty transform.
+      { label: "ant (travelLoop offset-path)", selector: '[data-scene-zone="ground"] svg[viewBox="0 0 20 10"]' },
     ];
     for (const target of sampleSelectors) {
       const samples = [];
       for (let i = 0; i < 6; i++) {
+        // getComputedStyle().transform reads "none" for CSS Motion Path
+        // (offset-path/offset-distance) effects even while the element is
+        // genuinely moving — it's a different rendering mechanism, not
+        // exposed through that property (found 2026-08-16 verifying the new
+        // ant-loop animations: real getBoundingClientRect position moved
+        // frame to frame while .transform stayed "none" throughout). Sample
+        // both so this check stays meaningful regardless of which mechanism
+        // a given element's animation actually uses.
         const t = await page.evaluate((sel) => {
           const el = document.querySelector(sel);
           if (!el) return null;
           const cs = getComputedStyle(el);
-          return cs.transform;
+          const r = el.getBoundingClientRect();
+          return { transform: cs.transform, x: Math.round(r.x), y: Math.round(r.y) };
         }, target.selector);
         samples.push(t);
         await new Promise((r) => setTimeout(r, 300));
