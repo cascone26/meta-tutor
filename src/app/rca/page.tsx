@@ -14,6 +14,21 @@ import DailyVerse from "@/components/rca/DailyVerse";
 // Next-teaching-day needs a fresh Date() per request, not baked in at build time.
 export const dynamic = "force-dynamic";
 
+// ONE light source for the whole ground scene: the sun sits in the top-right,
+// so every cast shadow falls down-and-LEFT at the same angle (Jacob,
+// 2026-08-16: "imagine this is a full world. the sun is somewhere in the top
+// right, the shadows should be based off of that"). Every drop-shadow in the
+// scene used to be hand-typed as `0 Ypx Bpx color` — a straight-down offset,
+// which is what you'd get from a sun directly overhead, not top-right. This
+// is the one place that encodes where the sun is; every shadow derives from
+// it instead of being independently tuned, so the whole scene stays
+// physically consistent by construction rather than by coincidence.
+const SUN_SHADOW_RATIO = 0.7; // horizontal:vertical — the sun's apparent angle off vertical
+function castShadow(dropY: number, blur: number, color: string): string {
+  const dropX = -(dropY * SUN_SHADOW_RATIO);
+  return `drop-shadow(${dropX}px ${dropY}px ${blur}px ${color})`;
+}
+
 export default function RcaPage() {
   const academic = rcaClasses.filter((c) => c.area === "Academic");
   const specials = rcaClasses.filter((c) => c.area === "Specials");
@@ -225,13 +240,13 @@ export default function RcaPage() {
             checked out in pixel sampling and Jacob still saw a gap in the
             real deployed screenshot every time — this replaces that whole
             approach instead of tuning it a fifth time. */}
-        <BushDoodle size={58} className="absolute" style={{ top: "20%", left: "0%", color: "#4f6a41", opacity: 0.5, filter: "blur(0.5px) drop-shadow(0 3px 1.5px rgba(20,30,10,0.5))" }} />
-        <BushDoodle size={54} className="absolute" style={{ top: "16%", right: "23%", color: "#5a7a4a", opacity: 0.48, filter: "blur(0.5px) drop-shadow(0 3px 1.5px rgba(20,30,10,0.5))" }} />
+        <BushDoodle size={58} className="absolute" style={{ top: "20%", left: "0%", color: "#4f6a41", opacity: 0.5, filter: `blur(0.5px) ${castShadow(3, 1.5, "rgba(20,30,10,0.5)")}` }} />
+        <BushDoodle size={54} className="absolute" style={{ top: "16%", right: "23%", color: "#5a7a4a", opacity: 0.48, filter: `blur(0.5px) ${castShadow(3, 1.5, "rgba(20,30,10,0.5)")}` }} />
         {/* A third distant bush, further right — the old back row only had
             two anchors near the pond/tree; with the scene now full-width
             there's real space past the tree that needs its own depth layer,
             not just empty gradient. */}
-        <BushDoodle size={46} className="absolute" style={{ top: "22%", right: "2%", color: "#4f6a41", opacity: 0.4, filter: "blur(0.7px) drop-shadow(0 2px 1px rgba(20,30,10,0.45))" }} />
+        <BushDoodle size={46} className="absolute" style={{ top: "22%", right: "2%", color: "#4f6a41", opacity: 0.4, filter: `blur(0.7px) ${castShadow(2, 1, "rgba(20,30,10,0.45)")}` }} />
 
         {/* Pond — went through several rounds of hand-positioned shadows and
             then a drop-shadow, and EVERY one of them was wrong for a
@@ -253,17 +268,17 @@ export default function RcaPage() {
           className="absolute"
           style={{ top: "32%", left: "6%", color: "#3f7ea6", opacity: 0.85 }}
         />
-        <ReedDoodle size={34} className="absolute" style={{ top: "24%", left: "23%", color: "#5a7a4a", opacity: 0.8, filter: "drop-shadow(0 2px 1px rgba(20,30,10,0.4))" }} />
-        <ReedDoodle size={28} className="absolute" style={{ top: "27%", left: "27%", color: "#4f6a41", opacity: 0.75, filter: "drop-shadow(0 2px 1px rgba(20,30,10,0.4))" }} />
+        <ReedDoodle size={34} className="absolute" style={{ top: "24%", left: "23%", color: "#5a7a4a", opacity: 0.8, filter: castShadow(2, 1, "rgba(20,30,10,0.4)") }} />
+        <ReedDoodle size={28} className="absolute" style={{ top: "27%", left: "27%", color: "#4f6a41", opacity: 0.75, filter: castShadow(2, 1, "rgba(20,30,10,0.4)") }} />
 
         {/* Pebbles at the pond's front edge — a material change (flat grey-
             brown, no green) so the scene isn't 100% foliage. */}
-        <RockDoodle size={32} className="absolute" style={{ top: "52%", left: "11%", opacity: 0.75, filter: "drop-shadow(0 1.5px 1px rgba(20,20,15,0.45))" }} />
+        <RockDoodle size={32} className="absolute" style={{ top: "52%", left: "11%", opacity: 0.75, filter: castShadow(1.5, 1, "rgba(20,20,15,0.45)") }} />
 
         <TreeDoodle
           size={130}
           className="absolute"
-          style={{ top: "10%", right: "6%", color: "#4f6a41", opacity: 0.9, animation: "sway 7s ease-in-out infinite", transformOrigin: "bottom center", filter: "drop-shadow(0 5px 2px rgba(20,30,10,0.55))" }}
+          style={{ top: "10%", right: "6%", color: "#4f6a41", opacity: 0.9, animation: "sway 7s ease-in-out infinite", transformOrigin: "bottom center", filter: castShadow(5, 2, "rgba(20,30,10,0.55)") }}
         />
 
         {/* Front-row grass texture along the very base of the scene, below
@@ -302,7 +317,7 @@ export default function RcaPage() {
             key={i}
             size={g.size}
             className="absolute"
-            style={{ top: "90%", left: g.left, color: g.color, opacity: 0.6, animation: `sway ${g.d} ease-in-out infinite`, transformOrigin: "bottom center", filter: "drop-shadow(0 1.5px 1px rgba(20,30,10,0.4))" }}
+            style={{ top: "90%", left: g.left, color: g.color, opacity: 0.6, animation: `sway ${g.d} ease-in-out infinite`, transformOrigin: "bottom center", filter: castShadow(1.5, 1, "rgba(20,30,10,0.4)") }}
           />
         ))}
 
@@ -331,7 +346,7 @@ export default function RcaPage() {
             style={{
               top: f.top, left: f.left, color: f.color, opacity: 0.85,
               animation: `sway ${f.d} ease-in-out infinite ${f.delay}`, transformOrigin: "bottom center",
-              filter: "drop-shadow(0 2px 1px rgba(20,30,10,0.5))",
+              filter: castShadow(2, 1, "rgba(20,30,10,0.5)"),
             }}
           />
         ))}
@@ -349,22 +364,22 @@ export default function RcaPage() {
             deliberately un-aligned (5.4s/8.1s, not a clean multiple) so the
             two bugs' dart-pause rhythms drift in and out of sync with each
             other instead of moving in lockstep. */}
-        <BugDoodle size={18} className="absolute" style={{ top: "62%", left: "42%", color: "#a04a4a", opacity: 0.85, animation: "crawlLoop 5.4s ease-in-out infinite", ["--crawl-dist" as string]: "46px", filter: "drop-shadow(0 2px 1px rgba(20,30,10,0.6))" }} />
-        <BugDoodle size={14} className="absolute" style={{ top: "56%", left: "57%", color: "#5a7a4a", opacity: 0.8, animation: "crawlLoop 8.1s ease-in-out infinite 2.3s", ["--crawl-dist" as string]: "36px", filter: "drop-shadow(0 1.5px 1px rgba(20,30,10,0.55))" }} />
+        <BugDoodle size={18} className="absolute" style={{ top: "62%", left: "42%", color: "#a04a4a", opacity: 0.85, animation: "crawlLoop 5.4s ease-in-out infinite", ["--crawl-dist" as string]: "46px", filter: castShadow(2, 1, "rgba(20,30,10,0.6)") }} />
+        <BugDoodle size={14} className="absolute" style={{ top: "56%", left: "57%", color: "#5a7a4a", opacity: 0.8, animation: "crawlLoop 8.1s ease-in-out infinite 2.3s", ["--crawl-dist" as string]: "36px", filter: castShadow(1.5, 1, "rgba(20,30,10,0.55)") }} />
 
         {/* Ant hill — a double-file marching trail. Motion is now GENUINE
             small-scale crawling (antCrawl: real translateX + turn-flip) in
             place of the old antScurry (a scale pulse that never actually
             moved — which is exactly why it read as "in place," not marching). */}
-        <AntHillDoodle size={88} className="absolute" style={{ top: "42%", left: "23%", color: "#8a6a3a", opacity: 0.85, filter: "drop-shadow(0 4px 1.5px rgba(20,30,10,0.5))" }} />
+        <AntHillDoodle size={88} className="absolute" style={{ top: "42%", left: "23%", color: "#8a6a3a", opacity: 0.85, filter: castShadow(4, 1.5, "rgba(20,30,10,0.5)") }} />
         {/* Debris scattered near the hill so it reads as an actual patch of
             ground the colony lives on, not a bare mound on clean gradient.
             Real twigs sit slightly proud of the grass (they have actual
             thickness), so a very light contact shadow belongs here too —
             lighter than anything else in the scene since they're nearly
             flush, not genuinely raised like the flowers/bushes. */}
-        <TwigDoodle size={30} className="absolute" style={{ top: "68%", left: "34%", opacity: 0.7, transform: "rotate(-8deg)", filter: "drop-shadow(0 1px 0.5px rgba(20,30,10,0.35))" }} />
-        <TwigDoodle size={22} className="absolute" style={{ top: "58%", left: "18%", opacity: 0.6, transform: "rotate(20deg) scaleX(-1)", filter: "drop-shadow(0 1px 0.5px rgba(20,30,10,0.35))" }} />
+        <TwigDoodle size={30} className="absolute" style={{ top: "68%", left: "34%", opacity: 0.7, transform: "rotate(-8deg)", filter: castShadow(1, 0.5, "rgba(20,30,10,0.35)") }} />
+        <TwigDoodle size={22} className="absolute" style={{ top: "58%", left: "18%", opacity: 0.6, transform: "rotate(20deg) scaleX(-1)", filter: castShadow(1, 0.5, "rgba(20,30,10,0.35)") }} />
         {/* duration/delay/dist all hand-varied and deliberately NOT tied to
             one shared linear parameter — the old version drove all three off
             the same 0.05-step `d` value, which makes every ant exactly
@@ -388,7 +403,7 @@ export default function RcaPage() {
             key={a.left}
             size={10}
             className="absolute"
-            style={{ top: a.top, left: a.left, color: "#4a2f14", opacity: 0.75, animation: `antCrawl ${a.dur}s ease-in-out infinite ${a.delay}s`, ["--crawl-dist" as string]: `${a.dist}px`, filter: "drop-shadow(0 1px 0.5px rgba(20,30,10,0.6))" }}
+            style={{ top: a.top, left: a.left, color: "#4a2f14", opacity: 0.75, animation: `antCrawl ${a.dur}s ease-in-out infinite ${a.delay}s`, ["--crawl-dist" as string]: `${a.dist}px`, filter: castShadow(1, 0.5, "rgba(20,30,10,0.6)") }}
           />
         ))}
         {[
@@ -400,7 +415,7 @@ export default function RcaPage() {
             key={a.left}
             size={9}
             className="absolute"
-            style={{ top: a.top, left: a.left, color: "#4a2f14", opacity: 0.65, animation: `antCrawl ${a.dur}s ease-in-out infinite ${a.delay}s`, ["--crawl-dist" as string]: `${a.dist}px`, filter: "drop-shadow(0 1px 0.5px rgba(20,30,10,0.55))" }}
+            style={{ top: a.top, left: a.left, color: "#4a2f14", opacity: 0.65, animation: `antCrawl ${a.dur}s ease-in-out infinite ${a.delay}s`, ["--crawl-dist" as string]: `${a.dist}px`, filter: castShadow(1, 0.5, "rgba(20,30,10,0.55)") }}
           />
         ))}
 
