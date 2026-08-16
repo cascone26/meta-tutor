@@ -1,29 +1,24 @@
 # Meta Tutor — Status
 
 ## Last Updated
-2026-08-13 (RCA station is the live production experience — see correction below; all 8 RCA classes now
-run on real 2026-2027 content, not the 2025-2026 placeholder this doc used to describe; PE 1-2 and PE 5-6
-exist and are wired in, contradicting the "PE removed entirely" line below from 2026-08-09)
+2026-08-13 (full-day RCA session: real curriculum/schedule fixes, per-subject practice-mode curation, a
+new calendar view, a Supabase-backed rate limiter, a sick-him audit pass, and — after six real rounds —
+the garden scene's shadows. See PROCESS.md's "Real Curriculum, Real Schedule, Practice-Mode Curation,
+Calendar, Rate-Limit Fix, Six-Round Shadow Saga — 2026-08-13" entry for the full trail; this section is
+just the current-state summary.)
 
-**Correction to the "In Progress" section below (still accurate historically, wrong as current state):**
-`hub-shell` has NOT merged into `main` in git (52 commits ahead, 0 behind as of 2026-08-13) — but
-`https://meta-tutor.vercel.app` (Production) has been serving `hub-shell`'s content all along, because
-deploys have been pushed straight from a `hub-shell` checkout via `vercel --prod --yes`, not through
-Vercel's normal main-branch Git integration. **Real risk**: if `main` ever gets pushed to and Vercel's Git
-integration triggers a Production deploy from it, this could silently revert Production back to the old
-Cris-course root — worth merging `hub-shell` into `main` for real, or repointing Vercel's Production Git
-branch to `hub-shell`, rather than continuing to rely on manual `vercel --prod` deploys diverging from what
-`main` actually contains. 2025-2026 content claims below are also stale — all 8 RCA classes were rebuilt
-from real 2026-2027 docs (Aug 12-13, 2026); see `PROCESS.md` for the specific rebuild entries.
+**`hub-shell`/`main` divergence from the 2026-08-09 entry below is RESOLVED**: `main` was fast-forwarded
+to match `hub-shell` (2026-08-13) and pushed — Production's Git branch and what's actually live are no
+longer silently diverged. Root is now genuinely the hub landing page on `main`, not just on the
+manually-deployed Production build.
 
 ## Current State
-- Live at `https://meta-tutor.vercel.app` (production, main branch — still Cris's course at root for now,
-  since `hub-shell` hasn't merged yet. **When it does merge**: root becomes the hub landing page and
-  Cris's course moves to `/metaphysics` — done deliberately, confirmed with Jacob (Cris isn't using the
-  app for the foreseeable future, no need to preserve his old URL).
+- Live at `https://meta-tutor.vercel.app` (production, `main` — hub landing page at root, Cris's course
+  at `/metaphysics`. `main` and `hub-shell` are in sync as of 2026-08-13; keep deploying from `hub-shell`
+  as before and fast-forward `main` periodically so they don't silently diverge again.)
 - GitHub: `https://github.com/cascone26/meta-tutor.git`
-- Originally built for Cris's Thomistic Metaphysics course; now a multi-subject personal hub (Jacob's RCA
-  teaching umbrella + chess + Cris's course) once `hub-shell` merges
+- Originally built for Cris's Thomistic Metaphysics course; now a multi-subject personal hub — Jacob's RCA
+  teaching umbrella (the primary, actively-used section) + chess + Cris's course
 - Google login required for all routes
 - Uses Claude Haiku (via `CLAUDE_MODEL` env var) with rate limiting (75/day) and prompt caching
 - **AI auth: reuses Jacob's Claude Max subscription via OAuth (`ANTHROPIC_AUTH_TOKEN`/`ANTHROPIC_REFRESH_TOKEN`),

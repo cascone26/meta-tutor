@@ -780,3 +780,157 @@ New: `~/tools/sync-meta-tutor-token.sh`,
 2. Keep Claude Code logged in / this Mac reachable for the sync job to keep doing its job — if AI
    features degrade again, `tail ~/logs/meta-tutor-token-sync.log` first before assuming a new bug.
 3. Everything else from prior entries' Next Steps still stands.
+
+## Real Curriculum, Real Schedule, Practice-Mode Curation, Calendar, Rate-Limit Fix, Six-Round Shadow Saga — 2026-08-13
+
+Long session, driven almost entirely by Jacob screenshotting the live app and reacting in real time —
+each fix here exists because something he pointed at was actually wrong, not because of a planned
+roadmap. Grouped by thread since they interleaved throughout the day.
+
+### Notes editor — real WYSIWYG, not markdown-in-a-textarea
+Toolbar/shortcuts were inserting literal `**text**`/`__text__` syntax into a plain `<textarea>` — visibly
+did nothing because a textarea can't render markdown. Rebuilt as a real `contentEditable` div driven by
+`document.execCommand` (the same primitive Docs/Gmail-style editors use): Bold/Italic/Underline/
+Strikethrough/Heading levels/Blockquote/Link/Undo/Redo/Clear-formatting all apply live now. Added a
+Notes-panel expand mode (small floating popover → near-fullscreen) reusing the same pattern later applied
+to the calendar. Content is stored as sanitized HTML (DOMPurify) instead of markdown text now.
+
+### Curriculum: Saxon 7/6 + LOE Essentials C rebuilt from real 2026-2027 docs
+Both were flagged stale ("2026-2027 not sent yet") — turned out both docs HAD been sent (found via Gmail
+search), just not pulled in. Rebuilt both from the real docs, paraphrased (RCA's curriculum is
+copyrighted — never transcribe verbatim). Saxon paced across the real Aug 17 2026 – May 2027 calendar
+with real closures baked in.
+
+**Bug found after shipping**: Saxon's pacing generator always sliced each week's real school days as "the
+first N weekdays," so any week with fewer than 5 lessons (most of them) kept Mon-Thu and dropped Friday —
+1 Friday out of 120 lessons, and that one only existed as an accident of the Labor Day closure shift.
+Regenerated with the dropped day rotating across the year instead of always the same one.
+
+### Real block times/rooms + 2 classes the app didn't know existed
+Jacob sent a KSC staff-schedule screenshot. It had real per-block times/rooms for every class AND revealed
+**PE 1-2 and PE 5-6 weren't in the app at all** (both Monday-only, St. Sebastian) — also corrected Music
+3-4 from the generic Mon/Thu assumption to its real Thursday-only slot (shares Block 6 with PE 5-6's
+Monday). Added `block`/`room`/`days` fields to `RcaClass`, surfaced on Hub cards + class detail pages +
+the AI assistant's grounding context.
+
+### "Next work day" button was jumping by a guessed average, not seeking the real day
+Landed on Wednesdays sometimes. Root cause: Saxon paces one lesson per literal calendar weekday, but the
+button jumped by a fixed heuristic count instead of checking which day each lesson actually falls on.
+Rewrote to walk forward and stop at the next lesson genuinely tagged Monday or Thursday. Found and fixed a
+second bug in the same area while auditing it: the schedule widget computed "today" via `toISOString()`
+(UTC), which silently rolls to tomorrow's date after ~7pm Central — switched to local date parts.
+
+### Practice modes curated per subject, not one uniform set for all 8 classes
+Speed Drill/Match/Gravity all run on short term↔answer flashcards — a good fit for fact-heavy subjects
+(Latin vocab, Catechism Q&A, spelling terms, math facts), a bad one for subjects that are fundamentally
+about writing at length (CLA's narration essays don't reduce to a flashcard). Reordered each class's mode
+picker to lead with its best-fit 1-2 modes (★-badged) instead of always defaulting to Understanding Check.
+
+### Sick-him audit (3 parallel agents: code/security, visual/UX, content/process)
+Real findings, fixed: 8 API routes crashed on an empty LLM content array (added optional chaining, 11
+call sites); rate limiter was a pure in-memory Map that reset every serverless cold start (see below);
+`--muted` text color was 3.65:1 contrast against white, below WCAG AA — bumped to 5.36:1; README/STATUS.md
+were both stale (STATUS still claimed 2025-2026 content and "PE removed entirely," both wrong by this
+point). One finding directly contradicted by hands-on check: the audit called the "Recommended" badge
+"0 contrast, same color as background" — computed styles showed full-opacity text on a 12.5%-tint
+background, genuinely legible in both themes. Left it alone rather than "fix" a non-issue.
+
+**Real process gap found while fixing STATUS.md**: `hub-shell` had never merged into `main` in git (52
+commits ahead, 0 behind) — Production had been serving `hub-shell`'s content all along only because
+deploys were pushed straight from that branch via `vercel --prod`, bypassing Vercel's Git integration
+entirely. If `main` ever got pushed to and that integration fired, it could have silently reverted
+Production. Fast-forwarded `main` to match and pushed for real.
+
+### Rate limiter: in-memory → Supabase-backed
+Same audit finding. Migrated to a new `mt_rate_limit` table (added to `supabase-schema-hub.sql`, same
+migration-pending state as the existing `mt_wrong_answers`/`mt_quiz_history` tables — **still needs Jacob
+to run the SQL**). Fails OPEN, not closed, until then — confirmed directly against the real Supabase
+project (table doesn't exist yet, exact error message reproduced and traced through the code's handling
+path) rather than assumed.
+
+### Calendar feature (day/week/month + expand)
+Built after Jacob asked for a plan first, reviewed it, then said go. Top-right button (had to move it
+from inside `<header>` to a sibling — the header's `backdrop-blur` establishes a CSS containing block for
+`position:fixed` descendants, which was silently collapsing the expanded panel to ~2px tall; found via
+`getComputedStyle()`, not a hunch). Driven by a new `rca-calendar.ts` that projects `rca.ts`'s existing
+class/event data onto a date range — no separate calendar-specific data store.
+
+Building it required real closure dates (Fall Break, Thanksgiving, etc.), which didn't exist anywhere in
+the codebase as structured data — only as prose inside the Saxon pacing generator. Added `RCA_CLOSURES` to
+`rca.ts` as the single source of truth, and wired it into `getNextScheduleItem()` too (previously only
+checked the 3-entry `rcaEvents` training-week list — verified directly that the old logic would have said
+"Next work day: Thursday" during Thanksgiving week, when Thursday IS Thanksgiving).
+
+**Honesty note, load-bearing**: no RCA-published 2026-2027 academic calendar turned up in Jacob's email,
+and the one doc that might have it (6th Grade Tutor Resource Manual) needs his own RCA login (401 via
+WebFetch). The closure dates are reasoned estimates (standard school-year placement), explicitly flagged
+`estimated: true` everywhere they render. Not presented as confirmed fact.
+
+### The shadow saga — six rounds on one bug, worth recording in full because of what it teaches
+Jacob's core complaint ("the pond looks like it's floating") survived FIVE rounds of genuinely real,
+individually-verified fixes before actually landing:
+1. Bounding-box centering (`getBoundingClientRect()`) — fixed real horizontal misalignment (7-24px off).
+2. `getBBox()`-based fill-ratio math — fixed the assumption that artwork fills its whole SVG viewBox (it
+   doesn't; every shape has real empty padding below its content).
+3. Gradient-shape fix (plateau instead of single-slope falloff) — fixed a shadow that was only visible in
+   a narrow center spike, invisible for most of its own width.
+4. Contact-line centering (shift shadow up by half its own height) — fixed the fact that a radial gradient
+   fades in EVERY direction from center, so touching an object at the shadow's top EDGE still left the
+   gradient's opaque core several px below the actual contact point.
+5. Rebuilding PondDoodle itself — the pond had a bright off-center white specular highlight, the standard
+   visual grammar for a glossy 3D marble. No shadow math fixes an object that's drawn to look like it's
+   floating. Removed the highlight, flattened the water fill to one uniform opacity (even a "realistic"
+   gradient still read as glossy), added a visible bank/rim, recolored lily pads from a lighter tint of
+   the water's own blue (itself an accidental second highlight) to actual green.
+
+Every one of those five rounds checked out clean under real pixel sampling in headless Chrome — and Jacob
+kept seeing a floating gap in the real deployed screenshot each time regardless. That mismatch, not any
+single math error, was the actual lesson: **headless-Chrome pixel verification of a hand-positioned
+sibling-div shadow was not a reliable proxy for what Jacob was actually seeing**, for reasons never fully
+pinned down (blur/gradient rendering can differ by browser/engine; a separately-positioned div is just an
+inherently fragile technique with many places to be subtly wrong).
+
+6. **The actual fix**: stopped tuning position math and replaced every hand-positioned shadow div in the
+   scene (pond/tree/3 bushes/2 bugs/ant hill/8 flowers) with CSS `filter: drop-shadow(...)` directly on
+   the object itself. `drop-shadow` renders an offset+blurred copy of the element's own actual alpha
+   silhouette — there is no position math left to get wrong, no bounding-box-vs-content-box distinction,
+   no separate element to misalign. It also automatically follows animated elements (the ladybugs no
+   longer need a second shadow div hand-tuned to the exact same animation to stay in sync). Net: ~40 fewer
+   lines, one shadow technique everywhere instead of nine hand-tuned instances.
+
+Verified exhaustively before calling it done, not spot-checked: pixel-scanned **all 191 columns** across
+the pond's rendered width and confirmed the shadow flush against the water at every single one — not a
+handful of sample points like every prior round in this saga used.
+
+### Verification
+Every change this session went through the same loop: `npm run build` clean → local dev server → real
+Puppeteer-driven interaction (clicks, keyboard input, navigation) confirming the actual behavior, not just
+that it compiled → `scripts/verify-scene.mjs` geometry regression → deploy → confirm live via fresh
+response headers. The shadow work specifically added real pixel-contrast sampling (Python/PIL) and, for
+the final round, independent vision-model reads primed to specifically hunt for the reported defect rather
+than confirm it was fixed — caught at least one false-positive along the way (the "Recommended" badge)
+and, more importantly, was still wrong five times before the sixth round actually held up under Jacob's
+own eyes. Worth remembering: **automated verification agreeing with itself is not the same as the thing
+actually looking right to the person who has to look at it.**
+
+### Proof Pointers
+Commits `59d4fd6` through `3180316` on `hub-shell` (all 2026-08-13), `main` fast-forwarded to `9e21f04`.
+Live at `https://meta-tutor.vercel.app`.
+
+### Next Steps
+1. **Jacob**: run the updated `supabase-schema-hub.sql` (adds `mt_rate_limit`) — same pending step as the
+   existing `mt_wrong_answers`/`mt_quiz_history` migration from the 2026-08-08 entry above.
+2. **Jacob**: if you have RCA's real 2026-2027 academic calendar (or can forward whatever doc/email has
+   it), the calendar's closure dates can go from "estimated" to confirmed.
+3. Six of eight RCA subjects' lesson content still ends at week 25/30 (Easter Break) rather than running
+   through the real May 31 term end — tried to pull the back-half-of-year content from the master doc to
+   fill this in and got a 401 (access has tightened since the 2026-08-09 pull). Not fabricating 8 weeks of
+   curriculum across 5 subjects without a real source. Needs either renewed doc access or Jacob confirming
+   there genuinely isn't more detail past Easter Break in RCA's own plan.
+4. Deferred, lower value / real regression risk for the return: MultipleChoiceQuiz/MatchGame/GravityGame
+   share a near-identical loading→error→play→done state machine that could be extracted into one shared
+   harness — pure internal refactor, no user-facing fix, touches 3 live components. Not done this session.
+5. Vercel CLI's own deploy queue was genuinely slow multiple times this session (2min+ CLI timeouts while
+   the deploy itself proceeded server-side regardless) — not an auth/token issue (checked: the stored
+   token was NOT expired, ~5h of remaining lifetime at the time), just Vercel-side queue latency. No fix
+   applied; `vercel ls` after a CLI timeout reliably shows the real status.
