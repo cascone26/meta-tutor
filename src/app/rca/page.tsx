@@ -190,8 +190,23 @@ export default function RcaPage() {
             ant trail (below) a real reason to exist instead of being its own
             disconnected smear mark. Full-width now via CSS width:100% instead
             of a fixed px size, so it actually spans edge to edge regardless
-            of monitor width. */}
-        <PathDoodle className="absolute" style={{ top: "66%", left: 0, width: "100%", height: 90 }} />
+            of monitor width. The path's own rounded stroke caps land exactly
+            AT the SVG canvas edge (x=0/x=700), so the round cap's own curve
+            gets sliced flat by the viewport boundary — a real hard-cut
+            artifact, not the soft fade-into-grass a dirt path should have
+            (flagged in the original sick-him audit, 2026-08-13). A
+            mask-image gradient fades both ends to transparent instead of
+            reshaping the SVG geometry — same fix category as everything
+            else today: the path is flush WITH the ground, so it should
+            blend into it at the edges, not look cut out and dropped on. */}
+        <PathDoodle
+          className="absolute"
+          style={{
+            top: "66%", left: 0, width: "100%", height: 90,
+            maskImage: "linear-gradient(to right, transparent 0%, black 4%, black 96%, transparent 100%)",
+            WebkitMaskImage: "linear-gradient(to right, transparent 0%, black 4%, black 96%, transparent 100%)",
+          }}
+        />
 
         {/* Back row — bushes are placed TOUCHING the pond and tree behind them
             (not floating alone in empty space, the earlier attempt), smaller
@@ -254,7 +269,16 @@ export default function RcaPage() {
         {/* Front-row grass texture along the very base of the scene, below
             the path — the actual ground SURFACE, not icons on a bare
             gradient. Each gets a very subtle sway so the whole base feels
-            alive without any single blade reading as "waving." */}
+            alive without any single blade reading as "waving." Every blade
+            here genuinely stands up off the ground, same as the reeds/
+            flowers/bushes elsewhere in the scene — but unlike those, these
+            17 instances had NO drop-shadow at all (found 2026-08-16, after
+            Jacob: "if its standing, obv there should be a shadow" — this
+            was the literal gap that made the whole base read as flat
+            cutouts pasted on the gradient instead of a real meadow
+            surface). Kept deliberately light (a thin stroke silhouette at
+            this size doesn't need a heavy shadow) so it grounds without
+            competing with the actual focal objects. */}
         {[
           { left: "1%", size: 20, color: "#5a7a4a", d: "3.2s" },
           { left: "9%", size: 18, color: "#6b8e5a", d: "3.5s" },
@@ -278,7 +302,7 @@ export default function RcaPage() {
             key={i}
             size={g.size}
             className="absolute"
-            style={{ top: "90%", left: g.left, color: g.color, opacity: 0.6, animation: `sway ${g.d} ease-in-out infinite`, transformOrigin: "bottom center" }}
+            style={{ top: "90%", left: g.left, color: g.color, opacity: 0.6, animation: `sway ${g.d} ease-in-out infinite`, transformOrigin: "bottom center", filter: "drop-shadow(0 1.5px 1px rgba(20,30,10,0.4))" }}
           />
         ))}
 
@@ -334,9 +358,13 @@ export default function RcaPage() {
             moved — which is exactly why it read as "in place," not marching). */}
         <AntHillDoodle size={88} className="absolute" style={{ top: "42%", left: "23%", color: "#8a6a3a", opacity: 0.85, filter: "drop-shadow(0 4px 1.5px rgba(20,30,10,0.5))" }} />
         {/* Debris scattered near the hill so it reads as an actual patch of
-            ground the colony lives on, not a bare mound on clean gradient. */}
-        <TwigDoodle size={30} className="absolute" style={{ top: "68%", left: "34%", opacity: 0.7, transform: "rotate(-8deg)" }} />
-        <TwigDoodle size={22} className="absolute" style={{ top: "58%", left: "18%", opacity: 0.6, transform: "rotate(20deg) scaleX(-1)" }} />
+            ground the colony lives on, not a bare mound on clean gradient.
+            Real twigs sit slightly proud of the grass (they have actual
+            thickness), so a very light contact shadow belongs here too —
+            lighter than anything else in the scene since they're nearly
+            flush, not genuinely raised like the flowers/bushes. */}
+        <TwigDoodle size={30} className="absolute" style={{ top: "68%", left: "34%", opacity: 0.7, transform: "rotate(-8deg)", filter: "drop-shadow(0 1px 0.5px rgba(20,30,10,0.35))" }} />
+        <TwigDoodle size={22} className="absolute" style={{ top: "58%", left: "18%", opacity: 0.6, transform: "rotate(20deg) scaleX(-1)", filter: "drop-shadow(0 1px 0.5px rgba(20,30,10,0.35))" }} />
         {/* duration/delay/dist all hand-varied and deliberately NOT tied to
             one shared linear parameter — the old version drove all three off
             the same 0.05-step `d` value, which makes every ant exactly
