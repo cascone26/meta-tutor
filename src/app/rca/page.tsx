@@ -3,7 +3,7 @@ import { rcaClasses, rcaSchedule, gradingGuidelinesUrl, getNextScheduleItem } fr
 import { rcaContent } from "@/lib/rca-content";
 import {
   SkyIcon, LeafIcon, ButterflyIcon, BirdIcon,
-  CloudDoodle, TreeDoodle, FlowerDoodle, TulipDoodle, DaisyDoodle, BugDoodle, AntHillDoodle, AntDoodle, PondDoodle, GroundLineDoodle,
+  CloudDoodle, TreeDoodle, FlowerDoodle, TulipDoodle, DaisyDoodle, BugDoodle, AntHillDoodle, AntDoodle, PondDoodle,
   BushDoodle, RockDoodle, GrassTuftDoodle, ReedDoodle, PathDoodle, TwigDoodle,
 } from "@/components/rca/NatureIcons";
 import Reveal from "@/components/Reveal";
@@ -191,12 +191,46 @@ export default function RcaPage() {
           clusters, and repeated grass below all now scale with the actual
           container width), not artificially narrowing the canvas. */}
       <div className="relative" style={{ width: "100%", height: "100%" }}>
-        {/* A soft, wide, low-contrast patch of warmer ground tying the whole
-            cluster together as "one patch of garden" instead of a scatter of
-            individually-shadowed objects on a flat color field. */}
-        <div className="absolute rounded-full" style={{ top: "20%", left: "0%", width: "94%", height: "85%", background: "radial-gradient(ellipse, rgba(140,120,60,0.1) 0%, transparent 70%)" }} />
+        {/* Real ground TEXTURE, not just individually-shadowed objects on a
+            smooth gradient — this is the actual answer to "still kinda just
+            looks like theres a paper background then 3d paper craft on top"
+            (Jacob, 2026-08-16). Every shadow fix so far made each OBJECT more
+            correct in isolation, but the surface they sit on was still one
+            perfectly smooth CSS gradient with zero grain — which is exactly
+            what makes shadowed cutouts read as stickers glued onto a flat
+            card instead of a continuous world. An SVG fractal-noise filter,
+            tiled across the whole ground zone at very low opacity and
+            multiply-blended, gives the surface itself visible mottling the
+            way real grass/dirt actually has. */}
+        <div
+          aria-hidden
+          className="absolute inset-0"
+          style={{
+            backgroundImage:
+              "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.025' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")",
+            backgroundRepeat: "repeat",
+            mixBlendMode: "multiply",
+            opacity: 0.16,
+          }}
+        />
 
-        <GroundLineDoodle className="absolute" style={{ top: "12%", left: 0, width: "100%", height: 18, color: "#6b8e5a", opacity: 0.4 }} />
+        {/* Several irregular, overlapping color-variation patches — real
+            grass isn't one flat tone, it's uneven growth/mowing/sun patches.
+            Replaces the single centered warm-tone blob with a scattered set
+            covering much more of the ground, so no big stretch reads as
+            "unbroken flat gradient." */}
+        <div className="absolute rounded-full" style={{ top: "20%", left: "0%", width: "94%", height: "85%", background: "radial-gradient(ellipse, rgba(140,120,60,0.1) 0%, transparent 70%)" }} />
+        <div className="absolute rounded-full" style={{ top: "-5%", left: "18%", width: "42%", height: "60%", background: "radial-gradient(ellipse, rgba(90,140,80,0.12) 0%, transparent 70%)" }} />
+        <div className="absolute rounded-full" style={{ top: "35%", right: "5%", width: "48%", height: "70%", background: "radial-gradient(ellipse, rgba(160,190,110,0.14) 0%, transparent 70%)" }} />
+        <div className="absolute rounded-full" style={{ top: "50%", left: "38%", width: "30%", height: "50%", background: "radial-gradient(ellipse, rgba(70,110,60,0.1) 0%, transparent 70%)" }} />
+        <div className="absolute rounded-full" style={{ top: "5%", right: "22%", width: "26%", height: "45%", background: "radial-gradient(ellipse, rgba(200,200,130,0.08) 0%, transparent 70%)" }} />
+
+        {/* The old horizon hairline was flagged as an artifact back in the
+            2026-08-13 audit ("a thin horizon rule that clashes with the
+            soft, lineless illustration style; reads as an artifact") and
+            never actually removed — it's the exact kind of mechanical,
+            ruler-straight mark that reinforces "flat card with a fold line"
+            instead of an organic scene. Removed rather than faded further. */}
 
         {/* A winding dirt path — the connective tissue the whole scene was
             missing. Every element used to be independently positioned by
