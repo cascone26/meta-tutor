@@ -934,3 +934,44 @@ Live at `https://meta-tutor.vercel.app`.
    the deploy itself proceeded server-side regardless) — not an auth/token issue (checked: the stored
    token was NOT expired, ~5h of remaining lifetime at the time), just Vercel-side queue latency. No fix
    applied; `vercel ls` after a CLI timeout reliably shows the real status.
+
+## Term-Ended Schedule Gap — 2026-08-16
+
+### Problem Statement
+Self-audit (same discipline that caught the earlier closure-day gap in `buildScheduleNote()`): every
+time `ScheduleItem` gains a variant, every consumer of `.kind` has to be re-checked by hand — TypeScript
+only enforces this if the code does an exhaustive switch, and `getNextScheduleItem()` was written as a
+sequence of early returns, not a switch. Checked, and found `rcaSchedule.termEnd` ("2027-05-31") was
+defined in `src/lib/rca.ts` but never referenced anywhere in the actual schedule-computation function —
+past the real end of the school year, it would have kept indefinitely suggesting the next Mon/Thu as if
+term were still running, both in the UI and in the AI assistant's grounding context.
+
+### Fix
+Added a fourth `ScheduleItem` variant, `{ kind: "term-ended" }`. `getNextScheduleItem()` now short-circuits
+to it when `today > termEnd`, and the walk-forward fallback loop is capped at `termEnd` (`if (d > termEnd)
+break;`) instead of running past it. Updated both real consumers found by grepping every `next.kind` site:
+`page.tsx`'s `nextLabel` computation (would have thrown accessing `.date` on the new variant) plus a new
+render branch, and `rca-grounding.ts`'s `buildScheduleNote()` so the assistant tells Jacob the year is over
+instead of hallucinating a date past May 31.
+
+### Verification
+Standalone simulation of the exact walk-forward/closure logic (not the real app, isolated port of the
+function) confirmed: dates in June/July 2027 correctly return `term-ended`; May 28 2027 (the real last
+Friday of term) still resolves as a teaching day; today's date (mid-term) is unaffected. `npm run build`
+clean. Dev server restarted clean, `scripts/verify-scene.mjs /rca` geometry regression still passes with
+zero overlaps. Live page confirmed still rendering "Next work day" normally (mid-term, unaffected). Grepped
+every `getNextScheduleItem`/`next.kind` call site post-fix to confirm no unhandled branch remains anywhere
+in the codebase.
+
+### Proof Pointers
+Commit `5845fcc` on `hub-shell`, fast-forwarded to `main`. Deployed and aliased live at
+`https://meta-tutor.vercel.app` (confirmed via `curl -sI` returning the expected 302→login for
+unauthenticated prod).
+
+### Next Steps
+Re-attempted pulling the RCA sixth-grade master doc for the 5 subjects still capped at `totalWeeks: 25`
+(item 3 from the 2026-08-13 entry) — still 401s under WebFetch, same auth wall as before (no Google
+Docs/Drive MCP connected on this session, only Gmail/Calendar). Genuinely blocked at the doc-access layer
+specifically, not the whole task — needs either the doc set to link-view-anyone or Jacob pasting the
+back-half-of-year content directly. Everything else from the 2026-08-13 Next Steps list is unchanged and
+still open.
