@@ -24,6 +24,7 @@ export function getCalendarEvents(startKey: string, endKey: string): CalendarEve
   const start = new Date(startKey + "T00:00:00");
   const end = new Date(endKey + "T00:00:00");
   const termStart = new Date(rcaSchedule.termStart + "T00:00:00");
+  const termEnd = new Date(rcaSchedule.termEnd + "T00:00:00");
 
   for (const ev of rcaEvents) {
     if (ev.date >= startKey && ev.date <= endKey) {
@@ -43,7 +44,7 @@ export function getCalendarEvents(startKey: string, endKey: string): CalendarEve
   }
 
   for (let d = new Date(start); d <= end; d = new Date(d.getTime() + 86400000)) {
-    if (d < termStart) continue;
+    if (d < termStart || d > termEnd) continue; // no phantom classes past the real school year
     if (getClosure(d)) continue; // closure days never also show class blocks
     const weekday = d.getDay(); // 1=Mon, 4=Thu
     const dayName = weekday === 1 ? "Monday" : weekday === 4 ? "Thursday" : null;
