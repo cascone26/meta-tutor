@@ -343,3 +343,17 @@ export function currentLessonNumber(totalLessons: number, totalWeeks: number = t
   const week = Math.min(Math.max(weeksElapsed + 1, 1), totalWeeks);
   return Math.min(Math.max(Math.round((week / totalWeeks) * totalLessons), 1), totalLessons);
 }
+
+// currentLessonNumber() CLAMPS once real elapsed weeks pass a subject's
+// totalWeeks, silently returning the last documented lesson forever after —
+// which reads as "this is today's real lesson" with zero signal that the
+// pacing data actually ran out. Several subjects' content only covers the
+// first 25-33 of the term's real ~42 weeks (found 2026-08-16: doc access for
+// the back half is still 401ing). This tells callers when that's happening
+// so they can say so instead of presenting stale content as current.
+export function isPacingCurrent(totalWeeks: number, today: Date = new Date()): boolean {
+  const start = new Date(rcaSchedule.termStart + "T00:00:00");
+  const msPerWeek = 7 * 24 * 60 * 60 * 1000;
+  const weeksElapsed = Math.floor((today.getTime() - start.getTime()) / msPerWeek);
+  return weeksElapsed + 1 <= totalWeeks;
+}

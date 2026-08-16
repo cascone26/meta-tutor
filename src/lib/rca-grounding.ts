@@ -2,7 +2,7 @@
 // understanding-check quiz (/api/rca-understanding) — one place that knows how to
 // describe a class + its current lesson to the model.
 
-import { getRcaClass, rcaClasses, rcaSchedule, currentLessonNumber, getNextScheduleItem } from "@/lib/rca";
+import { getRcaClass, rcaClasses, rcaSchedule, currentLessonNumber, isPacingCurrent, getNextScheduleItem } from "@/lib/rca";
 import { rcaContent } from "@/lib/rca-content";
 
 const CURRENT_CONTENT_NOTE =
@@ -62,6 +62,10 @@ export function buildClassGrounding(subjectId: string | undefined, lessonNOverri
     if (lesson) {
       for (const s of lesson.sections) grounding += `${s.label}: ${s.text}\n`;
       if (lesson.note) grounding += `Note: ${lesson.note}\n`;
+    }
+    const pacingWeeks = content.totalWeeks ?? content.lessons.length;
+    if (!lessonNOverride && !isPacingCurrent(pacingWeeks)) {
+      grounding += `\nPACING NOTE: This subject's documented pacing only covers the first ${pacingWeeks} weeks of the term — the "CURRENT LESSON" above is actually just the LAST one available, not necessarily what's really being taught this week. If Jacob asks what's happening "this week" or "today," say the real weekly plan isn't loaded yet rather than presenting this lesson as current.\n`;
     }
     grounding += `\n${CURRENT_CONTENT_NOTE}`;
   } else if (cls.lessonPlanUrl) {

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import type { Lesson, SubjectContent } from "@/lib/rca-content/types";
-import { currentLessonNumber } from "@/lib/rca";
+import { currentLessonNumber, isPacingCurrent } from "@/lib/rca";
 
 const WEEKDAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
 
@@ -41,6 +41,11 @@ export default function LessonViewer({ content }: { content: SubjectContent }) {
   const total = content.lessons.length;
   const [n, setN] = useState(() => currentLessonNumber(total, content.totalWeeks));
   const lesson = content.lessons.find((l) => l.n === n);
+  // Real 2026-2027 pacing was only pulled for the first `content.totalWeeks`
+  // weeks of the term (doc access for the back half 401s as of 2026-08-16).
+  // Past that point currentLessonNumber() clamps to the last lesson forever
+  // — flag it so "Lesson N" doesn't silently read as this week's real plan.
+  const pacingStale = !isPacingCurrent(content.totalWeeks ?? total);
   // The overview is a real paragraph (pacing, tests, breaks) — worth having in
   // full, but showing all of it by default reads as a wall of text sitting
   // between the header and the actual lesson nav. Collapsed to 2 lines with
@@ -74,6 +79,13 @@ export default function LessonViewer({ content }: { content: SubjectContent }) {
           {overviewOpen ? "Show less ↑" : "Show more ↓"}
         </button>
       </div>
+
+      {pacingStale && (
+        <p className="text-[11px] rounded-lg px-2.5 py-1.5 mb-3" style={{ background: "#fbeee0", color: "#8a5a2a" }}>
+          Documented pacing only covers the first {content.totalWeeks} weeks of the term — the lesson below
+          is the last one available, not necessarily what&apos;s actually happening this week.
+        </p>
+      )}
 
       <div className="flex items-center justify-between mb-3">
         <button
