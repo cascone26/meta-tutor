@@ -232,12 +232,12 @@ export default function RcaPage() {
           className="absolute"
           style={{ top: "32%", left: "6%", color: "#3f7ea6", opacity: 0.85, filter: "drop-shadow(0 5px 2px rgba(15,30,38,0.65))" }}
         />
-        <ReedDoodle size={34} className="absolute" style={{ top: "24%", left: "23%", color: "#5a7a4a", opacity: 0.8 }} />
-        <ReedDoodle size={28} className="absolute" style={{ top: "27%", left: "27%", color: "#4f6a41", opacity: 0.75 }} />
+        <ReedDoodle size={34} className="absolute" style={{ top: "24%", left: "23%", color: "#5a7a4a", opacity: 0.8, filter: "drop-shadow(0 2px 1px rgba(20,30,10,0.4))" }} />
+        <ReedDoodle size={28} className="absolute" style={{ top: "27%", left: "27%", color: "#4f6a41", opacity: 0.75, filter: "drop-shadow(0 2px 1px rgba(20,30,10,0.4))" }} />
 
         {/* Pebbles at the pond's front edge — a material change (flat grey-
             brown, no green) so the scene isn't 100% foliage. */}
-        <RockDoodle size={32} className="absolute" style={{ top: "52%", left: "11%", opacity: 0.75 }} />
+        <RockDoodle size={32} className="absolute" style={{ top: "52%", left: "11%", opacity: 0.75, filter: "drop-shadow(0 1.5px 1px rgba(20,20,15,0.45))" }} />
 
         <TreeDoodle
           size={130}
@@ -354,7 +354,7 @@ export default function RcaPage() {
             key={a.left}
             size={10}
             className="absolute"
-            style={{ top: a.top, left: a.left, color: "#4a2f14", opacity: 0.75, animation: `antCrawl ${a.dur}s ease-in-out infinite ${a.delay}s`, ["--crawl-dist" as string]: `${a.dist}px` }}
+            style={{ top: a.top, left: a.left, color: "#4a2f14", opacity: 0.75, animation: `antCrawl ${a.dur}s ease-in-out infinite ${a.delay}s`, ["--crawl-dist" as string]: `${a.dist}px`, filter: "drop-shadow(0 1px 0.5px rgba(20,30,10,0.6))" }}
           />
         ))}
         {[
@@ -366,7 +366,7 @@ export default function RcaPage() {
             key={a.left}
             size={9}
             className="absolute"
-            style={{ top: a.top, left: a.left, color: "#4a2f14", opacity: 0.65, animation: `antCrawl ${a.dur}s ease-in-out infinite ${a.delay}s`, ["--crawl-dist" as string]: `${a.dist}px` }}
+            style={{ top: a.top, left: a.left, color: "#4a2f14", opacity: 0.65, animation: `antCrawl ${a.dur}s ease-in-out infinite ${a.delay}s`, ["--crawl-dist" as string]: `${a.dist}px`, filter: "drop-shadow(0 1px 0.5px rgba(20,30,10,0.55))" }}
           />
         ))}
 

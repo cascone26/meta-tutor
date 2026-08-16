@@ -78,7 +78,15 @@ export function CloudDoodle({ size = 20, className, style }: IconProps) {
 export function TreeDoodle({ size = 20, className, style }: IconProps) {
   return (
     <svg width={size} height={size} viewBox="0 0 60 70" fill="none" strokeLinecap="round" strokeLinejoin="round" className={className} style={style}>
-      <path d="M30 68V47" stroke="#6b4a2a" strokeWidth="2.4" />
+      {/* Trunk extended from y=47 to y=39 — the old top only overlapped the
+          lowest canopy circle (cy=38, r=10.5, bottom edge at y=48.5) by
+          ~1.5 units, a connection thin enough to read as the canopy
+          floating just above a disconnected trunk rather than growing out
+          of it (flagged in a full-scene visual pass, 2026-08-13). Now
+          overlaps by ~9 units, solidly inside the canopy mass. Branch
+          offshoots stay near the base (y=58/54, close to the ground
+          contact at y=68) — that's real root-flare, not a rendering bug. */}
+      <path d="M30 68V39" stroke="#6b4a2a" strokeWidth="2.4" />
       <path d="M30 58c-4-2-8-1-10 3M30 54c4-1.5 7-.5 9 2.5" stroke="#6b4a2a" strokeWidth="1.6" />
       <circle cx="21" cy="32" r="11" fill="currentColor" fillOpacity="0.6" stroke="currentColor" strokeWidth="1.2" strokeOpacity="0.5" />
       <circle cx="39" cy="32" r="11" fill="currentColor" fillOpacity="0.6" stroke="currentColor" strokeWidth="1.2" strokeOpacity="0.5" />
