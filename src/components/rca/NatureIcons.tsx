@@ -328,6 +328,24 @@ export function PathDoodle({ size = 20, className, style }: IconProps) {
         strokeOpacity="0.32"
         fill="none"
       />
+      {/* A solid-ish core, narrower than the two soft outer strokes above —
+          those were both deliberately translucent (0.1/0.32) to blend with
+          the ground, which is right for the EDGES but meant the grass-blade
+          field behind it (page.tsx's GrassField) visibly showed through the
+          whole path (found 2026-08-16, direct review: "still just looks like
+          theres a paper background"-adjacent complaint about the path
+          specifically). A path should read as a genuinely different,
+          distinct material — solid dirt — not grass with a light wash over
+          it. This core is opaque enough to occlude while staying inside the
+          two softer strokes, so the edges still fade rather than hard-cut. */}
+      <path
+        d="M0 50c70-16 120 8 190 0s130-20 200-8 140 18 210 6 70-10 100-4"
+        stroke="#b8945c"
+        strokeWidth="18"
+        strokeLinecap="round"
+        strokeOpacity="0.82"
+        fill="none"
+      />
     </svg>
   );
 }

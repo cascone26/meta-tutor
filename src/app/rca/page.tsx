@@ -29,6 +29,93 @@ function castShadow(dropY: number, blur: number, color: string): string {
   return `drop-shadow(${dropX}px ${dropY}px ${blur}px ${color})`;
 }
 
+// The ground texture used to be a small SVG tile (42px/67px) repeated via CSS
+// background-repeat — technically visible now, but Jacob (2026-08-16, after
+// directly reviewing a real screenshot) correctly called it out as reading
+// like a printed/wallpaper pattern, not grass: every blade in a repeating
+// tile has identical length/angle/spacing, and the human eye picks up that
+// period instantly no matter how organic each individual blade looks.
+// Replaced with a genuinely large field of individually-varied blades (each
+// with its own random-ish length/angle/curve/color/opacity), rendered as one
+// non-repeating SVG. Needs to be DETERMINISTIC (same value on server render
+// and client hydration, or Next.js throws a hydration mismatch) — Math.random()
+// can't be used directly, so this is a small seeded PRNG (mulberry32) instead.
+function mulberry32(seed: number) {
+  let s = seed;
+  return function rand() {
+    s |= 0;
+    s = (s + 0x6d2b79f5) | 0;
+    let t = Math.imul(s ^ (s >>> 15), 1 | s);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+const GRASS_FIELD_VB = { w: 1400, h: 380 }; // matches GROUND_HEIGHT below
+const GRASS_COLORS = ["#4f6a41", "#5a7a4a", "#6b8e5a", "#456339", "#3f5a34"];
+
+type GrassBlade = { x: number; y: number; angle: number; curve: number; len: number; width: number; color: string; opacity: number };
+
+// Density and richness both bias toward the BOTTOM of the field (y near h =
+// "close to the viewer"), sparser/paler toward the top ("further away") —
+// this single generator does double duty for texture (fix #1) AND
+// atmospheric depth-via-density (part of fix #3), rather than being two
+// separate, disconnected systems.
+function generateGrassField(count: number, seed: number): GrassBlade[] {
+  const rand = mulberry32(seed);
+  const blades: GrassBlade[] = [];
+  for (let i = 0; i < count; i++) {
+    const y = rand() * GRASS_FIELD_VB.h;
+    const depthT = y / GRASS_FIELD_VB.h; // 0 = far/top, 1 = near/bottom
+    // Thin the far third out probabilistically instead of a hard cutoff —
+    // a hard band boundary would itself read as a mechanical stripe.
+    if (depthT < 0.35 && rand() > 0.35 + depthT) continue;
+    const x = rand() * GRASS_FIELD_VB.w;
+    const angle = (rand() - 0.5) * 34; // degrees off vertical
+    const curve = (rand() - 0.5) * 9;
+    const len = 5 + rand() * 8 + depthT * 11; // longer near, shorter far
+    const width = 0.9 + depthT * 0.7 + rand() * 0.3;
+    const color = GRASS_COLORS[Math.floor(rand() * GRASS_COLORS.length)];
+    const opacity = 0.18 + depthT * 0.4 + rand() * 0.18;
+    blades.push({ x, y, angle, curve, len, width, color, opacity });
+  }
+  return blades;
+}
+
+function GrassField({ count, seed }: { count: number; seed: number }) {
+  const blades = generateGrassField(count, seed);
+  return (
+    <svg
+      aria-hidden
+      className="absolute inset-0"
+      width="100%"
+      height="100%"
+      viewBox={`0 0 ${GRASS_FIELD_VB.w} ${GRASS_FIELD_VB.h}`}
+      preserveAspectRatio="none"
+      style={{ pointerEvents: "none" }}
+    >
+      {blades.map((b, i) => {
+        const rad = (b.angle * Math.PI) / 180;
+        const endX = b.x + b.len * Math.sin(rad);
+        const endY = b.y - b.len * Math.cos(rad);
+        const ctrlX = b.x + (b.len * 0.5) * Math.sin(rad) + b.curve;
+        const ctrlY = b.y - (b.len * 0.5) * Math.cos(rad);
+        return (
+          <path
+            key={i}
+            d={`M${b.x.toFixed(1)},${b.y.toFixed(1)} Q${ctrlX.toFixed(1)},${ctrlY.toFixed(1)} ${endX.toFixed(1)},${endY.toFixed(1)}`}
+            stroke={b.color}
+            strokeWidth={b.width}
+            strokeOpacity={b.opacity}
+            strokeLinecap="round"
+            fill="none"
+          />
+        );
+      })}
+    </svg>
+  );
+}
+
 export default function RcaPage() {
   const academic = rcaClasses.filter((c) => c.area === "Academic");
   const specials = rcaClasses.filter((c) => c.area === "Specials");
@@ -192,57 +279,36 @@ export default function RcaPage() {
           container width), not artificially narrowing the canvas. */}
       <div className="relative" style={{ width: "100%", height: "100%" }}>
         {/* Real ground TEXTURE, not just individually-shadowed objects on a
-            smooth gradient. The first attempt here (an abstract SVG
-            fractal-noise filter, multiply-blended at low opacity) was
-            confirmed by directly looking at the actual rendered page
-            (2026-08-16, "use viewer and freaking look at everything" — Read
-            a real screenshot straight into context via the hook-exempted
-            ~/estate/data/renders/ path, not a flaky third-party vision
-            model) to be flat-out INVISIBLE at real render scale — the ground
-            still looked like one smooth green card. Replaced with an
-            actual tiled pattern of small grass-blade strokes at real,
-            deliberately visible opacity, not a subtle multiply-blend trick. */}
-        <div
-          aria-hidden
-          className="absolute inset-0"
-          style={{
-            backgroundImage:
-              "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='42' height='42'%3E%3Cpath d='M5 40c0-4 1-7 1-10' stroke='%234f6a41' stroke-width='1.4' stroke-linecap='round' fill='none' opacity='0.55'/%3E%3Cpath d='M13 41c0-3 -1-6 0-9' stroke='%235a7a4a' stroke-width='1.3' stroke-linecap='round' fill='none' opacity='0.45'/%3E%3Cpath d='M23 40c0-5 1-8 2-11' stroke='%234f6a41' stroke-width='1.4' stroke-linecap='round' fill='none' opacity='0.5'/%3E%3Cpath d='M31 41c0-3 -1-5 0-8' stroke='%236b8e5a' stroke-width='1.3' stroke-linecap='round' fill='none' opacity='0.45'/%3E%3Cpath d='M38 40c0-4 1-6 1-9' stroke='%235a7a4a' stroke-width='1.3' stroke-linecap='round' fill='none' opacity='0.45'/%3E%3C/svg%3E\")",
-            backgroundRepeat: "repeat",
-            backgroundSize: "42px 42px",
-            opacity: 0.85,
-          }}
-        />
-        {/* A SECOND blade layer, different tile size (67px, not a clean
-            multiple of the first layer's 42px) and different blade count/
-            spacing so the two grids never align into a visible repeat —
-            a single perfectly regular tile reads as wallpaper, not a
-            meadow; two independent grids overlapping breaks that up the
-            same way real grass never grows in a lattice. */}
-        <div
-          aria-hidden
-          className="absolute inset-0"
-          style={{
-            backgroundImage:
-              "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='67' height='67'%3E%3Cpath d='M8 63c0-5 -1-9 0-13' stroke='%235a7a4a' stroke-width='1.5' stroke-linecap='round' fill='none' opacity='0.4'/%3E%3Cpath d='M27 65c0-4 1-7 2-10' stroke='%234f6a41' stroke-width='1.3' stroke-linecap='round' fill='none' opacity='0.35'/%3E%3Cpath d='M48 63c0-6 -1-10 0-14' stroke='%236b8e5a' stroke-width='1.5' stroke-linecap='round' fill='none' opacity='0.4'/%3E%3Cpath d='M60 65c0-3 1-5 1-7' stroke='%235a7a4a' stroke-width='1.3' stroke-linecap='round' fill='none' opacity='0.35'/%3E%3C/svg%3E\")",
-            backgroundRepeat: "repeat",
-            backgroundSize: "67px 67px",
-            backgroundPosition: "15px 8px",
-            opacity: 0.7,
-          }}
-        />
+            smooth gradient. Two prior attempts here both failed real direct
+            review (2026-08-16, "use viewer and freaking look at everything"
+            — Read a real screenshot straight into context via the
+            hook-exempted ~/estate/data/renders/ path, not a third-party
+            vision model): first an abstract fractal-noise filter (invisible
+            at render scale), then a small repeating SVG tile (visible but
+            reads as a printed/wallpaper pattern — identical blade length/
+            angle/spacing repeating on a grid, which the eye picks up
+            instantly). Replaced with GrassField: a genuinely large,
+            individually-randomized field of ~350 blades (see the generator
+            above castShadow), each with its own length/angle/curve/color,
+            non-repeating. Density and richness both bias toward the bottom
+            of the field (near/close) vs. the top (far/distant) — the same
+            generator does the texture AND a real atmospheric-depth cue at
+            once, not two disconnected systems. */}
+        <GrassField count={340} seed={1337} />
 
-        {/* Several irregular, overlapping color-variation patches — real
-            grass isn't one flat tone, it's uneven growth/mowing/sun patches.
-            First pass here (opacity 0.08-0.14) was ALSO confirmed invisible
-            by the same direct-look check — raised substantially so the
-            variation is actually perceptible, not just measurable in pixel
-            stats that don't correspond to what a human eye picks up. */}
-        <div className="absolute rounded-full" style={{ top: "20%", left: "0%", width: "94%", height: "85%", background: "radial-gradient(ellipse, rgba(140,120,60,0.22) 0%, transparent 70%)" }} />
-        <div className="absolute rounded-full" style={{ top: "-5%", left: "18%", width: "42%", height: "60%", background: "radial-gradient(ellipse, rgba(90,140,80,0.26) 0%, transparent 70%)" }} />
-        <div className="absolute rounded-full" style={{ top: "35%", right: "5%", width: "48%", height: "70%", background: "radial-gradient(ellipse, rgba(160,190,110,0.28) 0%, transparent 70%)" }} />
-        <div className="absolute rounded-full" style={{ top: "50%", left: "38%", width: "30%", height: "50%", background: "radial-gradient(ellipse, rgba(70,110,60,0.22) 0%, transparent 70%)" }} />
-        <div className="absolute rounded-full" style={{ top: "5%", right: "22%", width: "26%", height: "45%", background: "radial-gradient(ellipse, rgba(200,200,130,0.18) 0%, transparent 70%)" }} />
+        {/* Color-variation patches — real grass isn't one flat tone. Now
+            biased by actual position instead of scattered arbitrarily: the
+            warm, more saturated patches sit toward the BOTTOM (near/lit),
+            the paler cooler patch sits toward the TOP (far/hazy) — this is
+            atmospheric perspective, a real depth cue, not just texture
+            breakup. First pass (opacity 0.08-0.28, no positional logic) was
+            confirmed too weak / not directionally meaningful by direct
+            review. */}
+        <div className="absolute rounded-full" style={{ top: "45%", left: "0%", width: "94%", height: "75%", background: "radial-gradient(ellipse, rgba(140,120,60,0.24) 0%, transparent 70%)" }} />
+        <div className="absolute rounded-full" style={{ top: "-8%", left: "15%", width: "46%", height: "45%", background: "radial-gradient(ellipse, rgba(190,210,170,0.22) 0%, transparent 70%)" }} />
+        <div className="absolute rounded-full" style={{ top: "50%", right: "2%", width: "50%", height: "65%", background: "radial-gradient(ellipse, rgba(170,195,110,0.3) 0%, transparent 70%)" }} />
+        <div className="absolute rounded-full" style={{ top: "55%", left: "35%", width: "34%", height: "55%", background: "radial-gradient(ellipse, rgba(70,110,60,0.24) 0%, transparent 70%)" }} />
+        <div className="absolute rounded-full" style={{ top: "-5%", right: "18%", width: "30%", height: "40%", background: "radial-gradient(ellipse, rgba(200,215,180,0.2) 0%, transparent 70%)" }} />
 
         {/* The old horizon hairline was flagged as an artifact back in the
             2026-08-13 audit ("a thin horizon rule that clashes with the
@@ -300,6 +366,13 @@ export default function RcaPage() {
             there's real space past the tree that needs its own depth layer,
             not just empty gradient. */}
         <BushDoodle size={46} className="absolute" style={{ top: "22%", right: "2%", color: "#4f6a41", opacity: 0.4, filter: `blur(0.7px) ${castShadow(2, 1, "rgba(20,30,10,0.45)")}` }} />
+        {/* A fourth, mid-scene — direct review (2026-08-16) found the whole
+            middle stretch between the pond/mound cluster and the tree was
+            visually dead: the three back-row bushes only sat at the far
+            edges (0%, ~77%, ~98%), leaving the entire back/middle band bare
+            except for thin flower stems in the front row. This breaks up
+            that gap with actual foliage bulk, not just more small stems. */}
+        <BushDoodle size={50} className="absolute" style={{ top: "18%", left: "46%", color: "#5a7a4a", opacity: 0.44, filter: `blur(0.6px) ${castShadow(3, 1.5, "rgba(20,30,10,0.48)")}` }} />
 
         {/* Pond — went through several rounds of hand-positioned shadows and
             then a drop-shadow, and EVERY one of them was wrong for a
@@ -328,6 +401,14 @@ export default function RcaPage() {
             brown, no green) so the scene isn't 100% foliage. */}
         <RockDoodle size={32} className="absolute" style={{ top: "52%", left: "11%", opacity: 0.75, filter: castShadow(1.5, 1, "rgba(20,20,15,0.45)") }} />
 
+        {/* A soft, blurred ambient-occlusion-style blob UNDER the tree, in
+            addition to its own drop-shadow — a thin offset silhouette copy
+            alone (what castShadow gives every object) reads as correct but
+            visually thin for something this large; real illustrations
+            usually pair a sharp contact shadow with a soft broad one for
+            actual "weight." Positioned at the trunk's real base, biased left
+            per the same sun-from-top-right direction as every other shadow. */}
+        <div className="absolute rounded-full" style={{ top: "39%", right: "9%", width: 100, height: 28, background: "radial-gradient(ellipse, rgba(20,30,10,0.45) 0%, transparent 75%)", filter: "blur(3px)" }} />
         <TreeDoodle
           size={130}
           className="absolute"
@@ -424,6 +505,10 @@ export default function RcaPage() {
             small-scale crawling (antCrawl: real translateX + turn-flip) in
             place of the old antScurry (a scale pulse that never actually
             moved — which is exactly why it read as "in place," not marching). */}
+        {/* Same soft ambient-shadow pairing as the tree — the mound is the
+            second-largest object in the scene and deserves the same real
+            "weight" treatment, not just a thin offset silhouette. */}
+        <div className="absolute rounded-full" style={{ top: "56%", left: "21%", width: 54, height: 15, background: "radial-gradient(ellipse, rgba(20,30,10,0.3) 0%, transparent 75%)", filter: "blur(2.5px)" }} />
         <AntHillDoodle size={88} className="absolute" style={{ top: "42%", left: "23%", color: "#8a6a3a", opacity: 0.85, filter: castShadow(4, 1.5, "rgba(20,30,10,0.5)") }} />
         {/* Debris scattered near the hill so it reads as an actual patch of
             ground the colony lives on, not a bare mound on clean gradient.
