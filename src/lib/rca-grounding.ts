@@ -14,6 +14,14 @@ function buildScheduleNote(): string {
     const when = next.isToday ? "TODAY" : next.date.toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric" });
     return `SCHEDULE NOTE: This is training/setup week, not normal teaching — ${when} is "${next.label}" (${next.time}). ${next.detail} Regular Mon/Thu teaching starts ${rcaSchedule.termStart}. If Jacob asks about "today" or "next class," answer from this real event, not the generic Mon/Thu pattern.`;
   }
+  if (next.kind === "closure") {
+    // Added when getNextScheduleItem() gained this variant (2026-08-13) —
+    // without this branch, a closure day silently fell through to "", so
+    // the assistant had zero signal that today's actually a break and
+    // could wrongly imply Jacob is teaching when he's not.
+    const estimatedNote = next.estimated ? " (estimated — RCA's real 2026-2027 academic calendar hasn't been confirmed yet, so treat the exact dates as reasoned, not certain)" : "";
+    return `SCHEDULE NOTE: Today is "${next.label}" — RCA is closed, no class${estimatedNote}. If Jacob asks about "today" or "next class," tell him it's a closure day, not a normal Mon/Thu teaching day.`;
+  }
   return "";
 }
 
