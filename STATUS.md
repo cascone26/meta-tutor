@@ -1,11 +1,14 @@
 # Meta Tutor — Status
 
 ## Last Updated
-2026-08-13 (full-day RCA session: real curriculum/schedule fixes, per-subject practice-mode curation, a
-new calendar view, a Supabase-backed rate limiter, a sick-him audit pass, and — after six real rounds —
-the garden scene's shadows. See PROCESS.md's "Real Curriculum, Real Schedule, Practice-Mode Curation,
-Calendar, Rate-Limit Fix, Six-Round Shadow Saga — 2026-08-13" entry for the full trail; this section is
-just the current-state summary.)
+2026-08-16 (fixed a self-found gap: `getNextScheduleItem()` never checked `rcaSchedule.termEnd`, so past
+the real end of the 2026-2027 school year it would have kept indefinitely suggesting the next Mon/Thu.
+Added a `term-ended` state, verified, deployed. See PROCESS.md's "Term-Ended Schedule Gap — 2026-08-16"
+entry. Prior entry: 2026-08-13 full-day RCA session — real curriculum/schedule fixes, per-subject
+practice-mode curation, a new calendar view, a Supabase-backed rate limiter, a sick-him audit pass, and —
+after six real rounds — the garden scene's shadows. See PROCESS.md's "Real Curriculum, Real Schedule,
+Practice-Mode Curation, Calendar, Rate-Limit Fix, Six-Round Shadow Saga — 2026-08-13" entry for that full
+trail; this section is just the current-state summary.)
 
 **`hub-shell`/`main` divergence from the 2026-08-09 entry below is RESOLVED**: `main` was fast-forwarded
 to match `hub-shell` (2026-08-13) and pushed — Production's Git branch and what's actually live are no
