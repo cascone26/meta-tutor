@@ -22,6 +22,9 @@ function buildScheduleNote(): string {
     const estimatedNote = next.estimated ? " (estimated — RCA's real 2026-2027 academic calendar hasn't been confirmed yet, so treat the exact dates as reasoned, not certain)" : "";
     return `SCHEDULE NOTE: Today is "${next.label}" — RCA is closed, no class${estimatedNote}. If Jacob asks about "today" or "next class," tell him it's a closure day, not a normal Mon/Thu teaching day.`;
   }
+  if (next.kind === "term-ended") {
+    return `SCHEDULE NOTE: The 2026-2027 term ended ${rcaSchedule.termEnd} — there is no "next teaching day" to compute. If Jacob asks about today or next class, tell him the school year is over rather than guessing a Mon/Thu date.`;
+  }
   return "";
 }
 

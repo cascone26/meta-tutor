@@ -18,7 +18,7 @@ export default function RcaPage() {
   const academic = rcaClasses.filter((c) => c.area === "Academic");
   const specials = rcaClasses.filter((c) => c.area === "Specials");
   const next = getNextScheduleItem();
-  const nextLabel = next.date.toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric" });
+  const nextLabel = next.kind === "term-ended" ? "" : next.date.toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric" });
 
   // Ground-scene layout constants — used by both the JSX below and by the
   // verification harness (scripts/verify-scene.mjs) reasoning about expected
@@ -108,6 +108,10 @@ export default function RcaPage() {
               {next.estimated && <span className="text-[10px] font-normal ml-1.5" style={{ color: "#c9843a" }}>(estimated, not confirmed)</span>}
             </p>
           </div>
+        ) : next.kind === "term-ended" ? (
+          <p className="text-sm" style={{ color: "#3a4a34" }}>
+            The 2026-2027 term ended {rcaSchedule.termEnd} — no more scheduled class days.
+          </p>
         ) : (
           <p className="text-sm" style={{ color: "#3a4a34" }}>
             <strong>Monday &amp; Thursday</strong> are the deadlines — the only two days actually on campus.

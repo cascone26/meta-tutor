@@ -262,7 +262,8 @@ export function getRcaClass(id: string): RcaClass | undefined {
 export type ScheduleItem =
   | { kind: "event"; date: Date; label: string; detail: string; time: string; isToday: boolean }
   | { kind: "closure"; date: Date; label: string; estimated: boolean; isToday: boolean }
-  | { kind: "teaching"; date: Date; isToday: boolean };
+  | { kind: "teaching"; date: Date; isToday: boolean }
+  | { kind: "term-ended" };
 
 /** What's actually happening next — checks real calendar events (training week,
  * setup day, etc.) BEFORE falling back to the generic Mon/Thu teaching pattern,
@@ -283,6 +284,17 @@ export function getNextScheduleItem(today: Date = new Date()): ScheduleItem {
   // local-calendar-date strings a day early.
   const todayKey = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
   const termStart = new Date(rcaSchedule.termStart + "T00:00:00");
+  const termEnd = new Date(rcaSchedule.termEnd + "T00:00:00");
+
+  // rcaSchedule.termEnd was defined but never actually checked anywhere —
+  // without this, the Mon/Thu walk-forward below would happily keep
+  // suggesting "next work day" indefinitely, even months after the real
+  // school year ends (found 2026-08-13 auditing this function after fixing
+  // the closure-day gap; won't manifest until summer 2027, fixed while the
+  // context was fresh rather than left for later).
+  if (today > termEnd) {
+    return { kind: "term-ended" };
+  }
 
   const upcoming = [...rcaEvents].sort((a, b) => a.date.localeCompare(b.date)).find((ev) => ev.date >= todayKey);
   if (upcoming) {
@@ -307,16 +319,18 @@ export function getNextScheduleItem(today: Date = new Date()): ScheduleItem {
 
   // Walk forward day-by-day (not just Mon/Thu math) so a closure sitting
   // between today and the next Mon/Thu is actually skipped instead of
-  // silently landing inside it.
+  // silently landing inside it. Also capped at termEnd — a walk starting
+  // in the term's final week shouldn't be able to land past it.
   for (let i = 0; i <= 21; i++) {
     const d = new Date(today);
     d.setDate(today.getDate() + i);
+    if (d > termEnd) break;
     const day = d.getDay();
     if (day !== 1 && day !== 4) continue; // Mon=1, Thu=4
     if (getClosure(d)) continue;
     return { kind: "teaching", date: d, isToday: i === 0 };
   }
-  return { kind: "teaching", date: today, isToday: true }; // unreachable in practice
+  return { kind: "term-ended" };
 }
 
 /** Roughly which lesson we're on, given the term started `rcaSchedule.termStart` and these
