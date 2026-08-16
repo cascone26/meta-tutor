@@ -218,23 +218,25 @@ export default function RcaPage() {
             not just empty gradient. */}
         <BushDoodle size={46} className="absolute" style={{ top: "22%", right: "2%", color: "#4f6a41", opacity: 0.4, filter: "blur(0.7px) drop-shadow(0 2px 1px rgba(20,30,10,0.45))" }} />
 
-        {/* Pond — four rounds of hand-positioned sibling-div shadows all
-            genuinely fixed real, verified bugs (bounding-box centering,
-            getBBox fill-ratio math, contact-line centering, then the
-            pond's OWN glossy rendering) and Jacob still saw a floating
-            gap in the real deployed screenshot every time, despite each
-            one checking out in headless-Chrome pixel sampling. Rather than
-            keep hand-tuning position math that isn't translating to what's
-            actually being seen, switched to CSS drop-shadow: it renders an
-            offset+blurred copy of the element's OWN actual alpha silhouette
-            (including the bank/rim shape), not a separately-positioned
-            div that has to be manually aligned to guess where that
-            silhouette's bottom edge falls. It cannot end up with a gap —
-            there's no position math to get wrong. */}
+        {/* Pond — went through several rounds of hand-positioned shadows and
+            then a drop-shadow, and EVERY one of them was wrong for a
+            different reason than "gap/position": a pond is a depression IN
+            the ground, not an object standing ON it. Every other doodle
+            here (rock, tree, bushes, reeds, ant hill, bugs) genuinely sits
+            above the ground plane and casts a real shadow — a pond doesn't,
+            because it IS the ground, just lower and wet (Jacob, 2026-08-16,
+            after the drop-shadow version still read as "floating": "ponds
+            dont pertrude, theyre in the ground, NOT above"). Any offset
+            shadow under it — however well-positioned — reads as a raised
+            blob because that's literally what a cast shadow means visually.
+            No shadow at all is the correct fix. Depth now comes ENTIRELY
+            from the SVG's own darker bank/rim path (drawn behind the water
+            fill, in NatureIcons.tsx) — the only honest way to say "recessed"
+            instead of "raised." */}
         <PondDoodle
           size={150}
           className="absolute"
-          style={{ top: "32%", left: "6%", color: "#3f7ea6", opacity: 0.85, filter: "drop-shadow(0 5px 2px rgba(15,30,38,0.65))" }}
+          style={{ top: "32%", left: "6%", color: "#3f7ea6", opacity: 0.85 }}
         />
         <ReedDoodle size={34} className="absolute" style={{ top: "24%", left: "23%", color: "#5a7a4a", opacity: 0.8, filter: "drop-shadow(0 2px 1px rgba(20,30,10,0.4))" }} />
         <ReedDoodle size={28} className="absolute" style={{ top: "27%", left: "27%", color: "#4f6a41", opacity: 0.75, filter: "drop-shadow(0 2px 1px rgba(20,30,10,0.4))" }} />
