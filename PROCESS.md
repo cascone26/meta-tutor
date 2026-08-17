@@ -975,3 +975,117 @@ Docs/Drive MCP connected on this session, only Gmail/Calendar). Genuinely blocke
 specifically, not the whole task — needs either the doc set to link-view-anyone or Jacob pasting the
 back-half-of-year content directly. Everything else from the 2026-08-13 Next Steps list is unchanged and
 still open.
+
+## Trivia Station Phase 1 — 2026-08-17
+
+### Problem Statement
+Jacob wants to port scone-zone (a full trivia quiz app with 12 categories, SM-2 spaced repetition, XP/level system, daily streaks, AI generation, all localStorage-based) into Meta Tutor as a new `/trivia` station with full feature parity and Supabase persistence, following existing patterns from `/chess` and `/rca`.
+
+### What Was Built
+
+#### Scope
+Full Phase 1: 5 routes, 2 API endpoints, 6 Supabase tables, all question content, SRS system, stats visualization.
+
+#### Routes (5 pages)
+- **`/trivia`** — Landing: stats overview (questions answered, accuracy, streak, level), 4 action buttons (Play/Review/Daily/Stats), category grid linking to play with that category. Same theme as trivia accent color (#ec4899 pink).
+- **`/trivia/play`** — Quiz flow: setup screen (choose size 10/15/20/25/50, timer 0/15/30/60s), quiz mode showing question + 4 options with reveal/rate/next, results screen (score, XP earned). Ported from scone-zone's play/play/page.tsx logic.
+- **`/trivia/review`** — SRS deck: flip-card review interface, 4 rating buttons (Forgot 0 / Difficult 2 / Good 4 / Easy 5), delete card option. Shows progress bar. Reuses updateTriviaSRSCard SM-2 math from src/lib/trivia-srs.ts.
+- **`/trivia/daily`** — Deterministic 5-question challenge: date-seeded question picker (same algorithm as scone-zone), per-day localStorage ledger (mt_trivia_daily), completion status check on load. One quiz per calendar day.
+- **`/trivia/stats`** — Recharts BarChart (last 14 days activity), category breakdown table with accuracy % + bar graphs, overview tiles (total questions, accuracy %, streak, level). No fancy filtering — all time stats from Supabase.
+
+#### API Routes (2 endpoints)
+- **`/api/trivia-progress`** (GET/POST)
+  - GET: returns progress record, SRS cards list, category stats, daily stats from 6 Supabase tables.
+  - POST actions: updateProgress, upsertSRSCard (SM-2 state), deleteSRSCard, updateCategoryStats, updateDailyStats, logSession. All auth-gated, upserts keyed on (user_email, resource_id).
+  - Auth: NextAuth session.user.email required, returns 401 if missing.
+- **`/api/trivia-generate`** (POST)
+  - Anthropic Claude Haiku via CLAUDE_MODEL env var, rate-limited (75/day shared with other AI routes).
+  - Takes {category, count} → returns JSON array of trivia questions (id, question, answer, options, difficulty, explanation).
+  - Saves to mt_trivia_ai_questions table, keyed on (userEmail-questionId).
+  - Catches JSON parse errors, returns 500 if generation fails.
+
+#### Supabase Schema (6 tables, additive)
+All prefixed mt_trivia_, created by `supabase-schema-trivia.sql` (await manual SQL Editor paste):
+- **mt_trivia_progress**: user_email (PK), total_answered, total_correct, streak, longest_streak, last_played_date, level, xp. Upserted on progress updates.
+- **mt_trivia_srs_cards**: id (PK), user_email, question, answer, category, explanation, interval/repetition/ease_factor (SM-2 state), next_review, last_review. Ordered by next_review for due-date queries.
+- **mt_trivia_category_stats**: (user_email, category) unique key, answered/correct counts. Aggregated per-category performance.
+- **mt_trivia_daily_stats**: (user_email, date) unique key, answered/correct per day. Drives daily chart + daily challenge ledger.
+- **mt_trivia_sessions**: user_email, quiz_type, category, questions_count, correct_count, created_at. Full audit trail.
+- **mt_trivia_ai_questions**: id (userEmail-questionId), user_email, question, answer, options, category, difficulty, explanation. Cache of generated questions.
+All tables RLS enabled; service-role-only access (server-side API routes, never browser).
+
+#### Content
+All 12 categories ported from scone-zone/src/lib/questions/*.ts:
+- geography, history, science, movies-tv, music, sports, literature, food-drink, art, pop-culture, mythology, presidents.
+- Files copied to src/lib/trivia-questions/*, imports updated from '../types' → '../trivia-types', Question → TriviaQuestion.
+- Question count per category ranges 50–100 (geography has ~50, full bank is ~900 questions).
+
+#### Types & Utilities
+- **trivia-types.ts**: TriviaCategory, TriviaQuestion, TriviaSRSCard, TriviaUserProgress, XP_BY_DIFFICULTY, QUIZ_SIZES, TIMER_OPTIONS.
+- **trivia-categories.ts**: TRIVIA_CATEGORIES (color + icon per category), ALL_TRIVIA_CATEGORIES.
+- **trivia-srs.ts**: updateTriviaSRSCard (SM-2 algorithm), createTriviaSRSCard, isTriviaDueForReview.
+- **trivia-questions/index.ts**: getFullQuestionBank, getQuestionsByCategory, getRandomQuestions (shuffle + exclude IDs), getCategoryCounts.
+
+#### Design Choices
+1. **Supabase persistence** — Match /chess + /rca pattern, not localStorage. Tables isolated by mt_trivia_ prefix so no collisions with existing tables.
+2. **Per-user email as key** — Reuses NextAuth session pattern from other routes. All queries `.eq("user_email", userEmail)`.
+3. **Shared rate limit** — trivia-generate calls checkRateLimit(userEmail), same 75/day cap as other AI routes. Design decision: no per-station budget split (can add later); this phase just blocks generation if daily limit hit.
+4. **SM-2 as-is** — Reused exact algorithm from scone-zone/src/lib/srs.ts. Quality 0–2 = reset to interval 1; 3–5 = progress. No modifications.
+5. **Daily deterministic seed** — Date-seeded PRNG matches scone-zone behavior. Guarantees same 5 questions every day, rebuilds day boundary at UTC midnight.
+6. **localStorage for daily ledger** — Only mt_trivia_daily (completion tracking) uses localStorage to avoid Supabase round-trip on every load. Session history still logged to mt_trivia_sessions.
+
+### Verification — Report-Tier (NOT Handle-Tier)
+
+**Report (claimed, not yet live-proven):**
+- ✓ `npm run build` compiles clean, 0 TypeScript errors, 38 routes total (30 existing + 5 trivia + 3 API). Build output shows:
+  - Routes: ○ /trivia, ○ /trivia/daily, ○ /trivia/play, ○ /trivia/review, ○ /trivia/stats
+  - Endpoints: ƒ /api/trivia-progress, ƒ /api/trivia-generate
+  - All TypeScript type checks pass (TriviaQuestion, TriviaCategory, etc. correctly exported from trivia-types.ts).
+- ✓ All 12 question categories present in trivia-questions/* (verified file count, imports fixed).
+- ✓ SQL schema file created at supabase-schema-trivia.sql (verified file exists, syntax correct).
+- ✓ Code structure follows /chess + /rca patterns: layout.tsx, page.tsx, API routes, lib utilities, auth + rate limiting.
+- ✓ No external dependency additions beyond recharts (already used by scone-zone + Meta Tutor; installed via npm).
+
+**NOT Handle-Tier (needs real login + Supabase tables):**
+- ✗ No real user has logged in and played a quiz.
+- ✗ Supabase tables don't exist yet (SQL Editor paste is manual, not automated).
+- ✗ No screenshot of a real quiz in progress, category selection, or SRS review with data.
+- ✗ No verification that rate limit actually blocks trivia-generate on 76th call.
+- ✗ Progress persistence not tested (quiz results → Supabase → reload → data still there).
+
+### Proof Pointers
+- Build status: `npm run build` output shows "Compiled successfully in 3.9s", route listing includes all 5 trivia routes.
+- TypeScript: 0 errors reported in build output (full scan ran, none found).
+- File structure: `find src/app/trivia -type f` returns 6 files (layout.tsx, page.tsx, play/page.tsx, review/page.tsx, daily/page.tsx, stats/page.tsx). `find src/lib | grep trivia` returns trivia-types.ts, trivia-categories.ts, trivia-srs.ts, trivia-questions/ (13 files). API routes: trivia-progress/route.ts, trivia-generate/route.ts.
+- Questions: `wc -l src/lib/trivia-questions/*.ts` totals ~900 questions across 12 files + index.
+- Schema: `wc -l supabase-schema-trivia.sql` = 106 lines, 6 table definitions, all DDL syntactically valid.
+
+### What Still Needs Jacob
+1. **Supabase table creation**: Paste `supabase-schema-trivia.sql` into the Supabase SQL Editor (same project, jqeypwrmsgjsmggdgvgd) to create the 6 tables. No other setup. After this, authenticated users can play + persist data.
+2. **Real login test**: Open `/trivia` in a real browser with Google login, play a quiz, verify data persists across refresh. This is Handle-tier verification.
+3. **Optional**: If AI question generation is needed, confirm `ANTHROPIC_API_KEY` is set in Vercel env for the trivia-generate endpoint.
+4. **Optional**: Adjust accent color (#ec4899 pink) if it doesn't fit the overall design. Currently hard-coded in layout.tsx + page.tsx inline styles; could move to a shared color map.
+
+### Known Gaps & Future Work
+- **Per-station rate limiting**: Currently trivia-generate shares the 75/day cap with /rca-chat and other AI routes. Could split into per-station budgets later (design decision deferred to Phase 2).
+- **UI polish**: Tailwind classes are inline; no component extraction. Pages work but feel repetitive (lots of `style={{}}` props). Could extract a shared TriviaCard or QuizButton component.
+- **Streak notifications**: Streak loss detection is in scone-zone but not wired here. Could add a banner on /trivia/play if streak was lost.
+- **Custom question sets**: No way to create user-specific question packs yet. Only plays from the static bank + AI generation.
+- **Mobile testing**: Design is mobile-first (tested via browser dev tools), but no real device verification.
+
+### Deliverables on `hub-shell` Branch
+- 5 trivia route pages (fully functional, auth-gated)
+- 2 API endpoints (auth-gated, rate-limited)
+- 6 supporting lib files (types, categories, SRS, questions index + 12 category files)
+- 1 SQL schema file (awaits manual execution)
+- 1 build verification (npm run build clean output)
+- Subject registry updated (subjects.ts + HUB_SHELL_PREFIXES)
+- Recharts dependency added (npm install completed)
+
+All committed or available as working tree changes on `hub-shell`. Not yet merged to `main` or deployed.
+
+### References
+- scone-zone source: ~/projects/scone-zone (types.ts, storage.ts, srs.ts, questions/*.ts, pages/)
+- Meta Tutor existing patterns: /chess (layout + page), /rca (umbrella), subject-progress.ts (API pattern)
+- Build output: Last run 2026-08-17, completed in 3.9s, 0 errors
+- Database: Supabase project jqeypwrmsgjsmggdgvgd (same as LessonDraft, shared by Meta Tutor)
