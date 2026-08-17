@@ -93,10 +93,16 @@ export function TreeDoodle({ size = 20, className, style }: IconProps) {
           as converging on one shared point. */}
       <path d="M29 62c-3-1.5-6-0.5-8 2.5" stroke="#6b4a2a" strokeWidth="1.6" />
       <path d="M31 49c3-1 5.5 0 7 3" stroke="#6b4a2a" strokeWidth="1.4" />
-      <circle cx="21" cy="32" r="11" fill="currentColor" fillOpacity="0.6" stroke="currentColor" strokeWidth="1.2" strokeOpacity="0.5" />
-      <circle cx="39" cy="32" r="11" fill="currentColor" fillOpacity="0.6" stroke="currentColor" strokeWidth="1.2" strokeOpacity="0.5" />
-      <circle cx="30" cy="21" r="12.5" fill="currentColor" fillOpacity="0.68" stroke="currentColor" strokeWidth="1.2" strokeOpacity="0.5" />
-      <circle cx="30" cy="38" r="10.5" fill="currentColor" fillOpacity="0.6" stroke="currentColor" strokeWidth="1.2" strokeOpacity="0.5" />
+      {/* Canopy fillOpacity was 0.58-0.68 — translucent enough that grass
+          blades behind the tree visibly showed through the leaf mass
+          (Jacob, 2026-08-16: "make sure stuff isnt like showing through the
+          other opaque stuff"). A leaf canopy is solid from any distance in
+          real life; raised to near-opaque. strokeOpacity stays soft — that's
+          just the outline character, not the object's actual mass. */}
+      <circle cx="21" cy="32" r="11" fill="currentColor" fillOpacity="0.95" stroke="currentColor" strokeWidth="1.2" strokeOpacity="0.5" />
+      <circle cx="39" cy="32" r="11" fill="currentColor" fillOpacity="0.95" stroke="currentColor" strokeWidth="1.2" strokeOpacity="0.5" />
+      <circle cx="30" cy="21" r="12.5" fill="currentColor" fillOpacity="0.97" stroke="currentColor" strokeWidth="1.2" strokeOpacity="0.5" />
+      <circle cx="30" cy="38" r="10.5" fill="currentColor" fillOpacity="0.95" stroke="currentColor" strokeWidth="1.2" strokeOpacity="0.5" />
     </svg>
   );
 }
@@ -115,11 +121,13 @@ export function TreeDoodleB({ size = 20, className, style }: IconProps) {
           marks further apart (y=59/47 vs the old 55/49). */}
       <path d="M28 59c-3-1.8-6-0.7-8 2.3" stroke="#6b4a2a" strokeWidth="1.4" />
       <path d="M30 47c3-1 5.5 0.2 7 3" stroke="#6b4a2a" strokeWidth="1.3" />
-      <circle cx="19" cy="30" r="9.5" fill="currentColor" fillOpacity="0.6" stroke="currentColor" strokeWidth="1.1" strokeOpacity="0.48" />
-      <circle cx="36" cy="27" r="11.5" fill="currentColor" fillOpacity="0.66" stroke="currentColor" strokeWidth="1.1" strokeOpacity="0.48" />
-      <circle cx="25" cy="17" r="10.5" fill="currentColor" fillOpacity="0.7" stroke="currentColor" strokeWidth="1.1" strokeOpacity="0.48" />
-      <circle cx="30" cy="41" r="9.5" fill="currentColor" fillOpacity="0.58" stroke="currentColor" strokeWidth="1.1" strokeOpacity="0.45" />
-      <circle cx="42" cy="37" r="7.5" fill="currentColor" fillOpacity="0.55" stroke="currentColor" strokeWidth="1.1" strokeOpacity="0.42" />
+      {/* Same fillOpacity fix as TreeDoodle — a canopy is solid mass, not a
+          window onto whatever's behind it. */}
+      <circle cx="19" cy="30" r="9.5" fill="currentColor" fillOpacity="0.93" stroke="currentColor" strokeWidth="1.1" strokeOpacity="0.48" />
+      <circle cx="36" cy="27" r="11.5" fill="currentColor" fillOpacity="0.95" stroke="currentColor" strokeWidth="1.1" strokeOpacity="0.48" />
+      <circle cx="25" cy="17" r="10.5" fill="currentColor" fillOpacity="0.96" stroke="currentColor" strokeWidth="1.1" strokeOpacity="0.48" />
+      <circle cx="30" cy="41" r="9.5" fill="currentColor" fillOpacity="0.92" stroke="currentColor" strokeWidth="1.1" strokeOpacity="0.45" />
+      <circle cx="42" cy="37" r="7.5" fill="currentColor" fillOpacity="0.9" stroke="currentColor" strokeWidth="1.1" strokeOpacity="0.42" />
     </svg>
   );
 }
@@ -228,7 +236,12 @@ export function AntHillDoodle({ size = 20, className, style }: IconProps) {
   return (
     <svg width={size} height={size * 0.75} viewBox="0 0 44 30" fill="none" strokeLinecap="round" strokeLinejoin="round" className={className} style={style}>
       <path d="M3 27.5c6-1.3 12-0.8 18-0.5s14-1 20 0.6" stroke="currentColor" strokeWidth="1.2" strokeOpacity="0.42" />
-      <path d="M6 27c-1-9 6-17.5 15.5-17S35 12.5 34 27z" fill="currentColor" fillOpacity="0.62" stroke="currentColor" strokeWidth="1.3" strokeOpacity="0.4" />
+      {/* fillOpacity was 0.62 — confirmed via direct screenshot review
+          (2026-08-16, Jacob: "i can see the grass behind the ant hill bc i
+          can see slightly through it") that GrassField blades genuinely
+          showed through the mound's body. A dirt mound is solid ground, not
+          a translucent object; raised to near-opaque. */}
+      <path d="M6 27c-1-9 6-17.5 15.5-17S35 12.5 34 27z" fill="currentColor" fillOpacity="0.96" stroke="currentColor" strokeWidth="1.3" strokeOpacity="0.4" />
       {/* Volume shading — a darker patch biased to one side, not a symmetric
           underlayer, so the mound reads as a real rounded 3D form. */}
       <path d="M8 27c-0.5-7 2.5-13.5 7.5-16.3-4 4.5-5.5 10.5-4.3 16.3z" fill="#4a3420" fillOpacity="0.28" />
@@ -419,12 +432,16 @@ export function PathDoodle({ size = 20, className, style }: IconProps) {
 // Short filled foliage cluster, no trunk — same "overlapping circles" canopy
 // technique as TreeDoodle, just lower and denser, for a shrub/hedge instead of
 // a tree. Adds plant variety at ground level beyond "one tree, five flowers."
+// Same fillOpacity fix as the trees (was 0.58-0.66, let background show
+// through the leaf mass). Foliage is solid; distance/haze should come from
+// the wrapper's blur+opacity in page.tsx, not from the leaves themselves
+// being literally translucent.
 export function BushDoodle({ size = 20, className, style }: IconProps) {
   return (
     <svg width={size} height={size * 0.65} viewBox="0 0 50 32" fill="none" className={className} style={style}>
-      <circle cx="14" cy="19" r="10" fill="currentColor" fillOpacity="0.6" stroke="currentColor" strokeWidth="1" strokeOpacity="0.4" />
-      <circle cx="28" cy="14" r="12" fill="currentColor" fillOpacity="0.66" stroke="currentColor" strokeWidth="1" strokeOpacity="0.4" />
-      <circle cx="38" cy="20" r="9" fill="currentColor" fillOpacity="0.58" stroke="currentColor" strokeWidth="1" strokeOpacity="0.4" />
+      <circle cx="14" cy="19" r="10" fill="currentColor" fillOpacity="0.93" stroke="currentColor" strokeWidth="1" strokeOpacity="0.4" />
+      <circle cx="28" cy="14" r="12" fill="currentColor" fillOpacity="0.95" stroke="currentColor" strokeWidth="1" strokeOpacity="0.4" />
+      <circle cx="38" cy="20" r="9" fill="currentColor" fillOpacity="0.92" stroke="currentColor" strokeWidth="1" strokeOpacity="0.4" />
     </svg>
   );
 }

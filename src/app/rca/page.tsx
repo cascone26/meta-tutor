@@ -413,23 +413,32 @@ export default function RcaPage() {
             silhouette; two overlapping at different sizes/offsets breaks
             that into an irregular clump, which is what actually reads as
             "a bit of distant shrubbery" instead of "an abstract blur dot." */}
-        <BushDoodle size={58} className="absolute" style={{ top: "20%", left: "0%", color: "#4f6a41", opacity: 0.5, zIndex: zFor(20), filter: `blur(0.5px) ${castShadow(3, 1.5, "rgba(20,30,10,0.5)")}` }} />
-        <BushDoodle size={34} className="absolute" style={{ top: "26%", left: "3.5%", color: "#5a7a4a", opacity: 0.42, zIndex: zFor(26), filter: `blur(0.6px) ${castShadow(2, 1, "rgba(20,30,10,0.45)")}` }} />
-        <BushDoodle size={54} className="absolute" style={{ top: "16%", right: "23%", color: "#5a7a4a", opacity: 0.48, zIndex: zFor(16), filter: `blur(0.5px) ${castShadow(3, 1.5, "rgba(20,30,10,0.5)")}` }} />
-        <BushDoodle size={30} className="absolute" style={{ top: "21%", right: "20.5%", color: "#4f6a41", opacity: 0.4, zIndex: zFor(21), filter: `blur(0.6px) ${castShadow(2, 1, "rgba(20,30,10,0.42)")}` }} />
+        {/* Wrapper opacity across every bush here was 0.35-0.5 — used as the
+            "distance" cue, but a low element-opacity means the GrassField
+            behind it visibly shows through the whole bush, not just a haze
+            effect (same root bug as the ant hill, caught in the same
+            2026-08-16 review: "make sure stuff isnt like showing through
+            the other opaque stuff"). Real distant objects are still 100%
+            solid — what changes with distance is blur/color, not literal
+            transparency. Raised opacity to near-solid across the board and
+            shifted more of the "distance" weight onto blur (bumped) instead. */}
+        <BushDoodle size={58} className="absolute" style={{ top: "20%", left: "0%", color: "#4f6a41", opacity: 0.88, zIndex: zFor(20), filter: `blur(0.8px) ${castShadow(3, 1.5, "rgba(20,30,10,0.5)")}` }} />
+        <BushDoodle size={34} className="absolute" style={{ top: "26%", left: "3.5%", color: "#5a7a4a", opacity: 0.82, zIndex: zFor(26), filter: `blur(0.9px) ${castShadow(2, 1, "rgba(20,30,10,0.45)")}` }} />
+        <BushDoodle size={54} className="absolute" style={{ top: "16%", right: "23%", color: "#5a7a4a", opacity: 0.88, zIndex: zFor(16), filter: `blur(0.8px) ${castShadow(3, 1.5, "rgba(20,30,10,0.5)")}` }} />
+        <BushDoodle size={30} className="absolute" style={{ top: "21%", right: "20.5%", color: "#4f6a41", opacity: 0.8, zIndex: zFor(21), filter: `blur(0.9px) ${castShadow(2, 1, "rgba(20,30,10,0.42)")}` }} />
         {/* A third distant bush, further right — the old back row only had
             two anchors near the pond/tree; with the scene now full-width
             there's real space past the tree that needs its own depth layer,
             not just empty gradient. */}
-        <BushDoodle size={46} className="absolute" style={{ top: "22%", right: "2%", color: "#4f6a41", opacity: 0.4, zIndex: zFor(22), filter: `blur(0.7px) ${castShadow(2, 1, "rgba(20,30,10,0.45)")}` }} />
-        <BushDoodle size={26} className="absolute" style={{ top: "27%", right: "0%", color: "#5a7a4a", opacity: 0.35, zIndex: zFor(27), filter: `blur(0.7px) ${castShadow(2, 1, "rgba(20,30,10,0.4)")}` }} />
+        <BushDoodle size={46} className="absolute" style={{ top: "22%", right: "2%", color: "#4f6a41", opacity: 0.85, zIndex: zFor(22), filter: `blur(1px) ${castShadow(2, 1, "rgba(20,30,10,0.45)")}` }} />
+        <BushDoodle size={26} className="absolute" style={{ top: "27%", right: "0%", color: "#5a7a4a", opacity: 0.78, zIndex: zFor(27), filter: `blur(1.1px) ${castShadow(2, 1, "rgba(20,30,10,0.4)")}` }} />
         {/* A fourth, mid-scene — direct review (2026-08-16) found the whole
             middle stretch between the pond/mound cluster and the tree was
             visually dead: the three back-row bushes only sat at the far
             edges (0%, ~77%, ~98%), leaving the entire back/middle band bare
             except for thin flower stems in the front row. This breaks up
             that gap with actual foliage bulk, not just more small stems. */}
-        <BushDoodle size={50} className="absolute" style={{ top: "18%", left: "46%", color: "#5a7a4a", opacity: 0.44, zIndex: zFor(18), filter: `blur(0.6px) ${castShadow(3, 1.5, "rgba(20,30,10,0.48)")}` }} />
+        <BushDoodle size={50} className="absolute" style={{ top: "18%", left: "46%", color: "#5a7a4a", opacity: 0.88, zIndex: zFor(18), filter: `blur(0.9px) ${castShadow(3, 1.5, "rgba(20,30,10,0.48)")}` }} />
 
         {/* Pond — went through several rounds of hand-positioned shadows and
             then a drop-shadow, and EVERY one of them was wrong for a
@@ -456,7 +465,7 @@ export default function RcaPage() {
 
         {/* Pebbles at the pond's front edge — a material change (flat grey-
             brown, no green) so the scene isn't 100% foliage. */}
-        <RockDoodle size={32} className="absolute" style={{ top: "52%", left: "11%", opacity: 0.75, zIndex: zFor(52), filter: castShadow(1.5, 1, "rgba(20,20,15,0.45)") }} />
+        <RockDoodle size={32} className="absolute" style={{ top: "52%", left: "11%", opacity: 0.96, zIndex: zFor(52), filter: castShadow(1.5, 1, "rgba(20,20,15,0.45)") }} />
 
         {/* A soft, blurred ambient-occlusion-style blob UNDER the tree, in
             addition to its own drop-shadow — a thin offset silhouette copy
@@ -469,7 +478,7 @@ export default function RcaPage() {
         <TreeDoodle
           size={130}
           className="absolute"
-          style={{ top: "10%", right: "6%", color: "#4f6a41", opacity: 0.9, zIndex: zFor(10), animation: "sway 7s ease-in-out infinite", transformOrigin: "bottom center", filter: castShadow(5, 2, "rgba(20,30,10,0.55)") }}
+          style={{ top: "10%", right: "6%", color: "#4f6a41", opacity: 0.98, zIndex: zFor(10), animation: "sway 7s ease-in-out infinite", transformOrigin: "bottom center", filter: castShadow(5, 2, "rgba(20,30,10,0.55)") }}
         />
 
         {/* A few more trees, similar-ish but genuinely different (Jacob,
@@ -483,15 +492,21 @@ export default function RcaPage() {
             tree" critique — real foliage mass there now, not just grass
             texture filling a gap. */}
         <div className="absolute rounded-full" style={{ top: "34%", left: "58%", width: 46, height: 14, background: "radial-gradient(ellipse, rgba(20,30,10,0.3) 0%, transparent 75%)", filter: "blur(2px)", zIndex: zFor(34) }} />
+        {/* Both trees' opacity was carrying their "distance" almost
+            entirely (0.68 and 0.45) — enough that grass visibly showed
+            through the canopy mass, the same bug as everywhere else in this
+            pass. Raised opacity substantially; the "further back" read now
+            leans on blur (bumped) and the far tree's already-paler color
+            (#8aa085) instead of literal see-through. */}
         <TreeDoodleB
           size={78}
           className="absolute"
-          style={{ top: "16%", left: "58%", color: "#5a7a4a", opacity: 0.68, zIndex: zFor(16), animation: "sway 8.5s ease-in-out infinite 0.4s", transformOrigin: "bottom center", filter: `blur(0.4px) ${castShadow(3, 1.5, "rgba(20,30,10,0.4)")}` }}
+          style={{ top: "16%", left: "58%", color: "#5a7a4a", opacity: 0.9, zIndex: zFor(16), animation: "sway 8.5s ease-in-out infinite 0.4s", transformOrigin: "bottom center", filter: `blur(0.7px) ${castShadow(3, 1.5, "rgba(20,30,10,0.4)")}` }}
         />
         <TreeDoodle
           size={54}
           className="absolute"
-          style={{ top: "8%", left: "38%", color: "#8aa085", opacity: 0.45, zIndex: zFor(8), animation: "sway 9.5s ease-in-out infinite 1.1s", transformOrigin: "bottom center", filter: `blur(0.7px) ${castShadow(2, 1, "rgba(20,30,10,0.3)")}` }}
+          style={{ top: "8%", left: "38%", color: "#8aa085", opacity: 0.8, zIndex: zFor(8), animation: "sway 9.5s ease-in-out infinite 1.1s", transformOrigin: "bottom center", filter: `blur(1.1px) ${castShadow(2, 1, "rgba(20,30,10,0.3)")}` }}
         />
 
         {/* Front-row grass texture along the very base of the scene, below
@@ -562,7 +577,12 @@ export default function RcaPage() {
             size={f.size}
             className="absolute"
             style={{
-              top: f.top, left: f.left, color: f.color, opacity: 0.85, zIndex: zFor(parseFloat(f.top)),
+              // Wrapper opacity was ALSO 0.85, compounding with the SVG's
+              // own internal fillOpacity 0.85 for a real ~0.72 effective
+              // opacity — same class of grass-showing-through bug as the
+              // ant hill/trees/bushes, just less visually obvious at flower
+              // size. Raised so it isn't stacking two layers of translucency.
+              top: f.top, left: f.left, color: f.color, opacity: 0.97, zIndex: zFor(parseFloat(f.top)),
               animation: `sway ${f.d} ease-in-out infinite ${f.delay}`, transformOrigin: "bottom center",
               filter: castShadow(2, 1, "rgba(20,30,10,0.5)"),
             }}
@@ -598,7 +618,7 @@ export default function RcaPage() {
           }}
         >
           <div style={{ animation: "faceFlip 16s steps(1) infinite" }}>
-            <BugDoodle size={18} style={{ color: "#a04a4a", opacity: 0.85, display: "block" }} />
+            <BugDoodle size={18} style={{ color: "#a04a4a", opacity: 0.97, display: "block" }} />
           </div>
         </div>
         <div
@@ -615,7 +635,7 @@ export default function RcaPage() {
               "ladybug" that camouflages into the lawn instead of standing
               out defeats the point of putting a bug there at all. */}
           <div style={{ animation: "faceFlip 12.5s steps(1) infinite 2.3s" }}>
-            <BugDoodle size={14} style={{ color: "#d4823a", opacity: 0.8, display: "block" }} />
+            <BugDoodle size={14} style={{ color: "#d4823a", opacity: 0.95, display: "block" }} />
           </div>
         </div>
 
@@ -628,15 +648,15 @@ export default function RcaPage() {
             second-largest object in the scene and deserves the same real
             "weight" treatment, not just a thin offset silhouette. */}
         <div className="absolute rounded-full" style={{ top: "56%", left: "21%", width: 54, height: 15, background: "radial-gradient(ellipse, rgba(20,30,10,0.3) 0%, transparent 75%)", filter: "blur(2.5px)", zIndex: zFor(56) }} />
-        <AntHillDoodle size={88} className="absolute" style={{ top: "42%", left: "23%", color: "#8a6a3a", opacity: 0.85, zIndex: zFor(42), filter: castShadow(4, 1.5, "rgba(20,30,10,0.5)") }} />
+        <AntHillDoodle size={88} className="absolute" style={{ top: "42%", left: "23%", color: "#8a6a3a", opacity: 0.97, zIndex: zFor(42), filter: castShadow(4, 1.5, "rgba(20,30,10,0.5)") }} />
         {/* Debris scattered near the hill so it reads as an actual patch of
             ground the colony lives on, not a bare mound on clean gradient.
             Real twigs sit slightly proud of the grass (they have actual
             thickness), so a very light contact shadow belongs here too —
             lighter than anything else in the scene since they're nearly
             flush, not genuinely raised like the flowers/bushes. */}
-        <TwigDoodle size={30} className="absolute" style={{ top: "68%", left: "34%", opacity: 0.7, zIndex: zFor(68), transform: "rotate(-8deg)", filter: castShadow(1, 0.5, "rgba(20,30,10,0.35)") }} />
-        <TwigDoodle size={22} className="absolute" style={{ top: "58%", left: "18%", opacity: 0.6, zIndex: zFor(58), transform: "rotate(20deg) scaleX(-1)", filter: castShadow(1, 0.5, "rgba(20,30,10,0.35)") }} />
+        <TwigDoodle size={30} className="absolute" style={{ top: "68%", left: "34%", opacity: 0.9, zIndex: zFor(68), transform: "rotate(-8deg)", filter: castShadow(1, 0.5, "rgba(20,30,10,0.35)") }} />
+        <TwigDoodle size={22} className="absolute" style={{ top: "58%", left: "18%", opacity: 0.85, zIndex: zFor(58), transform: "rotate(20deg) scaleX(-1)", filter: castShadow(1, 0.5, "rgba(20,30,10,0.35)") }} />
         {/* Duration/delay hand-varied and deliberately NOT tied to one shared
             linear parameter — driving every ant off the same 0.05-step value
             makes each one exactly 0.05s slower AND more delayed than its
