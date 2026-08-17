@@ -71,6 +71,17 @@ function generateGrassField(count: number, seed: number): GrassBlade[] {
     // a hard band boundary would itself read as a mechanical stripe.
     if (depthT < 0.35 && rand() > 0.35 + depthT) continue;
     const x = rand() * GRASS_FIELD_VB.w;
+    // The pond (top:32%, left:6%, ~150px wide) sits within this field's
+    // area, and its water fill is deliberately translucent (0.72 opacity —
+    // kept flat/non-glossy on purpose, see PondDoodle). A blade rendering
+    // behind that translucent fill still shows through faintly as an odd
+    // line cutting across the water (caught in the 2026-08-16 picky review
+    // — confirmed via DOM query that real GrassField blades' bounding boxes
+    // genuinely overlap the pond's, not a rendering illusion). Simplest
+    // correct fix: don't generate blades under the pond at all, with a
+    // generous margin, rather than patching it with more pond opacity
+    // (which would undo the deliberate flat/non-glossy water look).
+    if (x > 40 && x < 290 && y > 100 && y < 215) continue;
     const angle = (rand() - 0.5) * 34; // degrees off vertical
     const curve = (rand() - 0.5) * 9;
     const len = 5 + rand() * 8 + depthT * 11; // longer near, shorter far
@@ -395,13 +406,23 @@ export default function RcaPage() {
             checked out in pixel sampling and Jacob still saw a gap in the
             real deployed screenshot every time — this replaces that whole
             approach instead of tuning it a fifth time. */}
+        {/* Each back-row position now gets a SECOND, smaller, offset bush
+            clustered right against the first — flagged three separate
+            reviews running as "still just vague blurry circles, no coherent
+            structure." A single blurred BushDoodle is one clean circular
+            silhouette; two overlapping at different sizes/offsets breaks
+            that into an irregular clump, which is what actually reads as
+            "a bit of distant shrubbery" instead of "an abstract blur dot." */}
         <BushDoodle size={58} className="absolute" style={{ top: "20%", left: "0%", color: "#4f6a41", opacity: 0.5, zIndex: zFor(20), filter: `blur(0.5px) ${castShadow(3, 1.5, "rgba(20,30,10,0.5)")}` }} />
+        <BushDoodle size={34} className="absolute" style={{ top: "26%", left: "3.5%", color: "#5a7a4a", opacity: 0.42, zIndex: zFor(26), filter: `blur(0.6px) ${castShadow(2, 1, "rgba(20,30,10,0.45)")}` }} />
         <BushDoodle size={54} className="absolute" style={{ top: "16%", right: "23%", color: "#5a7a4a", opacity: 0.48, zIndex: zFor(16), filter: `blur(0.5px) ${castShadow(3, 1.5, "rgba(20,30,10,0.5)")}` }} />
+        <BushDoodle size={30} className="absolute" style={{ top: "21%", right: "20.5%", color: "#4f6a41", opacity: 0.4, zIndex: zFor(21), filter: `blur(0.6px) ${castShadow(2, 1, "rgba(20,30,10,0.42)")}` }} />
         {/* A third distant bush, further right — the old back row only had
             two anchors near the pond/tree; with the scene now full-width
             there's real space past the tree that needs its own depth layer,
             not just empty gradient. */}
         <BushDoodle size={46} className="absolute" style={{ top: "22%", right: "2%", color: "#4f6a41", opacity: 0.4, zIndex: zFor(22), filter: `blur(0.7px) ${castShadow(2, 1, "rgba(20,30,10,0.45)")}` }} />
+        <BushDoodle size={26} className="absolute" style={{ top: "27%", right: "0%", color: "#5a7a4a", opacity: 0.35, zIndex: zFor(27), filter: `blur(0.7px) ${castShadow(2, 1, "rgba(20,30,10,0.4)")}` }} />
         {/* A fourth, mid-scene — direct review (2026-08-16) found the whole
             middle stretch between the pond/mound cluster and the tree was
             visually dead: the three back-row bushes only sat at the far
@@ -517,15 +538,20 @@ export default function RcaPage() {
             clump. Three clusters of 2 (near the ant hill / mid-path / by the
             tree) instead of five isolated singles spread across the width. */}
         {([
-          // Cluster A — by the ant hill
-          { Shape: DaisyDoodle, size: 36, top: "50%", left: "44%", color: "#5a7a4a", d: "5.5s", delay: "0.6s" },
+          // Cluster A — by the ant hill. Daisy was #5a7a4a — the SAME green
+          // as the surrounding grass, so it camouflaged into the background
+          // instead of reading as a flower (caught in the 2026-08-16 picky
+          // review). Real daisies are white/cream petals, not foliage-green.
+          { Shape: DaisyDoodle, size: 36, top: "50%", left: "44%", color: "#f0ebd8", d: "5.5s", delay: "0.6s" },
           { Shape: TulipDoodle, size: 26, top: "58%", left: "48%", color: "#c9843a", d: "4.6s", delay: "0.2s" },
           // Cluster B — mid-path
           { Shape: FlowerDoodle, size: 32, top: "44%", left: "56%", color: "#3f7ea6", d: "5s", delay: "0.5s" },
           { Shape: TulipDoodle, size: 24, top: "52%", left: "59%", color: "#c9843a", d: "4.3s", delay: "0.4s" },
           // Cluster C — approaching the tree
           { Shape: FlowerDoodle, size: 34, top: "42%", left: "70%", color: "#7a5a8a", d: "4.8s", delay: "0.7s" },
-          { Shape: DaisyDoodle, size: 24, top: "50%", left: "73%", color: "#5a7a4a", d: "5.2s", delay: "0.1s" },
+          // Same camouflage-green issue as Cluster A's daisy — a soft yellow
+          // here instead, so the two daisies aren't identical twins either.
+          { Shape: DaisyDoodle, size: 24, top: "50%", left: "73%", color: "#e0c968", d: "5.2s", delay: "0.1s" },
           // Cluster D — past the tree, filling the width that opened up once
           // the scene went full-width instead of a centered 760px column.
           { Shape: TulipDoodle, size: 28, top: "48%", left: "84%", color: "#7a5a8a", d: "5.1s", delay: "0.3s" },
@@ -585,8 +611,11 @@ export default function RcaPage() {
             filter: castShadow(1.5, 1, "rgba(20,30,10,0.55)"),
           }}
         >
+          {/* Was the same #5a7a4a grass-green as the daisies above — a
+              "ladybug" that camouflages into the lawn instead of standing
+              out defeats the point of putting a bug there at all. */}
           <div style={{ animation: "faceFlip 12.5s steps(1) infinite 2.3s" }}>
-            <BugDoodle size={14} style={{ color: "#5a7a4a", opacity: 0.8, display: "block" }} />
+            <BugDoodle size={14} style={{ color: "#d4823a", opacity: 0.8, display: "block" }} />
           </div>
         </div>
 

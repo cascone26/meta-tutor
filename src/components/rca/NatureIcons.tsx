@@ -83,11 +83,16 @@ export function TreeDoodle({ size = 20, className, style }: IconProps) {
           ~1.5 units, a connection thin enough to read as the canopy
           floating just above a disconnected trunk rather than growing out
           of it (flagged in a full-scene visual pass, 2026-08-13). Now
-          overlaps by ~9 units, solidly inside the canopy mass. Branch
-          offshoots stay near the base (y=58/54, close to the ground
-          contact at y=68) — that's real root-flare, not a rendering bug. */}
+          overlaps by ~9 units, solidly inside the canopy mass. */}
       <path d="M30 68V39" stroke="#6b4a2a" strokeWidth="2.4" />
-      <path d="M30 58c-4-2-8-1-10 3M30 54c4-1.5 7-.5 9 2.5" stroke="#6b4a2a" strokeWidth="1.6" />
+      {/* Branch offshoots — were both starting within 4 units of each other
+          (y=58/54) and fanning to OPPOSITE sides from nearly the same point,
+          which reads as a crossing wishbone/slingshot rather than a natural
+          root flare (caught in the 2026-08-16 picky review). Spaced further
+          apart vertically (y=62/49, 13 units apart) so they no longer read
+          as converging on one shared point. */}
+      <path d="M29 62c-3-1.5-6-0.5-8 2.5" stroke="#6b4a2a" strokeWidth="1.6" />
+      <path d="M31 49c3-1 5.5 0 7 3" stroke="#6b4a2a" strokeWidth="1.4" />
       <circle cx="21" cy="32" r="11" fill="currentColor" fillOpacity="0.6" stroke="currentColor" strokeWidth="1.2" strokeOpacity="0.5" />
       <circle cx="39" cy="32" r="11" fill="currentColor" fillOpacity="0.6" stroke="currentColor" strokeWidth="1.2" strokeOpacity="0.5" />
       <circle cx="30" cy="21" r="12.5" fill="currentColor" fillOpacity="0.68" stroke="currentColor" strokeWidth="1.2" strokeOpacity="0.5" />
@@ -106,7 +111,10 @@ export function TreeDoodleB({ size = 20, className, style }: IconProps) {
   return (
     <svg width={size} height={size} viewBox="0 0 60 70" fill="none" strokeLinecap="round" strokeLinejoin="round" className={className} style={style}>
       <path d="M28 68c1-10 2-18 4-27" stroke="#6b4a2a" strokeWidth="2.2" />
-      <path d="M29 55c-3-2-6-1-8 2M31 49c3-1.2 6-.3 7.5 2.5" stroke="#6b4a2a" strokeWidth="1.4" />
+      {/* Same wishbone-crossing fix as TreeDoodle — spaced the two branch
+          marks further apart (y=59/47 vs the old 55/49). */}
+      <path d="M28 59c-3-1.8-6-0.7-8 2.3" stroke="#6b4a2a" strokeWidth="1.4" />
+      <path d="M30 47c3-1 5.5 0.2 7 3" stroke="#6b4a2a" strokeWidth="1.3" />
       <circle cx="19" cy="30" r="9.5" fill="currentColor" fillOpacity="0.6" stroke="currentColor" strokeWidth="1.1" strokeOpacity="0.48" />
       <circle cx="36" cy="27" r="11.5" fill="currentColor" fillOpacity="0.66" stroke="currentColor" strokeWidth="1.1" strokeOpacity="0.48" />
       <circle cx="25" cy="17" r="10.5" fill="currentColor" fillOpacity="0.7" stroke="currentColor" strokeWidth="1.1" strokeOpacity="0.48" />
@@ -146,6 +154,14 @@ export function TulipDoodle({ size = 20, className, style }: IconProps) {
       <path d="M12 30v-13" stroke={STEM} strokeWidth="1.3" />
       <path d="M12 20c-2 0-4-1.5-4.5-4" stroke={STEM} strokeWidth="1.3" />
       <path d="M7 12c0-4 2-7 5-7s5 3 5 7c0 1.6-1.1 2.6-2.4 2.6H9.4C8.1 14.6 7 13.6 7 12z" fill="currentColor" fillOpacity="0.85" />
+      {/* Petal-fold lines — the bloom used to be one flat blob, thin next to
+          the daisy/flower's multi-piece construction (caught in the
+          2026-08-16 picky review: "reads as thin/underdetailed... a colored
+          blob on a stem"). Two subtle curves suggesting the classic 3-petal
+          tulip-cup fold, dark and low-opacity so they read as shading, not
+          new outline shapes. */}
+      <path d="M9.3 6.3c-.7 1.7-.9 3.7-.4 6" stroke="#2a1f14" strokeOpacity="0.22" strokeWidth="0.7" fill="none" />
+      <path d="M14.7 6.3c.7 1.7.9 3.7.4 6" stroke="#2a1f14" strokeOpacity="0.22" strokeWidth="0.7" fill="none" />
     </svg>
   );
 }
@@ -216,12 +232,21 @@ export function AntHillDoodle({ size = 20, className, style }: IconProps) {
       {/* Volume shading — a darker patch biased to one side, not a symmetric
           underlayer, so the mound reads as a real rounded 3D form. */}
       <path d="M8 27c-0.5-7 2.5-13.5 7.5-16.3-4 4.5-5.5 10.5-4.3 16.3z" fill="#4a3420" fillOpacity="0.28" />
-      {/* Entrance — an angled oval tunnel mouth, off-center, not a centered
-          circle (that centered-dot placement was half of the face problem). */}
-      <ellipse cx="25" cy="14.5" rx="2.8" ry="1.7" fill="#2a1a0c" transform="rotate(-18 25 14.5)" />
-      <ellipse cx="24.3" cy="14.3" rx="1.5" ry="0.8" fill="#170e06" transform="rotate(-18 25 14.5)" />
-      {/* Excavated dirt spilling from the tunnel mouth — a real ant-hill cue. */}
-      <path d="M27 16c2.2 0 4.2 1 4.6 2.6.3 1.3-.8 2.2-2.4 2.1-1.9-.1-3.5-1.4-3.8-3.1z" fill="#8a6a3a" fillOpacity="0.55" />
+      {/* Entrance — an angled, ELONGATED tunnel mouth (narrower than before),
+          off-center, not a centered circle. Picky review (2026-08-16) still
+          caught this reading as a single bold dark "eye/mole" — a solid
+          fill='#2a1a0c' with no opacity was the boldest, darkest mark on the
+          whole mound by a wide margin, so it dominated and nothing nearby
+          competed with it. Narrowed + given real opacity so it isn't one
+          flat blob, and the dirt spill below is now bigger/warmer/bolder so
+          the two genuinely read as two different features next to each
+          other, not one ambiguous mark. */}
+      <ellipse cx="25.5" cy="14.5" rx="2.2" ry="1.3" fill="#2a1a0c" fillOpacity="0.85" transform="rotate(-22 25.5 14.5)" />
+      <ellipse cx="24.9" cy="14.3" rx="1.1" ry="0.6" fill="#170e06" fillOpacity="0.9" transform="rotate(-22 25.5 14.5)" />
+      {/* Excavated dirt spilling from the tunnel mouth — a real ant-hill cue,
+          made bigger/warmer/more opaque so it reads as its own distinct
+          feature instead of a faint smudge the entrance mark visually beat. */}
+      <path d="M27.5 15.8c2.8-0.2 5.4 1 6 3.1.5 1.7-1 2.9-3.1 2.7-2.4-0.2-4.5-1.8-4.9-3.9z" fill="#a2814a" fillOpacity="0.75" stroke="#8a6a3a" strokeOpacity="0.4" strokeWidth="0.5" />
       {/* Irregular texture — 5 marks, no symmetric pairs, varied shape/size. */}
       <path d="M11 22.5c.9-.3 1.8 0 2.1.7" stroke="#3a2510" strokeWidth="1" strokeOpacity="0.5" />
       <circle cx="19" cy="25" r="0.8" fill="#4a3420" fillOpacity="0.4" />
@@ -406,11 +431,17 @@ export function BushDoodle({ size = 20, className, style }: IconProps) {
 
 // A small filled pebble cluster — garden-edge detail, distinct material (flat
 // grey-brown, no green) so the scene isn't 100% foliage.
+// Colors were #8a8478/#a29c8e at 0.7-0.75 opacity — too close in value to
+// the green ground behind it, so it washed out to a pale grey-lavender smudge
+// that barely read as "rock" (caught in the 2026-08-16 picky review). Darker,
+// more saturated warm greys at higher opacity, plus a crevice line between
+// the two lobes for real definition instead of one soft merged shape.
 export function RockDoodle({ size = 20, className, style }: IconProps) {
   return (
     <svg width={size} height={size * 0.55} viewBox="0 0 40 22" fill="none" className={className} style={style}>
-      <path d="M2 20c-1-5 3-9 8-9s7 3 8 6c3-2 7-1 8 2 1 2-1 4-4 4H6c-2 0-3.5-1-4-3z" fill="#8a8478" fillOpacity="0.75" />
-      <path d="M22 20c0-4 3-6 6-6s6 2 6 6" fill="#a29c8e" fillOpacity="0.7" />
+      <path d="M2 20c-1-5 3-9 8-9s7 3 8 6c3-2 7-1 8 2 1 2-1 4-4 4H6c-2 0-3.5-1-4-3z" fill="#6b6558" fillOpacity="0.88" />
+      <path d="M22 20c0-4 3-6 6-6s6 2 6 6" fill="#8a8270" fillOpacity="0.82" />
+      <path d="M20 19c0-2 1-3.5 2.5-4.3" stroke="#4a453a" strokeOpacity="0.35" strokeWidth="1" strokeLinecap="round" fill="none" />
     </svg>
   );
 }
