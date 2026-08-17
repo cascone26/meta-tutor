@@ -481,17 +481,35 @@ export default function RcaPage() {
             from the SVG's own darker bank/rim path (drawn behind the water
             fill, in NatureIcons.tsx) — the only honest way to say "recessed"
             instead of "raised." */}
+        {/* "the little area around it" (Jacob, 2026-08-16) — a soft, wider,
+            mossy-damp wash centered on the pond, so the ground immediately
+            surrounding the water reads as a real damp margin instead of dry
+            grass butting straight up against a rim line. Same z:1 as the
+            other background color washes — sits under everything, purely
+            ambient coloring. */}
+        <div className="absolute rounded-full" style={{ top: "24%", left: "-3%", width: "34%", height: "56%", background: "radial-gradient(ellipse, rgba(90,110,60,0.16) 0%, transparent 72%)", zIndex: 1 }} />
         <PondDoodle
           size={150}
           className="absolute"
           style={{ top: "32%", left: "6%", color: "#3f7ea6", opacity: 0.85, zIndex: zFor(32) }}
         />
-        <ReedDoodle size={34} className="absolute" style={{ top: "24%", left: "23%", color: "#5a7a4a", opacity: 0.8, zIndex: zFor(24), filter: castShadow(2, 1, "rgba(20,30,10,0.4)") }} />
-        <ReedDoodle size={28} className="absolute" style={{ top: "27%", left: "27%", color: "#4f6a41", opacity: 0.75, zIndex: zFor(27), filter: castShadow(2, 1, "rgba(20,30,10,0.4)") }} />
+        {/* Reeds/rock were positioned above and to the right of the pond's
+            actual bounding box (pond spans top~32-52%, left~6-16%) — nowhere
+            close enough to visually belong to it, which is exactly why "the
+            area around it" read as generic grass rather than a pond's edge
+            (Jacob, 2026-08-16: "make the pond more pond like and the little
+            area around it"). Moved to genuinely hug the water: two reeds at
+            the back-right rim, a third added on the front-left for balance
+            (the old two both sat on the same side), rock nudged right up
+            against the front-left edge instead of just "somewhere nearby." */}
+        <ReedDoodle size={34} className="absolute" style={{ top: "28%", left: "14%", color: "#5a7a4a", opacity: 0.8, zIndex: zFor(28), filter: castShadow(2, 1, "rgba(20,30,10,0.4)") }} />
+        <ReedDoodle size={26} className="absolute" style={{ top: "32%", left: "16.5%", color: "#4f6a41", opacity: 0.75, zIndex: zFor(32), filter: castShadow(2, 1, "rgba(20,30,10,0.4)") }} />
+        <ReedDoodle size={22} className="absolute" style={{ top: "38%", left: "2%", color: "#5a7a4a", opacity: 0.7, zIndex: zFor(38), filter: castShadow(1.5, 1, "rgba(20,30,10,0.38)") }} />
 
-        {/* Pebbles at the pond's front edge — a material change (flat grey-
-            brown, no green) so the scene isn't 100% foliage. */}
-        <RockDoodle size={32} className="absolute" style={{ top: "52%", left: "11%", opacity: 0.96, zIndex: zFor(52), filter: castShadow(1.5, 1, "rgba(20,20,15,0.45)") }} />
+        {/* Pebbles right at the pond's edge now (was floating a bit south
+            of it in open grass) — a material change (flat grey-brown, no
+            green) so the scene isn't 100% foliage. */}
+        <RockDoodle size={34} className="absolute" style={{ top: "48%", left: "8%", opacity: 0.96, zIndex: zFor(48), filter: castShadow(1.5, 1, "rgba(20,20,15,0.45)") }} />
 
         {/* A soft, blurred ambient-occlusion-style blob UNDER the tree, in
             addition to its own drop-shadow — a thin offset silhouette copy

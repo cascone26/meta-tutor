@@ -328,6 +328,21 @@ export function AntDoodle({ size = 8, className, style }: IconProps) {
 export function PondDoodle({ size = 20, className, style }: IconProps) {
   return (
     <svg width={size} height={size * 0.5} viewBox="0 0 60 30" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" className={className} style={style}>
+      {/* Jacob (2026-08-16): "make the pond more pond like." The water
+          shape itself was already solved (flat fill, no glossy cue, real
+          bank) but the transition from dry grass to water was just one
+          thin bank ring — real ponds have a real damp/mossy margin BEFORE
+          the mud bank, not grass-then-immediately-mud. Added a second,
+          wider, more irregular ring OUTSIDE the original bank for that
+          transition — same flat-fill, no-gradient discipline as everything
+          else here, just a different hue (mossy green-brown vs. the bank's
+          warmer mud tone). */}
+      <path
+        d="M0 20c-2-9 9-16 19-14.5s15 1.5 23 5 13 7.5 11.5 12.5S41 32 29 32 1.5 27 0 20z"
+        fill="#5a6a3a"
+        fillOpacity="0.22"
+        stroke="none"
+      />
       {/* A visible darker bank/rim OUTSIDE the water body — the actual
           "this sits in the ground, not on top of it" cue, drawn first so
           the water body paints over its inner edge. */}
@@ -350,9 +365,16 @@ export function PondDoodle({ size = 20, className, style }: IconProps) {
         strokeOpacity="0.65"
       />
       {/* Ripple lines — flat, low-contrast, same hue as the water, no
-          light-source implication. */}
-      <path d="M10 13c8-3.5 20-3.5 29 2" stroke="currentColor" strokeOpacity="0.2" strokeWidth="1" fill="none" />
-      <path d="M9 21c7 2.5 17 2.5 25-0.5" stroke="currentColor" strokeOpacity="0.15" strokeWidth="1" fill="none" />
+          light-source implication. A third line and a small ripple-ring
+          near the smaller lily pad added for more visible water texture
+          (was nearly invisible at 0.15-0.2 opacity before) — the ring goes
+          on only ONE pad, not both, since a matched pair of new marks
+          risks tripping the same "reads as a face" gestalt already solved
+          once for this component. */}
+      <path d="M10 13c8-3.5 20-3.5 29 2" stroke="currentColor" strokeOpacity="0.28" strokeWidth="1" fill="none" />
+      <path d="M9 21c7 2.5 17 2.5 25-0.5" stroke="currentColor" strokeOpacity="0.22" strokeWidth="1" fill="none" />
+      <path d="M13 16.5c4-2 9-2 13 0.5" stroke="currentColor" strokeOpacity="0.18" strokeWidth="0.8" fill="none" />
+      <ellipse cx="17" cy="20.5" rx="6.5" ry="2.8" stroke="currentColor" strokeOpacity="0.18" strokeWidth="0.7" fill="none" />
       {/* Lily pads — a distinct GREEN, not a lighter tint of the water's
           own blue. The previous version used currentColor at lower
           opacity than the water around it, which made a "lily pad" read
