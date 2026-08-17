@@ -41,8 +41,13 @@ export default function HubContent({ firstName }: { firstName: string | null }) 
 
   useEffect(() => {
     const saved = localStorage.getItem(THEME_KEY);
-    if (saved === "light" || saved === "dark") setTheme(saved);
     const h = new Date().getHours();
+    if (saved === "light" || saved === "dark") {
+      setTheme(saved);
+    } else {
+      // No saved preference — default to light during the day (6am-6pm), dark at night.
+      setTheme(h >= 6 && h < 18 ? "light" : "dark");
+    }
     setGreeting(h < 12 ? "Good morning" : h < 18 ? "Good afternoon" : "Good evening");
     setMounted(true);
   }, []);
