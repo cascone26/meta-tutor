@@ -92,7 +92,7 @@ function GrassField({ count, seed }: { count: number; seed: number }) {
       height="100%"
       viewBox={`0 0 ${GRASS_FIELD_VB.w} ${GRASS_FIELD_VB.h}`}
       preserveAspectRatio="none"
-      style={{ pointerEvents: "none" }}
+      style={{ pointerEvents: "none", zIndex: 1 }}
     >
       {blades.map((b, i) => {
         const rad = (b.angle * Math.PI) / 180;
@@ -116,22 +116,41 @@ function GrassField({ count, seed }: { count: number; seed: number }) {
   );
 }
 
-// Real foraging loops for the ant trail (Jacob, 2026-08-16: "a more complex
+// Real foraging routes for the ant trail (Jacob, 2026-08-16: "a more complex
 // system or loop of movement like walking off screen" — replacing the old
-// small translateX-oscillation). Each is a CLOSED curve relative to the
-// ant's own anchor position (its top/left) — offset-distance 0%->100% via
-// the travelLoop keyframe traces the whole loop forever with no visible
-// snap-back, and offset-rotate:auto faces the ant along its actual travel
-// direction. Sizes vary from a tight local wander to genuinely large loops
-// that exit the visible ground zone before looping back — real ants forage
-// out from the colony and back, not pace a fixed spot.
+// small translateX-oscillation, then again after "like being upsidedown
+// when walking back" — see the travelLoop/faceFlip comment in globals.css
+// for the full fix). Each is an OPEN curve relative to the ant's own anchor
+// (top/left): the travelLoop keyframe walks offset-distance out to 100%
+// then back to 0% along the SAME curve (real ants forage out and return by
+// roughly the same route), so these don't need to close back to their own
+// start the way a true closed loop would. Sizes vary from a tight local
+// wander to genuinely long routes that exit the visible ground zone before
+// the return leg.
 const ANT_PATHS = [
-  "path('M0,0 C18,-10 32,4 22,16 C10,26 -8,18 -4,4 C-2,-4 6,-6 0,0 Z')",
-  "path('M0,0 C30,-14 60,2 75,-8 C95,-20 100,8 65,20 C35,30 10,18 0,0 Z')",
-  "path('M0,0 C-25,12 -55,28 -40,44 C-25,58 15,48 8,22 C4,8 8,-4 0,0 Z')",
-  "path('M0,0 C-70,-18 -160,-6 -210,-14 C-260,-22 -250,14 -170,18 C-90,22 -20,10 0,0 Z')",
-  "path('M0,0 C40,-20 90,-4 110,-22 C135,-42 120,20 70,26 C30,30 10,14 0,0 Z')",
+  "path('M0,0 C10,-8 18,2 12,10 C6,16 -4,14 -6,6')",
+  "path('M0,0 C25,-10 45,5 60,-5 C78,-16 85,10 95,2')",
+  "path('M0,0 C-15,10 -30,22 -22,36 C-14,48 5,42 10,28')",
+  "path('M0,0 C-50,-15 -110,-5 -160,-18 C-210,-30 -240,-10 -280,-15')",
+  "path('M0,0 C35,-18 70,-8 95,-25 C115,-38 130,-15 150,-5')",
 ];
+
+// Real depth layering (Jacob, 2026-08-16: "REALLY work on making a depth
+// filled scene... the x and y are obv the easy part but the z really needs
+// work") — every doodle used to be a plain absolutely-positioned sibling,
+// so paint order was pure DOM order, not actual scene depth: an element
+// higher up (further away) could render IN FRONT of one lower down (closer)
+// just because it happened to come later in the JSX. This is the classic
+// 2D "fake depth" fix (Y-sorting / painter's algorithm, same technique
+// top-down/isometric games use): z-index derived directly from an element's
+// own vertical position, so anything further DOWN the ground zone (closer
+// to the viewer) always paints over anything further UP (further away),
+// regardless of source order. Applied to every object below via zFor(topPct)
+// — the ground texture/wash layers stay fixed at the bottom (z:1) since
+// they're the surface everything else sits on, not objects in the scene.
+function zFor(topPercent: number): number {
+  return Math.max(2, Math.round(topPercent * 10));
+}
 
 export default function RcaPage() {
   const academic = rcaClasses.filter((c) => c.area === "Academic");
@@ -321,11 +340,11 @@ export default function RcaPage() {
             breakup. First pass (opacity 0.08-0.28, no positional logic) was
             confirmed too weak / not directionally meaningful by direct
             review. */}
-        <div className="absolute rounded-full" style={{ top: "45%", left: "0%", width: "94%", height: "75%", background: "radial-gradient(ellipse, rgba(140,120,60,0.24) 0%, transparent 70%)" }} />
-        <div className="absolute rounded-full" style={{ top: "-8%", left: "15%", width: "46%", height: "45%", background: "radial-gradient(ellipse, rgba(190,210,170,0.22) 0%, transparent 70%)" }} />
-        <div className="absolute rounded-full" style={{ top: "50%", right: "2%", width: "50%", height: "65%", background: "radial-gradient(ellipse, rgba(170,195,110,0.3) 0%, transparent 70%)" }} />
-        <div className="absolute rounded-full" style={{ top: "55%", left: "35%", width: "34%", height: "55%", background: "radial-gradient(ellipse, rgba(70,110,60,0.24) 0%, transparent 70%)" }} />
-        <div className="absolute rounded-full" style={{ top: "-5%", right: "18%", width: "30%", height: "40%", background: "radial-gradient(ellipse, rgba(200,215,180,0.2) 0%, transparent 70%)" }} />
+        <div className="absolute rounded-full" style={{ top: "45%", left: "0%", width: "94%", height: "75%", background: "radial-gradient(ellipse, rgba(140,120,60,0.24) 0%, transparent 70%)", zIndex: 1 }} />
+        <div className="absolute rounded-full" style={{ top: "-8%", left: "15%", width: "46%", height: "45%", background: "radial-gradient(ellipse, rgba(190,210,170,0.22) 0%, transparent 70%)", zIndex: 1 }} />
+        <div className="absolute rounded-full" style={{ top: "50%", right: "2%", width: "50%", height: "65%", background: "radial-gradient(ellipse, rgba(170,195,110,0.3) 0%, transparent 70%)", zIndex: 1 }} />
+        <div className="absolute rounded-full" style={{ top: "55%", left: "35%", width: "34%", height: "55%", background: "radial-gradient(ellipse, rgba(70,110,60,0.24) 0%, transparent 70%)", zIndex: 1 }} />
+        <div className="absolute rounded-full" style={{ top: "-5%", right: "18%", width: "30%", height: "40%", background: "radial-gradient(ellipse, rgba(200,215,180,0.2) 0%, transparent 70%)", zIndex: 1 }} />
 
         {/* The old horizon hairline was flagged as an artifact back in the
             2026-08-13 audit ("a thin horizon rule that clashes with the
@@ -353,7 +372,7 @@ export default function RcaPage() {
         <PathDoodle
           className="absolute"
           style={{
-            top: "66%", left: 0, width: "100%", height: 90,
+            top: "66%", left: 0, width: "100%", height: 90, zIndex: zFor(66),
             maskImage: "linear-gradient(to right, transparent 0%, black 4%, black 96%, transparent 100%)",
             WebkitMaskImage: "linear-gradient(to right, transparent 0%, black 4%, black 96%, transparent 100%)",
           }}
@@ -376,20 +395,20 @@ export default function RcaPage() {
             checked out in pixel sampling and Jacob still saw a gap in the
             real deployed screenshot every time — this replaces that whole
             approach instead of tuning it a fifth time. */}
-        <BushDoodle size={58} className="absolute" style={{ top: "20%", left: "0%", color: "#4f6a41", opacity: 0.5, filter: `blur(0.5px) ${castShadow(3, 1.5, "rgba(20,30,10,0.5)")}` }} />
-        <BushDoodle size={54} className="absolute" style={{ top: "16%", right: "23%", color: "#5a7a4a", opacity: 0.48, filter: `blur(0.5px) ${castShadow(3, 1.5, "rgba(20,30,10,0.5)")}` }} />
+        <BushDoodle size={58} className="absolute" style={{ top: "20%", left: "0%", color: "#4f6a41", opacity: 0.5, zIndex: zFor(20), filter: `blur(0.5px) ${castShadow(3, 1.5, "rgba(20,30,10,0.5)")}` }} />
+        <BushDoodle size={54} className="absolute" style={{ top: "16%", right: "23%", color: "#5a7a4a", opacity: 0.48, zIndex: zFor(16), filter: `blur(0.5px) ${castShadow(3, 1.5, "rgba(20,30,10,0.5)")}` }} />
         {/* A third distant bush, further right — the old back row only had
             two anchors near the pond/tree; with the scene now full-width
             there's real space past the tree that needs its own depth layer,
             not just empty gradient. */}
-        <BushDoodle size={46} className="absolute" style={{ top: "22%", right: "2%", color: "#4f6a41", opacity: 0.4, filter: `blur(0.7px) ${castShadow(2, 1, "rgba(20,30,10,0.45)")}` }} />
+        <BushDoodle size={46} className="absolute" style={{ top: "22%", right: "2%", color: "#4f6a41", opacity: 0.4, zIndex: zFor(22), filter: `blur(0.7px) ${castShadow(2, 1, "rgba(20,30,10,0.45)")}` }} />
         {/* A fourth, mid-scene — direct review (2026-08-16) found the whole
             middle stretch between the pond/mound cluster and the tree was
             visually dead: the three back-row bushes only sat at the far
             edges (0%, ~77%, ~98%), leaving the entire back/middle band bare
             except for thin flower stems in the front row. This breaks up
             that gap with actual foliage bulk, not just more small stems. */}
-        <BushDoodle size={50} className="absolute" style={{ top: "18%", left: "46%", color: "#5a7a4a", opacity: 0.44, filter: `blur(0.6px) ${castShadow(3, 1.5, "rgba(20,30,10,0.48)")}` }} />
+        <BushDoodle size={50} className="absolute" style={{ top: "18%", left: "46%", color: "#5a7a4a", opacity: 0.44, zIndex: zFor(18), filter: `blur(0.6px) ${castShadow(3, 1.5, "rgba(20,30,10,0.48)")}` }} />
 
         {/* Pond — went through several rounds of hand-positioned shadows and
             then a drop-shadow, and EVERY one of them was wrong for a
@@ -409,14 +428,14 @@ export default function RcaPage() {
         <PondDoodle
           size={150}
           className="absolute"
-          style={{ top: "32%", left: "6%", color: "#3f7ea6", opacity: 0.85 }}
+          style={{ top: "32%", left: "6%", color: "#3f7ea6", opacity: 0.85, zIndex: zFor(32) }}
         />
-        <ReedDoodle size={34} className="absolute" style={{ top: "24%", left: "23%", color: "#5a7a4a", opacity: 0.8, filter: castShadow(2, 1, "rgba(20,30,10,0.4)") }} />
-        <ReedDoodle size={28} className="absolute" style={{ top: "27%", left: "27%", color: "#4f6a41", opacity: 0.75, filter: castShadow(2, 1, "rgba(20,30,10,0.4)") }} />
+        <ReedDoodle size={34} className="absolute" style={{ top: "24%", left: "23%", color: "#5a7a4a", opacity: 0.8, zIndex: zFor(24), filter: castShadow(2, 1, "rgba(20,30,10,0.4)") }} />
+        <ReedDoodle size={28} className="absolute" style={{ top: "27%", left: "27%", color: "#4f6a41", opacity: 0.75, zIndex: zFor(27), filter: castShadow(2, 1, "rgba(20,30,10,0.4)") }} />
 
         {/* Pebbles at the pond's front edge — a material change (flat grey-
             brown, no green) so the scene isn't 100% foliage. */}
-        <RockDoodle size={32} className="absolute" style={{ top: "52%", left: "11%", opacity: 0.75, filter: castShadow(1.5, 1, "rgba(20,20,15,0.45)") }} />
+        <RockDoodle size={32} className="absolute" style={{ top: "52%", left: "11%", opacity: 0.75, zIndex: zFor(52), filter: castShadow(1.5, 1, "rgba(20,20,15,0.45)") }} />
 
         {/* A soft, blurred ambient-occlusion-style blob UNDER the tree, in
             addition to its own drop-shadow — a thin offset silhouette copy
@@ -425,11 +444,11 @@ export default function RcaPage() {
             usually pair a sharp contact shadow with a soft broad one for
             actual "weight." Positioned at the trunk's real base, biased left
             per the same sun-from-top-right direction as every other shadow. */}
-        <div className="absolute rounded-full" style={{ top: "39%", right: "9%", width: 100, height: 28, background: "radial-gradient(ellipse, rgba(20,30,10,0.45) 0%, transparent 75%)", filter: "blur(3px)" }} />
+        <div className="absolute rounded-full" style={{ top: "39%", right: "9%", width: 100, height: 28, background: "radial-gradient(ellipse, rgba(20,30,10,0.45) 0%, transparent 75%)", filter: "blur(3px)", zIndex: zFor(39) }} />
         <TreeDoodle
           size={130}
           className="absolute"
-          style={{ top: "10%", right: "6%", color: "#4f6a41", opacity: 0.9, animation: "sway 7s ease-in-out infinite", transformOrigin: "bottom center", filter: castShadow(5, 2, "rgba(20,30,10,0.55)") }}
+          style={{ top: "10%", right: "6%", color: "#4f6a41", opacity: 0.9, zIndex: zFor(10), animation: "sway 7s ease-in-out infinite", transformOrigin: "bottom center", filter: castShadow(5, 2, "rgba(20,30,10,0.55)") }}
         />
 
         {/* A few more trees, similar-ish but genuinely different (Jacob,
@@ -442,16 +461,16 @@ export default function RcaPage() {
             answers the earlier "dead zone between the flowers and the
             tree" critique — real foliage mass there now, not just grass
             texture filling a gap. */}
-        <div className="absolute rounded-full" style={{ top: "34%", left: "58%", width: 46, height: 14, background: "radial-gradient(ellipse, rgba(20,30,10,0.3) 0%, transparent 75%)", filter: "blur(2px)" }} />
+        <div className="absolute rounded-full" style={{ top: "34%", left: "58%", width: 46, height: 14, background: "radial-gradient(ellipse, rgba(20,30,10,0.3) 0%, transparent 75%)", filter: "blur(2px)", zIndex: zFor(34) }} />
         <TreeDoodleB
           size={78}
           className="absolute"
-          style={{ top: "16%", left: "58%", color: "#5a7a4a", opacity: 0.68, animation: "sway 8.5s ease-in-out infinite 0.4s", transformOrigin: "bottom center", filter: `blur(0.4px) ${castShadow(3, 1.5, "rgba(20,30,10,0.4)")}` }}
+          style={{ top: "16%", left: "58%", color: "#5a7a4a", opacity: 0.68, zIndex: zFor(16), animation: "sway 8.5s ease-in-out infinite 0.4s", transformOrigin: "bottom center", filter: `blur(0.4px) ${castShadow(3, 1.5, "rgba(20,30,10,0.4)")}` }}
         />
         <TreeDoodle
           size={54}
           className="absolute"
-          style={{ top: "8%", left: "38%", color: "#8aa085", opacity: 0.45, animation: "sway 9.5s ease-in-out infinite 1.1s", transformOrigin: "bottom center", filter: `blur(0.7px) ${castShadow(2, 1, "rgba(20,30,10,0.3)")}` }}
+          style={{ top: "8%", left: "38%", color: "#8aa085", opacity: 0.45, zIndex: zFor(8), animation: "sway 9.5s ease-in-out infinite 1.1s", transformOrigin: "bottom center", filter: `blur(0.7px) ${castShadow(2, 1, "rgba(20,30,10,0.3)")}` }}
         />
 
         {/* Front-row grass texture along the very base of the scene, below
@@ -490,7 +509,7 @@ export default function RcaPage() {
             key={i}
             size={g.size}
             className="absolute"
-            style={{ top: "90%", left: g.left, color: g.color, opacity: 0.6, animation: `sway ${g.d} ease-in-out infinite`, transformOrigin: "bottom center", filter: castShadow(1.5, 1, "rgba(20,30,10,0.4)") }}
+            style={{ top: "90%", left: g.left, color: g.color, opacity: 0.6, zIndex: zFor(90), animation: `sway ${g.d} ease-in-out infinite`, transformOrigin: "bottom center", filter: castShadow(1.5, 1, "rgba(20,30,10,0.4)") }}
           />
         ))}
 
@@ -517,69 +536,90 @@ export default function RcaPage() {
             size={f.size}
             className="absolute"
             style={{
-              top: f.top, left: f.left, color: f.color, opacity: 0.85,
+              top: f.top, left: f.left, color: f.color, opacity: 0.85, zIndex: zFor(parseFloat(f.top)),
               animation: `sway ${f.d} ease-in-out infinite ${f.delay}`, transformOrigin: "bottom center",
               filter: castShadow(2, 1, "rgba(20,30,10,0.5)"),
             }}
           />
         ))}
 
-        {/* Ladybugs — real wandering loops now (Jacob, 2026-08-16: "still not
+        {/* Ladybugs — real wandering routes (Jacob, 2026-08-16: "still not
             loving the just tiny back and forth motions"), not a translateX
-            oscillation. Each gets its own closed offset-path around a flower
-            cluster; offset-rotate:auto reorients the bug to actually face
-            its direction of travel through the curve, replacing the old
-            manual scaleX-flip. Slow, leisurely durations (a ladybug
-            meandering, not marching) and deliberately un-aligned so the two
-            drift in and out of phase instead of moving in lockstep. */}
-        <BugDoodle
-          size={18}
+            oscillation. Round 1 used offset-rotate:auto to face the bug
+            along its path, which Jacob then caught rendering upside-down on
+            the return leg — see the travelLoop/faceFlip comment in
+            globals.css for the full root-cause writeup. Fix: position and
+            orientation are now two SEPARATE nested elements. Outer:
+            offset-path drives real position via travelLoop (walks the route
+            out and back, dart-pause rhythm), offset-rotate is FIXED at 0deg
+            so this element itself never rotates — always upright. Inner:
+            faceFlip, a plain scaleX mirror synced to the same pause points,
+            so "facing the other way" is a mirror (legs still point down),
+            never a rotation. filter (the cast shadow) lives on the outer —
+            shadows point per the fixed global sun direction regardless of
+            which way the bug is currently facing, so it must NOT be on the
+            part that flips. zIndex from the anchor's own top% so the bug
+            correctly layers against nearby objects instead of always
+            painting on top via DOM order. */}
+        <div
           className="absolute"
           style={{
-            top: "62%", left: "42%", color: "#a04a4a", opacity: 0.85,
-            offsetPath: "path('M0,0 C25,-16 55,-6 68,-24 C82,-42 70,10 38,20 C14,28 -10,18 0,0 Z')",
-            offsetRotate: "auto",
-            animation: "travelLoop 16s linear infinite",
+            top: "62%", left: "42%", zIndex: zFor(62),
+            offsetPath: "path('M0,0 C25,-16 55,-6 68,-24 C82,-42 70,10 38,20 C14,28 -10,18 0,0')",
+            offsetRotate: "0deg",
+            animation: "travelLoop 16s ease-in-out infinite",
             filter: castShadow(2, 1, "rgba(20,30,10,0.6)"),
           }}
-        />
-        <BugDoodle
-          size={14}
+        >
+          <div style={{ animation: "faceFlip 16s steps(1) infinite" }}>
+            <BugDoodle size={18} style={{ color: "#a04a4a", opacity: 0.85, display: "block" }} />
+          </div>
+        </div>
+        <div
           className="absolute"
           style={{
-            top: "56%", left: "57%", color: "#5a7a4a", opacity: 0.8,
-            offsetPath: "path('M0,0 C-20,14 -42,32 -28,44 C-12,58 20,42 16,18 C13,4 8,-6 0,0 Z')",
-            offsetRotate: "auto",
-            animation: "travelLoop 12.5s linear infinite 2.3s",
+            top: "56%", left: "57%", zIndex: zFor(56),
+            offsetPath: "path('M0,0 C-20,14 -42,32 -28,44 C-12,58 20,42 16,18 C13,4 8,-6 0,0')",
+            offsetRotate: "0deg",
+            animation: "travelLoop 12.5s ease-in-out infinite 2.3s",
             filter: castShadow(1.5, 1, "rgba(20,30,10,0.55)"),
           }}
-        />
+        >
+          <div style={{ animation: "faceFlip 12.5s steps(1) infinite 2.3s" }}>
+            <BugDoodle size={14} style={{ color: "#5a7a4a", opacity: 0.8, display: "block" }} />
+          </div>
+        </div>
 
-        {/* Ant hill — a double-file marching trail. Motion is now GENUINE
-            small-scale crawling (antCrawl: real translateX + turn-flip) in
-            place of the old antScurry (a scale pulse that never actually
-            moved — which is exactly why it read as "in place," not marching). */}
+        {/* Ant hill — real foraging routes now, see ANT_PATHS/travelLoop/
+            faceFlip comments above and in globals.css for the full
+            movement-system writeup (two rounds: first replaced the old
+            translateX oscillation with Motion Path, then fixed the
+            upside-down-on-return bug that introduced). */}
         {/* Same soft ambient-shadow pairing as the tree — the mound is the
             second-largest object in the scene and deserves the same real
             "weight" treatment, not just a thin offset silhouette. */}
-        <div className="absolute rounded-full" style={{ top: "56%", left: "21%", width: 54, height: 15, background: "radial-gradient(ellipse, rgba(20,30,10,0.3) 0%, transparent 75%)", filter: "blur(2.5px)" }} />
-        <AntHillDoodle size={88} className="absolute" style={{ top: "42%", left: "23%", color: "#8a6a3a", opacity: 0.85, filter: castShadow(4, 1.5, "rgba(20,30,10,0.5)") }} />
+        <div className="absolute rounded-full" style={{ top: "56%", left: "21%", width: 54, height: 15, background: "radial-gradient(ellipse, rgba(20,30,10,0.3) 0%, transparent 75%)", filter: "blur(2.5px)", zIndex: zFor(56) }} />
+        <AntHillDoodle size={88} className="absolute" style={{ top: "42%", left: "23%", color: "#8a6a3a", opacity: 0.85, zIndex: zFor(42), filter: castShadow(4, 1.5, "rgba(20,30,10,0.5)") }} />
         {/* Debris scattered near the hill so it reads as an actual patch of
             ground the colony lives on, not a bare mound on clean gradient.
             Real twigs sit slightly proud of the grass (they have actual
             thickness), so a very light contact shadow belongs here too —
             lighter than anything else in the scene since they're nearly
             flush, not genuinely raised like the flowers/bushes. */}
-        <TwigDoodle size={30} className="absolute" style={{ top: "68%", left: "34%", opacity: 0.7, transform: "rotate(-8deg)", filter: castShadow(1, 0.5, "rgba(20,30,10,0.35)") }} />
-        <TwigDoodle size={22} className="absolute" style={{ top: "58%", left: "18%", opacity: 0.6, transform: "rotate(20deg) scaleX(-1)", filter: castShadow(1, 0.5, "rgba(20,30,10,0.35)") }} />
+        <TwigDoodle size={30} className="absolute" style={{ top: "68%", left: "34%", opacity: 0.7, zIndex: zFor(68), transform: "rotate(-8deg)", filter: castShadow(1, 0.5, "rgba(20,30,10,0.35)") }} />
+        <TwigDoodle size={22} className="absolute" style={{ top: "58%", left: "18%", opacity: 0.6, zIndex: zFor(58), transform: "rotate(20deg) scaleX(-1)", filter: castShadow(1, 0.5, "rgba(20,30,10,0.35)") }} />
         {/* Duration/delay hand-varied and deliberately NOT tied to one shared
             linear parameter — driving every ant off the same 0.05-step value
             makes each one exactly 0.05s slower AND more delayed than its
             neighbor, a textbook traveling-wave pattern that's the single
             biggest reason this read as a synchronized conveyor belt instead
             of a real colony. Path index cycles through ANT_PATHS so
-            neighboring ants get genuinely different loop shapes/sizes, not
-            just different timing on the same shape. */}
+            neighboring ants get genuinely different route shapes/lengths,
+            not just different timing on the same shape. Same outer/inner
+            split as the ladybugs above: outer carries offset-path + fixed
+            offset-rotate:0deg + zIndex (from the anchor's own top%, so ants
+            correctly layer against twigs/flowers/the mound instead of
+            always painting on top); inner carries only the faceFlip mirror. */}
         {[
           { left: "25%", top: "60%", dur: 13, delay: 0, path: 0 },
           { left: "27%", top: "62%", dur: 19, delay: 2.1, path: 1 },
@@ -593,36 +633,42 @@ export default function RcaPage() {
           { left: "43%", top: "59%", dur: 10.5, delay: 1.9, path: 4 },
           { left: "45%", top: "58%", dur: 18, delay: 0.6, path: 0 },
         ].map((a) => (
-          <AntDoodle
+          <div
             key={a.left}
-            size={10}
             className="absolute"
             style={{
-              top: a.top, left: a.left, color: "#4a2f14", opacity: 0.75,
+              top: a.top, left: a.left, zIndex: zFor(parseFloat(a.top)),
               offsetPath: ANT_PATHS[a.path],
-              offsetRotate: "auto",
-              animation: `travelLoop ${a.dur}s linear infinite ${a.delay}s`,
+              offsetRotate: "0deg",
+              animation: `travelLoop ${a.dur}s ease-in-out infinite ${a.delay}s`,
               filter: castShadow(1, 0.5, "rgba(20,30,10,0.6)"),
             }}
-          />
+          >
+            <div style={{ animation: `faceFlip ${a.dur}s steps(1) infinite ${a.delay}s` }}>
+              <AntDoodle size={10} style={{ color: "#4a2f14", opacity: 0.75, display: "block" }} />
+            </div>
+          </div>
         ))}
         {[
           { left: "24%", top: "67%", dur: 16, delay: 3.4, path: 2 },
           { left: "28%", top: "68.5%", dur: 22, delay: 0.9, path: 3 },
           { left: "32.5%", top: "69%", dur: 12.5, delay: 5.1, path: 1 },
         ].map((a) => (
-          <AntDoodle
+          <div
             key={a.left}
-            size={9}
             className="absolute"
             style={{
-              top: a.top, left: a.left, color: "#4a2f14", opacity: 0.65,
+              top: a.top, left: a.left, zIndex: zFor(parseFloat(a.top)),
               offsetPath: ANT_PATHS[a.path],
-              offsetRotate: "auto",
-              animation: `travelLoop ${a.dur}s linear infinite ${a.delay}s`,
+              offsetRotate: "0deg",
+              animation: `travelLoop ${a.dur}s ease-in-out infinite ${a.delay}s`,
               filter: castShadow(1, 0.5, "rgba(20,30,10,0.55)"),
             }}
-          />
+          >
+            <div style={{ animation: `faceFlip ${a.dur}s steps(1) infinite ${a.delay}s` }}>
+              <AntDoodle size={9} style={{ color: "#4a2f14", opacity: 0.65, display: "block" }} />
+            </div>
+          </div>
         ))}
 
         {/* Foreground blur — two oversized, soft-focus, edge-cropped foliage
@@ -632,16 +678,19 @@ export default function RcaPage() {
             with shallow depth of field does, and it's the strongest possible
             cue that everything else is further back — much stronger than
             spacing/shadows/scale alone, which is all the previous rounds
-            tried. Painted last so it renders on top of everything. */}
+            tried. zIndex explicitly set above every zFor() value in the
+            scene (nothing else legitimately sits this close to the camera)
+            rather than relying on DOM order/paint-last the way this used to
+            — consistent with every other object now being Y-sorted. */}
         <BushDoodle
           size={220}
           className="absolute pointer-events-none"
-          style={{ top: "82%", left: "-6%", color: "#3f5a34", opacity: 0.55, filter: "blur(5px)" }}
+          style={{ top: "82%", left: "-6%", color: "#3f5a34", opacity: 0.55, zIndex: 999, filter: "blur(5px)" }}
         />
         <BushDoodle
           size={190}
           className="absolute pointer-events-none"
-          style={{ top: "85%", right: "-5%", color: "#3f5a34", opacity: 0.5, filter: "blur(5px)" }}
+          style={{ top: "85%", right: "-5%", color: "#3f5a34", opacity: 0.5, zIndex: 999, filter: "blur(5px)" }}
         />
       </div>
       </div>

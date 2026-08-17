@@ -168,37 +168,42 @@ body {
   0%, 100% { transform: rotate(0deg); }
   50% { transform: rotate(8deg); }
 }
-/* crawlLoop — GENUINE horizontal travel (translateX by --crawl-dist, set
-   per-element via inline style), not an in-place twitch. The previous two
-   attempts (antScurry: scale-only, zero position change; bob: vertical-only)
-   were both reactions to "back and forth reads as sliding" — but the actual
-   problem with a plain alternate-direction slide was that it reverses
-   direction while still facing the same way, which reads as gliding on a
-   track. The fix is a visible TURN (scaleX flip) at each end of the walk, so
-   the creature visibly faces the way it's about to go — real bugs pace a
-   patch and turn around at the ends; this is that, not a slide. */
-/* dart-pause-dart, not one continuous glide — real insects move in short
-   bursts with real stillness between them, not a constant-speed slide back
-   and forth. Held segments (two keyframes with the same value) are genuine
-   pauses since there's nothing to interpolate across that span. Every
-   instance sharing this exact curve is still what made the old version read
-   as a fleet of wind-up toys — the per-instance variety (duration/delay/
-   distance/hold-length via animation-timing-function) has to come from each
-   element's own inline style, not from the keyframe shape alone. */
-/* Replaced 2026-08-16 (Jacob: "still not loving the just tiny back and forth
-   motions of all the ladybugs and ants... a more complex system or loop of
-   movement like walking off screen") — crawlLoop/antCrawl only ever did a
-   short translateX-and-scaleX-flip oscillation, which reads as sliding and
-   snapping, not walking. Real movement now comes from the CSS Motion Path
-   API: each ant/bug gets its own `offset-path` (a hand-drawn closed loop,
-   set per-instance in page.tsx, some large enough to genuinely exit the
-   visible ground zone before looping back) plus `offset-rotate: auto`, which
-   automatically reorients the creature to face its actual direction of
-   travel along the curve — no more manual scaleX-flip hack needed. This
-   keyframe just drives progress along whatever path is assigned. */
+/* Movement rebuilt AGAIN 2026-08-16 (same session, two rounds): round 1
+   replaced crawlLoop/antCrawl's short translateX-and-flip oscillation with
+   CSS Motion Path (offset-path + offset-rotate:auto) for real complex travel.
+   That fixed the "tiny back and forth" complaint but created a NEW one:
+   Jacob caught it — "like being upsidedown when walking back". Root cause:
+   offset-rotate:auto rotates the WHOLE element to match the path's tangent
+   angle. On the return half of any loop the tangent points backward
+   (~180°), and CSS rotate(180deg) is a point-reflection — it flips BOTH
+   axes, not just left-right. A real walking creature should MIRROR when it
+   reverses direction (scaleX, stays upright, legs still point down), not
+   rotate (which flips it upside-down). rotate() and mirroring are
+   fundamentally different transforms; there's no "auto-mirror-not-rotate"
+   mode in the Motion Path spec.
+   Fix: split position from orientation across two nested elements (wired up
+   in page.tsx). OUTER element: offset-path + offset-rotate:0deg (FIXED —
+   never rotates, always upright) drives raw position via travelLoop below,
+   which walks offset-distance out to 100% and back to 0% with the same
+   dart-pause-dart-pause rhythm the old crawl animations used (real insects
+   move in bursts with real stillness between, not constant-speed glides —
+   the held keyframe segments below are genuine pauses, nothing to
+   interpolate across that span). INNER element (nested inside): faceFlip,
+   a plain scaleX toggle, synced to the SAME pause windows (46%/94%) so the
+   turn visibly happens during the stop, not while still moving — this is
+   the only place any rotation-adjacent effect happens, and it's a mirror,
+   never a rotation, so the creature can never render upside-down. */
 @keyframes travelLoop {
-  from { offset-distance: 0%; }
-  to { offset-distance: 100%; }
+  0%, 8% { offset-distance: 0%; }
+  40% { offset-distance: 100%; }
+  46%, 60% { offset-distance: 100%; }
+  92% { offset-distance: 0%; }
+  96%, 100% { offset-distance: 0%; }
+}
+@keyframes faceFlip {
+  0%, 44% { transform: scaleX(1); }
+  46%, 94% { transform: scaleX(-1); }
+  96%, 100% { transform: scaleX(1); }
 }
 @keyframes fallDown {
   from { transform: translateY(0); }
