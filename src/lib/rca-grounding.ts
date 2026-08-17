@@ -4,6 +4,7 @@
 
 import { getRcaClass, rcaClasses, rcaSchedule, currentLessonNumber, isPacingCurrent, getNextScheduleItem } from "@/lib/rca";
 import { rcaContent } from "@/lib/rca-content";
+import { todaysLessonNumber } from "@/lib/rca-content/types";
 
 const CURRENT_CONTENT_NOTE =
   "This class's lesson content below is from RCA's real 2026-2027 curriculum doc (arrived 2026-08-12), not a placeholder — dates/pacing are this year's.";
@@ -53,9 +54,13 @@ export function buildClassGrounding(subjectId: string | undefined, lessonNOverri
 
   const content = rcaContent[cls.id];
   if (content) {
+    // Same weekday-correction as LessonViewer/rca/today — currentLessonNumber's
+    // raw estimate can land on the right week but the wrong day for subjects
+    // like Saxon that pace one lesson per calendar day, which would have had
+    // the AI assistant confidently teaching from the wrong day's lesson.
     const n = lessonNOverride && lessonNOverride >= 1 && lessonNOverride <= content.lessons.length
       ? lessonNOverride
-      : currentLessonNumber(content.lessons.length, content.totalWeeks);
+      : todaysLessonNumber(content, currentLessonNumber(content.lessons.length, content.totalWeeks), new Date().toLocaleDateString("en-US", { weekday: "long" }));
     const lesson = content.lessons.find((l) => l.n === n);
     const label = lessonNOverride ? "REVIEW LESSON" : "CURRENT LESSON";
     grounding += `\n${content.overview}\n\n${label} (Lesson ${n} of ${content.lessons.length}):\n`;

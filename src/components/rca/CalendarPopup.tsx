@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { getCalendarEvents, type CalendarEvent } from "@/lib/rca-calendar";
 import { rcaSchedule } from "@/lib/rca";
 
@@ -42,6 +43,7 @@ function fmtDay(d: Date): string {
 // this is a distinct surface Jacob asked to be able to check independently
 // of the class pages, not another chat/notes-style tool.
 export default function CalendarPopup() {
+  const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [expanded, setExpanded] = useState(false);
   const [view, setView] = useState<ViewMode>("week");
@@ -85,6 +87,10 @@ export default function CalendarPopup() {
     for (let d = new Date(rangeStart); d <= rangeEnd; d = addDays(d, 1)) list.push(new Date(d));
     return list;
   }, [rangeStart, rangeEnd]);
+
+  // /rca/today is a deliberately distraction-free work-day reference page —
+  // same reasoning/pattern as RcaAssistant/RcaNotes's guard.
+  if (pathname === "/rca/today") return null;
 
   return (
     <>

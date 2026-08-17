@@ -1,29 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import type { Lesson, SubjectContent } from "@/lib/rca-content/types";
+import type { SubjectContent } from "@/lib/rca-content/types";
+import { lessonWeekday, todaysLessonNumber } from "@/lib/rca-content/types";
 import { currentLessonNumber, isPacingCurrent } from "@/lib/rca";
-
-const WEEKDAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
-
-// Some subjects (Saxon 7/6) pace one lesson PER CALENDAR WEEKDAY (matching
-// Saxon's real daily-homework structure), so lesson N doesn't line up with
-// Jacob's actual Mon/Thu in-center days at all — a fixed "jump ~2 lessons"
-// heuristic can land on a Wednesday. Others bundle a whole week's Mon+Thu
-// content into ONE lesson entry (e.g. LOE has both a "Monday" and a
-// "Thursday" section on the SAME entry) — there's no single weekday to seek,
-// every lesson already IS a work day. Distinguish the two by how many
-// distinct weekdays show up on the entry: exactly one means single-day
-// (Saxon); zero or two+ means a full-week bundle — never skip those.
-function lessonWeekday(lesson: Lesson): string | null {
-  const found = new Set<string>();
-  for (const s of lesson.sections) {
-    if (WEEKDAYS.includes(s.label)) found.add(s.label);
-    const lead = s.text.split(" — ")[0];
-    if (WEEKDAYS.includes(lead)) found.add(lead);
-  }
-  return found.size === 1 ? [...found][0] : null;
-}
 
 // Double-chevron — same stroke style as the rest of the icon set, used for
 // the "skip to next day of work" jump so it reads as distinct from the
@@ -39,7 +19,16 @@ function DoubleChevronIcon({ size = 14, flip }: { size?: number; flip?: boolean 
 
 export default function LessonViewer({ content }: { content: SubjectContent }) {
   const total = content.lessons.length;
-  const [n, setN] = useState(() => currentLessonNumber(total, content.totalWeeks));
+  // currentLessonNumber()'s raw estimate can land on the right WEEK but the
+  // wrong DAY for weekday-tagged subjects (Saxon-style) — found live on the
+  // actual first day of term, where Saxon's initial lesson opened to the
+  // Thursday entry while today was Monday. todaysLessonNumber corrects it;
+  // it's a no-op for bundled-week subjects where there's no day to correct.
+  const [n, setN] = useState(() => {
+    const estimate = currentLessonNumber(total, content.totalWeeks);
+    const todayWeekday = new Date().toLocaleDateString("en-US", { weekday: "long" });
+    return todaysLessonNumber(content, estimate, todayWeekday);
+  });
   const lesson = content.lessons.find((l) => l.n === n);
   // Real 2026-2027 pacing was only pulled for the first `content.totalWeeks`
   // weeks of the term (doc access for the back half 401s as of 2026-08-16).

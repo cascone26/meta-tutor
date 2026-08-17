@@ -89,6 +89,12 @@ export default function RcaAssistant() {
     }
   }
 
+  // /rca/today is a deliberately distraction-free work-day reference page
+  // (Jacob, 2026-08-17: "no distractions, anything i could need if i need
+  // quick peeks or reminders") — none of the floating tools belong there,
+  // same reasoning as the old isHubShellRoute guard for Cris's course chrome.
+  if (pathname === "/rca/today") return null;
+
   return (
     <>
       <button

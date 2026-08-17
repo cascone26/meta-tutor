@@ -220,9 +220,24 @@ export default function RcaPage() {
         <ButterflyIcon size={24} style={{ color: "#3f7ea6", animation: "floatSlow 6s ease-in-out infinite" }} />
         <h1 className="text-2xl font-bold tracking-tight">Regina Caeli Academy</h1>
       </div>
-      <p className="text-sm mb-6" style={{ color: "#5c6b52", animation: "fadeUpIn 0.6s cubic-bezier(0.16,1,0.3,1) 80ms both" }}>
+      <p className="text-sm mb-4" style={{ color: "#5c6b52", animation: "fadeUpIn 0.6s cubic-bezier(0.16,1,0.3,1) 80ms both" }}>
         6th Grade Lead Tutor
       </p>
+
+      {/* The fast path — a distraction-free, cram-before-work / quick-glance-
+          during-work page (Jacob, 2026-08-17). Placed first, above even the
+          verse/dashboard, since the whole point is needing almost no time to
+          find it. */}
+      <Reveal>
+        <Link
+          href="/rca/today"
+          className="flex items-center justify-between rounded-2xl px-4 py-3 mb-6 transition-transform hover:scale-[1.01]"
+          style={{ background: "#3f7ea6", color: "#fff", boxShadow: "0 8px 24px -10px rgba(63,126,166,0.5)" }}
+        >
+          <span className="text-sm font-semibold">Today — quick reference for work</span>
+          <span aria-hidden>→</span>
+        </Link>
+      </Reveal>
 
       <Reveal><DailyVerse /></Reveal>
       <Reveal><RcaDashboard /></Reveal>

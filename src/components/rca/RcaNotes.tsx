@@ -270,6 +270,10 @@ export default function RcaNotes() {
 
   const usedClassIds = useMemo(() => Array.from(new Set(notes.map((n) => n.classId))), [notes]);
 
+  // /rca/today is a deliberately distraction-free work-day reference page —
+  // same reasoning/pattern as RcaAssistant's guard.
+  if (pathname === "/rca/today") return null;
+
   return (
     <>
       <button
