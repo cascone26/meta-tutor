@@ -61,15 +61,25 @@ type GrassBlade = { x: number; y: number; angle: number; curve: number; len: num
 // this single generator does double duty for texture (fix #1) AND
 // atmospheric depth-via-density (part of fix #3), rather than being two
 // separate, disconnected systems.
+// Depth gradient made deliberately more dramatic (Jacob, 2026-08-16: "try
+// more depth and maybe busier at the foreground/bottom and a tab more
+// sparse/smaller near the higher side to rly show the depth and perception
+// of being close"). A power curve (exponent > 1) instead of the old linear
+// depthT scaling — that keeps the TOP genuinely sparse/tiny/faint for longer
+// (most of the upper half stays thin) while the BOTTOM ramps up fast, which
+// reads as real perspective; a straight linear ramp looks more like a slow,
+// even fade than a "close vs. far" contrast.
 function generateGrassField(count: number, seed: number): GrassBlade[] {
   const rand = mulberry32(seed);
   const blades: GrassBlade[] = [];
   for (let i = 0; i < count; i++) {
     const y = rand() * GRASS_FIELD_VB.h;
     const depthT = y / GRASS_FIELD_VB.h; // 0 = far/top, 1 = near/bottom
-    // Thin the far third out probabilistically instead of a hard cutoff —
-    // a hard band boundary would itself read as a mechanical stripe.
-    if (depthT < 0.35 && rand() > 0.35 + depthT) continue;
+    const depthP = Math.pow(depthT, 1.7); // steeper falloff toward the top
+    // Survival probability itself now follows the curve — top ~8% density,
+    // bottom effectively always survives, instead of only thinning the top
+    // third at a flat rate.
+    if (rand() > 0.08 + depthP * 0.92) continue;
     const x = rand() * GRASS_FIELD_VB.w;
     // The pond (top:32%, left:6%, ~150px wide) sits within this field's
     // area, and its water fill is deliberately translucent (0.72 opacity —
@@ -84,10 +94,10 @@ function generateGrassField(count: number, seed: number): GrassBlade[] {
     if (x > 40 && x < 290 && y > 100 && y < 215) continue;
     const angle = (rand() - 0.5) * 34; // degrees off vertical
     const curve = (rand() - 0.5) * 9;
-    const len = 5 + rand() * 8 + depthT * 11; // longer near, shorter far
-    const width = 0.9 + depthT * 0.7 + rand() * 0.3;
+    const len = 2 + Math.pow(depthT, 1.4) * 21 + rand() * 4; // tiny far, big near
+    const width = 0.5 + Math.pow(depthT, 1.3) * 1.7 + rand() * 0.3;
     const color = GRASS_COLORS[Math.floor(rand() * GRASS_COLORS.length)];
-    const opacity = 0.18 + depthT * 0.4 + rand() * 0.18;
+    const opacity = 0.08 + depthP * 0.55 + rand() * 0.15; // faint far, strong near
     blades.push({ x, y, angle, curve, len, width, color, opacity });
   }
   return blades;
@@ -341,7 +351,11 @@ export default function RcaPage() {
             of the field (near/close) vs. the top (far/distant) — the same
             generator does the texture AND a real atmospheric-depth cue at
             once, not two disconnected systems. */}
-        <GrassField count={340} seed={1337} />
+        {/* Count raised from 340 — the steeper top-thinning curve above
+            means far fewer candidates survive near the top now, so a higher
+            total attempt count is needed to keep the BOTTOM genuinely dense
+            rather than just thinning everything uniformly. */}
+        <GrassField count={480} seed={1337} />
 
         {/* Color-variation patches — real grass isn't one flat tone. Now
             biased by actual position instead of scattered arbitrarily: the
@@ -351,11 +365,15 @@ export default function RcaPage() {
             breakup. First pass (opacity 0.08-0.28, no positional logic) was
             confirmed too weak / not directionally meaningful by direct
             review. */}
-        <div className="absolute rounded-full" style={{ top: "45%", left: "0%", width: "94%", height: "75%", background: "radial-gradient(ellipse, rgba(140,120,60,0.24) 0%, transparent 70%)", zIndex: 1 }} />
-        <div className="absolute rounded-full" style={{ top: "-8%", left: "15%", width: "46%", height: "45%", background: "radial-gradient(ellipse, rgba(190,210,170,0.22) 0%, transparent 70%)", zIndex: 1 }} />
-        <div className="absolute rounded-full" style={{ top: "50%", right: "2%", width: "50%", height: "65%", background: "radial-gradient(ellipse, rgba(170,195,110,0.3) 0%, transparent 70%)", zIndex: 1 }} />
-        <div className="absolute rounded-full" style={{ top: "55%", left: "35%", width: "34%", height: "55%", background: "radial-gradient(ellipse, rgba(70,110,60,0.24) 0%, transparent 70%)", zIndex: 1 }} />
-        <div className="absolute rounded-full" style={{ top: "-5%", right: "18%", width: "30%", height: "40%", background: "radial-gradient(ellipse, rgba(200,215,180,0.2) 0%, transparent 70%)", zIndex: 1 }} />
+        {/* Reinforcing the same near/far gradient as GrassField: the two
+            bottom-biased warm patches got richer/more saturated, the two
+            top-biased pale patches got fainter — color depth should agree
+            with texture/size depth, not fight it. */}
+        <div className="absolute rounded-full" style={{ top: "45%", left: "0%", width: "94%", height: "75%", background: "radial-gradient(ellipse, rgba(140,120,60,0.3) 0%, transparent 70%)", zIndex: 1 }} />
+        <div className="absolute rounded-full" style={{ top: "-8%", left: "15%", width: "46%", height: "45%", background: "radial-gradient(ellipse, rgba(190,210,170,0.16) 0%, transparent 70%)", zIndex: 1 }} />
+        <div className="absolute rounded-full" style={{ top: "50%", right: "2%", width: "50%", height: "65%", background: "radial-gradient(ellipse, rgba(170,195,110,0.36) 0%, transparent 70%)", zIndex: 1 }} />
+        <div className="absolute rounded-full" style={{ top: "55%", left: "35%", width: "34%", height: "55%", background: "radial-gradient(ellipse, rgba(70,110,60,0.28) 0%, transparent 70%)", zIndex: 1 }} />
+        <div className="absolute rounded-full" style={{ top: "-5%", right: "18%", width: "30%", height: "40%", background: "radial-gradient(ellipse, rgba(200,215,180,0.14) 0%, transparent 70%)", zIndex: 1 }} />
 
         {/* The old horizon hairline was flagged as an artifact back in the
             2026-08-13 audit ("a thin horizon rule that clashes with the
@@ -422,16 +440,24 @@ export default function RcaPage() {
             solid — what changes with distance is blur/color, not literal
             transparency. Raised opacity to near-solid across the board and
             shifted more of the "distance" weight onto blur (bumped) instead. */}
-        <BushDoodle size={58} className="absolute" style={{ top: "20%", left: "0%", color: "#4f6a41", opacity: 0.88, zIndex: zFor(20), filter: `blur(0.8px) ${castShadow(3, 1.5, "rgba(20,30,10,0.5)")}` }} />
-        <BushDoodle size={34} className="absolute" style={{ top: "26%", left: "3.5%", color: "#5a7a4a", opacity: 0.82, zIndex: zFor(26), filter: `blur(0.9px) ${castShadow(2, 1, "rgba(20,30,10,0.45)")}` }} />
-        <BushDoodle size={54} className="absolute" style={{ top: "16%", right: "23%", color: "#5a7a4a", opacity: 0.88, zIndex: zFor(16), filter: `blur(0.8px) ${castShadow(3, 1.5, "rgba(20,30,10,0.5)")}` }} />
-        <BushDoodle size={30} className="absolute" style={{ top: "21%", right: "20.5%", color: "#4f6a41", opacity: 0.8, zIndex: zFor(21), filter: `blur(0.9px) ${castShadow(2, 1, "rgba(20,30,10,0.42)")}` }} />
+        {/* Shrunk further (was 58/34/54/30/46/26) to sell distance through
+            SCALE too, not just blur/color — "a tab more sparse/smaller near
+            the higher side" (Jacob, 2026-08-16). */}
+        <BushDoodle size={48} className="absolute" style={{ top: "20%", left: "0%", color: "#4f6a41", opacity: 0.88, zIndex: zFor(20), filter: `blur(0.9px) ${castShadow(3, 1.5, "rgba(20,30,10,0.5)")}` }} />
+        <BushDoodle size={26} className="absolute" style={{ top: "26%", left: "3.5%", color: "#5a7a4a", opacity: 0.82, zIndex: zFor(26), filter: `blur(1px) ${castShadow(2, 1, "rgba(20,30,10,0.45)")}` }} />
+        <BushDoodle size={44} className="absolute" style={{ top: "16%", right: "23%", color: "#5a7a4a", opacity: 0.88, zIndex: zFor(16), filter: `blur(0.9px) ${castShadow(3, 1.5, "rgba(20,30,10,0.5)")}` }} />
+        <BushDoodle size={22} className="absolute" style={{ top: "21%", right: "20.5%", color: "#4f6a41", opacity: 0.8, zIndex: zFor(21), filter: `blur(1px) ${castShadow(2, 1, "rgba(20,30,10,0.42)")}` }} />
         {/* A third distant bush, further right — the old back row only had
             two anchors near the pond/tree; with the scene now full-width
             there's real space past the tree that needs its own depth layer,
             not just empty gradient. */}
-        <BushDoodle size={46} className="absolute" style={{ top: "22%", right: "2%", color: "#4f6a41", opacity: 0.85, zIndex: zFor(22), filter: `blur(1px) ${castShadow(2, 1, "rgba(20,30,10,0.45)")}` }} />
-        <BushDoodle size={26} className="absolute" style={{ top: "27%", right: "0%", color: "#5a7a4a", opacity: 0.78, zIndex: zFor(27), filter: `blur(1.1px) ${castShadow(2, 1, "rgba(20,30,10,0.4)")}` }} />
+        <BushDoodle size={38} className="absolute" style={{ top: "22%", right: "2%", color: "#4f6a41", opacity: 0.85, zIndex: zFor(22), filter: `blur(1.1px) ${castShadow(2, 1, "rgba(20,30,10,0.45)")}` }} />
+        <BushDoodle size={20} className="absolute" style={{ top: "27%", right: "0%", color: "#5a7a4a", opacity: 0.78, zIndex: zFor(27), filter: `blur(1.2px) ${castShadow(2, 1, "rgba(20,30,10,0.4)")}` }} />
+        {/* Two more, tinier still, right at the very top edge — extends the
+            sense of the scene actually receding into the distance instead
+            of the background bushes being the smallest thing up there. */}
+        <BushDoodle size={16} className="absolute" style={{ top: "4%", left: "13%", color: "#7a9070", opacity: 0.6, zIndex: zFor(4), filter: `blur(1.3px) ${castShadow(1.5, 1, "rgba(20,30,10,0.3)")}` }} />
+        <BushDoodle size={14} className="absolute" style={{ top: "6%", right: "35%", color: "#7a9070", opacity: 0.55, zIndex: zFor(6), filter: `blur(1.4px) ${castShadow(1.5, 1, "rgba(20,30,10,0.28)")}` }} />
         {/* A fourth, mid-scene — direct review (2026-08-16) found the whole
             middle stretch between the pond/mound cluster and the tree was
             visually dead: the three back-row bushes only sat at the far
@@ -504,9 +530,9 @@ export default function RcaPage() {
           style={{ top: "16%", left: "58%", color: "#5a7a4a", opacity: 0.9, zIndex: zFor(16), animation: "sway 8.5s ease-in-out infinite 0.4s", transformOrigin: "bottom center", filter: `blur(0.7px) ${castShadow(3, 1.5, "rgba(20,30,10,0.4)")}` }}
         />
         <TreeDoodle
-          size={54}
+          size={42}
           className="absolute"
-          style={{ top: "8%", left: "38%", color: "#8aa085", opacity: 0.8, zIndex: zFor(8), animation: "sway 9.5s ease-in-out infinite 1.1s", transformOrigin: "bottom center", filter: `blur(1.1px) ${castShadow(2, 1, "rgba(20,30,10,0.3)")}` }}
+          style={{ top: "8%", left: "38%", color: "#8aa085", opacity: 0.8, zIndex: zFor(8), animation: "sway 9.5s ease-in-out infinite 1.1s", transformOrigin: "bottom center", filter: `blur(1.2px) ${castShadow(2, 1, "rgba(20,30,10,0.3)")}` }}
         />
 
         {/* Front-row grass texture along the very base of the scene, below
@@ -522,30 +548,42 @@ export default function RcaPage() {
             surface). Kept deliberately light (a thin stroke silhouette at
             this size doesn't need a heavy shadow) so it grounds without
             competing with the actual focal objects. */}
+        {/* Sizes bumped ~35-45% and opacity raised (was 0.6) — the closest
+            row in the scene should read as genuinely close/prominent, not
+            the same visual weight as everything else. Also added extra
+            in-between instances so the very front edge is the densest band
+            in the whole scene, reinforcing "busier at the foreground." */}
         {[
-          { left: "1%", size: 20, color: "#5a7a4a", d: "3.2s" },
-          { left: "9%", size: 18, color: "#6b8e5a", d: "3.5s" },
-          { left: "17%", size: 24, color: "#6b8e5a", d: "3.6s" },
-          { left: "24%", size: 18, color: "#5a7a4a", d: "3.3s" },
-          { left: "34%", size: 18, color: "#5a7a4a", d: "3s" },
-          { left: "40%", size: 22, color: "#6b8e5a", d: "3.7s" },
-          { left: "48%", size: 22, color: "#6b8e5a", d: "3.4s" },
-          { left: "53%", size: 18, color: "#5a7a4a", d: "3.9s" },
-          { left: "58%", size: 18, color: "#5a7a4a", d: "3.8s" },
-          { left: "63%", size: 20, color: "#6b8e5a", d: "3.2s" },
-          { left: "67%", size: 24, color: "#6b8e5a", d: "3.1s" },
-          { left: "74%", size: 18, color: "#5a7a4a", d: "3.6s" },
-          { left: "80%", size: 20, color: "#5a7a4a", d: "3.5s" },
-          { left: "86%", size: 22, color: "#6b8e5a", d: "3.9s" },
-          { left: "90%", size: 22, color: "#6b8e5a", d: "3.3s" },
-          { left: "94%", size: 18, color: "#5a7a4a", d: "3.4s" },
-          { left: "98%", size: 18, color: "#5a7a4a", d: "3.7s" },
+          { left: "1%", size: 28, color: "#5a7a4a", d: "3.2s" },
+          { left: "5%", size: 22, color: "#4f6a41", d: "3.4s" },
+          { left: "9%", size: 25, color: "#6b8e5a", d: "3.5s" },
+          { left: "13%", size: 20, color: "#5a7a4a", d: "3.1s" },
+          { left: "17%", size: 32, color: "#6b8e5a", d: "3.6s" },
+          { left: "21%", size: 22, color: "#4f6a41", d: "3.8s" },
+          { left: "24%", size: 25, color: "#5a7a4a", d: "3.3s" },
+          { left: "29%", size: 20, color: "#6b8e5a", d: "3.5s" },
+          { left: "34%", size: 25, color: "#5a7a4a", d: "3s" },
+          { left: "38%", size: 20, color: "#4f6a41", d: "3.2s" },
+          { left: "40%", size: 30, color: "#6b8e5a", d: "3.7s" },
+          { left: "44%", size: 22, color: "#5a7a4a", d: "3.9s" },
+          { left: "48%", size: 30, color: "#6b8e5a", d: "3.4s" },
+          { left: "53%", size: 25, color: "#5a7a4a", d: "3.9s" },
+          { left: "58%", size: 24, color: "#5a7a4a", d: "3.8s" },
+          { left: "63%", size: 27, color: "#6b8e5a", d: "3.2s" },
+          { left: "67%", size: 32, color: "#6b8e5a", d: "3.1s" },
+          { left: "71%", size: 20, color: "#4f6a41", d: "3.6s" },
+          { left: "74%", size: 25, color: "#5a7a4a", d: "3.6s" },
+          { left: "80%", size: 27, color: "#5a7a4a", d: "3.5s" },
+          { left: "86%", size: 30, color: "#6b8e5a", d: "3.9s" },
+          { left: "90%", size: 30, color: "#6b8e5a", d: "3.3s" },
+          { left: "94%", size: 24, color: "#5a7a4a", d: "3.4s" },
+          { left: "98%", size: 25, color: "#5a7a4a", d: "3.7s" },
         ].map((g, i) => (
           <GrassTuftDoodle
             key={i}
             size={g.size}
             className="absolute"
-            style={{ top: "90%", left: g.left, color: g.color, opacity: 0.6, zIndex: zFor(90), animation: `sway ${g.d} ease-in-out infinite`, transformOrigin: "bottom center", filter: castShadow(1.5, 1, "rgba(20,30,10,0.4)") }}
+            style={{ top: "90%", left: g.left, color: g.color, opacity: 0.78, zIndex: zFor(90), animation: `sway ${g.d} ease-in-out infinite`, transformOrigin: "bottom center", filter: castShadow(1.5, 1, "rgba(20,30,10,0.4)") }}
           />
         ))}
 
