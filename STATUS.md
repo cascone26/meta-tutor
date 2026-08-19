@@ -1,5 +1,19 @@
 # Meta Tutor — Status
 
+## Known gap — Trivia progress not persisted from Play Quiz or Daily 5 (found 2026-08-19)
+`/trivia/play` (main quiz mode) has **zero network calls** — no fetch, no localStorage, fully
+ephemeral, resets on navigation. `/trivia/daily` persists completion to **localStorage only**
+(`mt_trivia_daily` key), never calls `/api/trivia-progress`. Only `/trivia/review` (the SRS deck)
+actually POSTs to Supabase. Live-verified: played a real Daily 5 (2/5 correct), reloaded `/trivia`,
+stats still read 0 answered / 0% / streak 0. This directly contradicts the 2026-08-17 Trivia Phase 1
+entry below ("XP/level system... difficulty-weighted XP per scone-zone's original formula") — no XP/
+leveling calculation exists anywhere in `src/lib/trivia-*.ts`; the stats page only *displays* whatever
+`level`/`xp` values are already in the DB, nothing ever writes them. Doc got ahead of code again (same
+failure mode as the chess phase-tagging gap above). The backend (`/api/trivia-progress` POST actions:
+`updateProgress`, `updateCategoryStats`, `updateDailyStats`, `logSession`, `upsertSRSCard`) is fully
+built and working — this is purely a missing client-side wiring gap in two of three quiz-flow pages.
+**Not yet fixed** — flagged for Jacob to scope (needs an XP formula decision, not just plumbing).
+
 ## Last Updated
 2026-08-19 (Chess station overhaul: fixed weak-area tracking (was severity-only, no phase
 tagging despite STATUS claiming it — added src/lib/chess-phase.ts, wired into move analysis +
