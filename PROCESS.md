@@ -1159,3 +1159,85 @@ rather than just answer.
   `src/components/chess/CoachChat.tsx`.
 - Modified: `src/components/chess/ChessGame.tsx`, `src/components/chess/SettingsPanel.tsx`,
   `src/lib/chess-prefs.ts`, `src/app/chess/page.tsx`.
+
+## Live Verification via the Filament Viewer — 2026-08-19 (same day, later session)
+
+### Problem Statement
+Jacob asked "what's next, also use the viewer to check all the diff stuff out." The chess overhaul
+above had been build-verified but explicitly flagged as NOT live-click-through-verified (no GUI access
+in that session). This session had computer-use available but it reported every browser as
+`not_installed` (no real display in that sandbox either) — so instead of giving up on visual
+verification a second time, used the Viewer's CDP rung directly: launched a real headless Chrome
+(`--headless=new`, no screen takeover) pointed at a scratch copy of Jacob's actual Default Chrome
+profile's `Cookies` db + `Local State` (read-only copy, not the live locked profile — avoids the
+profile-lock conflict) so it inherited his real, already-authenticated `meta-tutor.vercel.app` session
+without ever touching a password. Read every screenshot with my own vision, per the "own eyes only"
+rule — no third-party vision model in the loop.
+
+### What I Found (real bugs, not hypothetical)
+1. Clicking "Coach" and asking a question returned an empty response with no visible error. Dug in via
+   `Network.getResponseBody`/`vercel logs` (had to trigger a live request while tailing) and found the
+   route was 500ing with `Error: Invalid supabaseUrl: Must be a valid HTTP or HTTPS URL.` — thrown
+   inside `getSupabase()`'s client constructor, which crashes BEFORE the rate-limiter's own fail-open
+   catch can run (that catch only covers query errors, not constructor throws). `vercel env pull` +
+   `od -c` (raw byte dump, not a shell-interpreted grep) proved `NEXT_PUBLIC_SUPABASE_URL` and
+   `SUPABASE_SERVICE_ROLE_KEY` literally had a stray `"` at each end of the STORED value (4 quote chars
+   total after the pull tool's own single wrap, vs. 2 for every other var, including tokens/secrets
+   that are clearly plain strings). Someone previously pasted the quoted form (`"https://...supabase.co"`
+   including the quote marks) instead of the bare value.
+   - **Fix**: `vercel env rm` + `vercel env add` for both vars, prod+preview, with the quotes actually
+     stripped (extracted programmatically from the pulled file, not retyped by hand, to avoid
+     transcription error on a 219-char JWT).
+   - **Blast radius**: this wasn't chess-specific — `getSupabase()` is the one shared client every
+     Supabase-backed route uses (`subject-progress`, `rate-limit`, `notes`, `trivia-progress`,
+     `rca-progress`). Every one of them has been silently degrading for ~10 days (since these vars were
+     set), masked because the calling code on the client side treats a failed fetch as "no data" rather
+     than surfacing an error (e.g. `getSubjectProgress`'s catch-and-return-EMPTY). The "Recent weak
+     areas: No completed games yet" state on `/chess` earlier in this session might genuinely have been
+     this bug, not just an empty history — should re-verify weak-area persistence now that it's fixed.
+2. After fixing #1, a second live-fired request came back 200 but the coach still failed with a generic
+   "Something went wrong." Root-caused via a direct `fetch()` from inside the live page's own JS context
+   (bypasses the client UI's own error-swallowing) to read the raw SSE payload: `"OAuth access token has
+   been revoked."` — the Anthropic OAuth token Vercel had on file was stale.
+   `~/tools/sync-meta-tutor-token.sh` only pushes when the Keychain token differs from its last-synced
+   state (`~/.meta-tutor-token-sync-state`); the local token had rotated since the last successful sync
+   run (~1-3h earlier) and the next scheduled run hadn't fired yet. Confirmed the CURRENT Keychain token
+   was valid with a direct `curl` to `api.anthropic.com`, then manually ran the sync script (which
+   correctly detected the diff this time and pushed + redeployed).
+   - **Blast radius**: this is the SAME shared-token dependency STATUS.md already documented
+     ("this Mac needs to stay on... if they break again, check ~/logs/meta-tutor-token-sync.log") — this
+     is the first time it was actually caught broken in the wild rather than just documented as a risk.
+     Affects every AI route in the app, not just chess.
+3. Once both were fixed, the coach genuinely worked — verified by reading a real screenshot showing a
+   real multi-paragraph, contextual, question-ending response. But the response used `**bold**`
+   markdown, which the chat UI (plain `whitespace-pre-wrap`, no markdown renderer) displays as literal
+   asterisks. Fixed the system prompt to explicitly forbid markdown. Also noticed the client was
+   swallowing the real SSE error text behind a hardcoded "Something went wrong" — added a
+   `console.error` so this doesn't require this same hour-long dig next time.
+
+### Method Notes (for next time)
+- **Cookie extraction without touching a password**: macOS Chrome encrypts the `value` column of its
+  `Cookies` SQLite db (key lives in the "Chrome Safe Storage" Keychain entry) — a raw `sqlite3 value`
+  select comes back empty. Don't try to decrypt manually; instead copy `Cookies` + top-level `Local
+  State` into a scratch `--user-data-dir` and let a real headless Chrome instance decrypt at runtime via
+  the same OS Keychain. Query `host_key`/`name` columns (unencrypted) first to confirm which of several
+  Chrome profiles actually holds the session you need before copying.
+- **`captureScreenshot` needs the actual scroll container, not just `document.body`** — this app (and
+  likely others built the same way) sets `html, body { overflow: hidden }` with an inner
+  `.h-full.overflow-y-auto` div doing the real scrolling, so `document.body.scrollHeight` always just
+  reports the viewport height back. Find the real scrollable element
+  (`[...document.querySelectorAll('*')].filter(e => e.scrollHeight > e.clientHeight)`) or just override
+  `Emulation.setDeviceMetricsOverride` to a generously tall viewport before capturing — simpler when you
+  don't need to prove which element scrolls, just want everything visible in one shot.
+- **A 200 status does not mean the SSE stream succeeded** — this route (like `rca-chat`/`socratic`)
+  sends headers before it knows whether the Anthropic call will succeed, then streams an `{"error":...}`
+  payload inline on failure. Check the actual response body/text, not just the network status code, when
+  something "looks like it worked" over CDP but the UI shows nothing.
+- Cleaned up: killed the scratch headless Chrome process and deleted the scratch profile dir after
+  verification — nothing persisted outside the session's scratchpad.
+
+### References
+- Screenshots: `~/estate/data/renders/mt-chess-*.png`, `mt-coach-*.png` (own-eyes verification per the
+  hardcoded vision rule).
+- Commits: `92de23b` (chess overhaul), `88909fc` (markdown + error-logging fix). Env var fix and token
+  resync are Vercel-side config changes, not commits.

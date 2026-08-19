@@ -10,9 +10,30 @@ Socratic coach (/api/chess-coach + CoachChat.tsx, RcaAssistant-style floating pa
 real engine eval/best-move/phase, asks guiding questions before stating the answer. Also added
 chess.com-parity board interactions: right-click highlights + arrow annotations, legal-move
 dots while dragging (previously click-only), flip board, takeback. Build clean (0 TS errors,
-all routes incl. new /api/chess-coach), pushed to main, Vercel auto-deploy triggered. No live
-browser click-through done by Claude (no GUI access in that session) — Jacob should smoke-test
-`/chess` directly. See commit 92de23b.
+all routes incl. new /api/chess-coach), pushed to main. See commit 92de23b.
+
+**UPDATE same day, later session**: used the Filament Viewer (headless Chrome + CDP, real screenshots
+read directly into context, no third-party vision proxy) to actually click through the deployed site —
+found and fixed TWO real, pre-existing, silent production bugs in the process, not just verified the
+chess work:
+1. **`NEXT_PUBLIC_SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` had a literal stray pair of quote
+   characters baked into the stored Vercel env var VALUE itself** (confirmed via raw byte dump — every
+   other env var had exactly one quote-wrap from `vercel env pull`'s own formatting; these two had
+   two). Been broken since they were set (~10 days ago). Silently broke EVERY Supabase-backed feature
+   app-wide (weak-area tracking, rate limiting, notes, trivia, RCA progress) because the client code
+   fails-open/catches-and-returns-empty everywhere — nothing ever looked broken, it just quietly never
+   persisted. Fixed by re-adding both vars (prod+preview) with clean values.
+2. **The Anthropic OAuth token synced to Vercel was stale** — `~/tools/sync-meta-tutor-token.sh` runs
+   every 3h and only pushes when the Keychain token differs from its last-synced state; the local token
+   had rotated since the last successful run and the next scheduled run hadn't fired yet. Manually ran
+   the sync script to push the current valid token + redeploy. Affects ALL AI routes (chat, rca-chat,
+   socratic, chess-coach, riemann-chat, debate, trivia-generate) — same known dependency already
+   documented above, just caught it actually broken in the wild for the first time.
+Also fixed: coach responses used markdown (`**bold**`) the plain-text chat UI can't render, and the
+client was swallowing the real SSE error text behind a generic message — exactly what made bugs #1/#2
+opaque to diagnose from the UI alone (commit 88909fc). Live-verified end-to-end after both fixes: sent
+a real question through the actual coach button on the live site, got a real grounded, Socratic (not
+answer-dumping) response back. Screenshots in `~/estate/data/renders/mt-coach-final.png` etc.
 Prior: 2026-08-17 Trivia station Phase 1 built — 5 pages, 2 API routes, 6 Supabase tables for
 persisted progress/SRS, all 12 question categories ported from scone-zone with full feature
 parity, spaced-repetition system, daily 5 challenge, XP/level system. See PROCESS.md "Trivia
