@@ -3,6 +3,7 @@ import { NextRequest } from "next/server";
 import { checkRateLimit, rateLimitResponse } from "@/lib/rate-limit";
 import { getCached, setCache, cacheKey } from "@/lib/cache";
 import { auth } from "@/auth";
+import { notifyIfAuthError } from "@/lib/alert";
 
 export const maxDuration = 30;
 
@@ -59,6 +60,7 @@ Generate exactly 4 questions. Questions should:
       });
     }
   } catch (err) {
+    notifyIfAuthError(err);
     const message = err instanceof Error ? err.message : "Unknown error";
     return Response.json({ error: message }, { status: 500 });
   }

@@ -2,6 +2,7 @@ import Anthropic from "@anthropic-ai/sdk";
 import { NextRequest } from "next/server";
 import { checkRateLimit, rateLimitResponse } from "@/lib/rate-limit";
 import { auth } from "@/auth";
+import { notifyIfAuthError } from "@/lib/alert";
 
 export const maxDuration = 30;
 
@@ -59,6 +60,7 @@ Evaluate their reconstruction. Respond with JSON only.`,
       return Response.json({ score: 3, feedback: text.slice(0, 500), matchedPremises: [], missedPremises: [] });
     }
   } catch (err) {
+    notifyIfAuthError(err);
     const message = err instanceof Error ? err.message : "Unknown error";
     return Response.json({ error: message }, { status: 500 });
   }

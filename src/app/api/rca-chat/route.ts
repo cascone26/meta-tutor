@@ -2,6 +2,7 @@ import Anthropic from "@anthropic-ai/sdk";
 import { NextRequest } from "next/server";
 import { checkRateLimit, rateLimitResponse } from "@/lib/rate-limit";
 import { auth } from "@/auth";
+import { notifyIfAuthError } from "@/lib/alert";
 import { buildClassGrounding } from "@/lib/rca-grounding";
 
 export const maxDuration = 30;
@@ -52,6 +53,7 @@ export async function POST(req: NextRequest) {
           safeClose();
         });
         stream.on("error", (err) => {
+          notifyIfAuthError(err);
           safeEnqueue(encoder.encode(`data: ${JSON.stringify({ error: err.message })}\n\n`));
           safeClose();
         });
@@ -62,6 +64,7 @@ export async function POST(req: NextRequest) {
       headers: { "Content-Type": "text/event-stream", "Cache-Control": "no-cache", Connection: "keep-alive" },
     });
   } catch (err) {
+    notifyIfAuthError(err);
     const message = err instanceof Error ? err.message : "Unknown error";
     return new Response(JSON.stringify({ error: message }), { status: 500, headers: { "Content-Type": "application/json" } });
   }

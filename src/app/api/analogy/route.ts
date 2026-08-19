@@ -3,6 +3,7 @@ import { NextRequest } from "next/server";
 import { checkRateLimit, rateLimitResponse } from "@/lib/rate-limit";
 import { getCached, setCache, cacheKey } from "@/lib/cache";
 import { auth } from "@/auth";
+import { notifyIfAuthError } from "@/lib/alert";
 
 export const maxDuration = 30;
 
@@ -54,6 +55,7 @@ Respond with ONLY valid JSON: {"analogy":"the analogy here","explanation":"how i
       return Response.json({ analogy: text.slice(0, 500), explanation: "" });
     }
   } catch (err) {
+    notifyIfAuthError(err);
     const message = err instanceof Error ? err.message : "Unknown error";
     return Response.json({ error: message }, { status: 500 });
   }

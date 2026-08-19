@@ -2,6 +2,7 @@ import Anthropic from "@anthropic-ai/sdk";
 import { NextRequest } from "next/server";
 import { checkRateLimit, rateLimitResponse } from "@/lib/rate-limit";
 import { auth } from "@/auth";
+import { notifyIfAuthError } from "@/lib/alert";
 import { buildLessonGrounding } from "@/lib/riemann-grounding";
 import { stripJsonFences } from "@/lib/json-fences";
 
@@ -77,6 +78,7 @@ export async function POST(req: NextRequest) {
 
     return Response.json({ error: "Unknown action" }, { status: 400 });
   } catch (err) {
+    notifyIfAuthError(err);
     const message = err instanceof Error ? err.message : "Unknown error";
     return Response.json({ error: message }, { status: 500 });
   }

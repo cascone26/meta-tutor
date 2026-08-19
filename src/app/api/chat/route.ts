@@ -3,6 +3,7 @@ import { NextRequest } from "next/server";
 import { courseNotes } from "@/lib/course-notes";
 import { checkRateLimit, rateLimitResponse } from "@/lib/rate-limit";
 import { auth } from "@/auth";
+import { notifyIfAuthError } from "@/lib/alert";
 
 export const maxDuration = 30; // Allow up to 30s for streaming responses
 
@@ -134,6 +135,7 @@ export async function POST(req: NextRequest) {
           safeClose();
         });
         stream.on("error", (err) => {
+          notifyIfAuthError(err);
           safeEnqueue(
             encoder.encode(`data: ${JSON.stringify({ error: err.message })}\n\n`)
           );
@@ -150,6 +152,7 @@ export async function POST(req: NextRequest) {
       },
     });
   } catch (err) {
+    notifyIfAuthError(err);
     const message = err instanceof Error ? err.message : "Unknown error";
     return new Response(JSON.stringify({ error: message }), {
       status: 500,

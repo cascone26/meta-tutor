@@ -3,6 +3,7 @@ import { auth } from "@/auth";
 import { Anthropic } from "@anthropic-ai/sdk";
 import { checkRateLimit, rateLimitResponse } from "@/lib/rate-limit";
 import { getSupabase } from "@/lib/supabase";
+import { notifyIfAuthError } from "@/lib/alert";
 
 export const maxDuration = 30;
 
@@ -102,6 +103,7 @@ Generate only valid JSON, no other text.`;
     });
   } catch (error) {
     console.error("[trivia-generate error]", error);
+    notifyIfAuthError(error);
     return new Response("Failed to generate questions", { status: 500 });
   }
 }

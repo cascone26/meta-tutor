@@ -2,6 +2,7 @@ import Anthropic from "@anthropic-ai/sdk";
 import { NextRequest } from "next/server";
 import { checkRateLimit, rateLimitResponse } from "@/lib/rate-limit";
 import { auth } from "@/auth";
+import { notifyIfAuthError } from "@/lib/alert";
 
 export const maxDuration = 30;
 
@@ -51,6 +52,7 @@ Respond with ONLY valid JSON: {"argument":"your argument here"}`,
       return Response.json({ argument: text.slice(0, 500) });
     }
   } catch (err) {
+    notifyIfAuthError(err);
     const message = err instanceof Error ? err.message : "Unknown error";
     return Response.json({ error: message }, { status: 500 });
   }
