@@ -29,6 +29,13 @@ export type ChessPrefs = {
   showLastMove: boolean;
   autoQueen: boolean;
   boardSizePct: number; // 60-100, % of the default container width
+  // Display toggles — declutter the board while playing. Separate from the
+  // board/piece cosmetics above since these hide whole panels, not restyle them.
+  showEvalBar: boolean;
+  showMaterialDiff: boolean;
+  showMoveList: boolean;
+  showWeakAreas: boolean;
+  autoOfferCoach: boolean;
 };
 
 export const DEFAULT_PREFS: ChessPrefs = {
@@ -40,6 +47,11 @@ export const DEFAULT_PREFS: ChessPrefs = {
   showLastMove: true,
   autoQueen: false,
   boardSizePct: 100,
+  showEvalBar: true,
+  showMaterialDiff: true,
+  showMoveList: true,
+  showWeakAreas: true,
+  autoOfferCoach: true,
 };
 
 const KEY = "chess-prefs";

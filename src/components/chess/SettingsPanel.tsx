@@ -80,6 +80,15 @@ export default function SettingsPanel({ prefs, update }: { prefs: ChessPrefs; up
         <Toggle label="Highlight last move" value={prefs.showLastMove} onChange={(v) => update({ showLastMove: v })} />
         <Toggle label="Auto-queen promotions" value={prefs.autoQueen} onChange={(v) => update({ autoQueen: v })} />
       </div>
+
+      <div style={{ borderTop: "1px solid #24382c" }} className="pt-2 mt-2">
+        <p className="text-xs mb-1" style={{ color: "#8fae9a" }}>What to show while playing</p>
+        <Toggle label="Advantage bar" value={prefs.showEvalBar} onChange={(v) => update({ showEvalBar: v })} />
+        <Toggle label="Captured material" value={prefs.showMaterialDiff} onChange={(v) => update({ showMaterialDiff: v })} />
+        <Toggle label="Move list" value={prefs.showMoveList} onChange={(v) => update({ showMoveList: v })} />
+        <Toggle label="Recent weak areas panel" value={prefs.showWeakAreas} onChange={(v) => update({ showWeakAreas: v })} />
+        <Toggle label="Offer coach after mistakes" value={prefs.autoOfferCoach} onChange={(v) => update({ autoOfferCoach: v })} />
+      </div>
     </div>
   );
 }

@@ -2,11 +2,12 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Chess, validateFen, type Square, type PieceSymbol } from "chess.js";
-import { Chessboard } from "react-chessboard";
+import { Chessboard, type Arrow } from "react-chessboard";
 import { createEngine, type ChessEngine, type EngineEval } from "@/lib/chess-engine";
 import { classifyMove, accuracyFromClasses, type MoveClass } from "@/lib/chess-classify";
 import { getOpeningName } from "@/lib/chess-openings";
 import { getMaterial } from "@/lib/chess-material";
+import { getGamePhase, type GamePhase } from "@/lib/chess-phase";
 import { playSound } from "@/lib/chess-sound";
 import { usePrefs, getBoardTheme } from "@/lib/chess-prefs";
 import { saveResult, logWrongAnswer } from "@/lib/subject-progress";
@@ -16,6 +17,7 @@ import PromotionDialog from "./PromotionDialog";
 import SettingsPanel from "./SettingsPanel";
 import GameReview from "./GameReview";
 import PuzzleMode from "./PuzzleMode";
+import CoachChat, { type CoachContext } from "./CoachChat";
 import { minimalPieces, neonPieces } from "./pieceSets";
 
 const SKILL_PRESETS: { label: string; value: number }[] = [
@@ -62,6 +64,7 @@ export default function ChessGame() {
   const [resultText, setResultText] = useState("");
   const [moves, setMoves] = useState<MoveEntry[]>([]);
   const [moveClasses, setMoveClasses] = useState<Record<number, MoveClass>>({});
+  const [movePhases, setMovePhases] = useState<Record<number, GamePhase>>({});
   const [liveEval, setLiveEval] = useState<{ eval: EngineEval; sideToMove: "w" | "b" } | null>(null);
   const [hintArrow, setHintArrow] = useState<{ from: string; to: string } | null>(null);
   const [hintLoading, setHintLoading] = useState(false);
@@ -70,6 +73,19 @@ export default function ChessGame() {
   const [fenInput, setFenInput] = useState("");
   const [fenError, setFenError] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
+
+  // chess.com-style annotations — user-drawn arrows (right-click-drag, library-managed)
+  // and right-click square highlights (we manage the toggle set ourselves).
+  const [userArrows, setUserArrows] = useState<Arrow[]>([]);
+  const [rightClicked, setRightClicked] = useState<Set<string>>(new Set());
+  const [flipped, setFlipped] = useState(false);
+
+  // The real coach — distinct from Hint. Tracks the most recent flagged mistake so the
+  // "Coach" button and the auto-offer banner both have something concrete to open on.
+  const [lastBadMove, setLastBadMove] = useState<CoachContext | null>(null);
+  const [showCoachBanner, setShowCoachBanner] = useState(false);
+  const [coachOpen, setCoachOpen] = useState(false);
+  const [coachContext, setCoachContext] = useState<CoachContext | null>(null);
 
   const [timeControlIdx, setTimeControlIdx] = useState(0);
   const [whiteMs, setWhiteMs] = useState<number | null>(null);
@@ -82,6 +98,12 @@ export default function ChessGame() {
       engineRef.current = null;
     };
   }, []);
+
+  // Right-click highlights clear on every move, same as chess.com — arrows are cleared
+  // by the board itself via clearArrowsOnPositionChange.
+  useEffect(() => {
+    setRightClicked(new Set());
+  }, [fen]);
 
   // Clock ticking — only while a timed game is in progress.
   useEffect(() => {
@@ -138,25 +160,41 @@ export default function ChessGame() {
         const opponentColor = fenAfter.split(" ")[1] as "w" | "b";
         setLiveEval({ eval: evalAfterOpp, sideToMove: opponentColor });
 
-        const { cls } = classifyMove(evalBefore, evalAfterOpp);
+        const { cls, cpLoss } = classifyMove(evalBefore, evalAfterOpp);
         setMoveClasses((prev) => ({ ...prev, [ply]: cls }));
+        const phase = getGamePhase(fenAfter, ply);
+        setMovePhases((prev) => ({ ...prev, [ply]: phase }));
 
         if (BAD_TIERS.includes(cls)) {
           const san = gameRef.current.history()[ply];
           const moveNumber = Math.floor(ply / 2) + 1;
+          const label = cls === "missedMate" ? "Missed mate" : cls;
           logWrongAnswer(
             "chess",
-            `${cls === "missedMate" ? "Missed mate" : cls}: ${san} (move ${moveNumber})`,
-            `Played ${san} on move ${moveNumber}.`,
+            `${label}: ${san} (move ${moveNumber}, ${phase})`,
+            `Played ${san} on move ${moveNumber} during the ${phase}.`,
             cls,
             "play"
           );
+          const badContext: CoachContext = {
+            fenBefore,
+            san,
+            moveNumber,
+            color: fenBefore.split(" ")[1] as "w" | "b",
+            phase,
+            classification: label,
+            cpLoss,
+            bestMoveSan: null,
+            openingName: getOpeningName(gameRef.current.history()),
+          };
+          setLastBadMove(badContext);
+          if (prefs.autoOfferCoach) setShowCoachBanner(true);
         }
       } catch (e) {
         console.error("Move analysis failed:", e);
       }
     },
-    []
+    [prefs.autoOfferCoach]
   );
 
   const maybeBotMove = useCallback(async () => {
@@ -200,6 +238,10 @@ export default function ChessGame() {
     const classes = Object.values(moveClasses);
     const accuracy = accuracyFromClasses(classes);
     const bad = classes.filter((c) => BAD_TIERS.includes(c)).length;
+    const badPlies = Object.entries(moveClasses)
+      .filter(([, c]) => BAD_TIERS.includes(c))
+      .map(([ply]) => Number(ply));
+    const phaseTags = Array.from(new Set(badPlies.map((p) => movePhases[p]).filter(Boolean)));
     saveResult("chess", {
       mode: "play",
       date: new Date().toLocaleDateString(),
@@ -208,7 +250,10 @@ export default function ChessGame() {
       total: Math.max(1, classes.length),
       percentage: accuracy,
       weakTerms: moves.filter((_, i) => moveClasses[i] && BAD_TIERS.includes(moveClasses[i])).map((m) => m.san),
-      weakCategories: Array.from(new Set(classes.filter((c) => BAD_TIERS.includes(c)))),
+      // Severity tiers (blunder/mistake/...) AND game phase (opening/middlegame/endgame)
+      // in the same category list, so "recent weak areas" says *when* mistakes happen,
+      // not just how bad they were.
+      weakCategories: Array.from(new Set([...classes.filter((c) => BAD_TIERS.includes(c)), ...phaseTags])),
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status]);
@@ -278,9 +323,23 @@ export default function ChessGame() {
     [attemptMove]
   );
 
+  const onSquareRightClick = useCallback(({ square }: { square: string }) => {
+    setRightClicked((prev) => {
+      const next = new Set(prev);
+      if (next.has(square)) next.delete(square);
+      else next.add(square);
+      return next;
+    });
+  }, []);
+
+  const onPieceDrag = useCallback(({ square }: { square: string | null }) => {
+    if (square) setSelectedSquare(square);
+  }, []);
+
   const onSquareClick = useCallback(
     ({ square }: { square: string; piece: unknown }) => {
       const game = gameRef.current;
+      setRightClicked(new Set());
       if (status !== "playing" || thinking || game.turn() !== playerColor) return;
       const piece = game.get(square as Square);
 
@@ -321,11 +380,16 @@ export default function ChessGame() {
     setResultText("");
     setMoves([]);
     setMoveClasses({});
+    setMovePhases({});
     setLiveEval(null);
     setHintArrow(null);
+    setUserArrows([]);
+    setRightClicked(new Set());
     setSelectedSquare(null);
     setSaved(false);
     setFenError(null);
+    setLastBadMove(null);
+    setShowCoachBanner(false);
     const tc = TIME_CONTROLS[timeControlIdx];
     setWhiteMs(tc.initialSec !== null ? tc.initialSec * 1000 : null);
     setBlackMs(tc.initialSec !== null ? tc.initialSec * 1000 : null);
@@ -366,6 +430,50 @@ export default function ChessGame() {
     }
   }
 
+  function takeback() {
+    const game = gameRef.current;
+    if (status !== "playing" || thinking || game.history().length === 0) return;
+    game.undo();
+    if (game.history().length > 0 && game.turn() !== playerColor) game.undo();
+    const newLen = game.history().length;
+    setFen(game.fen());
+    setMoves((prev) => prev.slice(0, newLen));
+    setMoveClasses((prev) => {
+      const next: Record<number, MoveClass> = {};
+      for (const [k, v] of Object.entries(prev)) if (Number(k) < newLen) next[Number(k)] = v;
+      return next;
+    });
+    setMovePhases((prev) => {
+      const next: Record<number, GamePhase> = {};
+      for (const [k, v] of Object.entries(prev)) if (Number(k) < newLen) next[Number(k)] = v;
+      return next;
+    });
+    setHintArrow(null);
+    setUserArrows([]);
+    setSelectedSquare(null);
+  }
+
+  // Fills in the engine's actual best move for the coach, lazily — no reason to pay for
+  // a search on every flagged move when most never get discussed.
+  async function openCoach(context: CoachContext | null) {
+    const engine = engineRef.current;
+    if (context && !context.bestMoveSan && engine) {
+      try {
+        const best = await engine.getBestMove(context.fenBefore, { depth: 14 });
+        if (best) {
+          const probe = new Chess(context.fenBefore);
+          const move = probe.move({ from: best.move.slice(0, 2), to: best.move.slice(2, 4), promotion: best.move.slice(4, 5) || "q" });
+          context = { ...context, bestMoveSan: move?.san ?? null };
+        }
+      } catch {
+        // coach still works without the engine line, just less precise
+      }
+    }
+    setCoachContext(context);
+    setCoachOpen(true);
+    setShowCoachBanner(false);
+  }
+
   function pickPromotion(piece: "q" | "r" | "b" | "n") {
     if (!promotionPending) return;
     const { from, to } = promotionPending;
@@ -378,8 +486,13 @@ export default function ChessGame() {
   const material = getMaterial(gameRef.current);
   const sideToMove = gameRef.current.turn();
   const openingName = getOpeningName(gameRef.current.history());
+  const baseOrientation: "white" | "black" = playerColor === "w" ? "white" : "black";
+  const boardOrientation: "white" | "black" = flipped ? (baseOrientation === "white" ? "black" : "white") : baseOrientation;
 
   const squareStyles: SquareStyles = {};
+  for (const sq of rightClicked) {
+    squareStyles[sq] = { ...squareStyles[sq], backgroundColor: "#e0755aa0" };
+  }
   if (gameRef.current.inCheck()) {
     const kingSquare = gameRef.current
       .board()
@@ -438,7 +551,7 @@ export default function ChessGame() {
       </div>
 
       <div className="flex flex-col md:flex-row items-start gap-4 max-w-4xl mx-auto px-5 py-6">
-        <EvalBar evaluation={liveEval?.eval ?? null} sideToMove={liveEval?.sideToMove ?? sideToMove} />
+        {prefs.showEvalBar && <EvalBar evaluation={liveEval?.eval ?? null} sideToMove={liveEval?.sideToMove ?? sideToMove} />}
 
         <div className="w-full md:w-[420px] shrink-0" style={{ maxWidth: `${prefs.boardSizePct}%` }}>
           {(whiteMs !== null || blackMs !== null) && (
@@ -452,23 +565,31 @@ export default function ChessGame() {
               position: fen,
               onPieceDrop,
               onSquareClick,
-              boardOrientation: playerColor === "w" ? "white" : "black",
+              onSquareRightClick,
+              onPieceDrag,
+              boardOrientation,
               allowDragging: status === "playing" && !thinking && gameRef.current.turn() === playerColor,
+              allowDrawingArrows: true,
+              clearArrowsOnPositionChange: true,
               darkSquareStyle: { backgroundColor: theme.dark },
               lightSquareStyle: { backgroundColor: theme.light },
               showNotation: prefs.showCoordinates,
               squareStyles,
               pieces,
-              arrows: hintArrow ? [{ startSquare: hintArrow.from, endSquare: hintArrow.to, color: "#e0c07acc" }] : [],
+              arrows: [...userArrows, ...(hintArrow ? [{ startSquare: hintArrow.from, endSquare: hintArrow.to, color: "#e0c07acc" }] : [])],
+              onArrowsChange: ({ arrows }) => setUserArrows(arrows),
             }}
           />
           <div className="flex items-center justify-between mt-3 text-sm" style={{ color: "#8fae9a" }}>
             <span>{status === "over" ? resultText : thinking ? "Thinking…" : gameRef.current.turn() === playerColor ? "Your move" : "Bot's move"}</span>
-            <div className="flex gap-2">
+            <div className="flex gap-2 flex-wrap justify-end">
               {status === "playing" && (
                 <>
                   <button onClick={requestHint} disabled={hintLoading} className="px-2.5 py-1 rounded-lg text-xs" style={{ background: "#182620", border: "1px solid #24382c" }}>
                     {hintLoading ? "…" : "Hint"}
+                  </button>
+                  <button onClick={takeback} disabled={moves.length === 0} className="px-2.5 py-1 rounded-lg text-xs disabled:opacity-40" style={{ background: "#182620", border: "1px solid #24382c" }}>
+                    Takeback
                   </button>
                   <button onClick={offerDraw} className="px-2.5 py-1 rounded-lg text-xs" style={{ background: "#182620", border: "1px solid #24382c" }}>
                     Draw
@@ -478,16 +599,29 @@ export default function ChessGame() {
                   </button>
                 </>
               )}
+              <button onClick={() => setFlipped((v) => !v)} className="px-2.5 py-1 rounded-lg text-xs" style={{ background: "#182620", border: "1px solid #24382c" }}>
+                Flip
+              </button>
               <button onClick={() => newGame()} className="px-2.5 py-1 rounded-lg text-xs" style={{ background: "#182620", border: "1px solid #24382c" }}>
                 New game
               </button>
             </div>
           </div>
 
-          {(material.captured.w.length > 0 || material.captured.b.length > 0) && (
+          {prefs.showMaterialDiff && (material.captured.w.length > 0 || material.captured.b.length > 0) && (
             <div className="flex justify-between mt-2 text-xs" style={{ color: "#8fae9a" }}>
               <span>{material.captured.w.map(pieceGlyph).join(" ")} {material.diff > 0 ? `+${material.diff}` : ""}</span>
               <span>{material.captured.b.map(pieceGlyph).join(" ")} {material.diff < 0 ? `+${-material.diff}` : ""}</span>
+            </div>
+          )}
+
+          {showCoachBanner && lastBadMove && (
+            <div className="flex items-center justify-between mt-2 px-3 py-2 rounded-lg text-xs" style={{ background: "#241812", border: "1px solid #3a2818", color: "#e0c07a" }}>
+              <span>That was a {lastBadMove.classification} ({lastBadMove.san}, move {lastBadMove.moveNumber}).</span>
+              <div className="flex gap-2 shrink-0 ml-2">
+                <button onClick={() => openCoach(lastBadMove)} className="underline">Talk it through</button>
+                <button onClick={() => setShowCoachBanner(false)} aria-label="Dismiss">✕</button>
+              </div>
             </div>
           )}
         </div>
@@ -566,22 +700,34 @@ export default function ChessGame() {
             </div>
           </div>
 
-          <div className="rounded-xl p-4" style={{ background: "#182620", border: "1px solid #24382c" }}>
-            <div className="flex items-center justify-between mb-2">
-              <h2 className="text-sm font-semibold" style={{ color: "#e0e8e2" }}>Moves {openingName && `· ${openingName}`}</h2>
-              <div className="flex gap-1.5">
-                <button onClick={copyPgn} className="text-xs px-2 py-0.5 rounded" style={{ color: "#8fae9a" }}>Copy PGN</button>
-                <button onClick={copyFen} className="text-xs px-2 py-0.5 rounded" style={{ color: "#8fae9a" }}>Copy FEN</button>
+          {prefs.showMoveList && (
+            <div className="rounded-xl p-4" style={{ background: "#182620", border: "1px solid #24382c" }}>
+              <div className="flex items-center justify-between mb-2">
+                <h2 className="text-sm font-semibold" style={{ color: "#e0e8e2" }}>Moves {openingName && `· ${openingName}`}</h2>
+                <div className="flex gap-1.5">
+                  <button onClick={copyPgn} className="text-xs px-2 py-0.5 rounded" style={{ color: "#8fae9a" }}>Copy PGN</button>
+                  <button onClick={copyFen} className="text-xs px-2 py-0.5 rounded" style={{ color: "#8fae9a" }}>Copy FEN</button>
+                </div>
               </div>
+              <MoveList moves={moves.map((m, i) => ({ ...m, cls: moveClasses[i] }))} />
             </div>
-            <MoveList moves={moves.map((m, i) => ({ ...m, cls: moveClasses[i] }))} />
-          </div>
+          )}
 
           <SettingsPanel prefs={prefs} update={updatePrefs} />
         </div>
       </div>
 
       {promotionPending && <PromotionDialog color={promotionPending.color} onPick={pickPromotion} />}
+
+      <button
+        onClick={() => (coachOpen ? setCoachOpen(false) : openCoach(lastBadMove))}
+        aria-label={coachOpen ? "Close coach" : "Open chess coach"}
+        className="fixed bottom-5 right-5 z-30 flex items-center justify-center rounded-full shadow-lg transition-transform hover:scale-105"
+        style={{ width: 52, height: 52, background: "#3f6b4f", color: "#fff" }}
+      >
+        <span style={{ fontSize: 22 }}>♟</span>
+      </button>
+      <CoachChat open={coachOpen} onClose={() => setCoachOpen(false)} context={coachContext} />
     </div>
   );
 }
