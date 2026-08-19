@@ -92,6 +92,7 @@ export default function CoachChat({
               assistantContent += parsed.text;
               setMessages([...next, { role: "assistant", content: assistantContent }]);
             } else if (parsed.error) {
+              console.error("Coach stream error:", parsed.error);
               setMessages([...next, { role: "assistant", content: "Something went wrong — try again." }]);
             }
           } catch {
