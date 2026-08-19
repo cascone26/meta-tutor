@@ -1089,3 +1089,73 @@ All committed or available as working tree changes on `hub-shell`. Not yet merge
 - Meta Tutor existing patterns: /chess (layout + page), /rca (umbrella), subject-progress.ts (API pattern)
 - Build output: Last run 2026-08-17, completed in 3.9s, 0 errors
 - Database: Supabase project jqeypwrmsgjsmggdgvgd (same as LessonDraft, shared by Meta Tutor)
+
+## Chess Station Overhaul — 2026-08-19
+
+### Problem Statement
+Jacob: verify "recent week[/weak] areas" tracking is actually helping him (not "just randomly
+playing chess"), add toggles to declutter the board UI, and make the AI help genuinely coach
+rather than just answer.
+
+### What I Found
+- The weak-area pipeline itself was wired correctly end to end: `analyzeMove` -> `logWrongAnswer`/
+  `saveResult` -> `mt_wrong_answers`/`mt_quiz_history` -> `computeWeakAreas` (server, correctly
+  slices the most recent 20 games) -> the `/chess` panel. Not a dead-code bug.
+- But `weakCategories` only ever held move-severity tiers (`"blunder"`, `"mistake"`, ...) — never
+  *what kind* of mistake or *when* in the game. STATUS.md's 2026-08-09 entry claimed moves were
+  "tagged by phase (opening/middlegame/endgame)" — grepped `ChessGame.tsx`, that tagging never
+  existed. Doc got ahead of the code (see the hardcoded proof-gate rule). Net effect: the panel
+  showed the player "blunder" repeated, not "you blunder in the opening" — not actionable.
+- "Hint" button was pure answer-giving (arrow straight to the engine's best move) — the only AI
+  help path that existed. No conversational/Socratic coaching anywhere in the chess station.
+- No display toggles existed beyond board cosmetics (theme/pieces/size) — eval bar, material
+  diff, move list, and the weak-areas panel were all always-on.
+- Discovered mid-session (Jacob's follow-up) that react-chessboard v5 already ships built-in
+  right-click-drag arrow annotation and per-square handlers (`onSquareRightClick`, `onPieceDrag`,
+  `onArrowsChange`, `allowDrawingArrows`) — just never wired up. Confirmed via the package's own
+  `.d.ts` files rather than assuming from library version alone.
+
+### What I Built
+1. `src/lib/chess-phase.ts` — opening/middlegame/endgame heuristic (ply + material-based). Wired
+   into `analyzeMove` so both `logWrongAnswer` (individual mistake log) and `saveResult`'s
+   `weakCategories` (aggregated weak-areas panel) now carry phase alongside severity.
+2. `/chess/page.tsx` — split the weak-areas chip cloud into "Where it happens" (phase) / "What
+   kind" (severity) / "Specific moves" (SAN), using the now-richer category data.
+3. `chess-prefs.ts` + `SettingsPanel.tsx` — new "What to show while playing" toggle group:
+   advantage bar, captured material, move list, weak-areas panel, auto-offer-coach. All
+   independently hideable, localStorage-persisted (existing `usePrefs` pattern).
+4. `/api/chess-coach` + `CoachChat.tsx` — real coach, same streaming/auth/rate-limit pattern as
+   `/api/rca-chat`, same floating-panel UI pattern as `RcaAssistant.tsx`. Server gets real engine
+   ground truth (best move, cp loss, classification, phase) per flagged move but is instructed to
+   ask guiding questions before stating the answer, falling back to a direct answer only once the
+   player is stuck or asks outright. Best-move-in-SAN is resolved lazily (on coach-open, not on
+   every move) via one extra `engine.getBestMove` call + a scratch `Chess` instance to convert
+   UCI->SAN — avoids paying a second engine search per move just for a feature most moves never
+   trigger.
+5. Board interactions: `allowDrawingArrows`+`onArrowsChange` (right-click-drag arrows),
+   `onSquareRightClick` (toggle red square highlight, self-managed Set), `onPieceDrag` (also sets
+   `selectedSquare` so legal-move dots show while dragging, not just after a click — this was the
+   concrete bug Jacob described: picking up a piece showed no destination dots). Flip-board and
+   takeback (undoes bot's move + player's move together, landing back on the player's turn) added
+   as cheap chess.com-parity wins.
+
+### Verification
+- `npm run build`: clean, 0 TS errors, all 44 routes incl. new `/api/chess-coach` compile and
+  SSR-render successfully.
+- `curl` against a local dev server (port 3002): `/chess`, `/api/chess-coach`, `/api/subject-
+  progress` all correctly 302-redirect unauthenticated (auth gate intact, no accidental public
+  exposure of the new route).
+- **Not done**: live interactive click-through (coach chat streaming, right-click annotations,
+  drag-to-see-legal-moves, toggle behavior) — this session's computer-use MCP had no real GUI
+  access (`request_access` returned `not_installed` for every browser, in an environment where
+  `ls /Applications` shows Chrome/Safari/Brave genuinely installed — the sandbox has no display).
+  Flagged explicitly rather than claimed. Report-tier verified (build+routes); Handle-tier (a
+  real screenshot of a real running game) still open — Jacob has a dev server already running on
+  :3000 and can check `/chess` directly.
+
+### References
+- Commit: `92de23b` on `main`, pushed (Vercel auto-deploys from `main`).
+- New files: `src/lib/chess-phase.ts`, `src/app/api/chess-coach/route.ts`,
+  `src/components/chess/CoachChat.tsx`.
+- Modified: `src/components/chess/ChessGame.tsx`, `src/components/chess/SettingsPanel.tsx`,
+  `src/lib/chess-prefs.ts`, `src/app/chess/page.tsx`.

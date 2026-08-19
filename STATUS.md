@@ -1,10 +1,22 @@
 # Meta Tutor — Status
 
 ## Last Updated
-2026-08-17 (Trivia station Phase 1 built — 5 pages, 2 API routes, 6 Supabase tables for persisted progress/SRS,
-all 12 question categories ported from scone-zone with full feature parity, spaced-repetition system, daily 5
-challenge, XP/level system. Build compiles clean, Report-tier verified — routes accessible, no TS errors. See
-PROCESS.md "Trivia Station Phase 1" entry for full architecture + proof pointers.
+2026-08-19 (Chess station overhaul: fixed weak-area tracking (was severity-only, no phase
+tagging despite STATUS claiming it — added src/lib/chess-phase.ts, wired into move analysis +
+the /chess weak-areas panel), added per-panel display toggles (advantage bar/material/move
+list/weak-areas/auto-coach in SettingsPanel "What to show while playing"), and built a real
+Socratic coach (/api/chess-coach + CoachChat.tsx, RcaAssistant-style floating panel) to replace
+"Hint" (which just draws the engine's best-move arrow) as the primary help path — grounded in
+real engine eval/best-move/phase, asks guiding questions before stating the answer. Also added
+chess.com-parity board interactions: right-click highlights + arrow annotations, legal-move
+dots while dragging (previously click-only), flip board, takeback. Build clean (0 TS errors,
+all routes incl. new /api/chess-coach), pushed to main, Vercel auto-deploy triggered. No live
+browser click-through done by Claude (no GUI access in that session) — Jacob should smoke-test
+`/chess` directly. See commit 92de23b.
+Prior: 2026-08-17 Trivia station Phase 1 built — 5 pages, 2 API routes, 6 Supabase tables for
+persisted progress/SRS, all 12 question categories ported from scone-zone with full feature
+parity, spaced-repetition system, daily 5 challenge, XP/level system. See PROCESS.md "Trivia
+Station Phase 1" entry for full architecture + proof pointers.
 Prior: 2026-08-16 RCA term-ended schedule gap fixed.)
 
 **`hub-shell`/`main` divergence from the 2026-08-09 entry below is RESOLVED**: `main` was fast-forwarded
