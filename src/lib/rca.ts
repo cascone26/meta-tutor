@@ -27,7 +27,12 @@ export const rcaSchedule = {
   startTime: "9:00 AM",
   endTime: "3:30 PM",
   termStart: "2026-08-17", // first day for students
-  termEnd: "2027-05-31",
+  // Real last day is Field Day (2027-05-24, a Monday), confirmed against
+  // Jacob's actual "KSC - Kansas City, KS Calendar" (macOS Calendar.app,
+  // subscribed .ics — not Google Calendar, which doesn't have this feed).
+  // 2027-05-31 was Memorial Day, a guess that happened to be a real closure
+  // anyway but wasn't actually the last instructional day.
+  termEnd: "2027-05-24",
 };
 
 // Real calendar events that override the generic Mon/Thu pattern — training
@@ -65,29 +70,38 @@ export const rcaEvents: RcaEvent[] = [
 // getNextScheduleItem() could show the wrong thing during a real break
 // (found 2026-08-13, sick-him audit).
 //
-// HONESTY: these closure date RANGES are REASONED ESTIMATES (standard US
-// school-year placement — Labor Day, a fall week, Thanksgiving week, two
-// weeks at Christmas, a mid-February week, two weeks at Easter), not dates
-// confirmed against an actual RCA-published 2026-2027 academic calendar. No
-// such document turned up in Jacob's email, and the one doc that might have
-// it (6th Grade Tutor Resource Manual) requires his own RCA login to read
-// (401 via WebFetch) — matches the note below that most RCA docs are
-// access-restricted. If RCA sends the real calendar, swap these dates and
-// delete this note. Every place these render UI carries an "estimated" flag
-// so Jacob can tell real from reasoned at a glance.
+// CONFIRMED 2026-08-20 against Jacob's real "KSC - Kansas City, KS Calendar"
+// (a subscribed .ics feed in macOS Calendar.app — read directly via
+// `osascript`/Calendar.app, not Google Calendar, which doesn't carry this
+// feed at all). Every "<X> - RCA Closed" event on that calendar for the
+// 2026-2027 term is listed below verbatim. This replaced a REASONED-ESTIMATE
+// list that had never been checked against a real RCA calendar — two of
+// those estimates were wrong by a week or more (Fall Break, Easter Break),
+// and two real single-day closures (both on real Mon/Thu teaching days)
+// weren't modeled at all (Immaculate Conception, Ascension). Add to this
+// list if RCA adds/moves a closure mid-year; re-pull via the same
+// osascript route rather than re-guessing.
 export type RcaClosure = { start: string; end: string; label: string; estimated: boolean };
 
 export const RCA_CLOSURES: RcaClosure[] = [
-  { start: "2026-09-07", end: "2026-09-07", label: "Labor Day", estimated: true },
-  { start: "2026-10-12", end: "2026-10-16", label: "Fall Break", estimated: true },
-  { start: "2026-11-23", end: "2026-11-27", label: "Thanksgiving Break", estimated: true },
-  { start: "2026-12-21", end: "2027-01-01", label: "Christmas Break", estimated: true },
-  { start: "2027-02-15", end: "2027-02-19", label: "Mid-Winter Break", estimated: true },
-  { start: "2027-03-29", end: "2027-04-09", label: "Easter Break", estimated: true },
+  { start: "2026-08-15", end: "2026-08-15", label: "Solemnity of the Assumption of the BVM", estimated: false },
+  { start: "2026-09-07", end: "2026-09-07", label: "Labor Day", estimated: false },
+  { start: "2026-09-28", end: "2026-10-02", label: "Fall Break", estimated: false },
+  { start: "2026-11-23", end: "2026-11-27", label: "Thanksgiving Break", estimated: false },
+  { start: "2026-12-07", end: "2026-12-07", label: "Solemnity of the Immaculate Conception", estimated: false },
+  { start: "2026-12-21", end: "2027-01-08", label: "Christmas Break", estimated: false },
+  { start: "2027-02-15", end: "2027-02-19", label: "Mid-Winter Break", estimated: false },
+  { start: "2027-03-22", end: "2027-04-02", label: "Easter Break", estimated: false },
+  { start: "2027-05-06", end: "2027-05-06", label: "Solemnity of the Ascension of the Lord", estimated: false },
+  { start: "2027-05-31", end: "2027-05-31", label: "Memorial Day", estimated: false },
 ];
 
-// Informational, not a closure — classes still meet CLT testing week.
-export const CLT_TESTING_WEEK = { start: "2027-04-19", end: "2027-04-23", estimated: true };
+// Informational, not a closure — classes still meet during these days. Real
+// CLT testing days confirmed 2026-08-20 (11th grade Thu 4/15; 3rd-6th Day 1
+// Mon 4/19; 10th/7th-8th/3rd-6th Day 2 all Thu 4/22) — not a uniform week,
+// this range just spans the earliest to latest real testing day. Currently
+// unused/not rendered anywhere yet.
+export const CLT_TESTING_WEEK = { start: "2027-04-15", end: "2027-04-22", estimated: false };
 
 function dateKey(d: Date): string {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
