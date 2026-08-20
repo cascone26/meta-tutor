@@ -7,6 +7,7 @@ import { rcaContent } from "@/lib/rca-content";
 import LessonViewer from "@/components/rca/LessonViewer";
 import PracticeHub from "@/components/rca/PracticeHub";
 import { LeafIcon } from "@/components/rca/NatureIcons";
+import BackLink from "@/components/rca/BackLink";
 
 export default function RcaClassPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = use(params);
@@ -15,8 +16,8 @@ export default function RcaClassPage({ params }: { params: Promise<{ slug: strin
   if (!cls) {
     return (
       <div className="max-w-2xl mx-auto px-5 py-8">
-        <p className="text-sm" style={{ color: "#5c6b52" }}>Unknown class &quot;{slug}&quot;.</p>
-        <Link href="/rca" className="text-sm underline" style={{ color: "#3f7ea6" }}>← Back to RCA</Link>
+        <p className="text-sm mb-3" style={{ color: "#5c6b52" }}>Unknown class &quot;{slug}&quot;.</p>
+        <BackLink href="/rca" size="xs">All RCA classes</BackLink>
       </div>
     );
   }
@@ -26,10 +27,8 @@ export default function RcaClassPage({ params }: { params: Promise<{ slug: strin
   return (
     <div className="max-w-2xl mx-auto px-5 py-8 pb-24">
       <div style={{ animation: "fadeUpIn 0.6s cubic-bezier(0.16,1,0.3,1) both" }}>
-        <Link href="/rca" className="text-xs transition-opacity hover:opacity-100" style={{ color: "#3f7ea6", opacity: 0.85 }}>
-          ← All RCA classes
-        </Link>
-        <h1 className="text-2xl font-bold tracking-tight mt-2 mb-1">{cls.name}</h1>
+        <BackLink href="/rca" size="xs">All RCA classes</BackLink>
+        <h1 className="text-2xl font-bold tracking-tight mt-3 mb-1">{cls.name}</h1>
         <p className="text-sm mb-1" style={{ color: "#5c6b52" }}>{cls.grade} · {cls.area}</p>
         {(cls.block || cls.room) && (
           <p className="text-xs mb-3 flex items-center gap-1.5" style={{ color: "#3f7ea6" }}>

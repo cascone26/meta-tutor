@@ -500,6 +500,17 @@ export function GrassTuftDoodle({ size = 20, className, style }: IconProps) {
   );
 }
 
+// Single-arrow chevron — shared "back"/"prev"/"next" nav glyph, same stroke
+// style as DoubleChevronIcon (LessonViewer) so every directional control in
+// the RCA app reads as one family instead of a mix of glyphs and "←" text.
+export function ChevronIcon({ size = 14, flip, className, style }: IconProps & { flip?: boolean }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className={className} style={{ ...(flip ? { transform: "scaleX(-1)" } : {}), ...style }}>
+      <path d="M14.5 5l-7 7 7 7" />
+    </svg>
+  );
+}
+
 export function FlameIcon({ size = 20, className, style }: IconProps) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className} style={style}>

@@ -4,6 +4,7 @@ import { useState } from "react";
 import type { SubjectContent } from "@/lib/rca-content/types";
 import { lessonWeekday, todaysLessonNumber } from "@/lib/rca-content/types";
 import { currentLessonNumber, isPacingCurrent } from "@/lib/rca";
+import { ChevronIcon } from "@/components/rca/NatureIcons";
 
 // Double-chevron — same stroke style as the rest of the icon set, used for
 // the "skip to next day of work" jump so it reads as distinct from the
@@ -80,27 +81,35 @@ export default function LessonViewer({ content }: { content: SubjectContent }) {
         <button
           onClick={() => setN((v) => Math.max(1, v - 1))}
           disabled={n <= 1}
-          className="text-sm px-2 py-1 rounded disabled:opacity-30"
-          style={{ color: "#3f7ea6" }}
+          className="group flex items-center gap-1 text-sm font-medium pl-1.5 pr-2.5 py-1 rounded-full border transition-all duration-150 disabled:opacity-30 disabled:pointer-events-none"
+          style={{ color: "#2f5e7a", borderColor: "#d3e2ea", background: "#fff" }}
+          onMouseEnter={(e) => { e.currentTarget.style.borderColor = "#3f7ea6"; e.currentTarget.style.boxShadow = "0 2px 8px rgba(63,126,166,0.2)"; }}
+          onMouseLeave={(e) => { e.currentTarget.style.borderColor = "#d3e2ea"; e.currentTarget.style.boxShadow = "none"; }}
         >
-          ← Prev
+          <ChevronIcon size={12} className="transition-transform duration-150 group-hover:-translate-x-0.5" />
+          Prev
         </button>
         <span className="text-sm font-semibold" style={{ color: "#33402c" }}>Lesson {n} of {total}</span>
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-1.5">
           <button
             onClick={() => setN((v) => Math.min(total, v + 1))}
             disabled={n >= total}
-            className="text-sm px-2 py-1 rounded disabled:opacity-30"
-            style={{ color: "#3f7ea6" }}
+            className="group flex items-center gap-1 text-sm font-medium pl-2.5 pr-1.5 py-1 rounded-full border transition-all duration-150 disabled:opacity-30 disabled:pointer-events-none"
+            style={{ color: "#2f5e7a", borderColor: "#d3e2ea", background: "#fff" }}
+            onMouseEnter={(e) => { e.currentTarget.style.borderColor = "#3f7ea6"; e.currentTarget.style.boxShadow = "0 2px 8px rgba(63,126,166,0.2)"; }}
+            onMouseLeave={(e) => { e.currentTarget.style.borderColor = "#d3e2ea"; e.currentTarget.style.boxShadow = "none"; }}
           >
-            Next →
+            Next
+            <ChevronIcon size={12} flip className="transition-transform duration-150 group-hover:translate-x-0.5" />
           </button>
           <button
             onClick={() => setN((v) => nextWorkDayN(v))}
             disabled={n >= total}
             title="Jump to the next lesson that actually falls on a Monday or Thursday (your real in-center days)"
-            className="flex items-center gap-0.5 text-xs px-2 py-1 rounded-full disabled:opacity-30"
-            style={{ color: "#fff", background: "#3f7ea6" }}
+            className="flex items-center gap-0.5 text-xs font-semibold px-2.5 py-1.5 rounded-full disabled:opacity-30 transition-all duration-150"
+            style={{ color: "#fff", background: "#3f7ea6", boxShadow: "0 1px 3px rgba(63,126,166,0.35)" }}
+            onMouseEnter={(e) => { e.currentTarget.style.background = "#356e93"; e.currentTarget.style.boxShadow = "0 2px 10px rgba(63,126,166,0.5)"; }}
+            onMouseLeave={(e) => { e.currentTarget.style.background = "#3f7ea6"; e.currentTarget.style.boxShadow = "0 1px 3px rgba(63,126,166,0.35)"; }}
           >
             Next work day <DoubleChevronIcon size={13} />
           </button>

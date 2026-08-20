@@ -1,4 +1,5 @@
 import Link from "next/link";
+import BackLink from "@/components/rca/BackLink";
 import { rcaClasses, rcaSchedule, getClosure, rcaEvents } from "@/lib/rca";
 import { rcaContent } from "@/lib/rca-content";
 import { currentLessonNumber, isPacingCurrent } from "@/lib/rca";
@@ -61,9 +62,7 @@ export default function TodayPage() {
 
   return (
     <div className="max-w-2xl mx-auto px-5 py-8 pb-16">
-      <Link href="/rca" className="text-xs transition-opacity hover:opacity-100" style={{ color: "#3f7ea6", opacity: 0.85 }}>
-        ← Back to RCA
-      </Link>
+      <BackLink href="/rca" size="xs">Back to RCA</BackLink>
       <h1 className="text-2xl font-bold tracking-tight mt-2 mb-0.5">{dateLabel}</h1>
       <p className="text-xs mb-6" style={{ color: "#8a9a7c" }}>{rcaSchedule.center} · {rcaSchedule.address}</p>
 

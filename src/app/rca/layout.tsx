@@ -1,8 +1,8 @@
-import Link from "next/link";
 import Image from "next/image";
 import RcaAssistant from "@/components/rca/RcaAssistant";
 import RcaNotes from "@/components/rca/RcaNotes";
 import CalendarPopup from "@/components/rca/CalendarPopup";
+import BackLink from "@/components/rca/BackLink";
 
 export default function RcaLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -51,9 +51,7 @@ export default function RcaLayout({ children }: { children: React.ReactNode }) {
         className="flex items-center justify-between px-5 py-3 border-b sticky top-0 z-10 backdrop-blur"
         style={{ borderColor: "#d9e4d3", background: "rgba(232,242,248,0.75)" }}
       >
-        <Link href="/" className="text-sm transition-opacity hover:opacity-100" style={{ color: "#3f7ea6", opacity: 0.85 }}>
-          ← Hub
-        </Link>
+        <BackLink href="/">Hub</BackLink>
         <span className="flex items-center gap-2">
           <Image src="/rca-logo.png" alt="Regina Caeli Academy" width={800} height={154} priority style={{ height: 22, width: "auto" }} />
           <span className="text-sm font-semibold tracking-wide" style={{ color: "#2f5e7a" }}>· KSC</span>
