@@ -25,10 +25,11 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Meta Tutor",
   description: "Personal multi-subject learning hub",
-  icons: {
-    icon: "/chi-rho.png",
-    apple: "/chi-rho.png",
-  },
+  // No explicit icons override — src/app/icon.png, apple-icon.png, and
+  // favicon.ico (Next's file-convention icons) are the single source of
+  // truth. An explicit override here previously pointed at /chi-rho.png
+  // while icon.png silently won in the actual browser tab, so the two
+  // never matched what layout.tsx claimed was the icon.
 };
 
 export default function RootLayout({
