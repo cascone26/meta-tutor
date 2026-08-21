@@ -51,6 +51,18 @@ export default function RcaClassPage({ params }: { params: Promise<{ slug: strin
         </div>
       )}
 
+      {cls.id === "religion-6" && (
+        <div className="mb-4" style={{ animation: "fadeUpIn 0.6s cubic-bezier(0.16,1,0.3,1) 80ms both" }}>
+          <h2 className="text-xs font-semibold uppercase tracking-widest mb-2 flex items-center gap-1.5" style={{ color: "#6b8e5a" }}>
+            <LeafIcon size={12} />
+            Reference Materials
+          </h2>
+          <Link href="/rca/religion-6/catechism" className="text-xs underline block" style={{ color: "#3f7ea6" }}>
+            Baltimore Catechism No. 2 (complete reference) →
+          </Link>
+        </div>
+      )}
+
       {(cls.lessonPlanUrl || (cls.driveUrls && cls.driveUrls.length > 0)) && (
         <div className="mb-6 flex flex-wrap gap-3">
           {cls.lessonPlanUrl && (
