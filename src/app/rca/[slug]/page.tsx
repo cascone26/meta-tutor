@@ -64,6 +64,9 @@ export default function RcaClassPage({ params }: { params: Promise<{ slug: strin
             <Link href="/rca/religion-6/gospel-mark" className="underline block" style={{ color: "#3f7ea6" }}>
               Gospel of Mark (complete text) →
             </Link>
+            <Link href="/rca/religion-6/gospel-luke" className="underline block" style={{ color: "#3f7ea6" }}>
+              Gospel of Luke (complete text) →
+            </Link>
             <Link href="/rca/religion-6/materials" className="underline block" style={{ color: "#3f7ea6" }}>
               All course textbooks & links →
             </Link>

@@ -19,16 +19,32 @@ const RELIGION_6_MATERIALS: Material[] = [
   },
   {
     title: "Gospel of Luke (Douay-Rheims)",
-    description: "Complete Gospel text with nativity account and parables in traditional translation.",
+    description: "Complete Gospel text, all 24 chapters. Complete reference built into the app.",
+    links: [{ label: "View in app", url: "/rca/religion-6/gospel-luke", type: "official" }],
+  },
+  {
+    title: "Behold and See 6 (Science)",
+    description: "Catholic hands-on science textbook + workbook, published by Catholic Heritage Curricula.",
     links: [
       {
-        label: "Bible Gateway (DR)",
-        url: "https://www.biblegateway.com/passage/?search=Luke&version=DRA",
+        label: "Official (chcweb.com)",
+        url: "https://chcweb.com/product/behold-and-see-6/",
         type: "official",
       },
+    ],
+  },
+  {
+    title: "Book of the Ancient World (History)",
+    description: "Dorothy Mills, 1923 — original edition is public domain, full text free to read.",
+    links: [
       {
-        label: "Douay-Rheims Bible Project",
-        url: "https://www.kingjamesbibleonline.org/Douay-Rheims-Bible/",
+        label: "Read free (Archive.org)",
+        url: "https://archive.org/details/ancientworld",
+        type: "library",
+      },
+      {
+        label: "Memoria Press eBook (current edition)",
+        url: "https://www.memoriapress.com/curriculum/ebooks/book-of-the-ancient-world-ebook/",
         type: "official",
       },
     ],

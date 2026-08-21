@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { gospelMark, type GospelChapter } from "@/lib/rca-content/gospel-mark";
+import { gospelLuke } from "@/lib/rca-content/gospel-luke";
 
 export default function GospelReference({ book, data }: { book: string; data: GospelChapter[] }) {
   const [searchQuery, setSearchQuery] = useState("");
@@ -91,4 +92,8 @@ export default function GospelReference({ book, data }: { book: string; data: Go
 
 export function GospelMarkReference() {
   return <GospelReference book="the Gospel of Mark" data={gospelMark} />;
+}
+
+export function GospelLukeReference() {
+  return <GospelReference book="the Gospel of Luke" data={gospelLuke} />;
 }
