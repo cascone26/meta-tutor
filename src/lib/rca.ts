@@ -238,8 +238,8 @@ export const rcaClasses: RcaClass[] = [
     name: "Music 3-4",
     grade: "3rd-4th",
     area: "Specials",
-    summary: "Singing (rounds + Latin hymns/chants) + recorder. Year B, 32 lessons, ~1 lesson/week.",
-    books: ["Lingua Angelica Songbook (tutor only)", "Essential Elements — Recorder Classroom Method (tutor + students)"],
+    summary: "Singing (rounds + Latin hymns/chants) + composer study (Chopin, Handel, Beethoven, Mozart). Year A, 31 lessons, ~1 lesson/week.",
+    books: ["Lingua Angelica Songbook (tutor only)"],
     // Real "Specials Schedule by Class: Option 2" from Dr. Jennings' 2026-08-19/20 emails
     // ("specials changes and schedule update" + follow-up), which superseded the original
     // printed staff schedule this file used to be sourced from. Block 6 shifted 2:40-3:25 ->
