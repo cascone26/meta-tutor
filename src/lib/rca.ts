@@ -240,9 +240,15 @@ export const rcaClasses: RcaClass[] = [
     area: "Specials",
     summary: "Singing (rounds + Latin hymns/chants) + recorder. Year B, 32 lessons, ~1 lesson/week.",
     books: ["Lingua Angelica Songbook (tutor only)", "Essential Elements — Recorder Classroom Method (tutor + students)"],
-    block: "2:40 – 3:25 PM",
+    // Real "Specials Schedule by Class: Option 2" from Dr. Jennings' 2026-08-19/20 emails
+    // ("specials changes and schedule update" + follow-up), which superseded the original
+    // printed staff schedule this file used to be sourced from. Block 6 shifted 2:40-3:25 ->
+    // 2:30-3:15; room/day unchanged (Jacob leads, Schroeder assists, still Thursday, St.
+    // Gianna). Explicitly labeled "Option 2" / "first week, working out the kinks" in the
+    // source email — re-verify if a further correction email comes in.
+    block: "2:30 – 3:15 PM",
     room: "St. Gianna",
-    days: ["Thursday"], // shares Block 6 with PE 5-6, which takes the Monday slot
+    days: ["Thursday"],
     lessonPlanUrl: "https://docs.google.com/document/d/1FupKLzgdbmjjpU6ifTUyCConhd5xmkpvGXBZXA_BGpM/edit?usp=sharing",
   },
   {
@@ -252,8 +258,11 @@ export const rcaClasses: RcaClass[] = [
     area: "Specials",
     summary: "Physical education for 1st-2nd grade — Monday only.",
     books: [],
-    block: "1:00 – 1:45 PM",
-    room: "St. Sebastian",
+    // Same "Option 2" schedule update as Music 3-4 above — Block 4 shifted 1:00-1:45 ->
+    // 12:50-1:35, room now literally "Gym" per the email table (not the old "St. Sebastian"
+    // guess). Jacob leads, Harmon assists.
+    block: "12:50 – 1:35 PM",
+    room: "Gym",
     days: ["Monday"],
   },
   {
@@ -261,11 +270,14 @@ export const rcaClasses: RcaClass[] = [
     name: "PE 5-6",
     grade: "5th-6th",
     area: "Specials",
-    summary: "Physical education for 5th-6th grade — Monday only.",
+    summary: "Physical education for 5th-6th grade — Thursday only.",
     books: [],
-    block: "2:40 – 3:25 PM",
-    room: "St. Sebastian",
-    days: ["Monday"], // shares Block 6 with Music 3-4, which takes the Thursday slot
+    // MOVED entirely under "Option 2": was Block 6 Monday (St. Sebastian), now Block 4
+    // THURSDAY, room "Cafe" per the email table — different day AND different room from
+    // what this file previously said. Source: Dr. Jennings' 2026-08-19/20 schedule emails.
+    block: "12:50 – 1:35 PM",
+    room: "Cafe",
+    days: ["Thursday"],
   },
 ];
 
