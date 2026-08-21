@@ -61,6 +61,9 @@ export default function RcaClassPage({ params }: { params: Promise<{ slug: strin
             <Link href="/rca/religion-6/catechism" className="underline block" style={{ color: "#3f7ea6" }}>
               Baltimore Catechism No. 2 (complete reference) →
             </Link>
+            <Link href="/rca/religion-6/gospel-mark" className="underline block" style={{ color: "#3f7ea6" }}>
+              Gospel of Mark (complete text) →
+            </Link>
             <Link href="/rca/religion-6/materials" className="underline block" style={{ color: "#3f7ea6" }}>
               All course textbooks & links →
             </Link>

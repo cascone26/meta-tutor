@@ -14,19 +14,8 @@ const RELIGION_6_MATERIALS: Material[] = [
   },
   {
     title: "Gospel of Mark (Douay-Rheims)",
-    description: "Complete Gospel text in traditional Catholic translation. Authoritative and widely used.",
-    links: [
-      {
-        label: "Bible Gateway (DR)",
-        url: "https://www.biblegateway.com/passage/?search=Mark&version=DRA",
-        type: "official",
-      },
-      {
-        label: "Douay-Rheims Bible Project",
-        url: "https://www.kingjamesbibleonline.org/Douay-Rheims-Bible/",
-        type: "official",
-      },
-    ],
+    description: "Complete Gospel text, all 16 chapters. Complete reference built into the app.",
+    links: [{ label: "View in app", url: "/rca/religion-6/gospel-mark", type: "official" }],
   },
   {
     title: "Gospel of Luke (Douay-Rheims)",
