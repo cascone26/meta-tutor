@@ -1,7 +1,7 @@
 -- Trivia station Supabase schema. Run in the Supabase SQL Editor after pulling the main meta-tutor schema.
 -- Tables prefixed mt_trivia_ so they never collide with other tables in the same project.
 
-create table mt_trivia_progress (
+create table if not exists mt_trivia_progress (
   user_email text primary key,
   total_answered int not null default 0,
   total_correct int not null default 0,
@@ -14,7 +14,7 @@ create table mt_trivia_progress (
   updated_at timestamptz not null default now()
 );
 
-create table mt_trivia_srs_cards (
+create table if not exists mt_trivia_srs_cards (
   id text primary key,
   user_email text not null,
   question text not null,
@@ -30,7 +30,7 @@ create table mt_trivia_srs_cards (
   updated_at timestamptz not null default now()
 );
 
-create table mt_trivia_category_stats (
+create table if not exists mt_trivia_category_stats (
   id uuid default gen_random_uuid() primary key,
   user_email text not null,
   category text not null,
@@ -41,7 +41,7 @@ create table mt_trivia_category_stats (
   unique (user_email, category)
 );
 
-create table mt_trivia_daily_stats (
+create table if not exists mt_trivia_daily_stats (
   id uuid default gen_random_uuid() primary key,
   user_email text not null,
   date text not null,
@@ -52,7 +52,7 @@ create table mt_trivia_daily_stats (
   unique (user_email, date)
 );
 
-create table mt_trivia_sessions (
+create table if not exists mt_trivia_sessions (
   id uuid default gen_random_uuid() primary key,
   user_email text not null,
   quiz_type text not null,
@@ -62,7 +62,7 @@ create table mt_trivia_sessions (
   created_at timestamptz not null default now()
 );
 
-create table mt_trivia_ai_questions (
+create table if not exists mt_trivia_ai_questions (
   id text primary key,
   user_email text not null,
   question text not null,
@@ -74,13 +74,13 @@ create table mt_trivia_ai_questions (
   created_at timestamptz not null default now()
 );
 
-create index idx_mt_trivia_progress_user on mt_trivia_progress(user_email);
-create index idx_mt_trivia_srs_cards_user on mt_trivia_srs_cards(user_email);
-create index idx_mt_trivia_srs_cards_next_review on mt_trivia_srs_cards(next_review);
-create index idx_mt_trivia_category_stats_user on mt_trivia_category_stats(user_email, category);
-create index idx_mt_trivia_daily_stats_user on mt_trivia_daily_stats(user_email, date);
-create index idx_mt_trivia_sessions_user on mt_trivia_sessions(user_email);
-create index idx_mt_trivia_ai_questions_user on mt_trivia_ai_questions(user_email);
+create index if not exists idx_mt_trivia_progress_user on mt_trivia_progress(user_email);
+create index if not exists idx_mt_trivia_srs_cards_user on mt_trivia_srs_cards(user_email);
+create index if not exists idx_mt_trivia_srs_cards_next_review on mt_trivia_srs_cards(next_review);
+create index if not exists idx_mt_trivia_category_stats_user on mt_trivia_category_stats(user_email, category);
+create index if not exists idx_mt_trivia_daily_stats_user on mt_trivia_daily_stats(user_email, date);
+create index if not exists idx_mt_trivia_sessions_user on mt_trivia_sessions(user_email);
+create index if not exists idx_mt_trivia_ai_questions_user on mt_trivia_ai_questions(user_email);
 
 alter table mt_trivia_progress enable row level security;
 alter table mt_trivia_srs_cards enable row level security;
@@ -89,9 +89,15 @@ alter table mt_trivia_daily_stats enable row level security;
 alter table mt_trivia_sessions enable row level security;
 alter table mt_trivia_ai_questions enable row level security;
 
+drop policy if exists "Service role full access" on mt_trivia_progress;
 create policy "Service role full access" on mt_trivia_progress for all using (true);
+drop policy if exists "Service role full access" on mt_trivia_srs_cards;
 create policy "Service role full access" on mt_trivia_srs_cards for all using (true);
+drop policy if exists "Service role full access" on mt_trivia_category_stats;
 create policy "Service role full access" on mt_trivia_category_stats for all using (true);
+drop policy if exists "Service role full access" on mt_trivia_daily_stats;
 create policy "Service role full access" on mt_trivia_daily_stats for all using (true);
+drop policy if exists "Service role full access" on mt_trivia_sessions;
 create policy "Service role full access" on mt_trivia_sessions for all using (true);
+drop policy if exists "Service role full access" on mt_trivia_ai_questions;
 create policy "Service role full access" on mt_trivia_ai_questions for all using (true);
