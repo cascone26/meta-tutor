@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import type { SubjectContent } from "@/lib/rca-content/types";
 import { lessonWeekday, todaysLessonNumber } from "@/lib/rca-content/types";
 import { currentLessonNumber, isPacingCurrent } from "@/lib/rca";
 import { ChevronIcon } from "@/components/rca/NatureIcons";
+import { useRcaPacingOffsets } from "@/lib/rca-pacing-client";
 
 // Double-chevron — same stroke style as the rest of the icon set, used for
 // the "skip to next day of work" jump so it reads as distinct from the
@@ -18,19 +19,45 @@ function DoubleChevronIcon({ size = 14, flip }: { size?: number; flip?: boolean 
   );
 }
 
-export default function LessonViewer({ content }: { content: SubjectContent }) {
+export default function LessonViewer({ content, classId }: { content: SubjectContent; classId: string }) {
   const total = content.lessons.length;
+  const todayWeekday = new Date().toLocaleDateString("en-US", { weekday: "long" });
   // currentLessonNumber()'s raw estimate can land on the right WEEK but the
   // wrong DAY for weekday-tagged subjects (Saxon-style) — found live on the
   // actual first day of term, where Saxon's initial lesson opened to the
   // Thursday entry while today was Monday. todaysLessonNumber corrects it;
   // it's a no-op for bundled-week subjects where there's no day to correct.
-  const [n, setN] = useState(() => {
-    const estimate = currentLessonNumber(total, content.totalWeeks);
-    const todayWeekday = new Date().toLocaleDateString("en-US", { weekday: "long" });
-    return todaysLessonNumber(content, estimate, todayWeekday);
-  });
+  const rawTodayEstimate = todaysLessonNumber(content, currentLessonNumber(total, content.totalWeeks), todayWeekday);
+
+  const { offsets, loaded: offsetsLoaded, setOffset } = useRcaPacingOffsets();
+  const offset = offsets[classId] ?? 0;
+  const correctedTodayEstimate = Math.min(total, Math.max(1, rawTodayEstimate + offset));
+
+  const [n, setN] = useState(rawTodayEstimate);
+  // The persisted offset loads async (after first paint) — jump the viewer to
+  // the corrected lesson once it arrives, but only if the user hasn't already
+  // started browsing away from the initial estimate (don't yank them mid-read).
+  const [userMoved, setUserMoved] = useState(false);
+  useEffect(() => {
+    if (offsetsLoaded && !userMoved) setN(correctedTodayEstimate);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [offsetsLoaded]);
+
   const lesson = content.lessons.find((l) => l.n === n);
+
+  const [adjustOpen, setAdjustOpen] = useState(false);
+  const [adjustValue, setAdjustValue] = useState(correctedTodayEstimate);
+  function openAdjust() {
+    setAdjustValue(n);
+    setAdjustOpen(true);
+  }
+  function saveAdjust() {
+    const newOffset = adjustValue - rawTodayEstimate;
+    setOffset(classId, newOffset);
+    setN(adjustValue);
+    setUserMoved(true);
+    setAdjustOpen(false);
+  }
   // Real 2026-2027 pacing was only pulled for the first `content.totalWeeks`
   // weeks of the term (doc access for the back half 401s as of 2026-08-16).
   // Past that point currentLessonNumber() clamps to the last lesson forever
@@ -79,7 +106,7 @@ export default function LessonViewer({ content }: { content: SubjectContent }) {
 
       <div className="flex items-center justify-between mb-3">
         <button
-          onClick={() => setN((v) => Math.max(1, v - 1))}
+          onClick={() => { setUserMoved(true); setN((v) => Math.max(1, v - 1)); }}
           disabled={n <= 1}
           className="group flex items-center gap-1 text-sm font-medium pl-1.5 pr-2.5 py-1 rounded-full border transition-all duration-150 disabled:opacity-30 disabled:pointer-events-none"
           style={{ color: "#2f5e7a", borderColor: "#d3e2ea", background: "#fff" }}
@@ -92,7 +119,7 @@ export default function LessonViewer({ content }: { content: SubjectContent }) {
         <span className="text-sm font-semibold" style={{ color: "#33402c" }}>Lesson {n} of {total}</span>
         <div className="flex items-center gap-1.5">
           <button
-            onClick={() => setN((v) => Math.min(total, v + 1))}
+            onClick={() => { setUserMoved(true); setN((v) => Math.min(total, v + 1)); }}
             disabled={n >= total}
             className="group flex items-center gap-1 text-sm font-medium pl-2.5 pr-1.5 py-1 rounded-full border transition-all duration-150 disabled:opacity-30 disabled:pointer-events-none"
             style={{ color: "#2f5e7a", borderColor: "#d3e2ea", background: "#fff" }}
@@ -103,7 +130,7 @@ export default function LessonViewer({ content }: { content: SubjectContent }) {
             <ChevronIcon size={12} flip className="transition-transform duration-150 group-hover:translate-x-0.5" />
           </button>
           <button
-            onClick={() => setN((v) => nextWorkDayN(v))}
+            onClick={() => { setUserMoved(true); setN((v) => nextWorkDayN(v)); }}
             disabled={n >= total}
             title="Jump to the next lesson that actually falls on a Monday or Thursday (your real in-center days)"
             className="flex items-center gap-0.5 text-xs font-semibold px-2.5 py-1.5 rounded-full disabled:opacity-30 transition-all duration-150"
@@ -115,6 +142,49 @@ export default function LessonViewer({ content }: { content: SubjectContent }) {
           </button>
         </div>
       </div>
+
+      {!adjustOpen ? (
+        <button
+          type="button"
+          onClick={openAdjust}
+          className="text-[11px] font-medium mb-3 block"
+          style={{ color: "#8a9a7c" }}
+        >
+          Not lesson {n}? Correct it →
+        </button>
+      ) : (
+        <div className="flex items-center gap-2 mb-3 text-xs rounded-lg px-2.5 py-2" style={{ background: "#fbeee0" }}>
+          <span style={{ color: "#8a5a2a" }}>Actual lesson today:</span>
+          <button
+            type="button"
+            onClick={() => setAdjustValue((v) => Math.max(1, v - 1))}
+            className="w-6 h-6 rounded-full font-bold"
+            style={{ background: "#fff", border: "1px solid #d9c4a8", color: "#8a5a2a" }}
+          >
+            −
+          </button>
+          <span className="font-semibold w-6 text-center" style={{ color: "#8a5a2a" }}>{adjustValue}</span>
+          <button
+            type="button"
+            onClick={() => setAdjustValue((v) => Math.min(total, v + 1))}
+            className="w-6 h-6 rounded-full font-bold"
+            style={{ background: "#fff", border: "1px solid #d9c4a8", color: "#8a5a2a" }}
+          >
+            +
+          </button>
+          <button
+            type="button"
+            onClick={saveAdjust}
+            className="ml-1 px-2.5 py-1 rounded-full text-xs font-semibold"
+            style={{ background: "#8a5a2a", color: "#fff" }}
+          >
+            Save — keeps pacing correct all year
+          </button>
+          <button type="button" onClick={() => setAdjustOpen(false)} className="text-[11px] underline" style={{ color: "#8a5a2a" }}>
+            Cancel
+          </button>
+        </div>
+      )}
 
       {lesson && (
         <div className="text-sm space-y-2" style={{ color: "#3a4a34" }}>

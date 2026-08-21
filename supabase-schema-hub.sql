@@ -55,3 +55,21 @@ create table if not exists mt_rate_limit (
 alter table mt_rate_limit enable row level security;
 drop policy if exists "Service role full access" on mt_rate_limit;
 create policy "Service role full access" on mt_rate_limit for all using (true);
+
+-- Added 2026-08-21: RCA lesson pacing is pure date math (weeksElapsed from term
+-- start) with no way to correct it against reality — a snow day, a lesson running
+-- long, or just falling behind silently drifts every subject's "what lesson am I
+-- on" estimate for the rest of the year with zero feedback loop. This stores a
+-- per-subject offset Jacob can nudge from the app; the offset is added to the raw
+-- date-based estimate going forward until he nudges it again.
+create table if not exists mt_rca_pacing_override (
+  user_email text not null,
+  subject_id text not null,
+  lesson_offset int not null default 0,
+  updated_at timestamptz not null default now(),
+  primary key (user_email, subject_id)
+);
+
+alter table mt_rca_pacing_override enable row level security;
+drop policy if exists "Service role full access" on mt_rca_pacing_override;
+create policy "Service role full access" on mt_rca_pacing_override for all using (true);

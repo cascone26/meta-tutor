@@ -1,9 +1,7 @@
-import Link from "next/link";
 import BackLink from "@/components/rca/BackLink";
 import { rcaClasses, rcaSchedule, getClosure, rcaEvents } from "@/lib/rca";
-import { rcaContent } from "@/lib/rca-content";
-import { currentLessonNumber, isPacingCurrent } from "@/lib/rca";
-import { todaysLessonNumber } from "@/lib/rca-content/types";
+import RcaClassBlock from "@/components/rca/RcaClassBlock";
+import PrintButton from "@/components/rca/PrintButton";
 
 // A dedicated, deliberately distraction-free work-day page (Jacob, 2026-08-17,
 // his first real teaching day: "the center is really a no tech place... laptops
@@ -61,8 +59,11 @@ export default function TodayPage() {
   const materials = Array.from(new Set(todaysClasses.flatMap((c) => c.books))).sort();
 
   return (
-    <div className="max-w-2xl mx-auto px-5 py-8 pb-16">
-      <BackLink href="/rca" size="xs">Back to RCA</BackLink>
+    <div className="max-w-2xl mx-auto px-5 py-8 pb-16 print:px-0 print:py-4">
+      <div className="flex items-start justify-between gap-2 print:hidden">
+        <BackLink href="/rca" size="xs">Back to RCA</BackLink>
+        <PrintButton />
+      </div>
       <h1 className="text-2xl font-bold tracking-tight mt-2 mb-0.5">{dateLabel}</h1>
       <p className="text-xs mb-6" style={{ color: "#8a9a7c" }}>{rcaSchedule.center} · {rcaSchedule.address}</p>
 
@@ -109,7 +110,7 @@ export default function TodayPage() {
 
           <div className="space-y-4">
             {todaysClasses.map((c) => (
-              <ClassBlock key={c.id} classId={c.id} name={c.name} block={c.block} room={c.room} weekday={weekday} />
+              <RcaClassBlock key={c.id} classId={c.id} name={c.name} block={c.block} room={c.room} weekday={weekday} />
             ))}
           </div>
         </>
@@ -128,65 +129,6 @@ function StatusBanner({ tone, children }: { tone: "teaching" | "closure" | "even
   return (
     <div className="rounded-xl px-4 py-3 mb-6" style={styles[tone]}>
       {children}
-    </div>
-  );
-}
-
-// The "key points" block is the whole point of this page — deliberately the
-// most visually distinct section on each card, since it's what Jacob said
-// he'd copy straight onto a physical whiteboard before students arrive.
-function ClassBlock({ classId, name, block, room, weekday }: { classId: string; name: string; block?: string; room?: string; weekday: string }) {
-  const content = rcaContent[classId];
-  // For weekday-tagged subjects (Saxon-style, one lesson per calendar day),
-  // currentLessonNumber()'s raw proportional estimate can land on the right
-  // WEEK but the wrong DAY within it — found live on day 1 of term, where
-  // Saxon's estimate came back as the Thursday entry while today was Monday.
-  // todaysLessonNumber corrects for that; it's a no-op for bundled-week
-  // subjects (LOE, Religion, etc.) where there's no day to correct.
-  const rawEstimate = content ? currentLessonNumber(content.lessons.length, content.totalWeeks) : 0;
-  const n = content ? todaysLessonNumber(content, rawEstimate, weekday) : 0;
-  const lesson = content?.lessons.find((l) => l.n === n);
-  const stale = content ? !isPacingCurrent(content.totalWeeks ?? content.lessons.length) : false;
-
-  return (
-    <div className="rounded-2xl p-4" style={{ background: "rgba(251,248,240,0.75)", border: "1px solid #d9e4d3" }}>
-      <div className="flex items-baseline justify-between gap-2 mb-2">
-        <h3 className="text-lg font-bold" style={{ color: "#33402c" }}>{name}</h3>
-        <Link href={`/rca/${classId}`} className="text-xs shrink-0" style={{ color: "#3f7ea6" }}>Full page →</Link>
-      </div>
-      <p className="text-sm mb-3" style={{ color: "#3f7ea6" }}>
-        {block}{room && <span style={{ color: "#8a9a7c" }}> · {room}</span>}
-      </p>
-
-      {!content ? (
-        <p className="text-sm" style={{ color: "#8a9a7c" }}>No lesson content on file for this class yet.</p>
-      ) : (
-        <>
-          {stale && (
-            <p className="text-xs rounded-lg px-2.5 py-1.5 mb-3" style={{ background: "#fbeee0", color: "#8a5a2a" }}>
-              Documented pacing has run out — showing the last lesson on file, not necessarily today&apos;s real plan.
-            </p>
-          )}
-          <p className="text-xs font-semibold uppercase tracking-widest mb-2" style={{ color: "#6b8e5a" }}>
-            Lesson {n} of {content.lessons.length} — key points
-          </p>
-          {lesson ? (
-            <div className="rounded-xl p-3 space-y-2" style={{ background: "#fff", border: "1px solid #e8e4d5" }}>
-              {lesson.note && (
-                <p className="text-xs font-semibold" style={{ color: "#8a6a45" }}>{lesson.note}</p>
-              )}
-              {lesson.sections.map((s) => (
-                <p key={s.label} className="text-sm" style={{ color: "#3a4a34" }}>
-                  <span className="font-semibold" style={{ color: "#33402c" }}>{s.label}: </span>
-                  {s.text}
-                </p>
-              ))}
-            </div>
-          ) : (
-            <p className="text-sm" style={{ color: "#8a9a7c" }}>No lesson content for lesson {n}.</p>
-          )}
-        </>
-      )}
     </div>
   );
 }

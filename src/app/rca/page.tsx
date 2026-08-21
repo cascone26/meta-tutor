@@ -231,10 +231,21 @@ export default function RcaPage() {
       <Reveal>
         <Link
           href="/rca/today"
-          className="flex items-center justify-between rounded-2xl px-4 py-3 mb-6 transition-transform hover:scale-[1.01]"
+          className="flex items-center justify-between rounded-2xl px-4 py-3 mb-3 transition-transform hover:scale-[1.01]"
           style={{ background: "#3f7ea6", color: "#fff", boxShadow: "0 8px 24px -10px rgba(63,126,166,0.5)" }}
         >
           <span className="text-sm font-semibold">Today — quick reference for work</span>
+          <span aria-hidden>→</span>
+        </Link>
+      </Reveal>
+
+      <Reveal>
+        <Link
+          href="/rca/week"
+          className="flex items-center justify-between rounded-2xl px-4 py-3 mb-6 transition-transform hover:scale-[1.01]"
+          style={{ background: "rgba(63,126,166,0.1)", color: "#2f5e7a", border: "1px solid rgba(63,126,166,0.25)" }}
+        >
+          <span className="text-sm font-semibold">Week ahead — plan Sunday night, coming tests/events</span>
           <span aria-hidden>→</span>
         </Link>
       </Reveal>

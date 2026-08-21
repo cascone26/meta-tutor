@@ -92,7 +92,7 @@ export default function RcaClassPage({ params }: { params: Promise<{ slug: strin
       <div style={{ animation: "fadeUpIn 0.6s cubic-bezier(0.16,1,0.3,1) 140ms both" }}>
         {content ? (
           <>
-            <LessonViewer content={content} />
+            <LessonViewer content={content} classId={cls.id} />
             <PracticeHub subjectId={cls.id} subjectName={cls.name} />
           </>
         ) : (
