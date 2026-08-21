@@ -57,9 +57,14 @@ export default function RcaClassPage({ params }: { params: Promise<{ slug: strin
             <LeafIcon size={12} />
             Reference Materials
           </h2>
-          <Link href="/rca/religion-6/catechism" className="text-xs underline block" style={{ color: "#3f7ea6" }}>
-            Baltimore Catechism No. 2 (complete reference) →
-          </Link>
+          <div className="space-y-1 text-xs">
+            <Link href="/rca/religion-6/catechism" className="underline block" style={{ color: "#3f7ea6" }}>
+              Baltimore Catechism No. 2 (complete reference) →
+            </Link>
+            <Link href="/rca/religion-6/materials" className="underline block" style={{ color: "#3f7ea6" }}>
+              All course textbooks & links →
+            </Link>
+          </div>
         </div>
       )}
 
