@@ -73,3 +73,19 @@ create table if not exists mt_rca_pacing_override (
 alter table mt_rca_pacing_override enable row level security;
 drop policy if exists "Service role full access" on mt_rca_pacing_override;
 create policy "Service role full access" on mt_rca_pacing_override for all using (true);
+
+-- Added 2026-08-21: lightweight "did I grade this yet" checklist for the real
+-- Test/Investigation/Homework Check items already detected from each subject's
+-- content (see getGradableItems in rca-upcoming.ts). item_key is stable
+-- (subjectId#lessonN#index) so it survives content re-fetches.
+create table if not exists mt_rca_grading_checklist (
+  user_email text not null,
+  item_key text not null,
+  done boolean not null default true,
+  updated_at timestamptz not null default now(),
+  primary key (user_email, item_key)
+);
+
+alter table mt_rca_grading_checklist enable row level security;
+drop policy if exists "Service role full access" on mt_rca_grading_checklist;
+create policy "Service role full access" on mt_rca_grading_checklist for all using (true);

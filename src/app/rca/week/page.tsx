@@ -1,8 +1,10 @@
 import BackLink from "@/components/rca/BackLink";
 import PrintButton from "@/components/rca/PrintButton";
+import ReadAloudButton from "@/components/rca/ReadAloudButton";
+import CopyTextButton from "@/components/rca/CopyTextButton";
 import RcaClassBlock from "@/components/rca/RcaClassBlock";
 import { rcaClasses, rcaSchedule, getClosure, rcaEvents } from "@/lib/rca";
-import { getUpcomingHighlights, getCltHeadsUp } from "@/lib/rca-upcoming";
+import { getUpcomingHighlights, getCltHeadsUp, blockStartMinutes } from "@/lib/rca-upcoming";
 
 // Sunday-night (or whenever) planning view — Jacob cram-preps ahead of the
 // week, not just the morning of. /rca/today only shows the ONE day that's
@@ -11,18 +13,6 @@ import { getUpcomingHighlights, getCltHeadsUp } from "@/lib/rca-upcoming";
 // investigations/homework checks, coordination notes like May Crowning, CLT
 // testing week) — none of which had any lead-time surfacing anywhere before.
 export const dynamic = "force-dynamic";
-
-function blockStartMinutes(block?: string): number {
-  if (!block) return 9999;
-  const time = block.match(/^(\d{1,2}):(\d{2})/);
-  const period = block.match(/\b(AM|PM)\b/);
-  if (!time) return 9999;
-  let h = parseInt(time[1], 10);
-  const min = parseInt(time[2], 10);
-  if (period?.[1] === "PM" && h !== 12) h += 12;
-  if (period?.[1] === "AM" && h === 12) h = 0;
-  return h * 60 + min;
-}
 
 // Walk forward up to 2 weeks collecting the next real (non-closed, in-term)
 // Monday and Thursday — same closure/event-skipping logic as
@@ -61,11 +51,16 @@ export default function WeekPage() {
     <div className="max-w-2xl mx-auto px-5 py-8 pb-16 print:px-0 print:py-4">
       <div className="flex items-start justify-between gap-2 print:hidden">
         <BackLink href="/rca" size="xs">Back to RCA</BackLink>
-        <PrintButton />
+        <div className="flex gap-2">
+          <ReadAloudButton targetId="rca-week-content" />
+          <CopyTextButton targetId="rca-week-content" label="Copy for FACTS" />
+          <PrintButton />
+        </div>
       </div>
       <h1 className="text-2xl font-bold tracking-tight mt-2 mb-0.5">Week ahead</h1>
       <p className="text-xs mb-6" style={{ color: "#8a9a7c" }}>{rcaSchedule.center} · {rcaSchedule.address}</p>
 
+      <div id="rca-week-content">
       {clt && (
         <div className="rounded-xl px-4 py-3 mb-6" style={{ background: "rgba(201,132,58,0.1)", border: "1px solid rgba(201,132,58,0.25)" }}>
           <p className="text-sm font-semibold" style={{ color: "#8a6a2e" }}>
@@ -116,6 +111,7 @@ export default function WeekPage() {
           );
         })
       )}
+      </div>
     </div>
   );
 }

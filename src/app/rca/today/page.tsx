@@ -2,6 +2,9 @@ import BackLink from "@/components/rca/BackLink";
 import { rcaClasses, rcaSchedule, getClosure, rcaEvents } from "@/lib/rca";
 import RcaClassBlock from "@/components/rca/RcaClassBlock";
 import PrintButton from "@/components/rca/PrintButton";
+import ReadAloudButton from "@/components/rca/ReadAloudButton";
+import { blockStartMinutes } from "@/lib/rca-upcoming";
+import { getLiturgicalSeason } from "@/lib/liturgical-calendar";
 
 // A dedicated, deliberately distraction-free work-day page (Jacob, 2026-08-17,
 // his first real teaching day: "the center is really a no tech place... laptops
@@ -17,23 +20,6 @@ import PrintButton from "@/components/rca/PrintButton";
 // teach — read-only, nothing to type or edit, since laptops in-class are
 // glance-only and phones can't comfortably do data entry either.
 export const dynamic = "force-dynamic";
-
-// Block strings are "H:MM – H:MM AM/PM" with ONE trailing period marker that
-// applies to the whole span (none of RCA's real blocks cross the noon
-// boundary) — parsed just to sort classes chronologically, since the array
-// order in rca.ts isn't guaranteed to match real time order (Latin/Religion
-// tie at 10:10 but sit after Science/History at 1:55 in the source array).
-function blockStartMinutes(block?: string): number {
-  if (!block) return 9999;
-  const time = block.match(/^(\d{1,2}):(\d{2})/);
-  const period = block.match(/\b(AM|PM)\b/);
-  if (!time) return 9999;
-  let h = parseInt(time[1], 10);
-  const min = parseInt(time[2], 10);
-  if (period?.[1] === "PM" && h !== 12) h += 12;
-  if (period?.[1] === "AM" && h === 12) h = 0;
-  return h * 60 + min;
-}
 
 export default function TodayPage() {
   const today = new Date();
@@ -58,15 +44,27 @@ export default function TodayPage() {
 
   const materials = Array.from(new Set(todaysClasses.flatMap((c) => c.books))).sort();
 
+  // "Up next" — which of today's blocks hasn't started yet, by wall-clock time.
+  // Only meaningful mid-day; before the first block or after the last one it's
+  // just noise, so it only renders inside that window.
+  const nowMinutes = today.getHours() * 60 + today.getMinutes();
+  const upNext = todaysClasses.find((c) => blockStartMinutes(c.block) > nowMinutes);
+
   return (
     <div className="max-w-2xl mx-auto px-5 py-8 pb-16 print:px-0 print:py-4">
       <div className="flex items-start justify-between gap-2 print:hidden">
         <BackLink href="/rca" size="xs">Back to RCA</BackLink>
-        <PrintButton />
+        <div className="flex gap-2">
+          <ReadAloudButton targetId="rca-today-content" />
+          <PrintButton />
+        </div>
       </div>
       <h1 className="text-2xl font-bold tracking-tight mt-2 mb-0.5">{dateLabel}</h1>
-      <p className="text-xs mb-6" style={{ color: "#8a9a7c" }}>{rcaSchedule.center} · {rcaSchedule.address}</p>
+      <p className="text-xs mb-6" style={{ color: "#8a9a7c" }}>
+        {rcaSchedule.center} · {rcaSchedule.address} · {getLiturgicalSeason(today).label}
+      </p>
 
+      <div id="rca-today-content">
       {!inTerm ? (
         <StatusBanner tone="neutral">
           {today < termStart
@@ -93,6 +91,11 @@ export default function TodayPage() {
             <p className="text-base font-semibold" style={{ color: "#2f5e7a" }}>
               Teaching day — {todaysClasses.length} class{todaysClasses.length === 1 ? "" : "es"}, {rcaSchedule.startTime}–{rcaSchedule.endTime}
             </p>
+            {upNext && (
+              <p className="text-sm mt-1" style={{ color: "#2f5e7a" }}>
+                Up next: <span className="font-semibold">{upNext.name}</span>{upNext.block ? ` — ${upNext.block}` : ""}{upNext.room ? ` · ${upNext.room}` : ""}
+              </p>
+            )}
           </StatusBanner>
 
           {materials.length > 0 && (
@@ -115,6 +118,7 @@ export default function TodayPage() {
           </div>
         </>
       )}
+      </div>
     </div>
   );
 }

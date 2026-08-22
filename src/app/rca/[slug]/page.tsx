@@ -6,6 +6,7 @@ import { getRcaClass } from "@/lib/rca";
 import { rcaContent } from "@/lib/rca-content";
 import LessonViewer from "@/components/rca/LessonViewer";
 import PracticeHub from "@/components/rca/PracticeHub";
+import GradingChecklist from "@/components/rca/GradingChecklist";
 import { LeafIcon } from "@/components/rca/NatureIcons";
 import BackLink from "@/components/rca/BackLink";
 
@@ -74,6 +75,14 @@ export default function RcaClassPage({ params }: { params: Promise<{ slug: strin
         </div>
       )}
 
+      {cls.id === "music-34" && (
+        <div className="mb-4" style={{ animation: "fadeUpIn 0.6s cubic-bezier(0.16,1,0.3,1) 80ms both" }}>
+          <Link href="/rca/music-34-year-b" className="underline text-xs" style={{ color: "#3f7ea6" }}>
+            Year B (archived, for reference) →
+          </Link>
+        </div>
+      )}
+
       {(cls.lessonPlanUrl || (cls.driveUrls && cls.driveUrls.length > 0)) && (
         <div className="mb-6 flex flex-wrap gap-3">
           {cls.lessonPlanUrl && (
@@ -93,6 +102,7 @@ export default function RcaClassPage({ params }: { params: Promise<{ slug: strin
         {content ? (
           <>
             <LessonViewer content={content} classId={cls.id} />
+            <GradingChecklist subjectId={cls.id} />
             <PracticeHub subjectId={cls.id} subjectName={cls.name} />
           </>
         ) : (

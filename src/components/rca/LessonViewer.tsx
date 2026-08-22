@@ -6,6 +6,7 @@ import { lessonWeekday, todaysLessonNumber } from "@/lib/rca-content/types";
 import { currentLessonNumber, isPacingCurrent } from "@/lib/rca";
 import { ChevronIcon } from "@/components/rca/NatureIcons";
 import { useRcaPacingOffsets } from "@/lib/rca-pacing-client";
+import { nextFlexibleLesson } from "@/lib/rca-upcoming";
 
 // Double-chevron — same stroke style as the rest of the icon set, used for
 // the "skip to next day of work" jump so it reads as distinct from the
@@ -103,6 +104,16 @@ export default function LessonViewer({ content, classId }: { content: SubjectCon
           is the last one available, not necessarily what&apos;s actually happening this week.
         </p>
       )}
+
+      {offsetsLoaded && offset < 0 && (() => {
+        const flex = nextFlexibleLesson(classId, correctedTodayEstimate);
+        return flex ? (
+          <p className="text-[11px] rounded-lg px-2.5 py-1.5 mb-3" style={{ background: "#e8f2f8", color: "#2f5e7a" }}>
+            Running {Math.abs(offset)} lesson{Math.abs(offset) === 1 ? "" : "s"} behind — nearest flexible spot to catch up:
+            lesson {flex.lessonN} ({flex.label})
+          </p>
+        ) : null;
+      })()}
 
       <div className="flex items-center justify-between mb-3">
         <button

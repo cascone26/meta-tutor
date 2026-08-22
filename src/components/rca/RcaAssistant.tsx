@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { getRcaClass } from "@/lib/rca";
+import { getUpcomingHighlights } from "@/lib/rca-upcoming";
 import { BirdIcon } from "./NatureIcons";
 
 type Message = { role: "user" | "assistant"; content: string };
@@ -23,6 +24,14 @@ export default function RcaAssistant() {
   const cls = slug ? getRcaClass(slug) : undefined;
   const subjectId = cls?.id || "general";
   const subjectLabel = cls?.name || "all RCA classes";
+
+  // Proactive nudge instead of a purely reactive box — surface the single
+  // soonest real upcoming thing (test/investigation/HW check/coordination note)
+  // relevant to whatever page Jacob's actually on, computed from real content,
+  // not invented. Falls back to nothing if there's nothing worth flagging.
+  const upcoming = getUpcomingHighlights()
+    .filter((h) => !cls || h.classId === cls.id)
+    .filter((h) => h.lessonsAway <= 2)[0];
 
   useEffect(() => {
     if (open) endRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -121,9 +130,16 @@ export default function RcaAssistant() {
 
           <div className="flex-1 overflow-y-auto px-4 py-3 space-y-3" style={{ minHeight: 120 }}>
             {messages.length === 0 && (
-              <p className="text-sm" style={{ color: "#8a9a7c" }}>
-                Ask about pacing, activities, or anything you need to prep — I&apos;ll follow whatever class page you&apos;re on.
-              </p>
+              <>
+                {upcoming && (
+                  <p className="text-sm rounded-lg px-3 py-2 mb-2" style={{ background: "#fbeee0", color: "#8a5a2a" }}>
+                    Heads up — {upcoming.className}, {upcoming.lessonsAway === 0 ? "today" : `~${upcoming.lessonsAway} lesson${upcoming.lessonsAway === 1 ? "" : "s"} out`}: {upcoming.snippet}
+                  </p>
+                )}
+                <p className="text-sm" style={{ color: "#8a9a7c" }}>
+                  Ask about pacing, activities, or anything you need to prep — I&apos;ll follow whatever class page you&apos;re on.
+                </p>
+              </>
             )}
             {messages.map((m, i) => (
               <div key={i} className="text-sm" style={{ color: m.role === "user" ? "#2f3a2a" : "#3a5a3a" }}>

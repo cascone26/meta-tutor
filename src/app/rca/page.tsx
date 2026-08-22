@@ -335,15 +335,29 @@ export default function RcaPage() {
       <Reveal><RcaReviewPicker /></Reveal>
 
       <Reveal>
-        <a
-          href={gradingGuidelinesUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-xs underline"
-          style={{ color: "#3f7ea6" }}
-        >
-          RCA Lower School Tutor Guidelines (grading, all subjects) →
-        </a>
+        <div className="flex flex-wrap gap-x-4 gap-y-1">
+          <a
+            href={gradingGuidelinesUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-xs underline"
+            style={{ color: "#3f7ea6" }}
+          >
+            RCA Lower School Tutor Guidelines (grading, all subjects) →
+          </a>
+          <Link href="/rca/progress" className="text-xs underline" style={{ color: "#3f7ea6" }}>
+            Prep progress →
+          </Link>
+          <Link href="/rca/changelog" className="text-xs underline" style={{ color: "#3f7ea6" }}>
+            What's changed →
+          </Link>
+          <Link href="/rca/substitute" className="text-xs underline" style={{ color: "#3f7ea6" }}>
+            If I'm out →
+          </Link>
+          <Link href="/rca/pacing-explainer" className="text-xs underline" style={{ color: "#3f7ea6" }}>
+            Explain pacing to a parent →
+          </Link>
+        </div>
       </Reveal>
     </div>
 
