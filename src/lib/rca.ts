@@ -249,7 +249,16 @@ export const rcaClasses: RcaClass[] = [
     block: "2:30 – 3:15 PM",
     room: "St. Gianna",
     days: ["Thursday"],
-    lessonPlanUrl: "https://docs.google.com/document/d/1FupKLzgdbmjjpU6ifTUyCConhd5xmkpvGXBZXA_BGpM/edit?usp=sharing",
+    // The "3/4 LP" link from Dr. Jennings' 2026-08-20 "Music A lesson plan and music folder"
+    // email. The previous link here (doc 1FupKLzg...) export-verified 2026-08-23 as titled
+    // "Music 3-4 Year B" — the wrong curriculum year (this year is Year A). This doc is
+    // RCA-login gated (anonymous export returns 401), so its content can't be re-verified
+    // here, but it is the link the coordinator distributed and Jacob's login can open it.
+    lessonPlanUrl: "https://docs.google.com/document/d/1hGGo5tM9xw7wN_g0nGT2vkV7QB5pue7aq0AZx1e35zc/edit?usp=sharing",
+    driveUrls: [
+      // "Tutor Folder" for Music 3/4, same 2026-08-20 email.
+      { label: "Music 3/4 Tutor Folder", url: "https://drive.google.com/open?id=1EbSoma_qVItHeHUCpqK_YO4x-tArA6Wj" },
+    ],
   },
   {
     id: "pe-1-2",
@@ -258,10 +267,13 @@ export const rcaClasses: RcaClass[] = [
     area: "Specials",
     summary: "Physical education for 1st-2nd grade — Monday only.",
     books: [],
-    // Same "Option 2" schedule update as Music 3-4 above — Block 4 shifted 1:00-1:45 ->
-    // 12:50-1:35, room now literally "Gym" per the email table (not the old "St. Sebastian"
-    // guess). Jacob leads, Harmon assists.
-    block: "12:50 – 1:35 PM",
+    // Same "Option 2" schedule update as Music 3-4 above; room now literally "Gym" per the
+    // email table (not the old "St. Sebastian" guess). Jacob leads, Harmon assists.
+    // Block 4 time corrected AGAIN per Mrs. Uffman's 2026-08-20 follow-up ("Re: specials
+    // changes and schedule update", confirmed with Dr. Jennings): Special 1 runs 1:00-1:45,
+    // killing the 10-minute gap before Special 2 at 1:45. Supersedes the 12:50-1:35 in the
+    // original Option 2 table. 12:45-1:00 is Classical Literature / chores time.
+    block: "1:00 – 1:45 PM",
     room: "Gym",
     days: ["Monday"],
   },
@@ -275,7 +287,9 @@ export const rcaClasses: RcaClass[] = [
     // MOVED entirely under "Option 2": was Block 6 Monday (St. Sebastian), now Block 4
     // THURSDAY, room "Cafe" per the email table — different day AND different room from
     // what this file previously said. Source: Dr. Jennings' 2026-08-19/20 schedule emails.
-    block: "12:50 – 1:35 PM",
+    // Block 4 time corrected to 1:00-1:45 per Mrs. Uffman's 2026-08-20 follow-up (confirmed
+    // with Dr. Jennings) — supersedes the 12:50-1:35 in the original Option 2 table.
+    block: "1:00 – 1:45 PM",
     room: "Cafe",
     days: ["Thursday"],
   },
