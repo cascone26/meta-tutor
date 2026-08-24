@@ -18,6 +18,8 @@ Generate questions matched to the SUBJECT below:
 - Religion / History / Science (reading-and-content subjects): ask about specific content he'd need to explain to a student — a fact, a cause, a distinction, a translation of a term — not "what do you think."
 - Music: ask about the specific hymn/chant/round or music-theory concept in the lesson (translation, historical context, or notation).
 
+If the grounding below includes a "REAL BALTIMORE CATECHISM CONTENT", "REAL LATIN CONTENT", or "REAL PHONOGRAM SOUNDS" block, treat it as ground truth and build every question/answer directly from it — do NOT invent catechism question numbers, Latin vocabulary/forms, or phonogram sounds that aren't in that block.
+
 Respond with ONLY valid JSON, no markdown fences: {"questions":[{"question":"...","answer":"..."}]}
 Generate exactly 4 questions, ordered easier to harder. Answers should be specific and checkable (1-3 sentences, or a computed value for math).`;
 
@@ -42,6 +44,8 @@ Generate 6 pairs matched to the SUBJECT:
 
 CRITICAL: every "answer" must be SHORT — ideally 1-4 words, never more than 6. These get typed under a countdown timer, so long answers make the game unplayable. If the real answer is naturally longer, pick the single most essential word/phrase instead.
 
+If the grounding below includes a "REAL BALTIMORE CATECHISM CONTENT", "REAL LATIN CONTENT", or "REAL PHONOGRAM SOUNDS" block, pull every card directly from it — don't invent catechism facts, Latin words/forms, or phonogram sounds outside that block.
+
 Respond with ONLY valid JSON, no markdown fences: {"cards":[{"term":"...","answer":"..."}]}
 Exactly 6 cards, no duplicates.`;
 
@@ -51,6 +55,8 @@ Exactly 6 cards, no duplicates.`;
 const GENERATE_MC_SYSTEM = `You are building a multiple-choice quiz from ONE lesson, for Jacob (a tutor at Regina Caeli Academy) prepping to teach it.
 
 Generate 5 questions matched to the SUBJECT (math problems for Saxon, grammar/translation for Latin/LOE, content facts for Religion/History/Science, hymn/notation facts for Music). Each question needs exactly 4 answer options where exactly ONE is correct and the other 3 are plausible, specific, real wrong answers (not jokes, not "none of the above") — the kind a tutor could actually second-guess.
+
+If the grounding below includes a "REAL BALTIMORE CATECHISM CONTENT", "REAL LATIN CONTENT", or "REAL PHONOGRAM SOUNDS" block, build every question and its correct answer from THAT — wrong-but-plausible distractors may still be invented, but the correct answer must come from the real content, not a guess.
 
 Respond with ONLY valid JSON, no markdown fences: {"questions":[{"question":"...","options":["...","...","...","..."],"correctIndex":0}]}
 correctIndex is 0-3, the index of the right option within that question's options array. Shuffle which index is correct across questions — don't always put it first.`;

@@ -1,30 +1,24 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Image from "next/image";
-import BackLink from "@/components/rca/BackLink";
-
-const STORAGE_KEY = "rca-dim-mode";
+import HeaderBackLink from "@/components/rca/HeaderBackLink";
 
 // Pragmatic dim/low-light mode for early-morning prep, scoped to the RCA
 // umbrella only. Rather than rewriting every inline-styled color across the
 // nature theme (dozens of components, all hand-tuned hex values), this
 // applies a single CSS filter to the whole shell — real value, much smaller
-// surface area to get wrong. Persisted in localStorage, no account/DB needed
-// since it's a pure display preference.
-export default function RcaThemeShell({ children }: { children: React.ReactNode }) {
-  const [dim, setDim] = useState(false);
-
-  useEffect(() => {
-    setDim(localStorage.getItem(STORAGE_KEY) === "1");
-  }, []);
-
-  function toggle() {
-    const next = !dim;
-    setDim(next);
-    localStorage.setItem(STORAGE_KEY, next ? "1" : "0");
-  }
-
+// surface area to get wrong.
+//
+// `dim` is now a CONTROLLED prop (owned by RcaChrome, the parent) instead of
+// state local to this component — the toggle button itself moved OUT of the
+// header into its own fixed-position sibling (see DimModeToggle.tsx), which
+// needed to live outside this div's own DOM subtree so it can never again
+// collide with CalendarPopup's `right-4` button the way the old in-header
+// toggle did (found live, 2026-08-24: both landed in roughly the same
+// on-screen spot — Jacob: "the calendar button is overlaid with my night
+// mode button"). Two components now needed the same `dim` value in sync, so
+// it moved up to a shared parent instead of living in either one alone.
+export default function RcaThemeShell({ children, dim }: { children: React.ReactNode; dim: boolean }) {
   return (
     <div
       className="h-full overflow-y-auto overflow-x-hidden relative"
@@ -73,21 +67,16 @@ export default function RcaThemeShell({ children }: { children: React.ReactNode 
         className="flex items-center justify-between px-5 py-3 border-b sticky top-0 z-10 backdrop-blur"
         style={{ borderColor: "#d9e4d3", background: "rgba(232,242,248,0.75)" }}
       >
-        <BackLink href="/">Hub</BackLink>
+        <HeaderBackLink />
         <span className="flex items-center gap-2">
           <Image src="/rca-logo.png" alt="Regina Caeli Academy" width={800} height={154} priority style={{ height: 22, width: "auto" }} />
           <span className="text-sm font-semibold tracking-wide" style={{ color: "#2f5e7a" }}>· KSC</span>
         </span>
-        <button
-          type="button"
-          onClick={toggle}
-          aria-label={dim ? "Turn off dim mode" : "Turn on dim mode"}
-          title={dim ? "Dim mode on" : "Dim mode off"}
-          className="w-10 h-8 rounded-full flex items-center justify-center text-xs"
-          style={{ background: dim ? "#33402c" : "rgba(255,255,255,0.5)", color: dim ? "#e8edc6" : "#2f5e7a", border: "1px solid #d9e4d3" }}
-        >
-          {dim ? "☾" : "☀"}
-        </button>
+        {/* Trailing slot is a plain spacer for center balance now — the dim
+            toggle lives outside this shell entirely (see DimModeToggle.tsx),
+            coordinated with CalendarPopup's own fixed offset instead of
+            competing for this narrow flex slot. */}
+        <span className="w-10" />
       </header>
       <div className="relative z-[1]">{children}</div>
     </div>

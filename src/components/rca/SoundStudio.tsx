@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { phonograms } from "@/lib/rca-content/phonogram-sounds";
 import {
   latinNouns, sumConjugation, amoConjugation, latinAdjectives,
@@ -76,7 +76,7 @@ export default function SoundStudio({ subjectId, subjectName }: { subjectId: str
   const cards = useMemo(() => (isLatin ? buildLatinCards() : buildPhonogramCards()), [isLatin]);
   const categories = useMemo(() => [...new Set(cards.map((c) => c.category))], [cards]);
 
-  const [tab, setTab] = useState<"study" | "quiz">("study");
+  const [tab, setTab] = useState<"study" | "quiz" | "reverse">("study");
   const [catFilter, setCatFilter] = useState<string | null>(null);
   const pool = catFilter ? cards.filter((c) => c.category === catFilter) : cards;
 
@@ -92,8 +92,8 @@ export default function SoundStudio({ subjectId, subjectName }: { subjectId: str
           : "Every phonogram sound, read aloud via its real keyword word — the way LOE actually teaches them."}
       </p>
 
-      <div className="flex gap-1.5 mb-3">
-        {(["study", "quiz"] as const).map((t) => (
+      <div className="flex gap-1.5 mb-3 flex-wrap">
+        {(["study", "quiz", "reverse"] as const).map((t) => (
           <button
             key={t}
             onClick={() => setTab(t)}
@@ -104,7 +104,7 @@ export default function SoundStudio({ subjectId, subjectName }: { subjectId: str
               border: `1px solid ${tab === t ? "#6b8e5a" : "#d9e4d3"}`,
             }}
           >
-            {t === "study" ? "Study (browse + listen)" : "Class quiz (oral testing)"}
+            {t === "study" ? "Study (browse + listen)" : t === "quiz" ? "Class quiz (oral testing)" : "Audio quiz (guess the phonogram)"}
           </button>
         ))}
       </div>
@@ -139,10 +139,159 @@ export default function SoundStudio({ subjectId, subjectName }: { subjectId: str
 
       {isLatin && <PronunciationNote />}
 
-      {tab === "study" ? (
-        <StudyMode pool={pool} />
+      {tab === "study" && <StudyMode pool={pool} />}
+      {tab === "quiz" && <QuizMode pool={pool} subjectName={subjectName} progressKey={progressKey} />}
+      {tab === "reverse" && <ReverseQuizMode pool={pool} subjectName={subjectName} progressKey={progressKey} />}
+    </div>
+  );
+}
+
+// The audio quiz Jacob actually asked for (2026-08-24): "an audio test where
+// it tests me like i test them where it gives me phonogram sounds then i say
+// or write what phonogram it is then i reveal if i got it" — the REVERSE
+// direction from QuizMode above (which shows the spelling and has a student
+// say the sound). Here: play the real sound(s), Jacob types the spelling,
+// reveal to self-check. Built on the exact same real pre-generated audio as
+// the rest of Sound Studio — no separate content source to drift out of sync.
+function ReverseQuizMode({ pool, subjectName, progressKey }: { pool: SoundCard[]; subjectName: string; progressKey: string }) {
+  const orderRef = useRef<SoundCard[]>(shuffle(pool));
+  const [index, setIndex] = useState(0);
+  const [guess, setGuess] = useState("");
+  const [revealed, setRevealed] = useState(false);
+  const [right, setRight] = useState(0);
+  const [wrong, setWrong] = useState(0);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const order = orderRef.current;
+  const card = order[index];
+
+  function playCard(c: SoundCard | undefined) {
+    if (!c) return;
+    let i = 0;
+    function next() {
+      if (i >= c!.sounds.length) return;
+      const s = c!.sounds[i];
+      i++;
+      const el = new Audio(s.audioSrc);
+      el.onended = () => setTimeout(next, 350);
+      el.play().catch(() => setTimeout(next, 350));
+    }
+    next();
+  }
+
+  function restart() {
+    orderRef.current = shuffle(pool);
+    setIndex(0);
+    setGuess("");
+    setRevealed(false);
+    setRight(0);
+    setWrong(0);
+    setTimeout(() => playCard(orderRef.current[0]), 150);
+    setTimeout(() => inputRef.current?.focus(), 200);
+  }
+
+  useEffect(() => {
+    playCard(order[0]);
+    inputRef.current?.focus();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  if (order.length !== pool.length) orderRef.current = shuffle(pool); // category changed mid-session
+
+  if (!card) return <p className="text-sm" style={{ color: "#8a9a7c" }}>No cards in this category.</p>;
+  const done = index >= order.length;
+
+  function grade(gotIt: boolean) {
+    if (gotIt) setRight((r) => r + 1);
+    else {
+      setWrong((w) => w + 1);
+      logWrongAnswer(progressKey, card.sounds.map((s) => s.label).join("; "), card.front, subjectName, "sound-reverse-quiz");
+    }
+    if (index + 1 < order.length) {
+      const nextI = index + 1;
+      setIndex(nextI);
+      setGuess("");
+      setRevealed(false);
+      setTimeout(() => playCard(order[nextI]), 150);
+      setTimeout(() => inputRef.current?.focus(), 200);
+    } else {
+      saveResult(progressKey, {
+        mode: "sound-reverse-quiz",
+        date: new Date().toLocaleDateString(),
+        timestamp: Date.now(),
+        score: gotIt ? right + 1 : right,
+        total: order.length,
+        percentage: Math.round(((gotIt ? right + 1 : right) / order.length) * 100),
+        weakTerms: [],
+        weakCategories: [],
+      });
+    }
+  }
+
+  if (done) {
+    return (
+      <div>
+        <p className="text-sm font-semibold mb-1" style={{ color: "#2f5e7a" }}>{right} / {order.length} correct</p>
+        <p className="text-xs mb-3" style={{ color: "#8a9a7c" }}>{wrong} to review next round.</p>
+        <button onClick={restart} className="px-4 py-2 rounded-lg text-sm font-medium" style={{ background: "#c9843a", color: "#fff" }}>
+          Run it again
+        </button>
+      </div>
+    );
+  }
+
+  const guessIsCorrect = guess.trim().toLowerCase() === card.front.toLowerCase();
+
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-2 text-xs" style={{ color: "#8a9a7c" }}>
+        <span>Item {index + 1} of {order.length}</span>
+        <span>✓ {right} · ✗ {wrong}</span>
+      </div>
+      <div className="rounded-xl p-4 mb-3 text-center" style={{ background: "#fff", border: "1px solid #d9e4d3", minHeight: 120 }}>
+        <button
+          onClick={() => playCard(card)}
+          className="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-2"
+          style={{ background: "#6b8e5a", color: "#fff" }}
+          aria-label="Play sounds again"
+        >
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M15.536 8.464a5 5 0 010 7.072M18.364 5.636a9 9 0 010 12.728M11 5L6 9H2v6h4l5 4V5z" /></svg>
+        </button>
+        <p className="text-[11px]" style={{ color: "#8a9a7c" }}>{card.sounds.length} sound{card.sounds.length > 1 ? "s" : ""} — tap to replay</p>
+        {revealed && (
+          <div className="mt-3 pt-3" style={{ borderTop: "1px solid #e6e0d0" }}>
+            <p className="text-2xl font-bold" style={{ color: "#33402c" }}>{card.front}</p>
+            <p className="text-xs mt-1" style={{ color: "#8a9a7c" }}>{card.sounds.map((s) => s.label).join(" · ")}</p>
+          </div>
+        )}
+      </div>
+      {!revealed ? (
+        <>
+          <input
+            ref={inputRef}
+            type="text"
+            value={guess}
+            onChange={(e) => setGuess(e.target.value)}
+            onKeyDown={(e) => { if (e.key === "Enter") setRevealed(true); }}
+            placeholder="Type what you heard"
+            className="w-full text-center text-lg font-semibold px-4 py-2.5 rounded-lg mb-3"
+            style={{ background: "#fff", border: "1px solid #d9e4d3", color: "#33402c" }}
+            autoComplete="off"
+            autoCapitalize="off"
+            spellCheck={false}
+          />
+          <button onClick={() => setRevealed(true)} className="w-full px-4 py-2 rounded-lg text-sm font-medium" style={{ background: "#3f7ea6", color: "#fff" }}>
+            Reveal
+          </button>
+        </>
       ) : (
-        <QuizMode pool={pool} subjectName={subjectName} progressKey={progressKey} />
+        <div className="flex gap-2">
+          <button onClick={() => grade(false)} className="flex-1 px-4 py-2 rounded-lg text-sm font-medium" style={{ background: guessIsCorrect ? "#dcecd4" : "#f0dede", color: guessIsCorrect ? "#4a6a3a" : "#a04a4a" }}>
+            Missed it
+          </button>
+          <button onClick={() => grade(true)} className="flex-1 px-4 py-2 rounded-lg text-sm font-medium" style={{ background: "#dcecd4", color: "#4a6a3a" }}>
+            Got it
+          </button>
+        </div>
       )}
     </div>
   );

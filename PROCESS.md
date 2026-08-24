@@ -1241,3 +1241,109 @@ rule — no third-party vision model in the loop.
   hardcoded vision rule).
 - Commits: `92de23b` (chess overhaul), `88909fc` (markdown + error-logging fix). Env var fix and token
   resync are Vercel-side config changes, not commits.
+
+## RCA Class-Page Fix Sprint — 2026-08-24
+
+### Problem Statement
+Jacob's list, roughly in order: Baltimore Catechism quiz content wrong, Latin content "ok but
+needs to be better," a flashcard index/count bug switching categories (67-card "All" deck at
+15/67, switch to a 10-card "Numbers" category, shows "16/10" instead of "1/10"), flashcards not
+tied to the current week's lesson, the whole thing "way too HTML-y," a phonogram audio voice
+that's "semi incorrect," a new audio phonogram test (hear sounds, guess the phonogram, reveal), a
+redundant "< Hub" button, the calendar button overlaid on the night-mode button, a Baltimore
+Catechism teacher's guide, and a K2C-style widget drawer. Asked to "keep using the viewer to check
+everything."
+
+### Orientation (search-before-build)
+Read the actual RCA code tree before touching anything and found the real shape of the problem,
+which didn't match a naive reading of the complaints: RCA's own PracticeHub only ever generates
+4-6 AI questions per request grounded on a bare pacing line — it cannot produce "67 flashcards"
+with a "Numbers" category. The app's OTHER glossary system (`Flashcards.tsx`/`AudioReview.tsx`,
+built for Cris's Metaphysics course, with a custom-glossary add-your-own-terms feature) is what
+Jacob had actually been repurposing to hold his personal Latin/Religion/phonogram deck — that
+single finding reframed most of the list: the "too HTML-y" complaint is about that system (never
+restyled for the RCA theme), the index bug lives there not in RCA's PracticeHub, and no phonogram/
+catechism/Latin reference data existed anywhere in the codebase, which is exactly why generated
+catechism questions came out wrong.
+
+### Research pivot — Baltimore Catechism
+Found the real edition RCA uses (Baltimore Catechism No. 3, 1949 Fr. Connell/Confraternity
+revision) by cross-checking a real hosted copy (drbo.org) against RCA's own citations — "Lesson 15
+#195 — The Ten Commandments" in `religion-6.ts` matched drbo's Lesson 15/Q195 exactly. That
+edition is still under copyright (unlike the original 1885 first edition), confirmed live when a
+WebFetch of the full text was refused by the fetch tool's own model as copyrighted material on
+most lessons. Built `baltimore-catechism-guide.ts` as an original paraphrase (same discipline this
+codebase's own `religion-6.ts`/`first-form-latin-6.ts` already document doing) — traditional,
+non-copyrightable content (the Ten Commandments themselves, the works of mercy) verbatim, original
+wording for the explanatory topics, plus original discussion questions and True/False for a
+teacher's guide.
+
+### Mid-session merge conflict
+`git push` was rejected — another session had pushed 13 commits of real, substantial, heavily
+overlapping RCA work to `origin/main` while this session worked (real recorded MP3 audio for
+phonograms + ecclesiastical Latin pronunciation via a new "Sound Studio," a full verbatim public-
+domain "Baltimore Catechism No. 2" reference + complete Gospel of Mark/Luke text, a pacing self-
+correction feature, a grading checklist, a substitute-teacher page, a "dim mode" toggle, and more —
+touching `LessonViewer.tsx`, `PracticeHub.tsx`, `rca/layout.tsx`, `[slug]/page.tsx`, `rca.ts`, and
+others this session had also edited). Rather than force-push over five thousand lines of someone
+else's real work, saved this session's commit on a safety branch (`hp-rca-fixes-2026-08-24`),
+reset local `main` to `origin/main`, and reconciled by hand: inspected each overlapping file to see
+what the other session actually built before deciding what of this session's own work was still
+genuinely additive versus now-redundant/inferior.
+
+What turned out to still be needed (not duplicated): the Flashcards/AudioReview fixes (a completely
+different, untouched part of the app), the widget-customize drawer (never built by the other
+session), the header-back-button and calendar/toggle-collision fixes (the other session's own new
+"dim mode" toggle had landed in the exact same spot as `CalendarPopup`, an independent instance of
+the same class of bug), and — critically — actually wiring real content into the AI grounding
+(the other session built real reference PAGES and Sound Studio audio, but never touched
+`rca-grounding.ts`, so the AI quiz generator still had nothing but a bare pacing line to work from).
+What was now redundant and dropped: a from-scratch phonogram/Latin reference file (theirs was
+better — real pre-generated verified audio, not browser TTS) and a standalone `/study` phonogram
+quiz component (folded its actual functionality — the "guess the phonogram from the sound" reverse
+direction — into their existing Sound Studio as a third tab instead, reusing their real audio
+infrastructure rather than shipping a parallel lower-quality one).
+
+### A real content-accuracy bug, found and NOT shipped
+While wiring TeacherGuide/grounding to the other session's real `baltimore-catechism.ts` ("No. 2"),
+found a genuine mismatch: RCA's own pacing doc says "Lesson 15 #195 — The Ten Commandments," but
+that file's actual Q195 is "What is contrition, or sorrow for sin?" — real, verbatim, public-domain
+text, just from a different edition's numbering (No. 2, the 1885 first edition, vs. the No. 3/1949
+edition RCA's own doc's numbers actually match, confirmed earlier this session against drbo.org).
+Verified this wasn't a one-off by also checking their Lesson 15's title ("On Confirmation," not
+"The Two Great Commandments") — a genuine edition mismatch, not a fluke. Did NOT wire that file
+into TeacherGuide/grounding as if it were authoritative for RCA's specific weekly citations — that
+would have shipped the exact "catechism questions arent the right ones" bug Jacob reported,
+relocated rather than fixed. Used this session's own drbo.org-verified content instead for the
+precise weekly cross-reference; left the other session's No. 2 reference page untouched as what
+it's honestly good for — a real, browsable full-book resource, just not this specific job.
+
+### Verification
+- `npm run build`: clean, 0 TypeScript errors, all 56 routes compile, both before the merge
+  conflict and again after full reconciliation.
+- Live-verified via `scripts/mt-shot.mjs` + `scripts/mt-test-*.mjs` against a real `next dev`
+  (existing dev-preview auth bypass, no real Google login needed): header back-button context-
+  switching on 7 different pages, calendar/dim-toggle non-overlap (real bounding-rect
+  coordinates), the Flashcards index-bug fix (both restore-path and live in-session paths), the
+  LayoutDrawer's open/toggle/reorder/persist round-trip against the final 8-widget page structure,
+  the Sound Studio reverse-quiz's full click-through (start → guess → reveal → grade → advance,
+  zero console errors), and the catechism week-number-drift fix (week 2 → real Lesson 15, week 22
+  → real Lesson 27, matching RCA's actual pacing doc exactly, re-verified after the edition fix).
+- **Not verified this session**: a real Anthropic API response through the newly-grounded
+  `/api/rca-understanding` routes (no key in this session's local env) — build-clean and correctly
+  auth-gated, but actual model output from the new grounding is Report-tier until Jacob runs a real
+  session against the live app.
+
+### References
+- Safety branch with this session's pre-conflict work: `hp-rca-fixes-2026-08-24`.
+- New content: `src/lib/rca-content/baltimore-catechism-guide.ts`.
+- New components: `HeaderBackLink.tsx`, `DimModeToggle.tsx`, `RcaChrome.tsx`, `LayoutDrawer.tsx`,
+  `RcaClassBody.tsx`, `TeacherGuide.tsx`.
+- New lib: `rca-layout-prefs.ts`, `tts-voice.ts`.
+- Modified (reconciled with the other session's work): `rca-grounding.ts`, `LessonViewer.tsx`,
+  `PacedLesson.tsx`, `RcaThemeShell.tsx`, `SoundStudio.tsx` (added `ReverseQuizMode`),
+  `rca/layout.tsx`, `[slug]/page.tsx`, `today`/`week`/`substitute`/`changelog`/`pacing-explainer`/
+  `progress` pages (removed redundant back-links), `Flashcards.tsx`, `AudioReview.tsx`.
+- Verification scripts (kept in repo): `scripts/mt-shot.mjs`, `scripts/mt-test-drawer.mjs`,
+  `scripts/mt-test-flashcards.mjs`, `scripts/mt-test-flashcards-live.mjs`,
+  `scripts/mt-test-soundstudio.mjs`, `scripts/mt-test-teacherguide.mjs`.

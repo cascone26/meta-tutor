@@ -33,12 +33,23 @@ export default function PacedLesson({ classId, content, weekday }: { classId: st
           {lesson.note && (
             <p className="text-xs font-semibold" style={{ color: "#8a6a45" }}>{lesson.note}</p>
           )}
-          {lesson.sections.map((s) => (
-            <p key={s.label} className="text-sm" style={{ color: "#3a4a34" }}>
-              <span className="font-semibold" style={{ color: "#33402c" }}>{s.label}: </span>
-              {s.text}
-            </p>
-          ))}
+          {/* Same fix as LessonViewer.tsx: some subjects give every section
+              in a lesson the SAME label (real React duplicate-key warning,
+              found live 2026-08-24), with the day baked into the text
+              itself. Index-based key always; drop the redundant repeated
+              label and surface the real day when it's there instead. */}
+          {lesson.sections.map((s, i) => {
+            const dayMatch = s.text.match(/^([A-Za-z]+)\s+—\s+(.*)$/);
+            const allSameLabel = lesson.sections.length > 1 && lesson.sections.every((x) => x.label === lesson.sections[0].label);
+            const lineLabel = dayMatch && allSameLabel ? dayMatch[1] : s.label;
+            const lineText = dayMatch && allSameLabel ? dayMatch[2] : s.text;
+            return (
+              <p key={`${i}-${s.label}`} className="text-sm" style={{ color: "#3a4a34" }}>
+                <span className="font-semibold" style={{ color: "#33402c" }}>{lineLabel}: </span>
+                {lineText}
+              </p>
+            );
+          })}
         </div>
       ) : (
         <p className="text-sm" style={{ color: "#8a9a7c" }}>No lesson content for lesson {n}.</p>

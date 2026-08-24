@@ -1,4 +1,3 @@
-import BackLink from "@/components/rca/BackLink";
 import PrintButton from "@/components/rca/PrintButton";
 import RcaClassBlock from "@/components/rca/RcaClassBlock";
 import { rcaClasses, rcaSchedule, getClosure, rcaEvents } from "@/lib/rca";
@@ -30,8 +29,10 @@ export default function SubstitutePage() {
 
   return (
     <div className="max-w-2xl mx-auto px-5 py-8 pb-16 print:px-0 print:py-4">
-      <div className="flex items-start justify-between gap-2 print:hidden">
-        <BackLink href="/rca" size="xs">Back to RCA</BackLink>
+      {/* No "Back to RCA" pill here — the header above already shows "All RCA
+          classes" contextually on every non-hub /rca page (see
+          HeaderBackLink), so this used to double up with it. */}
+      <div className="flex items-start justify-end gap-2 print:hidden">
         <PrintButton />
       </div>
 

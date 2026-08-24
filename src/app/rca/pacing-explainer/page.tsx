@@ -1,4 +1,3 @@
-import BackLink from "@/components/rca/BackLink";
 import { LeafIcon } from "@/components/rca/NatureIcons";
 import CopyTextButton from "@/components/rca/CopyTextButton";
 
@@ -10,8 +9,7 @@ export default function PacingExplainerPage() {
   return (
     <div className="min-h-screen bg-white">
       <div className="max-w-2xl mx-auto px-5 py-8">
-        <BackLink href="/rca" size="xs">Back to RCA</BackLink>
-
+        {/* No "Back to RCA" pill here — the header already shows "All RCA classes" contextually. */}
         <div style={{ animation: "fadeUpIn 0.6s cubic-bezier(0.16,1,0.3,1) both" }} className="mt-4 mb-6 flex items-start justify-between gap-2">
           <div>
             <h1 className="text-2xl font-bold tracking-tight mb-1 flex items-center gap-2">

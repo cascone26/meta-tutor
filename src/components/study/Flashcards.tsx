@@ -43,7 +43,19 @@ export default function Flashcards({ onBack, unitFilter = [] }: { onBack: () => 
     try { const s = localStorage.getItem("meta-tutor-fc-progress"); return s ? new Set(JSON.parse(s).knownTerms ?? []) : new Set(); } catch { return new Set(); }
   });
 
-  const restoredRef = useRef(typeof window !== "undefined" && !!localStorage.getItem("meta-tutor-fc-progress"));
+  // Was keyed off "did localStorage have ANY saved progress at all" — which
+  // is a proxy for "was `cards` populated via restore on this mount", not
+  // the same thing as "is this the very first effect run". A stale/mismatched
+  // save (e.g. saved while filtered to one category, category since removed
+  // from the effective glossary) could restore `cards` from a path that
+  // silently returns the unfiltered full list while this ref still reads
+  // true, then the very next real category click land on an inconsistent
+  // index. Skipping strictly the FIRST effect invocation — regardless of
+  // whether localStorage had anything — is simpler and can't be fooled that
+  // way (found + hardened 2026-08-24: Jacob saw "16/10" after switching from
+  // a 67-card "All" deck to a 10-card category, i.e. index carried over
+  // without `cards.length` catching up).
+  const isFirstRun = useRef(true);
 
   // Save progress
   useEffect(() => {
@@ -58,9 +70,11 @@ export default function Flashcards({ onBack, unitFilter = [] }: { onBack: () => 
     } catch {}
   }, [category, shuffled, cards, index, known]);
 
-  // Reset cards when category/shuffle changes — skip on initial mount if restored
+  // Reset cards when category/shuffle changes — skip on initial mount (the
+  // `cards` state initializer above already handled restoring or building
+  // the right list for whatever `category` was restored to).
   useEffect(() => {
-    if (restoredRef.current) { restoredRef.current = false; return; }
+    if (isFirstRun.current) { isFirstRun.current = false; return; }
     const g = filterByUnits(getEffectiveGlossary(), unitFilter);
     const filtered = category ? g.filter((t) => t.category === category) : g;
     setCards(shuffled ? shuffle(filtered) : [...filtered]);
@@ -68,7 +82,17 @@ export default function Flashcards({ onBack, unitFilter = [] }: { onBack: () => 
     setFlipped(false);
   }, [category, shuffled]);
 
-  const card = cards[index];
+  // Defense-in-depth clamp: whatever caused `index` and `cards.length` to
+  // disagree, never let it reach the render below — an index the current
+  // card list can't actually satisfy silently displayed a stale card next to
+  // a corrected-but-wrong "X / newLength" count instead of just fixing itself.
+  const safeIndex = cards.length === 0 ? 0 : Math.min(index, cards.length - 1);
+  if (safeIndex !== index && cards.length > 0) {
+    // Correct it for the NEXT render rather than reading `cards[index]`
+    // (possibly undefined) on this one.
+    setIndex(safeIndex);
+  }
+  const card = cards[safeIndex];
 
   const next = useCallback(() => {
     if (index < cards.length - 1) {
@@ -141,7 +165,7 @@ export default function Flashcards({ onBack, unitFilter = [] }: { onBack: () => 
           Back
         </button>
         <span className="text-xs" style={{ color: "var(--muted)" }}>
-          {index + 1} / {cards.length} &middot; {known.size} known
+          {safeIndex + 1} / {cards.length} &middot; {known.size} known
         </span>
       </div>
 
@@ -196,24 +220,46 @@ export default function Flashcards({ onBack, unitFilter = [] }: { onBack: () => 
         </div>
       </div>
 
-      {/* Card */}
+      {/* Card — a real 3D flip (perspective + rotateY), gradient face, and a
+          slim deck-progress bar, replacing the old plain instant content-swap
+          box. Jacob, 2026-08-24: "everything looks way to HTML-y with the
+          basic text and stuff" — this was the single most-used surface in
+          his own custom deck, so it's the one worth actually dressing up. */}
       <div className="flex-1 flex items-center justify-center px-4 pb-4">
         <div className="w-full max-w-lg">
           <div
-            onClick={() => setFlipped(!flipped)}
-            className="w-full rounded-2xl p-8 cursor-pointer transition-all select-none"
-            style={{
-              background: "var(--surface)",
-              border: `2px solid ${known.has(card.term) ? "var(--success)" : "var(--border)"}`,
-              minHeight: "240px",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
+            className="w-full mb-2 rounded-full overflow-hidden"
+            style={{ height: 4, background: "var(--border)" }}
+            aria-hidden
           >
-            {!flipped ? (
-              <>
+            <div
+              className="h-full rounded-full transition-all duration-300"
+              style={{ width: `${((index + 1) / cards.length) * 100}%`, background: "var(--accent)" }}
+            />
+          </div>
+          <div
+            onClick={() => setFlipped(!flipped)}
+            className="w-full cursor-pointer select-none"
+            style={{ perspective: "1400px", minHeight: "240px" }}
+          >
+            <div
+              className="relative w-full h-full transition-transform duration-500"
+              style={{
+                minHeight: "240px",
+                transformStyle: "preserve-3d",
+                transform: flipped ? "rotateY(180deg)" : "rotateY(0deg)",
+              }}
+            >
+              {/* Front */}
+              <div
+                className="absolute inset-0 rounded-2xl p-8 flex flex-col items-center justify-center"
+                style={{
+                  backfaceVisibility: "hidden",
+                  background: "linear-gradient(155deg, var(--surface) 0%, var(--accent-light) 220%)",
+                  border: `2px solid ${known.has(card.term) ? "var(--success)" : "var(--border)"}`,
+                  boxShadow: "0 8px 24px -12px rgba(0,0,0,0.25)",
+                }}
+              >
                 <p className="text-xs uppercase tracking-wider mb-3" style={{ color: "var(--muted)" }}>Term</p>
                 <p className="text-2xl font-semibold text-center" style={{ color: "var(--foreground)" }}>
                   {card.term}
@@ -225,16 +271,25 @@ export default function Flashcards({ onBack, unitFilter = [] }: { onBack: () => 
                   {card.category}
                 </span>
                 <p className="text-xs mt-4" style={{ color: "var(--muted)" }}>tap to flip</p>
-              </>
-            ) : (
-              <>
+              </div>
+              {/* Back */}
+              <div
+                className="absolute inset-0 rounded-2xl p-8 flex flex-col items-center justify-center"
+                style={{
+                  backfaceVisibility: "hidden",
+                  transform: "rotateY(180deg)",
+                  background: "linear-gradient(155deg, var(--accent-light) 0%, var(--surface) 220%)",
+                  border: `2px solid ${known.has(card.term) ? "var(--success)" : "var(--border)"}`,
+                  boxShadow: "0 8px 24px -12px rgba(0,0,0,0.25)",
+                }}
+              >
                 <p className="text-xs uppercase tracking-wider mb-3" style={{ color: "var(--muted)" }}>Definition</p>
                 <p className="text-base leading-relaxed text-center" style={{ color: "var(--foreground)" }}>
                   {card.definition}
                 </p>
                 <p className="text-xs mt-4" style={{ color: "var(--muted)" }}>tap to flip back</p>
-              </>
-            )}
+              </div>
+            </div>
           </div>
 
           {/* Controls */}

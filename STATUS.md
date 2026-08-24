@@ -1,5 +1,93 @@
 # Meta Tutor — Status
 
+## RCA class-page fixes + real content grounding + widget drawer (2026-08-24)
+Jacob's list: Baltimore Catechism quiz content wrong, Latin "needs to be better," flashcard
+count/index bug switching categories, learning not matching the current week, "too HTML-y" look,
+phonogram audio voice/accuracy, a real audio phonogram quiz, redundant "< Hub" button,
+calendar/dark-toggle collision, a Baltimore Catechism teacher's guide, and a K2C-style
+widget-customize drawer. Worked on HP against a local `next dev` using `src/proxy.ts`'s existing
+dev-preview auth bypass + a new Windows-adapted `scripts/mt-shot.mjs` (playwright) to actually
+screenshot/click through the real app.
+
+**Mid-session merge conflict, handled non-destructively**: another session pushed 13 commits of
+substantial, overlapping RCA work (real recorded audio for phonograms/Latin via Sound Studio, a
+full public-domain Baltimore Catechism reference + Gospel of Mark/Luke, a pacing self-correction
+feature, grading checklist, substitute page, dim mode, and more) to `origin/main` while this
+session was mid-flight on the same files. Reconciled by hand rather than force-pushing over it:
+saved this session's original work on branch `hp-rca-fixes-2026-08-24`, reset to their `origin/main`,
+then re-applied only what was still genuinely additive on top of their (often better) work. See
+PROCESS.md for the full reconciliation account, including a real content-accuracy bug found in
+THEIR work in the process (see below).
+
+**Content grounding, not guessed** — `buildSubjectReferenceBlock()` in `rca-grounding.ts`, wired
+into `/api/rca-understanding`'s system prompts, so AI-generated quiz/flashcard content grounds in
+real material instead of a bare pacing line:
+- Religion 6: `src/lib/rca-content/baltimore-catechism-guide.ts` (topic-accurate paraphrase of the
+  real Baltimore Catechism No. 3, 1949 Fr. Connell/Confraternity edition — confirmed against a real
+  hosted copy at drbo.org). **Deliberately NOT** the other session's `baltimore-catechism.ts`
+  ("No. 2," verbatim, public domain) — found live that its numbering doesn't match RCA's own
+  citations (RCA says "Lesson 15 #195 — The Ten Commandments"; No. 2's real Q195 is about
+  contrition, a different edition). Using it under RCA's citations would have relocated the exact
+  bug Jacob reported, not fixed it. No. 2 stays a good general full-book reference
+  (`/rca/religion-6/catechism`), just not the source for precise weekly cross-referencing.
+  `getCatechismLessonsForWeekText()` also fixes a real drift: RCA's `religion-6.ts` lesson `n` is
+  the teaching-WEEK index, not the real catechism lesson number — they diverge after week ~16
+  (week 22 references real catechism Lesson 27, not 22). Verified live both ways.
+- Latin/LOE: wired to the other session's real `latin-core.ts` (ecclesiastical pronunciation,
+  Whisper-verified audio) and `phonogram-sounds.ts` — these already existed for Sound Studio but
+  were never fed to the AI generator until now.
+
+**Bug fixes (live-verified via playwright against real `next dev`):**
+- `Flashcards.tsx` (generic Study system) — hardened the category-switch reset + added a
+  render-time index clamp as defense-in-depth. Live-tested the literal reported scenario (67-card
+  "All" deck at index 14, switch to a 10-card "Numbers" category) — correctly shows 1/10, both on
+  a fresh restore and a live in-session switch.
+- `LessonViewer.tsx` + `PacedLesson.tsx` — fixed a real React duplicate-key console error (lesson
+  sections sharing one `label` as their key) + a redundant repeated "Week N (...)" line per
+  section; now shows the week once, "Monday —"/"Thursday —" per line.
+- Header "< Hub" vs "All RCA classes" — new `HeaderBackLink.tsx` makes the header's back button
+  pathname-aware: "Hub" only on the bare `/rca` hub, "All RCA classes" everywhere deeper. Removed
+  the now-redundant body-level "Back to RCA"/"All RCA classes" pills on `[slug]`, `/today`,
+  `/week`, `/substitute`, `/changelog`, `/pacing-explainer`, `/progress` that used to double up
+  with it.
+- Calendar/dim-mode collision — the other session's new dim-mode toggle lived inside
+  `RcaThemeShell`'s header, in-flow at the far right — landing in roughly the same on-screen spot
+  as `CalendarPopup`'s own fixed `right-4` button. Extracted it to `DimModeToggle.tsx`, a
+  coordinated fixed sibling (`right-[60px]`), state lifted to a new `RcaChrome.tsx` wrapper so both
+  stay in sync. Verified via real bounding-rect measurement, no overlap.
+- `LayoutDrawer.tsx`'s button was found live rendering ~400px off from its intended `left-5` —
+  trapped inside an ancestor's CSS animation (a `transform`-bearing keyframe creates a new
+  containing block for `position: fixed` descendants, the same class of bug `CalendarPopup`'s own
+  code comment documents). Fixed by portaling to `document.body`.
+
+**New:**
+- `LayoutDrawer.tsx` + `rca-layout-prefs.ts` + `RcaClassBody.tsx` — per-class widget customize
+  drawer (drag or up/down arrows to reorder, checkbox to hide, persisted) covering
+  Books/Links/Reference Materials/Year B link/Lesson pacing/Grading checklist/Practice/Teacher's
+  guide.
+- `TeacherGuide.tsx` — Baltimore Catechism discussion questions + True/False (answers hidden until
+  tapped), religion-6 only for now (other subjects show an honest "not built yet").
+- `SoundStudio.tsx` gained a third tab, "Audio quiz (guess the phonogram)" (`ReverseQuizMode`) —
+  the actual audio self-test Jacob asked for: hear a phonogram/Latin word's real sound, type a
+  guess, reveal to self-check. Built on the same real pre-generated audio as the existing
+  Study/Class-quiz tabs, not a separate lower-quality TTS system.
+- `tts-voice.ts` + `AudioReview.tsx` voice picker — generic Study-page audio (unrelated to RCA, not
+  touched by the other session) now lets Jacob pick/persist a real system voice instead of
+  whatever the browser defaults to.
+- `Flashcards.tsx` visual pass — real 3D flip (perspective+rotateY), gradient card face,
+  deck-progress bar. This generic Study/Flashcards system (built for Cris's Metaphysics course,
+  repurposed by Jacob for his own Latin/Religion custom deck) is what "too HTML-y" was actually
+  pointing at — never restyled for the RCA nature theme because it predates it.
+
+**Verification:** `npm run build` clean (0 TS errors, 56 routes) after full reconciliation.
+Playwright scripts (`scripts/mt-shot.mjs`, `scripts/mt-test-*.mjs`) screenshot/click through the
+real dev server via the dev-preview bypass — kept in the repo as reusable regression checks.
+**Not done this session:** a live end-to-end AI-generation response (no Anthropic key in this HP
+session's local env) — the routes are build-clean and correctly auth-gated, but whether the model
+actually produces correct catechism/Latin/phonogram content from the new grounding blocks is
+Report-tier until Jacob runs a real Speed Drill/Match session on the live app.
+
+
 ## Known gap — Trivia progress not persisted from Play Quiz or Daily 5 (found 2026-08-19)
 `/trivia/play` (main quiz mode) has **zero network calls** — no fetch, no localStorage, fully
 ephemeral, resets on navigation. `/trivia/daily` persists completion to **localStorage only**

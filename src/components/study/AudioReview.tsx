@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import { getEffectiveGlossary, getEffectiveCategories } from "@/lib/custom-glossary";
 import { filterByUnits } from "@/lib/units";
 import { recordStudySession } from "@/lib/streaks";
+import { getEnglishVoices, pickDefaultVoice, saveVoiceURI } from "@/lib/tts-voice";
 
 export default function AudioReview({ onBack, unitFilter = [] }: { onBack: () => void; unitFilter?: number[] }) {
   const glossary = filterByUnits(getEffectiveGlossary(), unitFilter);
@@ -18,13 +19,28 @@ export default function AudioReview({ onBack, unitFilter = [] }: { onBack: () =>
   const [delay, setDelay] = useState(2); // seconds between term and definition
   const utterRef = useRef<SpeechSynthesisUtterance | null>(null);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
+  const [voiceURI, setVoiceURI] = useState<string | null>(null);
 
   const pool = selectedCat ? glossary.filter((g) => g.category === selectedCat) : [...glossary];
 
   useEffect(() => {
+    // getVoices() can return an empty list until the browser fires
+    // voiceschanged (varies by browser) — load it both ways so the picker
+    // isn't empty on browsers that never fire the event on first paint.
+    function loadVoices() {
+      const list = getEnglishVoices();
+      if (list.length) {
+        setVoices(list);
+        setVoiceURI((prev) => prev ?? pickDefaultVoice()?.voiceURI ?? null);
+      }
+    }
+    loadVoices();
+    window.speechSynthesis.addEventListener("voiceschanged", loadVoices);
     return () => {
       window.speechSynthesis.cancel();
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      window.speechSynthesis.removeEventListener("voiceschanged", loadVoices);
     };
   }, []);
 
@@ -32,6 +48,8 @@ export default function AudioReview({ onBack, unitFilter = [] }: { onBack: () =>
     window.speechSynthesis.cancel();
     const utter = new SpeechSynthesisUtterance(text);
     utter.rate = speed;
+    const voice = voices.find((v) => v.voiceURI === voiceURI) ?? pickDefaultVoice();
+    if (voice) utter.voice = voice;
     utter.onend = () => { if (onEnd) onEnd(); };
     utterRef.current = utter;
     window.speechSynthesis.speak(utter);
@@ -136,6 +154,28 @@ export default function AudioReview({ onBack, unitFilter = [] }: { onBack: () =>
               <span className="text-xs" style={{ color: "var(--foreground)" }}>Auto-advance</span>
             </label>
           </div>
+          {voices.length > 0 && (
+            <div className="flex items-center gap-2 mt-3">
+              <span className="text-xs shrink-0" style={{ color: "var(--muted)" }}>Voice:</span>
+              <select
+                value={voiceURI ?? ""}
+                onChange={(e) => { setVoiceURI(e.target.value); saveVoiceURI(e.target.value); }}
+                className="text-xs px-2 py-1 rounded flex-1"
+                style={{ background: "var(--background)", border: "1px solid var(--border)", color: "var(--foreground)" }}
+              >
+                {voices.map((v) => (
+                  <option key={v.voiceURI} value={v.voiceURI}>{v.name} ({v.lang})</option>
+                ))}
+              </select>
+              <button
+                onClick={() => { stop(); const v = voices.find((v) => v.voiceURI === voiceURI); if (v) speak("This is what this voice sounds like."); }}
+                className="text-xs px-2 py-1 rounded shrink-0"
+                style={{ background: "var(--accent-light)", color: "var(--accent)" }}
+              >
+                Test
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Now playing */}

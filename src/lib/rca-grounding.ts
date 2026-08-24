@@ -5,6 +5,53 @@
 import { getRcaClass, rcaClasses, rcaSchedule, currentLessonNumber, isPacingCurrent, getNextScheduleItem } from "@/lib/rca";
 import { rcaContent } from "@/lib/rca-content";
 import { todaysLessonNumber } from "@/lib/rca-content/types";
+import { getCatechismLessonsForWeekText } from "@/lib/rca-content/baltimore-catechism-guide";
+import { phonograms } from "@/lib/rca-content/phonogram-sounds";
+import { latinNouns, sumConjugation, amoConjugation, latinAdjectives, latinNumbers, pronunciationRules } from "@/lib/rca-content/latin-core";
+
+// Real per-subject reference content, keyed to the SAME week/lesson text
+// already resolved below — this is what actually fixes generated quiz/
+// flashcard content being wrong (Jacob, 2026-08-24: "baltimore catechism
+// questions arent the right ones... latin is ok but needs to be better").
+// Before this, buildClassGrounding only ever handed the model a terse
+// pacing line like "Lesson 15 #188-189, 191-192, & 197" with zero
+// indication of what those questions ARE — the model had no choice but to
+// guess/hallucinate plausible-sounding content. Now it gets the real thing:
+// the actual public-domain Baltimore Catechism No. 2 text (already built,
+// see baltimore-catechism.ts), the real phonogram sounds (phonogram-
+// sounds.ts), and the real Latin vocab/pronunciation (latin-core.ts) — all
+// content that already existed in the app for reference pages/Sound Studio
+// but was never actually fed to the AI generator.
+function buildSubjectReferenceBlock(subjectId: string, weekText: string): string {
+  if (subjectId === "religion-6") {
+    // Deliberately NOT baltimore-catechism.ts's "No. 2" edition — its
+    // numbering doesn't match RCA's own citations (found live 2026-08-24:
+    // RCA says "Lesson 15 #195 — The Ten Commandments," but No. 2's real
+    // Q195 is about contrition, a different edition's numbering). This uses
+    // the edition actually verified to match (see baltimore-catechism-
+    // guide.ts's own header comment for the full story).
+    const guides = getCatechismLessonsForWeekText(weekText);
+    if (guides.length === 0) return "";
+    const blocks = guides
+      .map((guide) => `Lesson ${guide.n} — "${guide.title}":\n${guide.topics.map((t) => `- (Q${t.qRange}) ${t.topic}: ${t.content}`).join("\n")}`)
+      .join("\n\n");
+    return `\nREAL BALTIMORE CATECHISM CONTENT for the lesson(s) actually referenced this week — ground every generated question/answer in THIS, not a guess:\n${blocks}\n`;
+  }
+  if (subjectId === "first-form-latin-6") {
+    const vocab = latinNouns.slice(0, 10).map((v) => `${v.latin} = ${v.english}`).join(", ");
+    const numbers = latinNumbers.map((v) => `${v.latin} = ${v.english}`).join(", ");
+    const sum = sumConjugation.map((v) => `${v.latin} = ${v.english}`).join(", ");
+    const amo = amoConjugation.map((v) => `${v.latin} = ${v.english}`).join(", ");
+    const adj = latinAdjectives.slice(0, 6).map((v) => `${v.latin} = ${v.english}`).join(", ");
+    const pron = pronunciationRules.slice(0, 5).map((r) => `${r.letter}: ${r.ecclesiastical}`).join("; ");
+    return `\nREAL LATIN CONTENT (ecclesiastical pronunciation, what RCA teaches) — ground every generated question in THIS real vocab/grammar, not invented forms:\nNouns: ${vocab}\nsum (to be): ${sum}\namo (to love): ${amo}\nAdjectives: ${adj}\nNumbers 1-10: ${numbers}\nPronunciation notes: ${pron}\n`;
+  }
+  if (subjectId === "loe-essentials-c") {
+    const sample = phonograms.slice(0, 15).map((p) => `${p.spelling} = ${p.sounds.map((s) => `${s.ipa} (${s.keyword})${s.note ? ` [${s.note}]` : ""}`).join(" / ")}`).join("\n");
+    return `\nREAL PHONOGRAM SOUNDS (LOE) — every phonogram can say MULTIPLE sounds, always in this fixed order; get the count and order right (e.g. "i" has 3 real sounds, not 2):\n${sample}\n`;
+  }
+  return "";
+}
 
 const CURRENT_CONTENT_NOTE =
   "This class's lesson content below is from RCA's real 2026-2027 curriculum doc (arrived 2026-08-12), not a placeholder — dates/pacing are this year's.";
@@ -68,6 +115,8 @@ export function buildClassGrounding(subjectId: string | undefined, lessonNOverri
       for (const s of lesson.sections) grounding += `${s.label}: ${s.text}\n`;
       if (lesson.note) grounding += `Note: ${lesson.note}\n`;
     }
+    const weekText = lesson ? lesson.sections.map((s) => s.text).join(" ") : "";
+    grounding += buildSubjectReferenceBlock(cls.id, weekText);
     const pacingWeeks = content.totalWeeks ?? content.lessons.length;
     if (!lessonNOverride && !isPacingCurrent(pacingWeeks)) {
       grounding += `\nPACING NOTE: This subject's documented pacing only covers the first ${pacingWeeks} weeks of the term — the "CURRENT LESSON" above is actually just the LAST one available, not necessarily what's really being taught this week. If Jacob asks what's happening "this week" or "today," say the real weekly plan isn't loaded yet rather than presenting this lesson as current.\n`;

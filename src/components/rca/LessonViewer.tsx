@@ -20,7 +20,18 @@ function DoubleChevronIcon({ size = 14, flip }: { size?: number; flip?: boolean 
   );
 }
 
-export default function LessonViewer({ content, classId }: { content: SubjectContent; classId: string }) {
+export default function LessonViewer({
+  content,
+  classId,
+  onLessonChange,
+}: {
+  content: SubjectContent;
+  classId: string;
+  /** Fires whenever the viewed lesson number changes, so a parent (e.g. RcaClassBody's
+   * widget layout) can ground Practice/Teacher's Guide on whatever's actually on screen
+   * instead of blindly on today's estimate — optional, fully backward compatible. */
+  onLessonChange?: (n: number) => void;
+}) {
   const total = content.lessons.length;
   const todayWeekday = new Date().toLocaleDateString("en-US", { weekday: "long" });
   // currentLessonNumber()'s raw estimate can land on the right WEEK but the
@@ -45,6 +56,11 @@ export default function LessonViewer({ content, classId }: { content: SubjectCon
   }, [offsetsLoaded]);
 
   const lesson = content.lessons.find((l) => l.n === n);
+
+  useEffect(() => {
+    onLessonChange?.(n);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [n]);
 
   const [adjustOpen, setAdjustOpen] = useState(false);
   const [adjustValue, setAdjustValue] = useState(correctedTodayEstimate);
@@ -197,19 +213,40 @@ export default function LessonViewer({ content, classId }: { content: SubjectCon
         </div>
       )}
 
-      {lesson && (
-        <div className="text-sm space-y-2" style={{ color: "#3a4a34" }}>
-          {lesson.note && (
-            <p className="text-xs font-semibold" style={{ color: "#8a6a45" }}>{lesson.note}</p>
-          )}
-          {lesson.sections.map((s) => (
-            <p key={s.label}>
-              <span className="font-semibold" style={{ color: "#33402c" }}>{s.label}: </span>
-              {s.text}
-            </p>
-          ))}
-        </div>
-      )}
+      {lesson && (() => {
+        // Some subjects (Religion, Latin) give every section in a lesson the
+        // SAME label ("Week 2 (Aug 24-28)") with the actual day baked into
+        // the text itself ("Monday — ..."/"Thursday — ..."); others (LOE)
+        // give each section its own distinct label. Rendering every section
+        // with `key={s.label}` broke on the first kind — React logged a real
+        // duplicate-key warning (found live, 2026-08-24) since two sections
+        // shared one key. Also fixes a readability issue for free: repeating
+        // the identical "Week 2 (Aug 24-28):" label twice in a row read as
+        // redundant — showing it once as a heading, then just "Monday —"/
+        // "Thursday —" per line (pulled from the text itself), is clearer.
+        const allSameLabel = lesson.sections.length > 1 && lesson.sections.every((s) => s.label === lesson.sections[0].label);
+        return (
+          <div className="text-sm space-y-2" style={{ color: "#3a4a34" }}>
+            {lesson.note && (
+              <p className="text-xs font-semibold" style={{ color: "#8a6a45" }}>{lesson.note}</p>
+            )}
+            {allSameLabel && (
+              <p className="text-xs font-semibold uppercase tracking-wide" style={{ color: "#8a9a7c" }}>{lesson.sections[0].label}</p>
+            )}
+            {lesson.sections.map((s, i) => {
+              const dayMatch = allSameLabel ? s.text.match(/^([A-Za-z]+)\s+—\s+(.*)$/) : null;
+              const lineLabel = dayMatch ? dayMatch[1] : s.label;
+              const lineText = dayMatch ? dayMatch[2] : s.text;
+              return (
+                <p key={`${i}-${s.label}`}>
+                  <span className="font-semibold" style={{ color: "#33402c" }}>{lineLabel}: </span>
+                  {lineText}
+                </p>
+              );
+            })}
+          </div>
+        );
+      })()}
     </div>
   );
 }
