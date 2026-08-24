@@ -88,7 +88,7 @@ export default function SoundStudio({ subjectId, subjectName }: { subjectId: str
       </h2>
       <p className="text-xs mb-3" style={{ color: "#8a9a7c" }}>
         {isLatin
-          ? "Classical Latin pronunciation — words read aloud from a hand-built phonetic respelling, not raw text-to-speech guessing at Latin."
+          ? "Ecclesiastical (Church) Latin pronunciation — a real Italian neural voice reads each word, verified by speech-recognition round-trip so it's actually checked, not just assumed."
           : "Every phonogram sound, read aloud via its real keyword word — the way LOE actually teaches them."}
       </p>
 
@@ -153,7 +153,7 @@ function PronunciationNote() {
   return (
     <div className="mb-3 rounded-xl p-3" style={{ background: "#fff", border: "1px solid #d9e4d3" }}>
       <button onClick={() => setOpen((o) => !o)} className="text-xs font-medium" style={{ color: "#3f7ea6" }}>
-        {open ? "Hide" : "Show"} classical vs. ecclesiastical pronunciation rules
+        {open ? "Hide" : "Show"} ecclesiastical vs. classical pronunciation rules
       </button>
       {open && (
         <div className="mt-2 overflow-x-auto">
@@ -161,8 +161,8 @@ function PronunciationNote() {
             <thead>
               <tr style={{ color: "#8a9a7c" }}>
                 <th className="text-left pr-3 pb-1">Letter</th>
+                <th className="text-left pr-3 pb-1">Ecclesiastical (used below)</th>
                 <th className="text-left pr-3 pb-1">Classical</th>
-                <th className="text-left pr-3 pb-1">Ecclesiastical</th>
                 <th className="text-left pb-1">Example</th>
               </tr>
             </thead>
@@ -170,16 +170,16 @@ function PronunciationNote() {
               {pronunciationRules.map((r) => (
                 <tr key={r.letter} style={{ borderTop: "1px solid #e6e0d0" }}>
                   <td className="pr-3 py-1 font-medium">{r.letter}</td>
-                  <td className="pr-3 py-1">{r.classical}</td>
                   <td className="pr-3 py-1">{r.ecclesiastical}</td>
+                  <td className="pr-3 py-1">{r.classical}</td>
                   <td className="py-1" style={{ color: "#8a9a7c" }}>{r.example}</td>
                 </tr>
               ))}
             </tbody>
           </table>
           <p className="text-[11px] mt-2" style={{ color: "#8a9a7c" }}>
-            Audio below is generated in the classical system (most common for Memoria Press) — check
-            your First Form Latin pronunciation guide page to confirm which system RCA actually teaches.
+            Audio below is ecclesiastical (Church Latin, what RCA teaches) — the classical column above
+            is a reference only, for cross-checking other resources that use it instead.
           </p>
         </div>
       )}

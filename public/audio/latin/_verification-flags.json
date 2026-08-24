@@ -1,0 +1,77 @@
+[
+  {
+    "latin": "trēs",
+    "ttsSpelling": "tres",
+    "pass": false,
+    "voice": "it-IT-IsabellaNeural",
+    "transcript": "Trice",
+    "score": 0.4,
+    "attempts": [
+      {
+        "voice": "it-IT-IsabellaNeural",
+        "transcript": "Trice",
+        "score": 0.4
+      },
+      {
+        "voice": "it-IT-DiegoNeural",
+        "transcript": "3",
+        "score": 0
+      },
+      {
+        "voice": "it-IT-GiuseppeMultilingualNeural",
+        "transcript": "3",
+        "score": 0
+      }
+    ]
+  },
+  {
+    "latin": "sex",
+    "ttsSpelling": "sex",
+    "pass": false,
+    "voice": "it-IT-IsabellaNeural",
+    "transcript": "6",
+    "score": 0,
+    "attempts": [
+      {
+        "voice": "it-IT-IsabellaNeural",
+        "transcript": "6",
+        "score": 0
+      },
+      {
+        "voice": "it-IT-DiegoNeural",
+        "transcript": "6",
+        "score": 0
+      },
+      {
+        "voice": "it-IT-GiuseppeMultilingualNeural",
+        "transcript": "6.",
+        "score": 0
+      }
+    ]
+  },
+  {
+    "latin": "decem",
+    "ttsSpelling": "decem",
+    "pass": false,
+    "voice": "it-IT-DiegoNeural",
+    "transcript": "date",
+    "score": 0.4,
+    "attempts": [
+      {
+        "voice": "it-IT-IsabellaNeural",
+        "transcript": "Venso!",
+        "score": 0.19999999999999996
+      },
+      {
+        "voice": "it-IT-DiegoNeural",
+        "transcript": "date",
+        "score": 0.4
+      },
+      {
+        "voice": "it-IT-GiuseppeMultilingualNeural",
+        "transcript": "Dissam",
+        "score": 0.33333333333333337
+      }
+    ]
+  }
+]
