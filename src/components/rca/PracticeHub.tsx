@@ -6,9 +6,16 @@ import SpeedDrill from "./SpeedDrill";
 import MultipleChoiceQuiz from "./games/MultipleChoiceQuiz";
 import MatchGame from "./games/MatchGame";
 import GravityGame from "./games/GravityGame";
+import SoundStudio from "./SoundStudio";
 import { LeafIcon } from "./NatureIcons";
 
-type Mode = "check" | "drill" | "mc" | "match" | "gravity";
+type Mode = "check" | "drill" | "mc" | "match" | "gravity" | "sound";
+
+// Sound studio needs real phonogram/Latin content behind it (see
+// src/lib/rca-content/phonogram-sounds.ts, latin-core.ts) — only these two
+// classes have that content built, so it's the only mode gated to specific
+// subject ids rather than shown everywhere.
+const SOUND_SUBJECTS = new Set(["loe-essentials-c", "first-form-latin-6"]);
 
 const MODES: { id: Mode; label: string; desc: string }[] = [
   { id: "check", label: "Understanding check", desc: "Deep, AI-graded, free response" },
@@ -16,6 +23,7 @@ const MODES: { id: Mode; label: string; desc: string }[] = [
   { id: "drill", label: "Speed drill", desc: "Flashcards, self-graded" },
   { id: "match", label: "Match", desc: "Click to pair, race the clock" },
   { id: "gravity", label: "Gravity", desc: "Type it before it falls" },
+  { id: "sound", label: "Sound studio", desc: "Real audio — study the sounds, then oral-quiz the class" },
 ];
 
 // Not every mode fits every subject equally. Speed Drill/Match/Gravity all run
@@ -30,8 +38,8 @@ const MODES: { id: Mode; label: string; desc: string }[] = [
 // real rcaClasses ids so it's exact per class, not a guessed subject "type".
 const RECOMMENDED: Record<string, Mode[]> = {
   "saxon-76": ["drill", "gravity"], // math facts/procedures — fast recall under mild pressure fits directly
-  "loe-essentials-c": ["match", "drill"], // phonograms/spelling rules/grammar terms are literally term<->definition pairs
-  "first-form-latin-6": ["drill", "match"], // vocab + declension/conjugation memory work — the clearest flashcard fit of any class
+  "loe-essentials-c": ["sound", "match", "drill"], // phonograms are sounds first — lead with the real audio, not just term<->definition
+  "first-form-latin-6": ["sound", "drill", "match"], // pronunciation first, then vocab/declension memory work
   "religion-6": ["drill", "match"], // Baltimore Catechism is fixed question->answer pairs by design
   "science-6": ["mc", "match"], // vocab-heavy (matter/forces/biomes terms) + concept checks
   "history-6": ["mc", "drill"], // dates/names/places recall, alongside the research-paper writing Understanding Check covers
@@ -53,9 +61,10 @@ export default function PracticeHub({
   lessonN?: number;
 }) {
   const recommended = RECOMMENDED[subjectId] ?? [];
+  const availableModes = SOUND_SUBJECTS.has(subjectId) ? MODES : MODES.filter((m) => m.id !== "sound");
   const orderedModes = [
-    ...recommended.map((id) => MODES.find((m) => m.id === id)!).filter(Boolean),
-    ...MODES.filter((m) => !recommended.includes(m.id)),
+    ...recommended.map((id) => availableModes.find((m) => m.id === id)!).filter(Boolean),
+    ...availableModes.filter((m) => !recommended.includes(m.id)),
   ];
   const [mode, setMode] = useState<Mode>(recommended[0] ?? "check");
 
@@ -93,6 +102,7 @@ export default function PracticeHub({
       {mode === "mc" && <MultipleChoiceQuiz subjectId={subjectId} subjectName={subjectName} lessonN={lessonN} />}
       {mode === "match" && <MatchGame subjectId={subjectId} subjectName={subjectName} lessonN={lessonN} />}
       {mode === "gravity" && <GravityGame subjectId={subjectId} subjectName={subjectName} lessonN={lessonN} />}
+      {mode === "sound" && <SoundStudio subjectId={subjectId} subjectName={subjectName} />}
     </div>
   );
 }
