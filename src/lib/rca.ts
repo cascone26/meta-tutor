@@ -60,6 +60,20 @@ export const rcaEvents: RcaEvent[] = [
     detail: "Not mandatory. Set up your classroom (plan to put everything back at day's end), adapt lesson plans, copy materials, prep FACTS gradebooks — at the center or from home.",
     time: "Optional",
   },
+  // Monthly lead-tutor staff meetings — from Dr. Jennings' 2026-08-24 KSC
+  // "Staff Meetings" email. All Thursdays; start after Angelus in the St.
+  // Rose classroom. Only lead tutors attend (Mr. Cascone as 6th-grade lead);
+  // assistants wait in the lunchroom. Notes sent afterward. The email also
+  // listed May 6, 2027, but that date is a verified RCA closure (Ascension),
+  // so it's intentionally NOT added here pending Jacob's confirmation.
+  { date: "2026-09-03", label: "Lead Tutor Staff Meeting", detail: "Monthly KSC staff meeting in the St. Rose classroom. Lead tutors attend; assistants wait in the lunchroom. Notes sent afterward.", time: "After Angelus" },
+  { date: "2026-10-08", label: "Lead Tutor Staff Meeting", detail: "Monthly KSC staff meeting in the St. Rose classroom. Lead tutors attend; assistants wait in the lunchroom. Notes sent afterward.", time: "After Angelus" },
+  { date: "2026-11-05", label: "Lead Tutor Staff Meeting", detail: "Monthly KSC staff meeting in the St. Rose classroom. Lead tutors attend; assistants wait in the lunchroom. Notes sent afterward.", time: "After Angelus" },
+  { date: "2026-12-03", label: "Lead Tutor Staff Meeting", detail: "Monthly KSC staff meeting in the St. Rose classroom. Lead tutors attend; assistants wait in the lunchroom. Notes sent afterward.", time: "After Angelus" },
+  { date: "2027-01-14", label: "Lead Tutor Staff Meeting", detail: "Monthly KSC staff meeting in the St. Rose classroom. Lead tutors attend; assistants wait in the lunchroom. Notes sent afterward.", time: "After Angelus" },
+  { date: "2027-02-04", label: "Lead Tutor Staff Meeting", detail: "Monthly KSC staff meeting in the St. Rose classroom. Lead tutors attend; assistants wait in the lunchroom. Notes sent afterward.", time: "After Angelus" },
+  { date: "2027-03-04", label: "Lead Tutor Staff Meeting", detail: "Monthly KSC staff meeting in the St. Rose classroom. Lead tutors attend; assistants wait in the lunchroom. Notes sent afterward.", time: "After Angelus" },
+  { date: "2027-04-08", label: "Lead Tutor Staff Meeting", detail: "Monthly KSC staff meeting in the St. Rose classroom. Lead tutors attend; assistants wait in the lunchroom. Notes sent afterward.", time: "After Angelus" },
 ];
 
 // Single source of truth for "when is RCA closed" beyond the training-week
