@@ -1,5 +1,54 @@
 # Meta Tutor — Status
 
+## Two-account access control + git workflow separation (2026-08-29)
+Cristian is back from college and using Meta Tutor again; needed (1) separate accounts so he
+and Jacob aren't in each other's areas, and (2) a way for both to touch the codebase (Cristian
+possibly via his own Claude Code, staying with Jacob part-time) without repeat merge chaos —
+see the 2026-08-24 entry below where a 13-commit concurrent push had to be hand-reconciled.
+
+**Security gap closed first**: the repo is public and the app rides Jacob's own Claude Max
+OAuth token — `src/auth.ts` had **zero email allowlist**, anyone with a Google account could
+sign in and burn the 75/day AI quota. Fixed via a `signIn` callback.
+
+**Two-account model** — `src/lib/access.ts` (new):
+- `JACOB_EMAIL`/`CRISTIAN_EMAIL` (env-overridable, default to the two real accounts) map to
+  roles `"jacob"` | `"cristian"`. `roleForEmail()`/`isAllowedEmail()` are the only functions
+  that read them.
+- `src/auth.ts` — `signIn` callback rejects any email not in the allowlist (NextAuth's default
+  AccessDenied page).
+- `src/proxy.ts` — after the existing login-redirect check, a new block redirects Cristian's
+  role away from any `isJacobOnlyPath()` (the pre-existing hub-shell prefix list — `/`, `/hub`,
+  `/rca`, `/chess`, `/trivia`, `/riemann`, `/latin`, plus their `/api/rca-*`, `/api/chess-coach`,
+  `/api/riemann-*`, `/api/trivia-*`, `/api/subject-progress` routes) back to `/metaphysics`.
+  Jacob's role has no restriction — per his call, he keeps full visibility into Cristian's
+  Metaphysics-suite pages, only Cristian is scoped down. The dev-preview bypass
+  (`x-dev-preview` header, non-prod only) is hardcoded to role `"jacob"` so the existing
+  playwright scripts (`scripts/mt-shot.mjs` etc.) keep working unauthenticated.
+- Landing-page redirect is a side effect of the above (root `/` is in `JACOB_ONLY_PREFIXES`) —
+  no change needed to `src/app/login/page.tsx`'s hardcoded `redirectTo: "/"`.
+- **Verified**: `npx tsc --noEmit` and `npm run build` both clean. Role/path logic
+  unit-verified standalone (node script, all cases pass — real emails, case-insensitivity,
+  unknown email, every jacob-only vs. shared path). **Not yet Handle-tier**: nobody has done a
+  real Google OAuth round-trip as either account yet — that needs a real login from each Gmail,
+  flagged for Jacob to confirm live.
+
+**Git workflow** — `CODEOWNERS` (new, repo root) + `CONTRIBUTING.md` (new): Jacob owns (requires
+his review to merge) the RCA/chess/trivia/riemann/hub paths plus core plumbing (auth/proxy/
+access/next.config/package.json/Supabase schemas); everything under Cristian's existing
+Metaphysics-suite paths has no owner entry, so he can merge those freely once he has write
+access. **Not yet enabled** — Jacob chose to prep-only this session (branch protection + adding
+Cristian as a GitHub collaborator stay off until his GitHub username is known); exact `gh api`
+commands to flip it on live in `CONTRIBUTING.md`. Also documented a `git worktree` pattern for
+when both are running Claude Code against this repo on the same Mac at the same time, so
+simultaneous sessions don't collide on uncommitted files in one shared directory.
+
+**Not done this session**: adding Cristian as a GitHub collaborator, turning on branch
+protection (both blocked on his GitHub username), and migrating `/metaphysics`'s
+localStorage-only chat/confidence state (`meta-tutor-chat`, `meta-tutor-confidence` keys,
+`src/app/metaphysics/page.tsx`) to Supabase — it's device-local today, which only matters if
+Cristian and Jacob ever share one literal browser profile; flagged, not fixed, since it
+predates this session's ask and out of scope for it.
+
 ## RCA class-page fixes + real content grounding + widget drawer (2026-08-24)
 Jacob's list: Baltimore Catechism quiz content wrong, Latin "needs to be better," flashcard
 count/index bug switching categories, learning not matching the current week, "too HTML-y" look,

@@ -1,4 +1,5 @@
 import { auth } from "@/auth";
+import { isJacobOnlyPath, roleForEmail, CRISTIAN_HOME } from "@/lib/access";
 
 // Dev-only preview bypass for the local verification harness (scripts/verify-scene.mjs) —
 // lets a headless browser render real gated pages without doing real Google OAuth. Gated on
@@ -12,6 +13,14 @@ export default auth((req) => {
   if (!req.auth && !isDevPreview(req) && req.nextUrl.pathname !== "/login") {
     const loginUrl = new URL("/login", req.nextUrl.origin);
     return Response.redirect(loginUrl);
+  }
+
+  // Cristian's account is scoped to the Metaphysics-suite pages only — bounced back home if
+  // he hits any of Jacob's hub-shell routes (RCA/chess/trivia/riemann) directly by URL. Jacob's
+  // account is never restricted, so he keeps full visibility into Cristian's area too.
+  const role = isDevPreview(req) ? "jacob" : roleForEmail(req.auth?.user?.email);
+  if (role === "cristian" && isJacobOnlyPath(req.nextUrl.pathname)) {
+    return Response.redirect(new URL(CRISTIAN_HOME, req.nextUrl.origin));
   }
 });
 

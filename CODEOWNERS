@@ -1,0 +1,81 @@
+# CODEOWNERS — enforced once branch protection on `main` has "Require review from Code
+# Owners" turned on (see CONTRIBUTING.md; not enabled yet as of 2026-08-29, Jacob's call on
+# when to flip it). Any PR touching a path listed below needs @cascone26 (Jacob)'s approval
+# before it can merge. Cristian's own Metaphysics-suite paths are deliberately NOT listed here
+# — he can open and merge PRs there without waiting on review. This is a first pass; refine as
+# the app grows (last matching line wins, so more specific overrides go below broader ones).
+
+# --- Core app plumbing — auth, routing, access control. Breaking these breaks BOTH accounts. ---
+/src/auth.ts                     @cascone26
+/src/proxy.ts                    @cascone26
+/src/lib/access.ts               @cascone26
+/src/lib/subjects.ts             @cascone26
+/src/lib/supabase.ts             @cascone26
+/src/lib/rate-limit.ts           @cascone26
+/src/lib/safe-storage.ts         @cascone26
+/src/lib/sanitize-markdown.ts    @cascone26
+/src/lib/cache.ts                @cascone26
+/src/lib/alert.ts                @cascone26
+/src/lib/subject-progress.ts     @cascone26
+/next.config.ts                  @cascone26
+/package.json                    @cascone26
+/package-lock.json               @cascone26
+/tsconfig.json                   @cascone26
+/eslint.config.mjs               @cascone26
+/.env.example                    @cascone26
+/supabase-schema-hub.sql         @cascone26
+/supabase-schema-trivia.sql      @cascone26
+/CODEOWNERS                      @cascone26
+
+# --- Jacob's personal hub: RCA teaching prep, chess, trivia, riemann, hub landing ---
+/src/app/hub/                    @cascone26
+/src/app/rca/                    @cascone26
+/src/app/chess/                  @cascone26
+/src/app/trivia/                 @cascone26
+/src/app/riemann/                @cascone26
+/src/components/HubContent.tsx   @cascone26
+/src/components/rca/             @cascone26
+/src/components/chess/           @cascone26
+/src/components/riemann/         @cascone26
+/src/lib/rca-content/            @cascone26
+/src/lib/rca-grounding.ts        @cascone26
+/src/lib/rca-calendar.ts         @cascone26
+/src/lib/rca-changelog.ts        @cascone26
+/src/lib/rca-layout-prefs.ts     @cascone26
+/src/lib/rca-pacing-client.ts    @cascone26
+/src/lib/rca-short-cards.ts      @cascone26
+/src/lib/rca-streak.ts           @cascone26
+/src/lib/rca-upcoming.ts         @cascone26
+/src/lib/rca.ts                  @cascone26
+/src/lib/latin-ecclesiastical-spelling.ts @cascone26
+/src/lib/liturgical-calendar.ts  @cascone26
+/src/lib/chess-classify.ts       @cascone26
+/src/lib/chess-engine.ts         @cascone26
+/src/lib/chess-material.ts       @cascone26
+/src/lib/chess-openings.ts       @cascone26
+/src/lib/chess-phase.ts          @cascone26
+/src/lib/chess-prefs.ts          @cascone26
+/src/lib/chess-puzzles.ts        @cascone26
+/src/lib/chess-sound.ts          @cascone26
+/src/lib/trivia-categories.ts    @cascone26
+/src/lib/trivia-questions/       @cascone26
+/src/lib/trivia-srs.ts           @cascone26
+/src/lib/trivia-types.ts         @cascone26
+/src/lib/riemann-content.ts      @cascone26
+/src/lib/riemann-grounding.ts    @cascone26
+/src/app/api/rca-chat/           @cascone26
+/src/app/api/rca-grading/        @cascone26
+/src/app/api/rca-pacing/         @cascone26
+/src/app/api/rca-progress/       @cascone26
+/src/app/api/rca-understanding/  @cascone26
+/src/app/api/chess-coach/        @cascone26
+/src/app/api/riemann-chat/       @cascone26
+/src/app/api/riemann-understanding/ @cascone26
+/src/app/api/trivia-generate/    @cascone26
+/src/app/api/trivia-progress/    @cascone26
+/src/app/api/subject-progress/   @cascone26
+
+# --- Everything else (src/app/metaphysics, /study, /glossary, /dashboard, /notes, /sources,
+# /compare, /map, /faith, /journal, /timeline, /schedule, /countdown, /review, their API
+# routes, src/components/study/, Nav.tsx, Prayer.tsx, Onboarding.tsx, and Cristian's other
+# lib files) has no entry — no required review, Cristian's own to merge. ---
