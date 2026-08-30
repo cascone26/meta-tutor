@@ -89,3 +89,49 @@ create table if not exists mt_rca_grading_checklist (
 alter table mt_rca_grading_checklist enable row level security;
 drop policy if exists "Service role full access" on mt_rca_grading_checklist;
 create policy "Service role full access" on mt_rca_grading_checklist for all using (true);
+
+-- Added 2026-08-30: Latin Lab — a standalone, research-based (comprehensible-input /
+-- Ørberg-style) Latin course, separate from RCA's First Form Latin 6 curriculum, built
+-- as the individualized-adaptive-learning prototype (Jacob-only for now, testbed for
+-- the teaching/retention pivot Cristian asked for on the Metaphysics side). Vocab
+-- scheduling uses the FSRS algorithm (ts-fsrs) instead of the app's existing SM-2
+-- (spaced-repetition.ts) — FSRS models forgetting curves per-item instead of a fixed
+-- schedule, which is the whole point of an "adaptive" course. mt_latin_vocab_state
+-- stores one FSRS card per learner per vocab item; mt_latin_comprehension logs every
+-- comprehension-check answer (question difficulty + grammar tags + correctness) so the
+-- app can compute a rolling accuracy and a weak-grammar-concept list from real SQL
+-- aggregation — no ML infra, just the queries a single learner's data can actually support.
+create table if not exists mt_latin_vocab_state (
+  user_email text not null,
+  vocab_item text not null,
+  unit_id text not null,
+  grammar_tags text[] not null default '{}',
+  fsrs_state jsonb not null,
+  due timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+  primary key (user_email, vocab_item)
+);
+
+create index if not exists idx_mt_latin_vocab_due on mt_latin_vocab_state(user_email, due);
+
+alter table mt_latin_vocab_state enable row level security;
+drop policy if exists "Service role full access" on mt_latin_vocab_state;
+create policy "Service role full access" on mt_latin_vocab_state for all using (true);
+
+create table if not exists mt_latin_comprehension (
+  id uuid default gen_random_uuid() primary key,
+  user_email text not null,
+  unit_id text not null,
+  question text not null,
+  difficulty text not null, -- 'easy' | 'medium' | 'hard'
+  grammar_tags text[] not null default '{}',
+  correct boolean not null,
+  response_ms int,
+  created_at timestamptz not null default now()
+);
+
+create index if not exists idx_mt_latin_comprehension_user on mt_latin_comprehension(user_email, created_at desc);
+
+alter table mt_latin_comprehension enable row level security;
+drop policy if exists "Service role full access" on mt_latin_comprehension;
+create policy "Service role full access" on mt_latin_comprehension for all using (true);

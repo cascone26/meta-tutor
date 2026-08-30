@@ -26,6 +26,7 @@ export const JACOB_ONLY_PREFIXES = [
   "/hub",
   "/chess",
   "/latin",
+  "/latin-lab",
   "/rca",
   "/riemann",
   "/trivia",
@@ -39,7 +40,16 @@ export const JACOB_ONLY_PREFIXES = [
   "/api/riemann-understanding",
   "/api/trivia-generate",
   "/api/trivia-progress",
-  "/api/subject-progress",
+  "/api/latin-lab",
+  "/api/latin-progress",
+  // NOTE: /api/subject-progress is deliberately NOT here even though RCA (Jacob-only)
+  // uses it — as of 2026-08-30 Cristian's Metaphysics quiz-history/wrong-answers (see
+  // src/lib/study-history.ts, src/lib/wrong-answers.ts) were migrated onto this same
+  // route too. It's safe to share: every query is scoped server-side by the session's
+  // own email (src/app/api/subject-progress/route.ts), never by client input. Blocking
+  // it here would silently break Cristian's progress tracking — proxy.ts's matcher
+  // covers /api/* (only /api/auth is excluded), so this list gates API routes too, not
+  // just pages. Found while wiring up Latin Lab's own new routes, 2026-08-30.
 ];
 
 export function isJacobOnlyPath(pathname: string): boolean {

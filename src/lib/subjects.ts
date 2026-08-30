@@ -77,6 +77,16 @@ export const subjects: Subject[] = [
     bg: "#141a2e",
     status: "live",
   },
+  {
+    id: "latin-lab",
+    name: "Latin Lab",
+    tagline: "Research-based, comprehensible-input Latin — separate from RCA's Latin, adaptive by design",
+    href: "/latin-lab",
+    accent: "#c17a3a",
+    accentDark: "#c17a3a",
+    bg: "#1a1410",
+    status: "live",
+  },
 ];
 
 // Root "/" is the hub landing page now (moved from /hub, which permanently redirects
@@ -85,7 +95,7 @@ export const subjects: Subject[] = [
 // Latin lives inside the RCA umbrella now (it's his actual RCA class, First Form
 // Latin 6) — /latin permanently redirects there via next.config.ts, kept in the
 // hub-shell prefix list so the redirect still gets the chrome-free treatment mid-flight.
-const HUB_SHELL_PREFIXES = ["/", "/hub", "/chess", "/latin", "/rca", "/riemann", "/trivia"];
+const HUB_SHELL_PREFIXES = ["/", "/hub", "/chess", "/latin", "/latin-lab", "/rca", "/riemann", "/trivia"];
 
 export function isHubShellRoute(pathname: string): boolean {
   return HUB_SHELL_PREFIXES.some((p) => pathname === p || (p !== "/" && pathname.startsWith(p + "/")));

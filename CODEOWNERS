@@ -74,6 +74,11 @@
 /src/app/api/trivia-generate/    @cascone26
 /src/app/api/trivia-progress/    @cascone26
 /src/app/api/subject-progress/   @cascone26
+/src/app/latin-lab/              @cascone26
+/src/app/api/latin-lab/          @cascone26
+/src/app/api/latin-progress/     @cascone26
+/src/components/latin-lab/       @cascone26
+/src/lib/latin-lab/              @cascone26
 
 # --- Everything else (src/app/metaphysics, /study, /glossary, /dashboard, /notes, /sources,
 # /compare, /map, /faith, /journal, /timeline, /schedule, /countdown, /review, their API
