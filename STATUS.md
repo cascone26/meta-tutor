@@ -1,5 +1,32 @@
 # Meta Tutor — Status
 
+## Cristian's quiz history/wrong-answers migrated off localStorage (2026-08-30)
+Cristian called about a real product gap: he wants Meta Tutor to help him retain metaphysics
+long-term (he's now in an Ethics course and wants to hold onto old material), not just cram for
+one exam — "talk to your AI," "see how everything connects." Investigated first: the retention-
+focused modes he was describing already exist and are live (`/study`'s SocraticDialogue/TeachBack/
+Debate/AnalogyGenerator, `/map` concept map, `/compare`) — nothing needed building there, he just
+hadn't logged in in a while. But auditing that area surfaced a real, concrete gap: his entire
+progress/retention data (`src/lib/study-history.ts`, `src/lib/wrong-answers.ts`) was 100%
+localStorage — device-bound, gone if he clears browser data or switches devices, which directly
+undercuts "retention." RCA already had the exact backend needed (`mt_quiz_history`/
+`mt_wrong_answers` Supabase tables via `subject-progress.ts`/`/api/subject-progress`, scoped by
+`user_email`+`subject`) — ported Cristian's side onto the same tables under `subject="metaphysics"`,
+no new schema. Both lib files became thin async wrappers with the same function names, so most of
+the ~15 call sites (5 study components doing fire-and-forget `saveResult`/`logWrongAnswer`) needed
+no changes; the 4 pages that read the data synchronously (`countdown`, `dashboard`, `review`,
+`journal`) were updated to the async pattern. `tsc --noEmit` and `npm run build` clean, live Supabase
+tables confirmed reachable (200 via REST) before shipping, deployed to production (commit `49d3b10`),
+post-deploy curl confirms `/` and `/journal` still 302-redirect to `/login` (no server crash).
+Report-tier only — nobody has logged in as Cristian and actually taken a quiz to watch a row land
+in `mt_quiz_history`. Not touched this session (still localStorage, lower priority, no ready-made
+backend to reuse): `streaks.ts` (daily streak/badges) and `spaced-repetition.ts` (term mastery). Also
+still open: `/metaphysics`'s exam-question bank (`src/lib/questions.ts`) is a static hardcoded list
+from when Cristian first built the app — doesn't reflect his current Ethics course. RCA's own
+`/api/rca-understanding` already solved this exact problem (generates questions dynamically from
+current lesson content); porting that pattern to Cristian's area is the natural next move if he
+wants fresh material without hand-editing the array.
+
 ## Two-account access control + git workflow separation (2026-08-29)
 Cristian is back from college and using Meta Tutor again; needed (1) separate accounts so he
 and Jacob aren't in each other's areas, and (2) a way for both to touch the codebase (Cristian
