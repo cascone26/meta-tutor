@@ -15,12 +15,17 @@ export default function CountdownPage() {
   const [srStats, setSrStats] = useState({ total: 0, due: 0, learning: 0, reviewing: 0, mastered: 0 });
   const [quizCount, setQuizCount] = useState(0);
 
+  const [tookTimedExam, setTookTimedExam] = useState(false);
+
   useEffect(() => {
     const saved = localStorage.getItem(KEY);
     if (saved) setExamDate(saved);
     const sr = getSRData();
     setSrStats(getTermStats(sr));
-    setQuizCount(getHistory().length);
+    getHistory().then((history) => {
+      setQuizCount(history.length);
+      setTookTimedExam(history.some((h) => h.mode === "Timed Exam"));
+    });
   }, []);
 
   function saveDate() {
@@ -54,7 +59,7 @@ export default function CountdownPage() {
     }
     if (daysLeft <= 7) {
       milestones.push({ text: "Master at least 75% of terms", done: masteryPct >= 75, urgent: true });
-      milestones.push({ text: "Take a full timed exam simulation", done: getHistory().some((h) => h.mode === "Timed Exam"), urgent: true });
+      milestones.push({ text: "Take a full timed exam simulation", done: tookTimedExam, urgent: true });
       milestones.push({ text: "Review all weak areas", done: false, urgent: true });
     }
     if (daysLeft <= 3) {

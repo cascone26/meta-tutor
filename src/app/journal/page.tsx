@@ -24,7 +24,7 @@ export default function JournalPage() {
   const [drill, setDrill] = useState<DrillState>({ active: false, terms: [], current: 0, input: "", answered: false, correct: false, score: 0, done: false });
 
   useEffect(() => {
-    setWrongAnswers(getWrongAnswersList());
+    getWrongAnswersList().then(setWrongAnswers);
   }, []);
 
   function startDrill() {
@@ -38,7 +38,7 @@ export default function JournalPage() {
     setDrill({ active: true, terms, current: 0, input: "", answered: false, correct: false, score: 0, done: false });
   }
 
-  function checkDrillAnswer() {
+  async function checkDrillAnswer() {
     const term = drill.terms[drill.current];
     const isCorrect = drill.input.trim().toLowerCase() === term.term.toLowerCase();
 
@@ -49,7 +49,7 @@ export default function JournalPage() {
     if (isCorrect) {
       // Reduce count or clear
       if (term.count <= 1) {
-        clearWrongAnswer(term.term);
+        await clearWrongAnswer(term.term);
       }
     }
 
@@ -65,15 +65,15 @@ export default function JournalPage() {
     if (drill.current + 1 >= drill.terms.length) {
       setDrill((d) => ({ ...d, done: true }));
       recordStudySession();
-      setWrongAnswers(getWrongAnswersList());
+      getWrongAnswersList().then(setWrongAnswers);
     } else {
       setDrill((d) => ({ ...d, current: d.current + 1, input: "", answered: false, correct: false }));
     }
   }
 
-  function removeTerm(term: string) {
-    clearWrongAnswer(term);
-    setWrongAnswers(getWrongAnswersList());
+  async function removeTerm(term: string) {
+    await clearWrongAnswer(term);
+    setWrongAnswers(await getWrongAnswersList());
   }
 
   if (drill.active && !drill.done) {

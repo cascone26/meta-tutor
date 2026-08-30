@@ -16,8 +16,8 @@ export default function DashboardPage() {
 
   const [srStats, setSrStats] = useState({ total: 0, due: 0, learning: 0, reviewing: 0, mastered: 0 });
   const [dueTerms, setDueTerms] = useState<string[]>([]);
-  const [history, setHistory] = useState<ReturnType<typeof getHistory>>([]);
-  const [weakAreas, setWeakAreas] = useState<ReturnType<typeof getWeakAreas>>({ terms: [], categories: [] });
+  const [history, setHistory] = useState<Awaited<ReturnType<typeof getHistory>>>([]);
+  const [weakAreas, setWeakAreas] = useState<Awaited<ReturnType<typeof getWeakAreas>>>({ terms: [], categories: [] });
   const [confidence, setConfidence] = useState<Record<number, string>>({});
   const [practiced, setPracticed] = useState<Set<number>>(new Set());
   const [streakData, setStreakData] = useState(getStreakData());
@@ -30,11 +30,20 @@ export default function DashboardPage() {
     const stats = getTermStats(sr);
     setSrStats(stats);
     setDueTerms(getDueTerms(sr));
-    const hist = getHistory();
-    setHistory(hist);
-    setWeakAreas(getWeakAreas());
     const sd = getStreakData();
     setStreakData(sd);
+    getHistory().then((hist) => {
+      setHistory(hist);
+      const badgeStats: BadgeStats = {
+        totalQuizzes: hist.length,
+        termsStudied: stats.total,
+        termsMastered: stats.mastered,
+        perfectQuizzes: hist.filter((h) => h.percentage === 100).length,
+        totalTerms: glossary.length,
+      };
+      setEarnedBadges(checkBadges(sd, badgeStats));
+    });
+    getWeakAreas().then(setWeakAreas);
     setTodayTime(getTodayStudyTime());
     setWeekTime(getWeekStudyTime());
 
@@ -44,16 +53,6 @@ export default function DashboardPage() {
       const p = localStorage.getItem("meta-tutor-practiced");
       if (p) setPracticed(new Set(JSON.parse(p)));
     } catch {}
-
-    // Check badges
-    const badgeStats: BadgeStats = {
-      totalQuizzes: hist.length,
-      termsStudied: stats.total,
-      termsMastered: stats.mastered,
-      perfectQuizzes: hist.filter((h) => h.percentage === 100).length,
-      totalTerms: glossary.length,
-    };
-    setEarnedBadges(checkBadges(sd, badgeStats));
   }, []);
 
   const confCounts = {

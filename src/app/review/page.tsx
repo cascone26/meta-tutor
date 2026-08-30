@@ -25,13 +25,14 @@ export default function ReviewPage() {
     const sr = getSRData();
     setSrStats(getTermStats(sr));
     setDueTerms(getDueTerms(sr));
-    setWeakAreas(getWeakAreas());
+    getWeakAreas().then(setWeakAreas);
     setStreak(getStreakData().currentStreak);
     setTodayTime(getTodayStudyTime());
-    setWrongCount(getWrongAnswersList().length);
+    getWrongAnswersList().then((list) => setWrongCount(list.length));
 
-    const history = getHistory();
-    if (history.length > 0) setRecentMode(history[0].mode);
+    getHistory().then((history) => {
+      if (history.length > 0) setRecentMode(history[0].mode);
+    });
   }, []);
 
   // Suggest a study mode based on state
