@@ -1,5 +1,57 @@
 # Meta Tutor — Status
 
+## Latin Lab: research-based, adaptive standalone Latin course (2026-08-30)
+Jacob wants to test-drive what a genuinely "individualized learning station" version of
+Meta Tutor looks like (the pivot from Cristian's voicemail, see the entry below) — using
+Latin as the guinea-pig subject since he can personally judge whether it's actually good,
+and separate from RCA's First Form Latin 6 (which stays locked to the kids' actual
+curriculum for lesson-preview tracking). Explicit ask: "research base," "top of the line,"
+individualized, tracks what he's good/bad at, adapts.
+
+**Research first** (fork, WebSearch — see PROCESS.md-style trail in this entry since
+there's no separate research doc): compared Ørberg's comprehensible-input method (LLPSI)
+vs. Wheelock's grammar-translation vs. Cambridge's reading method for evidence behind real
+reading fluency/retention — CI wins on that specific claim (peer-reviewed Cambridge Journal
+of Classics Teaching research), so that's the pedagogy. Separately researched what's
+realistic for a single-learner adaptive system: FSRS beats the app's existing SM-2 for
+per-item forgetting-curve modeling (Anki's default since 2024, ~20-30% fewer reviews for
+same retention); Bloom's 2-sigma / mastery learning supports a corrective re-review loop
+on missed items; explicitly ruled out as NOT realistic for one user — collaborative
+filtering, neural embeddings, anything needing cohort-scale data (Duolingo-style).
+
+**What's built**: 3 original units (`src/lib/latin-lab/units.ts`) — Unit 1 nominative
+case/sum-esse, Unit 2 adjective agreement, Unit 3 genitive singular — original Latin
+narrative (not a transcription of Ørberg's copyrighted text, only the CI pedagogical
+structure is reused, which nobody owns), classical pronunciation. 7 more units roadmapped,
+not written. Adaptive engine: `ts-fsrs` (real npm package, not hand-rolled) schedules
+vocab review; comprehension questions are generated per-attempt by Claude Haiku from the
+unit's actual narrative at a difficulty tier chosen by the learner's rolling accuracy
+(`src/lib/latin-lab/server-progress.ts`) — never hand-written, can't be memorized; missed
+questions get a Socratic explanation grounded in the specific wrong answer; weak-grammar-
+concept tracking is plain SQL aggregation over comprehension misses, not ML. New Supabase
+tables `mt_latin_vocab_state`/`mt_latin_comprehension` added to `supabase-schema-hub.sql`
+— **not yet run live** (same manual-SQL-Editor step as `mt_rca_pacing_override`/
+`mt_rca_grading_checklist` below, which also still haven't been run — this repo has no DB
+credentials to run DDL programmatically). New route `/latin-lab`, Jacob-only (added to
+`JACOB_ONLY_PREFIXES`, `CODEOWNERS`), tile added to the hub landing page.
+
+**Real bug found and fixed while wiring this up**: `/api/subject-progress` was in
+`JACOB_ONLY_PREFIXES` from before the two-account split (2026-08-29), but the entry below
+(Cristian's quiz-history/wrong-answers migration) made his account call that same shared
+route — `proxy.ts`'s matcher covers `/api/*` (only `/api/auth` excluded), so this was
+silently redirecting his calls to `/metaphysics` HTML instead of returning JSON. Would
+have broken his progress tracking on first real use. Removed from the Jacob-only list; the
+route was already safely scoped server-side by session email, so nothing else changes.
+
+`tsc --noEmit` and `npm run build` clean, deployed, post-deploy curl confirms `/latin-lab`
+and both new API routes correctly 302 to `/login` when unauthenticated (no server crash).
+**Report-tier only** — nobody has logged in and actually read a unit, taken a comprehension
+check, or reviewed a vocab card yet. And genuinely important to be honest about: "perfectly
+adaptive" isn't a day-one property of any real system — the difficulty-selection and
+weak-concept tracking need real usage (the code explicitly treats <15 comprehension checks
+and <3 samples as "not enough signal yet") before they're actually calibrated to how Jacob
+specifically learns, not just structurally capable of it.
+
 ## Cristian's quiz history/wrong-answers migrated off localStorage (2026-08-30)
 Cristian called about a real product gap: he wants Meta Tutor to help him retain metaphysics
 long-term (he's now in an Ethics course and wants to hold onto old material), not just cram for
