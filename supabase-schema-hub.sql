@@ -135,3 +135,28 @@ create index if not exists idx_mt_latin_comprehension_user on mt_latin_comprehen
 alter table mt_latin_comprehension enable row level security;
 drop policy if exists "Service role full access" on mt_latin_comprehension;
 create policy "Service role full access" on mt_latin_comprehension for all using (true);
+
+-- Cross-subject learner profile (Tutor Core, 2026-08-30) — one row per learner per
+-- subject, written by each subject's own progress route via
+-- src/lib/tutor-core/profile-aggregator.ts after it writes its own subject-specific
+-- tables (this is a summary rollup, not a replacement for mt_latin_vocab_state,
+-- mt_trivia_srs_cards, mt_quiz_history, etc.). Read by /api/learner-profile to build
+-- one cross-subject view. See src/lib/tutor-core/progress-interface.ts for the contract
+-- each subject implements to produce the snapshot stored here.
+create table if not exists mt_learner_profile (
+  user_email text not null,
+  subject_id text not null,
+  accuracy real, -- 0-1, null if the subject has no data yet
+  sample_size int not null default 0,
+  weak_areas jsonb not null default '[]', -- WeakArea[] from tutor-core/types.ts
+  due_count int not null default 0, -- 0 for subjects with no spaced-repetition concept
+  last_activity_at timestamptz,
+  updated_at timestamptz not null default now(),
+  primary key (user_email, subject_id)
+);
+
+create index if not exists idx_mt_learner_profile_user on mt_learner_profile(user_email);
+
+alter table mt_learner_profile enable row level security;
+drop policy if exists "Service role full access" on mt_learner_profile;
+create policy "Service role full access" on mt_learner_profile for all using (true);

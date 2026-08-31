@@ -1,5 +1,19 @@
 # Meta Tutor — Status
 
+## Tutor Core Phase 1: unified progress interface (2026-08-30)
+Start of the 10-phase platform plan (`~/.claude-cobo/plans/linked-churning-rainbow.md`) turning Meta
+Tutor from 5 separately-built subject apps into one shared-intelligence platform, per Jacob's explicit
+direction: Meta Tutor should be "the best personal tutor" for anything, with one intelligence layer that
+knows him across every subject rather than 5 silos. Full context in the plan file.
+
+Phase 1 is additive-only, zero live-route changes: `src/lib/tutor-core/types.ts` (`WeakArea`, `DueItem`,
+`SubjectSnapshot`, `LearnerProfile`), `src/lib/tutor-core/progress-interface.ts` (`SubjectProgressAdapter`
+— deliberately loose, summary outputs only, no shared algorithm state so Latin's FSRS/Trivia's SM-2/RCA's
+quiz-history all stay untouched underneath), and a new `mt_learner_profile` table in
+`supabase-schema-hub.sql` (not yet run live — same manual SQL-Editor step as always). Nothing reads or
+writes this table yet — that's Phase 3 (learner-profile API) and Phase 5/6 (first two subject adapters).
+`tsc --noEmit` clean. Report-tier: no live behavior to verify yet, this phase is pure scaffolding.
+
 ## Latin Lab: live-verified, silent-failure bug fixed (2026-08-30, same day)
 Drove the actual built app with the headless Viewer (Playwright over CDP, dev server +
 proxy.ts's existing `x-dev-preview` bypass — no OAuth needed) and read real screenshots
