@@ -1,5 +1,15 @@
 # Meta Tutor — Status
 
+## Full reverification pass, all 10 phases combined (2026-08-30)
+Per Jacob's explicit ask — after everything's built, a full re-check with the Viewer, not just trusting
+the last build. Drove the whole surface touched this session in one pass against the dev server (headless
+Viewer over CDP, `x-dev-preview` bypass): hub (link intact), Latin Lab all 4 tabs on Unit 1, Unit 2's read
+view (grammar-focus content switches correctly), and `/learner-profile`. Zero unexpected console errors or
+5xx anywhere — the only errors were the same, consistent, already-understood 401s every `auth()`-gated
+route has produced all session. Confirmed with my own eyes (not just the error count) that every
+previously-fixed error state (Progress panel, Vocab Review) still shows Retry correctly, no regression
+introduced across Phases 2-10's combined changes. `tsc --noEmit` and `npm run build` clean throughout.
+
 ## Tutor Core Phase 10: Estate memory bridge — all 10 phases done (2026-08-30)
 `src/lib/tutor-core/estate-bridge.ts` — pure `formatProfileAsMarkdown(profile)`, no I/O (Vercel can't
 write local files, same constraint Phase 9 was built around). The actual working sync is a local script,
