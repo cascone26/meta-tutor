@@ -1,4 +1,4 @@
-import { rcaClasses, currentLessonNumber, CLT_TESTING_WEEK } from "@/lib/rca";
+import { rcaClasses, currentLessonNumber, CLT_TESTING_WEEK, centralToday } from "@/lib/rca";
 import { rcaContent } from "@/lib/rca-content";
 import { todaysLessonNumber } from "@/lib/rca-content/types";
 
@@ -27,7 +27,7 @@ function firstMatch(text: string): string | null {
   return (hit || text).trim();
 }
 
-export function getUpcomingHighlights(today: Date = new Date()): UpcomingHit[] {
+export function getUpcomingHighlights(today: Date = centralToday()): UpcomingHit[] {
   const hits: UpcomingHit[] = [];
 
   for (const cls of rcaClasses) {
@@ -122,7 +122,7 @@ export type CltHeadsUp = { daysAway: number; start: string; end: string } | null
 // CLT_TESTING_WEEK is real, dated data that's been sitting unused in rca.ts —
 // only worth surfacing once it's close enough to matter (within ~6 weeks), not
 // on every page load all year.
-export function getCltHeadsUp(today: Date = new Date()): CltHeadsUp {
+export function getCltHeadsUp(today: Date = centralToday()): CltHeadsUp {
   const start = new Date(CLT_TESTING_WEEK.start + "T00:00:00");
   const daysAway = Math.round((start.getTime() - today.getTime()) / (24 * 60 * 60 * 1000));
   if (daysAway < 0 || daysAway > 42) return null;

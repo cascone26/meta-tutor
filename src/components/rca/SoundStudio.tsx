@@ -9,14 +9,50 @@ import {
 } from "@/lib/rca-content/latin-core";
 import { slugify } from "@/lib/audio-slug";
 import { saveResult, logWrongAnswer } from "@/lib/subject-progress";
+import { toEcclesiasticalTtsSpelling } from "@/lib/latin-ecclesiastical-spelling";
+import { useCustomVocab, type CustomVocabItem } from "@/lib/rca-custom-vocab";
 import { FlameIcon } from "./NatureIcons";
 
 type SoundOption = { label: string; audioSrc: string; note?: string };
-type SoundCard = { front: string; category: string; sounds: SoundOption[] };
+type SoundCard = { front: string; category: string; sounds: SoundOption[]; custom?: boolean };
+
+// Custom (Jacob-typed) words have no pre-generated/verified mp3 — there's
+// nothing to point at, so their audioSrc is this sentinel + the real Latin
+// text instead of a file path. playAudio() below reads it and falls back to
+// the browser's own speech synthesis (Web Speech API) rather than trying to
+// fetch a file that doesn't exist. Lower fidelity than the real edge-tts +
+// Whisper-verified pipeline (scripts/gen-latin-audio.mjs) — that's still the
+// only way to get a genuinely verified file — but it's instant, needs no
+// backend, and works for literally anything typed in.
+const SPEECH_PREFIX = "speech:";
 
 function playAudio(src: string) {
+  if (src.startsWith(SPEECH_PREFIX)) {
+    const text = decodeURIComponent(src.slice(SPEECH_PREFIX.length));
+    if (typeof window !== "undefined" && "speechSynthesis" in window) {
+      window.speechSynthesis.cancel();
+      const utter = new SpeechSynthesisUtterance(text);
+      utter.lang = "it-IT"; // closest built-in voice family to ecclesiastical Latin's sound rules
+      utter.rate = 0.85;
+      window.speechSynthesis.speak(utter);
+    }
+    return;
+  }
   const el = new Audio(src);
   el.play().catch(() => {});
+}
+
+function customVocabToCards(items: CustomVocabItem[]): SoundCard[] {
+  return items.map((it) => ({
+    front: it.latin,
+    category: it.category,
+    custom: true,
+    sounds: [{
+      label: it.english,
+      audioSrc: SPEECH_PREFIX + encodeURIComponent(toEcclesiasticalTtsSpelling(it.latin)),
+      note: it.note,
+    }],
+  }));
 }
 
 // amō/amāre-style entries never have commas; only the adjectives list does
@@ -73,7 +109,12 @@ function shuffle<T>(arr: T[]): T[] {
 export default function SoundStudio({ subjectId, subjectName }: { subjectId: string; subjectName: string }) {
   const isLatin = subjectId === "first-form-latin-6";
   const progressKey = `rca-${subjectId}`;
-  const cards = useMemo(() => (isLatin ? buildLatinCards() : buildPhonogramCards()), [isLatin]);
+  const customVocab = useCustomVocab();
+  const baseCards = useMemo(() => (isLatin ? buildLatinCards() : buildPhonogramCards()), [isLatin]);
+  const cards = useMemo(
+    () => (isLatin ? [...baseCards, ...customVocabToCards(customVocab.items)] : baseCards),
+    [isLatin, baseCards, customVocab.items]
+  );
   const categories = useMemo(() => [...new Set(cards.map((c) => c.category))], [cards]);
 
   const [tab, setTab] = useState<"study" | "quiz" | "reverse">("study");
@@ -138,6 +179,7 @@ export default function SoundStudio({ subjectId, subjectName }: { subjectId: str
       </div>
 
       {isLatin && <PronunciationNote />}
+      {isLatin && <VocabAdder onAdd={customVocab.addItem} />}
 
       {tab === "study" && <StudyMode pool={pool} />}
       {tab === "quiz" && <QuizMode pool={pool} subjectName={subjectName} progressKey={progressKey} />}
@@ -330,6 +372,135 @@ function PronunciationNote() {
             Audio below is ecclesiastical (Church Latin, what RCA teaches) — the classical column above
             is a reference only, for cross-checking other resources that use it instead.
           </p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+type VocabCheckResult = {
+  valid: boolean;
+  corrected: string;
+  wasCorrected: boolean;
+  english: string;
+  category: string;
+  explanation: string;
+};
+
+// Jacob's ask (2026-08-30): type in a word/phrase, have it fact-checked and
+// spell-corrected with an explanation, hear it said correctly, and — if he
+// wants it — sort it into a real flashcard. This is the input surface for
+// that; the actual check hits /api/rca-vocab-check (Claude), and accepted
+// words get saved via useCustomVocab so they show up as real cards in
+// Study/Quiz/Reverse above, same as any built-in word.
+function VocabAdder({ onAdd }: { onAdd: (item: { latin: string; english: string; category: string; note?: string }) => void }) {
+  const [open, setOpen] = useState(false);
+  const [input, setInput] = useState("");
+  const [checking, setChecking] = useState(false);
+  const [result, setResult] = useState<VocabCheckResult | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [added, setAdded] = useState(false);
+
+  async function check() {
+    if (!input.trim() || checking) return;
+    setChecking(true);
+    setError(null);
+    setResult(null);
+    setAdded(false);
+    try {
+      const res = await fetch("/api/rca-vocab-check", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text: input.trim() }),
+      });
+      const data = await res.json();
+      if (data.error) setError(data.error);
+      else setResult(data);
+    } catch {
+      setError("Something went wrong — try again.");
+    } finally {
+      setChecking(false);
+    }
+  }
+
+  function addCard() {
+    if (!result) return;
+    onAdd({ latin: result.corrected, english: result.english, category: result.category, note: result.wasCorrected ? `you typed "${input.trim()}"` : undefined });
+    setAdded(true);
+  }
+
+  function listen(text: string) {
+    playAudio(SPEECH_PREFIX + encodeURIComponent(toEcclesiasticalTtsSpelling(text)));
+  }
+
+  return (
+    <div className="mb-3 rounded-xl p-3" style={{ background: "#fff", border: "1px solid #d9e4d3" }}>
+      <button onClick={() => setOpen((o) => !o)} className="text-xs font-medium" style={{ color: "#3f7ea6" }}>
+        {open ? "Hide" : "+ Add your own word or phrase"}
+      </button>
+      {open && (
+        <div className="mt-2 space-y-2">
+          <p className="text-[11px]" style={{ color: "#8a9a7c" }}>
+            Type any Latin word or phrase — it gets fact-checked and spell-corrected, then you can save it as a real flashcard. Audio here is instant browser speech, not the verified edge-tts pipeline the built-in words use.
+          </p>
+          <div className="flex gap-2">
+            <input
+              value={input}
+              onChange={(e) => { setInput(e.target.value); setResult(null); setError(null); setAdded(false); }}
+              onKeyDown={(e) => { if (e.key === "Enter") check(); }}
+              placeholder="e.g. in choro recitemus"
+              className="flex-1 rounded-lg px-3 py-2 text-sm"
+              style={{ background: "#fbf8f0", border: "1px solid #d9e4d3", color: "#2f3a2a" }}
+              disabled={checking}
+            />
+            <button
+              onClick={check}
+              disabled={checking || !input.trim()}
+              className="px-3 py-2 rounded-lg text-sm font-medium disabled:opacity-50"
+              style={{ background: "#3f7ea6", color: "#fff" }}
+            >
+              {checking ? "…" : "Check"}
+            </button>
+          </div>
+
+          {error && <p className="text-xs" style={{ color: "#a04a4a" }}>{error}</p>}
+
+          {result && !result.valid && (
+            <p className="text-xs" style={{ color: "#a04a4a" }}>{result.explanation || "That doesn't look like real Latin."}</p>
+          )}
+
+          {result && result.valid && (
+            <div className="rounded-lg p-3 text-sm" style={{ background: "#f4f7ef", border: "1px solid #e6e0d0" }}>
+              <p className="font-semibold" style={{ color: "#2f5e7a" }}>
+                {result.corrected}
+                {result.wasCorrected && (
+                  <span className="ml-2 text-[11px] font-normal" style={{ color: "#c9843a" }}>
+                    (corrected from &quot;{input.trim()}&quot;)
+                  </span>
+                )}
+              </p>
+              <p className="text-xs mt-0.5" style={{ color: "#3a5a3a" }}>{result.english}</p>
+              <p className="text-[11px] mt-1" style={{ color: "#8a9a7c" }}>{result.explanation}</p>
+              <p className="text-[11px] mt-1" style={{ color: "#8a9a7c" }}>Category: {result.category}</p>
+              <div className="flex gap-2 mt-2">
+                <button
+                  onClick={() => listen(result.corrected)}
+                  className="px-2.5 py-1 rounded-full text-[11px] font-medium"
+                  style={{ background: "#eef2e2", color: "#3f7ea6" }}
+                >
+                  ▶ Listen
+                </button>
+                <button
+                  onClick={addCard}
+                  disabled={added}
+                  className="px-2.5 py-1 rounded-full text-[11px] font-medium disabled:opacity-50"
+                  style={{ background: added ? "#eef2e2" : "#6b8e5a", color: added ? "#5a7a4a" : "#fff" }}
+                >
+                  {added ? "Added ✓" : "Add as flashcard"}
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>

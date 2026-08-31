@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { ZeroLineIcon } from "./ZeroLineIcon";
 import { EXPLAIN_DIFFERENTLY_EVENT } from "./RiemannLessonViewer";
+import { formatMarkdown } from "@/lib/sanitize-markdown";
 
 const PROGRESS_KEY = "riemann-lesson-progress";
 
@@ -114,7 +115,11 @@ export default function RiemannAssistant() {
                 <span className="text-[10px] font-semibold uppercase tracking-wide mr-1" style={{ color: "#8b93c4" }}>
                   {m.role === "user" ? "You" : "Tutor"}
                 </span>
-                <span className="whitespace-pre-wrap">{m.content}</span>
+                {m.role === "assistant" ? (
+                  <div className="prose text-sm" dangerouslySetInnerHTML={{ __html: formatMarkdown(m.content) }} />
+                ) : (
+                  <span className="whitespace-pre-wrap">{m.content}</span>
+                )}
               </div>
             ))}
             <div ref={endRef} />

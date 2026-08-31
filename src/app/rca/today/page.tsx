@@ -1,4 +1,4 @@
-import { rcaClasses, rcaSchedule, getClosure, rcaEvents } from "@/lib/rca";
+import { rcaClasses, rcaSchedule, getClosure, rcaEvents, centralToday, centralNowMinutes } from "@/lib/rca";
 import RcaClassBlock from "@/components/rca/RcaClassBlock";
 import PrintButton from "@/components/rca/PrintButton";
 import ReadAloudButton from "@/components/rca/ReadAloudButton";
@@ -21,7 +21,7 @@ import { getLiturgicalSeason } from "@/lib/liturgical-calendar";
 export const dynamic = "force-dynamic";
 
 export default function TodayPage() {
-  const today = new Date();
+  const today = centralToday();
   const todayKey = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
   const weekday = today.toLocaleDateString("en-US", { weekday: "long" });
   const dateLabel = today.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });
@@ -46,7 +46,7 @@ export default function TodayPage() {
   // "Up next" — which of today's blocks hasn't started yet, by wall-clock time.
   // Only meaningful mid-day; before the first block or after the last one it's
   // just noise, so it only renders inside that window.
-  const nowMinutes = today.getHours() * 60 + today.getMinutes();
+  const nowMinutes = centralNowMinutes();
   const upNext = todaysClasses.find((c) => blockStartMinutes(c.block) > nowMinutes);
 
   return (

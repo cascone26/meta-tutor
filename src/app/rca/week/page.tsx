@@ -2,7 +2,7 @@ import PrintButton from "@/components/rca/PrintButton";
 import ReadAloudButton from "@/components/rca/ReadAloudButton";
 import CopyTextButton from "@/components/rca/CopyTextButton";
 import RcaClassBlock from "@/components/rca/RcaClassBlock";
-import { rcaClasses, rcaSchedule, getClosure, rcaEvents } from "@/lib/rca";
+import { rcaClasses, rcaSchedule, getClosure, rcaEvents, centralToday } from "@/lib/rca";
 import { getUpcomingHighlights, getCltHeadsUp, blockStartMinutes } from "@/lib/rca-upcoming";
 
 // Sunday-night (or whenever) planning view — Jacob cram-preps ahead of the
@@ -41,7 +41,7 @@ function getUpcomingTeachingDays(today: Date): { date: Date; weekday: "Monday" |
 }
 
 export default function WeekPage() {
-  const today = new Date();
+  const today = centralToday();
   const teachingDays = getUpcomingTeachingDays(today);
   const highlights = getUpcomingHighlights(today);
   const clt = getCltHeadsUp(today);

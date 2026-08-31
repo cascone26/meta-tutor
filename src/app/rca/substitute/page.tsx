@@ -1,6 +1,6 @@
 import PrintButton from "@/components/rca/PrintButton";
 import RcaClassBlock from "@/components/rca/RcaClassBlock";
-import { rcaClasses, rcaSchedule, getClosure, rcaEvents } from "@/lib/rca";
+import { rcaClasses, rcaSchedule, getClosure, rcaEvents, centralToday } from "@/lib/rca";
 import { blockStartMinutes } from "@/lib/rca-upcoming";
 
 // If Jacob's ever out, whoever covers needs enough context to actually run
@@ -10,7 +10,7 @@ import { blockStartMinutes } from "@/lib/rca-upcoming";
 export const dynamic = "force-dynamic";
 
 export default function SubstitutePage() {
-  const today = new Date();
+  const today = centralToday();
   const todayKey = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
   const weekday = today.toLocaleDateString("en-US", { weekday: "long" });
   const dateLabel = today.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });

@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import type { SubjectContent } from "@/lib/rca-content/types";
 import { lessonWeekday, todaysLessonNumber } from "@/lib/rca-content/types";
-import { currentLessonNumber, isPacingCurrent } from "@/lib/rca";
+import { currentLessonNumber, isPacingCurrent, centralToday } from "@/lib/rca";
 import { ChevronIcon } from "@/components/rca/NatureIcons";
 import { useRcaPacingOffsets } from "@/lib/rca-pacing-client";
 import { nextFlexibleLesson } from "@/lib/rca-upcoming";
@@ -33,7 +33,7 @@ export default function LessonViewer({
   onLessonChange?: (n: number) => void;
 }) {
   const total = content.lessons.length;
-  const todayWeekday = new Date().toLocaleDateString("en-US", { weekday: "long" });
+  const todayWeekday = centralToday().toLocaleDateString("en-US", { weekday: "long" });
   // currentLessonNumber()'s raw estimate can land on the right WEEK but the
   // wrong DAY for weekday-tagged subjects (Saxon-style) — found live on the
   // actual first day of term, where Saxon's initial lesson opened to the

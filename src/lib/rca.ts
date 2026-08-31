@@ -121,6 +121,47 @@ function dateKey(d: Date): string {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 }
 
+/** RCA (Overland Park, KS) always runs on Central time — but a plain `new
+ * Date()` reflects whatever timezone the CODE is running in, not KS. On the
+ * client (Jacob's own browser) that's already Central, so it's harmless
+ * there; on the server (Vercel functions default to UTC) it silently rolls
+ * "today" over to tomorrow's date/weekday around 7pm Central, since UTC has
+ * already crossed midnight. That mismatch between a server-computed weekday
+ * and a client-computed one is exactly what produced a real live bug
+ * (found 2026-08-30): /rca/today's server-rendered weekday said "Monday"
+ * (already past midnight UTC) while the client-side lesson-pacing math still
+ * used the real Central "Sunday," and the two got stitched together into a
+ * lesson from two weeks earlier. Use this everywhere "today" means "the real
+ * KS school day," server or client, so both sides always agree. */
+export function centralToday(): Date {
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone: "America/Chicago",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).formatToParts(new Date());
+  const y = parts.find((p) => p.type === "year")!.value;
+  const m = parts.find((p) => p.type === "month")!.value;
+  const d = parts.find((p) => p.type === "day")!.value;
+  return new Date(`${y}-${m}-${d}T00:00:00`);
+}
+
+/** Minutes since midnight, Central time, right now — for "up next" wall-clock
+ * comparisons against block times. centralToday() is deliberately pinned to
+ * midnight (it's a calendar-day key, not a clock), so it can't be reused for
+ * this; this reads the real Central hour/minute directly instead. */
+export function centralNowMinutes(): number {
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone: "America/Chicago",
+    hour: "numeric",
+    minute: "numeric",
+    hourCycle: "h23",
+  }).formatToParts(new Date());
+  const h = Number(parts.find((p) => p.type === "hour")!.value);
+  const m = Number(parts.find((p) => p.type === "minute")!.value);
+  return h * 60 + m;
+}
+
 /** Is this date inside a real (or estimated) closure range? Checked by key
  * string comparison, not Date math, to sidestep timezone drift entirely. */
 export function getClosure(date: Date): RcaClosure | undefined {
@@ -136,6 +177,13 @@ const sixthGradeTrm = "https://docs.google.com/document/d/1d5_qq70xh_ooqeUA8icjx
 const sixthGradeTutorDrive = "https://drive.google.com/drive/folders/1eNbaFRqKbEENERe3ZYw8FAf8OktXuRSW?usp=drive_link";
 const sixthGradeParentDrive = "https://drive.google.com/drive/folders/1d1F3iB0vl_nx6TL9vyAdkeKn04PBM7EG?usp=drive_link";
 
+// Ordered by block start time (Jacob's actual daily walk-through order), not
+// insertion order — the /rca hub and every other list built off this array
+// should read top-to-bottom the way his day actually runs. Religion 6 and
+// First Form Latin 6 share the same 10:10-10:55 block/room on the source
+// schedule (unusual — flagged, not silently resolved); PE 1-2/PE 5-6 tie on
+// time too but are Mon-only/Thu-only so they never actually land on the same
+// real day.
 export const rcaClasses: RcaClass[] = [
   {
     id: "saxon-76",
@@ -150,6 +198,38 @@ export const rcaClasses: RcaClass[] = [
     driveUrls: [
       { label: "Tutor Resources", url: "https://drive.google.com/drive/folders/134sGerTmpk4Uxml9zxNAtv_A2lUfdsTd?usp=drive_link" },
       { label: "Parent & Tutor Folder", url: "https://drive.google.com/drive/folders/1g5JgqvINFeinxNur0z92LCbQbUJkkCCU?usp=drive_link" },
+    ],
+  },
+  {
+    id: "religion-6",
+    name: "Religion 6",
+    grade: "6th",
+    area: "Academic",
+    summary: "Baltimore Catechism memory work + sequential Gospel reading — Mark in the fall, Luke in the spring.",
+    books: ["Baltimore Catechism", "Bible (Gospel of Mark / Luke)"],
+    block: "10:10 – 10:55 AM",
+    room: "St. Monica",
+    lessonPlanUrl: sixthGradeMasterDoc,
+    driveUrls: [
+      { label: "6th Grade Tutor Resource Manual", url: sixthGradeTrm },
+      { label: "Tutor Resources", url: sixthGradeTutorDrive },
+      { label: "Parent & Tutor Resources", url: sixthGradeParentDrive },
+    ],
+  },
+  {
+    id: "first-form-latin-6",
+    name: "First Form Latin 6",
+    grade: "6th",
+    area: "Academic",
+    summary: "First Form Latin — weekly lessons, memory work (sayings/grammar/vocab), Form Drills, quizzes every 2-3 weeks. Vocab/grammar drills and quizzing live here (folded in from the old standalone Latin station).",
+    books: ["First Form Latin"],
+    block: "10:10 – 10:55 AM",
+    room: "St. Monica",
+    lessonPlanUrl: sixthGradeMasterDoc,
+    driveUrls: [
+      { label: "6th Grade Tutor Resource Manual", url: sixthGradeTrm },
+      { label: "Tutor Resources", url: sixthGradeTutorDrive },
+      { label: "Parent & Tutor Resources", url: sixthGradeParentDrive },
     ],
   },
   {
@@ -184,20 +264,37 @@ export const rcaClasses: RcaClass[] = [
     ],
   },
   {
-    id: "religion-6",
-    name: "Religion 6",
-    grade: "6th",
-    area: "Academic",
-    summary: "Baltimore Catechism memory work + sequential Gospel reading — Mark in the fall, Luke in the spring.",
-    books: ["Baltimore Catechism", "Bible (Gospel of Mark / Luke)"],
-    block: "10:10 – 10:55 AM",
-    room: "St. Monica",
-    lessonPlanUrl: sixthGradeMasterDoc,
-    driveUrls: [
-      { label: "6th Grade Tutor Resource Manual", url: sixthGradeTrm },
-      { label: "Tutor Resources", url: sixthGradeTutorDrive },
-      { label: "Parent & Tutor Resources", url: sixthGradeParentDrive },
-    ],
+    id: "pe-1-2",
+    name: "PE 1-2",
+    grade: "1st-2nd",
+    area: "Specials",
+    summary: "Physical education for 1st-2nd grade — Monday only.",
+    books: [],
+    // Same "Option 2" schedule update as Music 3-4 below; room now literally "Gym" per the
+    // email table (not the old "St. Sebastian" guess). Jacob leads, Harmon assists.
+    // Block 4 time corrected AGAIN per Mrs. Uffman's 2026-08-20 follow-up ("Re: specials
+    // changes and schedule update", confirmed with Dr. Jennings): Special 1 runs 1:00-1:45,
+    // killing the 10-minute gap before Special 2 at 1:45. Supersedes the 12:50-1:35 in the
+    // original Option 2 table. 12:45-1:00 is Classical Literature / chores time.
+    block: "1:00 – 1:45 PM",
+    room: "Gym",
+    days: ["Monday"],
+  },
+  {
+    id: "pe-5-6",
+    name: "PE 5-6",
+    grade: "5th-6th",
+    area: "Specials",
+    summary: "Physical education for 5th-6th grade — Thursday only.",
+    books: [],
+    // MOVED entirely under "Option 2": was Block 6 Monday (St. Sebastian), now Block 4
+    // THURSDAY, room "Cafe" per the email table — different day AND different room from
+    // what this file previously said. Source: Dr. Jennings' 2026-08-19/20 schedule emails.
+    // Block 4 time corrected to 1:00-1:45 per Mrs. Uffman's 2026-08-20 follow-up (confirmed
+    // with Dr. Jennings) — supersedes the 12:50-1:35 in the original Option 2 table.
+    block: "1:00 – 1:45 PM",
+    room: "Cafe",
+    days: ["Thursday"],
   },
   {
     id: "history-6",
@@ -223,22 +320,6 @@ export const rcaClasses: RcaClass[] = [
     summary: "Behold and See 6 — matter/forces/machines (fall), biomes and astronomy (spring), plus a Science Fair project.",
     books: ["Behold and See 6"],
     block: "1:55 – 2:40 PM",
-    room: "St. Monica",
-    lessonPlanUrl: sixthGradeMasterDoc,
-    driveUrls: [
-      { label: "6th Grade Tutor Resource Manual", url: sixthGradeTrm },
-      { label: "Tutor Resources", url: sixthGradeTutorDrive },
-      { label: "Parent & Tutor Resources", url: sixthGradeParentDrive },
-    ],
-  },
-  {
-    id: "first-form-latin-6",
-    name: "First Form Latin 6",
-    grade: "6th",
-    area: "Academic",
-    summary: "First Form Latin — weekly lessons, memory work (sayings/grammar/vocab), Form Drills, quizzes every 2-3 weeks. Vocab/grammar drills and quizzing live here (folded in from the old standalone Latin station).",
-    books: ["First Form Latin"],
-    block: "10:10 – 10:55 AM",
     room: "St. Monica",
     lessonPlanUrl: sixthGradeMasterDoc,
     driveUrls: [
@@ -274,39 +355,6 @@ export const rcaClasses: RcaClass[] = [
       { label: "Music 3/4 Tutor Folder", url: "https://drive.google.com/open?id=1EbSoma_qVItHeHUCpqK_YO4x-tArA6Wj" },
     ],
   },
-  {
-    id: "pe-1-2",
-    name: "PE 1-2",
-    grade: "1st-2nd",
-    area: "Specials",
-    summary: "Physical education for 1st-2nd grade — Monday only.",
-    books: [],
-    // Same "Option 2" schedule update as Music 3-4 above; room now literally "Gym" per the
-    // email table (not the old "St. Sebastian" guess). Jacob leads, Harmon assists.
-    // Block 4 time corrected AGAIN per Mrs. Uffman's 2026-08-20 follow-up ("Re: specials
-    // changes and schedule update", confirmed with Dr. Jennings): Special 1 runs 1:00-1:45,
-    // killing the 10-minute gap before Special 2 at 1:45. Supersedes the 12:50-1:35 in the
-    // original Option 2 table. 12:45-1:00 is Classical Literature / chores time.
-    block: "1:00 – 1:45 PM",
-    room: "Gym",
-    days: ["Monday"],
-  },
-  {
-    id: "pe-5-6",
-    name: "PE 5-6",
-    grade: "5th-6th",
-    area: "Specials",
-    summary: "Physical education for 5th-6th grade — Thursday only.",
-    books: [],
-    // MOVED entirely under "Option 2": was Block 6 Monday (St. Sebastian), now Block 4
-    // THURSDAY, room "Cafe" per the email table — different day AND different room from
-    // what this file previously said. Source: Dr. Jennings' 2026-08-19/20 schedule emails.
-    // Block 4 time corrected to 1:00-1:45 per Mrs. Uffman's 2026-08-20 follow-up (confirmed
-    // with Dr. Jennings) — supersedes the 12:50-1:35 in the original Option 2 table.
-    block: "1:00 – 1:45 PM",
-    room: "Cafe",
-    days: ["Thursday"],
-  },
 ];
 
 export function getRcaClass(id: string): RcaClass | undefined {
@@ -331,7 +379,7 @@ export type ScheduleItem =
  * an actual break (e.g. Thanksgiving week) would compute a "next teaching
  * day" INSIDE that break instead of recognizing it as closed (found
  * 2026-08-13, sick-him audit). */
-export function getNextScheduleItem(today: Date = new Date()): ScheduleItem {
+export function getNextScheduleItem(today: Date = centralToday()): ScheduleItem {
   // Local date, NOT toISOString() — that converts to UTC, which silently
   // rolls "today" over to tomorrow's date in the evening (Central time
   // crosses UTC midnight around 7pm), comparing against rcaEvents' plain
@@ -351,30 +399,31 @@ export function getNextScheduleItem(today: Date = new Date()): ScheduleItem {
   }
 
   const upcoming = [...rcaEvents].sort((a, b) => a.date.localeCompare(b.date)).find((ev) => ev.date >= todayKey);
-  if (upcoming) {
-    return {
-      kind: "event",
-      date: new Date(upcoming.date + "T00:00:00"),
-      label: upcoming.label,
-      detail: upcoming.detail,
-      time: upcoming.time,
-      isToday: upcoming.date === todayKey,
-    };
+
+  // An rcaEvent happening TODAY always wins — it overrides whatever the day
+  // would otherwise be (training day, a staff meeting instead of teaching, etc.)
+  if (upcoming && upcoming.date === todayKey) {
+    return { kind: "event", date: new Date(upcoming.date + "T00:00:00"), label: upcoming.label, detail: upcoming.detail, time: upcoming.time, isToday: true };
   }
 
-  const closure = getClosure(today);
-  if (closure) {
-    return { kind: "closure", date: today, label: closure.label, estimated: closure.estimated, isToday: true };
+  const todaysClosure = getClosure(today);
+  if (todaysClosure) {
+    return { kind: "closure", date: today, label: todaysClosure.label, estimated: todaysClosure.estimated, isToday: true };
   }
 
   if (today < termStart) {
+    // Before the term starts there's no regular Mon/Thu pattern yet to compare
+    // against, so any real upcoming event (training/setup days) just wins outright.
+    if (upcoming) {
+      return { kind: "event", date: new Date(upcoming.date + "T00:00:00"), label: upcoming.label, detail: upcoming.detail, time: upcoming.time, isToday: false };
+    }
     return { kind: "teaching", date: termStart, isToday: false };
   }
 
-  // Walk forward day-by-day (not just Mon/Thu math) so a closure sitting
-  // between today and the next Mon/Thu is actually skipped instead of
-  // silently landing inside it. Also capped at termEnd — a walk starting
-  // in the term's final week shouldn't be able to land past it.
+  // Term is underway — find the next real teaching day (walk forward day-by-day,
+  // not just Mon/Thu math, so a closure sitting in between is actually skipped
+  // instead of silently landing inside it). Capped at termEnd.
+  let nextTeaching: Date | null = null;
   for (let i = 0; i <= 21; i++) {
     const d = new Date(today);
     d.setDate(today.getDate() + i);
@@ -382,7 +431,22 @@ export function getNextScheduleItem(today: Date = new Date()): ScheduleItem {
     const day = d.getDay();
     if (day !== 1 && day !== 4) continue; // Mon=1, Thu=4
     if (getClosure(d)) continue;
-    return { kind: "teaching", date: d, isToday: i === 0 };
+    nextTeaching = d;
+    break;
+  }
+
+  // A future rcaEvent (e.g. the monthly Lead Tutor Staff Meeting) only preempts
+  // the next teaching day if it actually falls ON or BEFORE it. Without this
+  // comparison, an event weeks out would wrongly eclipse a completely normal
+  // Mon/Thu class happening sooner (found 2026-08-30: the assistant told Jacob
+  // "tomorrow" was training/setup week because of a staff meeting 4 days out,
+  // when tomorrow was actually a normal Monday).
+  if (upcoming && (!nextTeaching || upcoming.date <= dateKey(nextTeaching))) {
+    return { kind: "event", date: new Date(upcoming.date + "T00:00:00"), label: upcoming.label, detail: upcoming.detail, time: upcoming.time, isToday: false };
+  }
+
+  if (nextTeaching) {
+    return { kind: "teaching", date: nextTeaching, isToday: dateKey(nextTeaching) === todayKey };
   }
   return { kind: "term-ended" };
 }
@@ -390,7 +454,7 @@ export function getNextScheduleItem(today: Date = new Date()): ScheduleItem {
 /** Roughly which lesson we're on, given the term started `rcaSchedule.termStart` and these
  * lessons are paced across `totalWeeks` (defaults to 1 lesson/week if omitted). Clamped to
  * [1, totalLessons]. Does not account for holidays. */
-export function currentLessonNumber(totalLessons: number, totalWeeks: number = totalLessons, today: Date = new Date()): number {
+export function currentLessonNumber(totalLessons: number, totalWeeks: number = totalLessons, today: Date = centralToday()): number {
   const start = new Date(rcaSchedule.termStart + "T00:00:00");
   const msPerWeek = 7 * 24 * 60 * 60 * 1000;
   const weeksElapsed = Math.floor((today.getTime() - start.getTime()) / msPerWeek);
@@ -405,7 +469,7 @@ export function currentLessonNumber(totalLessons: number, totalWeeks: number = t
 // first 25-33 of the term's real ~42 weeks (found 2026-08-16: doc access for
 // the back half is still 401ing). This tells callers when that's happening
 // so they can say so instead of presenting stale content as current.
-export function isPacingCurrent(totalWeeks: number, today: Date = new Date()): boolean {
+export function isPacingCurrent(totalWeeks: number, today: Date = centralToday()): boolean {
   const start = new Date(rcaSchedule.termStart + "T00:00:00");
   const msPerWeek = 7 * 24 * 60 * 60 * 1000;
   const weeksElapsed = Math.floor((today.getTime() - start.getTime()) / msPerWeek);

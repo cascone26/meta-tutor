@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { formatMarkdown } from "@/lib/sanitize-markdown";
 
 // Same floating-panel pattern as RcaAssistant (src/components/rca/RcaAssistant.tsx) —
 // persistent bottom-right circle, opens a chat panel, streams from a Claude-backed
@@ -136,7 +137,11 @@ export default function CoachChat({
             <span className="text-[10px] font-semibold uppercase tracking-wide mr-1" style={{ color: "#6f8a79" }}>
               {m.role === "user" ? "You" : "Coach"}
             </span>
-            <span className="whitespace-pre-wrap">{m.content}</span>
+            {m.role === "assistant" ? (
+              <div className="prose text-sm" dangerouslySetInnerHTML={{ __html: formatMarkdown(m.content) }} />
+            ) : (
+              <span className="whitespace-pre-wrap">{m.content}</span>
+            )}
           </div>
         ))}
         <div ref={endRef} />
