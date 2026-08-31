@@ -1,5 +1,22 @@
 # Meta Tutor — Status
 
+## Tutor Core Phase 8: ambient activity logger — built and live-tested, not started (2026-08-30)
+`~/.filament/ambient-logger/ambient-logger.py` — headless, polls NSWorkspace (frontmost app) + Quartz
+`CGEventSourceSecondsSinceLastEventType` (idle seconds) every 10s, writes to a local SQLite DB. No window
+titles in v1 — deliberately deferred, a real step up in sensitivity over just knowing which app is
+frontmost. `~/Library/LaunchAgents/com.filament.ambient-logger.plist` (Background process type, never
+takes focus). `~/.filament/bin/ambient-logger` CLI (`start`/`stop`/`status`/`clear`/`export`).
+`~/.filament/ambient-logger/README.md` documents exactly what's collected, that it's local-only forever
+in v1, 30-day auto-purge, and how to inspect/stop/clear it anytime, no approval needed.
+
+This is genuinely Handle-tier, not Report-tier: ran it live for 30 real seconds (`python3
+ambient-logger.py`, not just `--once`) and confirmed 5 real rows landed with plausible idle-time values
+(rose then reset on activity) — actually observed, not assumed. Test data cleared before handoff so the
+real log starts clean. **The plist is installed but deliberately NOT loaded** — `launchctl load` never
+ran. Per the approved plan, a new always-on daemon on Jacob's own machine is his call to start, same
+register as any other new persistent background process — `~/.filament/bin/ambient-logger start` is the
+one command away.
+
 ## Tutor Core Phase 7: unified learner dashboard — the "one room" milestone (2026-08-30)
 `/learner-profile` — first thing that visibly changes for Jacob out of this whole plan. `ProfileStats`
 (subjects tracked / overall accuracy / due-right-now), a one-line "what to work on today" recommendation
