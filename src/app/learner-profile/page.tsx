@@ -6,6 +6,7 @@ import type { LearnerProfile } from "@/lib/tutor-core/types";
 import ProfileStats from "@/components/learner-profile/ProfileStats";
 import WeakAreasList from "@/components/learner-profile/WeakAreasList";
 import SubjectBreakdown from "@/components/learner-profile/SubjectBreakdown";
+import AmbientInsights from "@/components/learner-profile/AmbientInsights";
 import { subjectLabel } from "@/components/learner-profile/subject-label";
 
 function recommend(profile: LearnerProfile): string | null {
@@ -56,6 +57,7 @@ export default function LearnerProfilePage() {
               <p className="text-sm" style={{ color: "#c3cbf0" }}>{recommend(profile)}</p>
             </div>
           )}
+          <AmbientInsights insight={profile.ambientInsight} />
           <WeakAreasList profile={profile} />
           <SubjectBreakdown profile={profile} />
         </>

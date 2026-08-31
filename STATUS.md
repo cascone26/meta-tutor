@@ -1,5 +1,36 @@
 # Meta Tutor — Status
 
+## Tutor Core Phase 9: correlate ambient data into dashboard insights (2026-08-30)
+`~/.filament/ambient-logger/correlate.py` — a LOCAL script (not part of the Next.js app; Vercel serverless
+can't read a local SQLite file, that was the real constraint this phase was built around from the start).
+Reads `activity.db`, computes peak-focus hour (lowest average idle time by hour-of-day, local time) and
+typical session length (contiguous low-idle runs), and pushes only that computed aggregate — never raw app
+names or timestamps — to a new, deliberately separate `mt_ambient_insights` table (doesn't force a
+"peak focus hour" into the weak-areas/accuracy shape built for subject mistakes, wrong fit). Auth is the
+same service-role key already in `.env.local`, read directly off disk — a new shared-secret scheme would've
+been pure overhead for a script that only ever runs on Jacob's own machine.
+
+Genuinely tested live, not just written: ran a real 20s activity capture, ran the correlator against it,
+got a real result (`peak_focus_hour: 21` — correct, that's when it ran; `sample_days: 1` — correct;
+`avg_session_minutes: None` — correctly null, 20s wasn't long enough to count as a real session). First
+version crashed on the (expected, since the table isn't live yet) 404 from Supabase with a raw traceback —
+caught that in the same pass and fixed it to fail gracefully with a clear stderr message and exit 0, since
+this runs unattended under launchd daily and a crash-with-traceback is bad unattended behavior even when
+the underlying cause is expected.
+
+Server side: `LearnerProfile` gained an `ambientInsight` field, `getLearnerProfile()` fetches it in
+parallel with the subject rollup, and a new `AmbientInsights` dashboard card renders it — deliberately
+renders nothing at all (not a fake "no data" stat) until there's real `sample_days >= 1`. Skipped building
+a web-app "settings toggle" for pausing the logger — the deployed app has no way to reach a local launchd
+daemon on Jacob's Mac anyway (same Vercel-can't-touch-local-machine wall), so that'd be UI theater; the
+existing `~/.filament/bin/ambient-logger stop`/`clear` CLI already does this directly, no approval needed.
+
+`tsc --noEmit` and `npm run build` both clean. Still needs, in order: (1) Jacob pastes the updated
+`supabase-schema-hub.sql` (adds `mt_ambient_insights` on top of the still-pending `mt_learner_profile`
+from Phase 1/3), (2) `~/.filament/bin/ambient-logger start` to actually begin logging, (3) real elapsed
+days of it running before `sample_days` says anything meaningful — that part genuinely can't be
+compressed by building faster, it's calendar time by design.
+
 ## Tutor Core Phase 8: ambient activity logger — built and live-tested, not started (2026-08-30)
 `~/.filament/ambient-logger/ambient-logger.py` — headless, polls NSWorkspace (frontmost app) + Quartz
 `CGEventSourceSecondsSinceLastEventType` (idle seconds) every 10s, writes to a local SQLite DB. No window

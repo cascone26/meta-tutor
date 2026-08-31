@@ -24,8 +24,20 @@ export type SubjectSnapshot = {
   lastActivityAt: string | null; // ISO timestamp
 };
 
+// Written only by a local script on Jacob's own Mac (~/.filament/ambient-logger/correlate.py)
+// that reads local-only activity data and pushes just this aggregate — see Phase 9 in
+// ~/.claude-cobo/plans/linked-churning-rainbow.md. Deliberately separate from
+// SubjectSnapshot/WeakArea — a peak-focus-hour isn't a "mistake," it doesn't fit that shape.
+export type AmbientInsight = {
+  peakFocusHour: number | null; // 0-23, local time
+  avgSessionMinutes: number | null;
+  sampleDays: number;
+  computedAt: string; // ISO timestamp
+};
+
 export type LearnerProfile = {
   userEmail: string;
   subjects: SubjectSnapshot[];
+  ambientInsight: AmbientInsight | null;
   updatedAt: string; // ISO timestamp of the most recently updated subject snapshot
 };

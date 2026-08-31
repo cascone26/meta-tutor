@@ -160,3 +160,22 @@ create index if not exists idx_mt_learner_profile_user on mt_learner_profile(use
 alter table mt_learner_profile enable row level security;
 drop policy if exists "Service role full access" on mt_learner_profile;
 create policy "Service role full access" on mt_learner_profile for all using (true);
+
+-- Ambient focus insights (Tutor Core Phase 9, 2026-08-30) — a deliberately SEPARATE,
+-- honestly-shaped table, not forced into mt_learner_profile's weak-areas/accuracy shape
+-- (peak-focus-hour isn't a "mistake," it doesn't fit WeakArea). One row per learner,
+-- written ONLY by a local script running on Jacob's own Mac
+-- (~/.filament/ambient-logger/correlate.py) that reads the local-only activity.db and
+-- computes an AGGREGATE — raw app names/timestamps never leave the machine, only this
+-- summary does. See docs at ~/.filament/ambient-logger/README.md.
+create table if not exists mt_ambient_insights (
+  user_email text not null primary key,
+  peak_focus_hour int, -- 0-23, local time, null until enough data
+  avg_session_minutes real,
+  sample_days int not null default 0,
+  computed_at timestamptz not null default now()
+);
+
+alter table mt_ambient_insights enable row level security;
+drop policy if exists "Service role full access" on mt_ambient_insights;
+create policy "Service role full access" on mt_ambient_insights for all using (true);

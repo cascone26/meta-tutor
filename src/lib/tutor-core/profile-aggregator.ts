@@ -3,7 +3,7 @@
 // src/lib/latin-lab/progress-adapter.ts, Phase 5). Only ever import from an
 // app/api/**/route.ts file, same convention as src/lib/latin-lab/server-progress.ts.
 import { getSupabase } from "@/lib/supabase";
-import type { SubjectSnapshot, LearnerProfile } from "./types";
+import type { SubjectSnapshot, LearnerProfile, AmbientInsight } from "./types";
 
 type ProfileRow = {
   subject_id: string;
@@ -14,6 +14,31 @@ type ProfileRow = {
   last_activity_at: string | null;
   updated_at: string;
 };
+
+type AmbientInsightRow = {
+  peak_focus_hour: number | null;
+  avg_session_minutes: number | null;
+  sample_days: number;
+  computed_at: string;
+};
+
+async function getAmbientInsight(userEmail: string): Promise<AmbientInsight | null> {
+  const supabase = getSupabase();
+  const { data } = await supabase
+    .from("mt_ambient_insights")
+    .select("peak_focus_hour, avg_session_minutes, sample_days, computed_at")
+    .eq("user_email", userEmail)
+    .maybeSingle();
+
+  if (!data) return null;
+  const row = data as AmbientInsightRow;
+  return {
+    peakFocusHour: row.peak_focus_hour,
+    avgSessionMinutes: row.avg_session_minutes,
+    sampleDays: row.sample_days,
+    computedAt: row.computed_at,
+  };
+}
 
 export async function upsertSubjectSnapshot(userEmail: string, snapshot: SubjectSnapshot): Promise<void> {
   const supabase = getSupabase();
@@ -34,10 +59,13 @@ export async function upsertSubjectSnapshot(userEmail: string, snapshot: Subject
 
 export async function getLearnerProfile(userEmail: string): Promise<LearnerProfile> {
   const supabase = getSupabase();
-  const { data } = await supabase
-    .from("mt_learner_profile")
-    .select("subject_id, accuracy, sample_size, weak_areas, due_count, last_activity_at, updated_at")
-    .eq("user_email", userEmail);
+  const [{ data }, ambientInsight] = await Promise.all([
+    supabase
+      .from("mt_learner_profile")
+      .select("subject_id, accuracy, sample_size, weak_areas, due_count, last_activity_at, updated_at")
+      .eq("user_email", userEmail),
+    getAmbientInsight(userEmail),
+  ]);
 
   const rows = (data || []) as ProfileRow[];
   const subjects: SubjectSnapshot[] = rows.map((r) => ({
@@ -54,5 +82,5 @@ export async function getLearnerProfile(userEmail: string): Promise<LearnerProfi
     rows[0]?.updated_at ?? new Date(0).toISOString()
   );
 
-  return { userEmail, subjects, updatedAt };
+  return { userEmail, subjects, ambientInsight, updatedAt };
 }
