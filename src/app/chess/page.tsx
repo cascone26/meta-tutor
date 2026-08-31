@@ -14,13 +14,19 @@ export default function ChessPage() {
   const [prefs] = usePrefs();
   const [weakAreas, setWeakAreas] = useState<{ terms: string[]; categories: string[] }>({ terms: [], categories: [] });
   const [gamesAnalyzed, setGamesAnalyzed] = useState(0);
+  const [loadError, setLoadError] = useState(false);
 
-  useEffect(() => {
-    getSubjectProgress("chess").then((p) => {
-      setWeakAreas(p.weakAreas);
-      setGamesAnalyzed(p.history.length);
-    });
-  }, []);
+  function loadProgress() {
+    setLoadError(false);
+    getSubjectProgress("chess")
+      .then((p) => {
+        setWeakAreas(p.weakAreas);
+        setGamesAnalyzed(p.history.length);
+      })
+      .catch(() => setLoadError(true));
+  }
+
+  useEffect(loadProgress, []);
 
   // weakAreas.categories mixes two dimensions (how bad + when it happened) — split them
   // so "you blunder in the opening" reads as an actual insight, not a flat tag cloud.
@@ -45,7 +51,12 @@ export default function ChessPage() {
         <div className="max-w-4xl mx-auto px-5 pb-10">
           <div className="rounded-xl p-4" style={{ background: "#182620", border: "1px solid #24382c" }}>
             <h2 className="text-sm font-semibold mb-2">Recent weak areas (last 20 games)</h2>
-            {gamesAnalyzed === 0 ? (
+            {loadError ? (
+              <p className="text-sm">
+                <span style={{ color: "#d88a8a" }}>Couldn&apos;t load this — </span>
+                <button onClick={loadProgress} className="underline" style={{ color: "#d88a8a" }}>retry</button>
+              </p>
+            ) : gamesAnalyzed === 0 ? (
               <p className="text-sm" style={{ color: "#6f8a79" }}>No completed games yet — finish a game above to start building this.</p>
             ) : weakAreas.terms.length === 0 ? (
               <p className="text-sm" style={{ color: "#6f8a79" }}>No recurring mistakes yet — nice.</p>

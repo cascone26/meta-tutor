@@ -20,19 +20,28 @@ export default function ReviewPage() {
   const [todayTime, setTodayTime] = useState(0);
   const [wrongCount, setWrongCount] = useState(0);
   const [recentMode, setRecentMode] = useState("");
+  const [loadError, setLoadError] = useState(false);
+
+  function loadRemoteProgress() {
+    setLoadError(false);
+    getWeakAreas().then(setWeakAreas).catch(() => setLoadError(true));
+    getWrongAnswersList()
+      .then((list) => setWrongCount(list.length))
+      .catch(() => setLoadError(true));
+    getHistory()
+      .then((history) => {
+        if (history.length > 0) setRecentMode(history[0].mode);
+      })
+      .catch(() => setLoadError(true));
+  }
 
   useEffect(() => {
     const sr = getSRData();
     setSrStats(getTermStats(sr));
     setDueTerms(getDueTerms(sr));
-    getWeakAreas().then(setWeakAreas);
     setStreak(getStreakData().currentStreak);
     setTodayTime(getTodayStudyTime());
-    getWrongAnswersList().then((list) => setWrongCount(list.length));
-
-    getHistory().then((history) => {
-      if (history.length > 0) setRecentMode(history[0].mode);
-    });
+    loadRemoteProgress();
   }, []);
 
   // Suggest a study mode based on state
@@ -66,6 +75,13 @@ export default function ReviewPage() {
         <p className="text-sm mb-5" style={{ color: "var(--muted)" }}>
           Your personalized study plan for today.
         </p>
+
+        {loadError && (
+          <div className="rounded-xl p-3 mb-4 flex items-center justify-between" style={{ background: "var(--error-bg)", border: "1px solid #c96b6b30" }}>
+            <p className="text-sm" style={{ color: "var(--error)" }}>Couldn&apos;t load some of your progress data — the suggestion below may not be accurate.</p>
+            <button onClick={loadRemoteProgress} className="text-xs font-medium underline shrink-0 ml-3" style={{ color: "var(--error)" }}>Retry</button>
+          </div>
+        )}
 
         {/* Quick stats row */}
         <div className="grid grid-cols-4 gap-2 mb-5">

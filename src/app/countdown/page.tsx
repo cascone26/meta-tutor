@@ -16,16 +16,24 @@ export default function CountdownPage() {
   const [quizCount, setQuizCount] = useState(0);
 
   const [tookTimedExam, setTookTimedExam] = useState(false);
+  const [historyError, setHistoryError] = useState(false);
+
+  function loadHistory() {
+    setHistoryError(false);
+    getHistory()
+      .then((history) => {
+        setQuizCount(history.length);
+        setTookTimedExam(history.some((h) => h.mode === "Timed Exam"));
+      })
+      .catch(() => setHistoryError(true));
+  }
 
   useEffect(() => {
     const saved = localStorage.getItem(KEY);
     if (saved) setExamDate(saved);
     const sr = getSRData();
     setSrStats(getTermStats(sr));
-    getHistory().then((history) => {
-      setQuizCount(history.length);
-      setTookTimedExam(history.some((h) => h.mode === "Timed Exam"));
-    });
+    loadHistory();
   }, []);
 
   function saveDate() {
@@ -120,6 +128,13 @@ export default function CountdownPage() {
               </p>
               <button onClick={clearDate} className="text-xs mt-2" style={{ color: "var(--muted)" }}>Change date</button>
             </div>
+
+            {historyError && (
+              <div className="rounded-xl p-3 mb-4 flex items-center justify-between" style={{ background: "var(--error-bg)", border: "1px solid #c96b6b30" }}>
+                <p className="text-sm" style={{ color: "var(--error)" }}>Couldn&apos;t load your quiz history — quiz-based milestones below may be stale.</p>
+                <button onClick={loadHistory} className="text-xs font-medium underline shrink-0 ml-3" style={{ color: "var(--error)" }}>Retry</button>
+              </div>
+            )}
 
             {/* Stats */}
             <div className="grid grid-cols-3 gap-2.5 mb-5">

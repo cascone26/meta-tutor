@@ -9,13 +9,26 @@ type Row = { classId: string; name: string; progress: SubjectProgress };
 
 export default function ProgressTrend() {
   const [rows, setRows] = useState<Row[] | null>(null);
+  const [error, setError] = useState(false);
 
-  useEffect(() => {
+  function load() {
+    setError(false);
+    setRows(null);
     const withContent = rcaClasses.filter((c) => rcaContent[c.id]);
     Promise.all(withContent.map((c) => getSubjectProgress(`rca-${c.id}`).then((progress) => ({ classId: c.id, name: c.name, progress }))))
       .then((all) => setRows(all.filter((r) => r.progress.history.length > 0)))
-      .catch(() => setRows([]));
-  }, []);
+      .catch(() => setError(true));
+  }
+
+  useEffect(load, []);
+
+  if (error) {
+    return (
+      <p className="text-sm rounded-xl p-4" style={{ background: "#fdf0f0", border: "1px solid #e0c0c0", color: "#a04a4a" }}>
+        Couldn&apos;t load your progress trend — <button onClick={load} className="underline font-medium">retry</button>.
+      </p>
+    );
+  }
 
   if (rows === null) {
     return <p className="text-sm" style={{ color: "#8a9a7c" }}>Loading…</p>;

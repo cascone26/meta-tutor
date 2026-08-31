@@ -19,10 +19,12 @@ export default function PuzzleMode({ prefs }: { prefs: ChessPrefs }) {
   const [fen, setFen] = useState(puzzle.fen);
 
   useEffect(() => {
-    getSubjectProgress("chess-puzzles").then((p) => {
-      const scores = p.history.map((h) => h.score);
-      if (scores.length) setBest(Math.max(...scores));
-    });
+    getSubjectProgress("chess-puzzles")
+      .then((p) => {
+        const scores = p.history.map((h) => h.score);
+        if (scores.length) setBest(Math.max(...scores));
+      })
+      .catch(() => {}); // best-streak display — a failure just means it stays at 0, not a false claim
   }, []);
 
   const sideToMove = puzzle.fen.split(" ")[1] as "w" | "b";

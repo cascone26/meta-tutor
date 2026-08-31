@@ -35,10 +35,12 @@ export default function UnderstandingCheck({
   const [sessionsLogged, setSessionsLogged] = useState(0);
 
   useEffect(() => {
-    getSubjectProgress(progressKey).then((p) => {
-      setWeakAreas(p.weakAreas);
-      setSessionsLogged(p.history.length);
-    });
+    getSubjectProgress(progressKey)
+      .then((p) => {
+        setWeakAreas(p.weakAreas);
+        setSessionsLogged(p.history.length);
+      })
+      .catch(() => {}); // secondary "past weak areas" widget — a failure just means it stays hidden, not a false claim
   }, [progressKey]);
 
   async function start() {

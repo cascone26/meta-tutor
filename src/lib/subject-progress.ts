@@ -48,38 +48,37 @@ type HistoryRow = {
   created_at: string;
 };
 
-const EMPTY: SubjectProgress = { wrongAnswers: [], history: [], weakAreas: { terms: [], categories: [] } };
-
+// Throws on genuine fetch/network/auth failure — callers must not treat a caught
+// exception the same as "fetch succeeded, there's just nothing yet." That silent
+// swallow-to-empty was a real bug (found 2026-08-30, same failure class as the Latin
+// Lab silent-failure fix this session): a transient error looked identical to "no
+// progress yet" everywhere this was called. Callers should catch this explicitly and
+// show a real error+retry state — see src/app/dashboard/page.tsx for the pattern.
 export async function getSubjectProgress(subject: string): Promise<SubjectProgress> {
-  try {
-    const res = await fetch(`/api/subject-progress?subject=${encodeURIComponent(subject)}`);
-    if (!res.ok) return EMPTY;
-    const data = await res.json();
-    return {
-      wrongAnswers: (data.wrongAnswers as WrongAnswerRow[]).map((r) => ({
-        term: r.term,
-        definition: r.definition || "",
-        category: r.category || "",
-        count: r.count,
-        lastWrong: new Date(r.last_wrong).getTime(),
-        modes: r.modes,
-      })),
-      history: (data.history as HistoryRow[]).map((r) => ({
-        mode: r.mode,
-        date: new Date(r.created_at).toLocaleDateString(),
-        timestamp: new Date(r.created_at).getTime(),
-        score: r.score,
-        total: r.total,
-        percentage: r.percentage,
-        weakTerms: r.weak_terms,
-        weakCategories: r.weak_categories,
-      })),
-      weakAreas: data.weakAreas,
-    };
-  } catch (e) {
-    console.error("Failed to load subject progress:", e);
-    return EMPTY;
-  }
+  const res = await fetch(`/api/subject-progress?subject=${encodeURIComponent(subject)}`);
+  if (!res.ok) throw new Error(`subject-progress fetch failed: ${res.status}`);
+  const data = await res.json();
+  return {
+    wrongAnswers: (data.wrongAnswers as WrongAnswerRow[]).map((r) => ({
+      term: r.term,
+      definition: r.definition || "",
+      category: r.category || "",
+      count: r.count,
+      lastWrong: new Date(r.last_wrong).getTime(),
+      modes: r.modes,
+    })),
+    history: (data.history as HistoryRow[]).map((r) => ({
+      mode: r.mode,
+      date: new Date(r.created_at).toLocaleDateString(),
+      timestamp: new Date(r.created_at).getTime(),
+      score: r.score,
+      total: r.total,
+      percentage: r.percentage,
+      weakTerms: r.weak_terms,
+      weakCategories: r.weak_categories,
+    })),
+    weakAreas: data.weakAreas,
+  };
 }
 
 export async function logWrongAnswer(subject: string, term: string, definition: string, category: string, mode: string) {

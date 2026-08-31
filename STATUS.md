@@ -1,5 +1,36 @@
 # Meta Tutor — Status
 
+## Fleet-wide silent-failure sweep — same bug class as the Latin Lab fix, found everywhere (2026-08-30)
+After the full reverification pass below, went looking for the same "fetch fails silently → looks like a
+real empty state" bug class everywhere else in the app, not just Latin Lab. Found it was actually rooted
+in ONE shared file: `src/lib/subject-progress.ts`'s `getSubjectProgress()` caught every fetch/network/auth
+failure and returned a fake-empty `SubjectProgress` object — indistinguishable from "genuinely no data yet."
+Since `study-history.ts`/`wrong-answers.ts` (Cristian's Metaphysics wrappers) both sit directly on top of
+it, this one swallow silently affected his entire dashboard/journal/countdown/review flow, plus RCA's
+ProgressTrend/UnderstandingCheck and Chess — 9 real UI consumers total, found by grepping every caller.
+
+Root fix: `getSubjectProgress()` now throws on a real failure instead of swallowing it — "empty" and
+"failed" are distinguishable again. Then went through all 9 consumers and added real error+Retry states
+sized to what's actually at stake in each:
+- **dashboard.tsx, review.tsx, countdown.tsx** (Cristian's core loop): visible banner + Retry, since a
+  failure here means "Suggested for you" / milestones could be showing stale or wrong guidance.
+- **journal.tsx** (Cristian): the whole page IS the wrong-answer list — replaced the misleading
+  "No wrong answers yet" with a real error state when it's actually a failure, not emptiness.
+- **chess/page.tsx, rca/ProgressTrend.tsx** (Jacob): same pattern, real error+Retry.
+- **rca/UnderstandingCheck.tsx, riemann/RiemannUnderstandingCheck.tsx, chess/PuzzleMode.tsx**: smaller,
+  secondary widgets (a "past weak areas" chip row, a best-streak number) where a failure just means the
+  widget stays hidden/at-zero rather than asserting something false — added `.catch()` to stop console
+  noise without adding banner UI that would be disproportionate to what's actually at stake there.
+
+Verified live with the headless Viewer, own eyes, not just `tsc`/`build`: drove dashboard, journal,
+countdown, review, and chess against the dev server. Journal and review render the new error+Retry states
+exactly as designed (screenshotted and read directly). Dashboard's banner confirmed visible (a pre-existing,
+unrelated onboarding modal partially overlaps it in a fresh session — not something this fix touched).
+Countdown correctly shows no banner in its no-exam-date-set state (nothing to error about yet — correct,
+not a bug). Chess confirmed via `document.body.innerText` containing the section text plus exactly one
+expected 401 in the console, matching the identical, already-visually-confirmed pattern used elsewhere.
+Zero unexpected console errors or page crashes across all five. `tsc --noEmit` and `npm run build` clean.
+
 ## Full reverification pass, all 10 phases combined (2026-08-30)
 Per Jacob's explicit ask — after everything's built, a full re-check with the Viewer, not just trusting
 the last build. Drove the whole surface touched this session in one pass against the dev server (headless

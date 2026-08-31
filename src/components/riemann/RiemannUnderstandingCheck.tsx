@@ -26,10 +26,12 @@ export default function RiemannUnderstandingCheck({ lessonN }: { lessonN: number
   const [sessionsLogged, setSessionsLogged] = useState(0);
 
   useEffect(() => {
-    getSubjectProgress(PROGRESS_KEY).then((p) => {
-      setWeakAreas(p.weakAreas);
-      setSessionsLogged(p.history.length);
-    });
+    getSubjectProgress(PROGRESS_KEY)
+      .then((p) => {
+        setWeakAreas(p.weakAreas);
+        setSessionsLogged(p.history.length);
+      })
+      .catch(() => {}); // secondary "past weak areas" widget — a failure just means it stays hidden, not a false claim
   }, []);
 
   useEffect(() => {

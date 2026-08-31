@@ -21,11 +21,15 @@ export default function JournalPage() {
   const glossary = getEffectiveGlossary();
 
   const [wrongAnswers, setWrongAnswers] = useState<WrongAnswer[]>([]);
+  const [loadError, setLoadError] = useState(false);
   const [drill, setDrill] = useState<DrillState>({ active: false, terms: [], current: 0, input: "", answered: false, correct: false, score: 0, done: false });
 
-  useEffect(() => {
-    getWrongAnswersList().then(setWrongAnswers);
-  }, []);
+  function loadWrongAnswers() {
+    setLoadError(false);
+    getWrongAnswersList().then(setWrongAnswers).catch(() => setLoadError(true));
+  }
+
+  useEffect(loadWrongAnswers, []);
 
   function startDrill() {
     if (wrongAnswers.length === 0) return;
@@ -172,7 +176,12 @@ export default function JournalPage() {
           Every term you&apos;ve gotten wrong, sorted by how often. Drill them to clear the list.
         </p>
 
-        {wrongAnswers.length === 0 ? (
+        {loadError ? (
+          <div className="rounded-xl p-8 text-center" style={{ background: "var(--error-bg)", border: "1px solid #c96b6b30" }}>
+            <p className="text-sm mb-3" style={{ color: "var(--error)" }}>Couldn&apos;t load your wrong-answer journal — try again.</p>
+            <button onClick={loadWrongAnswers} className="text-sm underline font-medium" style={{ color: "var(--error)" }}>Retry</button>
+          </div>
+        ) : wrongAnswers.length === 0 ? (
           <div className="rounded-xl p-8 text-center" style={{ background: "var(--surface)", border: "1px solid var(--border)" }}>
             <p className="text-sm" style={{ color: "var(--muted)" }}>
               No wrong answers yet. Go study and any mistakes will show up here.

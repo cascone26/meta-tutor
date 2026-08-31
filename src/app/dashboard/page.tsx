@@ -24,26 +24,36 @@ export default function DashboardPage() {
   const [earnedBadges, setEarnedBadges] = useState<string[]>([]);
   const [todayTime, setTodayTime] = useState(0);
   const [weekTime, setWeekTime] = useState(0);
+  const [historyError, setHistoryError] = useState(false);
+
+  function loadRemoteProgress() {
+    const sd = getStreakData();
+    const sr = getSRData();
+    const stats = getTermStats(sr);
+    setHistoryError(false);
+    getHistory()
+      .then((hist) => {
+        setHistory(hist);
+        const badgeStats: BadgeStats = {
+          totalQuizzes: hist.length,
+          termsStudied: stats.total,
+          termsMastered: stats.mastered,
+          perfectQuizzes: hist.filter((h) => h.percentage === 100).length,
+          totalTerms: glossary.length,
+        };
+        setEarnedBadges(checkBadges(sd, badgeStats));
+      })
+      .catch(() => setHistoryError(true));
+    getWeakAreas().then(setWeakAreas).catch(() => setHistoryError(true));
+  }
 
   useEffect(() => {
     const sr = getSRData();
     const stats = getTermStats(sr);
     setSrStats(stats);
     setDueTerms(getDueTerms(sr));
-    const sd = getStreakData();
-    setStreakData(sd);
-    getHistory().then((hist) => {
-      setHistory(hist);
-      const badgeStats: BadgeStats = {
-        totalQuizzes: hist.length,
-        termsStudied: stats.total,
-        termsMastered: stats.mastered,
-        perfectQuizzes: hist.filter((h) => h.percentage === 100).length,
-        totalTerms: glossary.length,
-      };
-      setEarnedBadges(checkBadges(sd, badgeStats));
-    });
-    getWeakAreas().then(setWeakAreas);
+    setStreakData(getStreakData());
+    loadRemoteProgress();
     setTodayTime(getTodayStudyTime());
     setWeekTime(getWeekStudyTime());
 
@@ -53,6 +63,7 @@ export default function DashboardPage() {
       const p = localStorage.getItem("meta-tutor-practiced");
       if (p) setPracticed(new Set(JSON.parse(p)));
     } catch {}
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const confCounts = {
@@ -200,6 +211,13 @@ export default function DashboardPage() {
         <p className="text-sm mb-5" style={{ color: "var(--muted)" }}>
           Your study progress at a glance.
         </p>
+
+        {historyError && (
+          <div className="rounded-xl p-3 mb-4 flex items-center justify-between" style={{ background: "var(--error-bg)", border: "1px solid #c96b6b30" }}>
+            <p className="text-sm" style={{ color: "var(--error)" }}>Couldn&apos;t load your quiz history/weak areas — the stats below may be incomplete.</p>
+            <button onClick={loadRemoteProgress} className="text-xs font-medium underline shrink-0 ml-3" style={{ color: "var(--error)" }}>Retry</button>
+          </div>
+        )}
 
         {/* Streak + Study Time */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 mb-4">
