@@ -42,6 +42,7 @@ export const JACOB_ONLY_PREFIXES = [
   "/api/trivia-progress",
   "/api/latin-lab",
   "/api/latin-progress",
+  "/api/rca-custom-vocab",
   // NOTE: /api/subject-progress is deliberately NOT here even though RCA (Jacob-only)
   // uses it — as of 2026-08-30 Cristian's Metaphysics quiz-history/wrong-answers (see
   // src/lib/study-history.ts, src/lib/wrong-answers.ts) were migrated onto this same

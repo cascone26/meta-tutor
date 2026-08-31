@@ -48,8 +48,14 @@ function customVocabToCards(items: CustomVocabItem[]): SoundCard[] {
     category: it.category,
     custom: true,
     sounds: [{
+      // Once scripts/gen-custom-vocab-audio.mjs has verified a real mp3 for this
+      // word (audioReady, synced from mt_custom_vocab), use it — otherwise fall
+      // back to instant browser speech. Card upgrades automatically the next
+      // time this list re-renders after that sync completes, no user action.
       label: it.english,
-      audioSrc: SPEECH_PREFIX + encodeURIComponent(toEcclesiasticalTtsSpelling(it.latin)),
+      audioSrc: it.audioReady
+        ? `/audio/latin/custom/${slugify(it.latin)}.mp3`
+        : SPEECH_PREFIX + encodeURIComponent(toEcclesiasticalTtsSpelling(it.latin)),
       note: it.note,
     }],
   }));
@@ -441,7 +447,7 @@ function VocabAdder({ onAdd }: { onAdd: (item: { latin: string; english: string;
       {open && (
         <div className="mt-2 space-y-2">
           <p className="text-[11px]" style={{ color: "#8a9a7c" }}>
-            Type any Latin word or phrase — it gets fact-checked and spell-corrected, then you can save it as a real flashcard. Audio here is instant browser speech, not the verified edge-tts pipeline the built-in words use.
+            Type any Latin word or phrase — it gets fact-checked and spell-corrected, then you can save it as a real flashcard. Audio here is instant browser speech at first; ask for real verified audio to be generated for your saved words any time, and cards upgrade automatically once it&apos;s ready.
           </p>
           <div className="flex gap-2">
             <input
