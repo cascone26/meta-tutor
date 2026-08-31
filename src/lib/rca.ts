@@ -451,6 +451,37 @@ export function getNextScheduleItem(today: Date = centralToday()): ScheduleItem 
   return { kind: "term-ended" };
 }
 
+/** The next date Jacob will actually be teaching regular classes — today
+ * itself if today qualifies, otherwise the next real Mon/Thu that isn't a
+ * closure and isn't overridden by an rcaEvent (training day, staff meeting).
+ * Used to pick WHICH lesson a per-class page should show. Without this,
+ * currentLessonNumber()'s week-fraction estimate stayed pinned to the last
+ * ACTUAL teaching day forever, so a class page kept showing last Thursday's
+ * lesson all weekend instead of advancing to the upcoming one — backwards
+ * for a page whose whole point is prepping ahead of the next class (found
+ * 2026-08-30: Jacob expected Sunday-night prep to already show next week's
+ * lesson, not last Thursday's). getNextScheduleItem() doesn't fit this need
+ * on its own — its job is "what's on the calendar today" (so it correctly
+ * returns kind "closure"/"event" on those days), not "which class-day should
+ * lesson content be keyed to." */
+export function nextTeachingDate(today: Date = centralToday()): Date | null {
+  const termStart = new Date(rcaSchedule.termStart + "T00:00:00");
+  const termEnd = new Date(rcaSchedule.termEnd + "T00:00:00");
+  const start = today < termStart ? termStart : today;
+  for (let i = 0; i <= 21; i++) {
+    const d = new Date(start);
+    d.setDate(start.getDate() + i);
+    if (d > termEnd) break;
+    const day = d.getDay();
+    if (day !== 1 && day !== 4) continue; // Mon=1, Thu=4
+    if (getClosure(d)) continue;
+    const key = dateKey(d);
+    if (rcaEvents.some((e) => e.date === key)) continue;
+    return d;
+  }
+  return null;
+}
+
 /** Roughly which lesson we're on, given the term started `rcaSchedule.termStart` and these
  * lessons are paced across `totalWeeks` (defaults to 1 lesson/week if omitted). Clamped to
  * [1, totalLessons]. Does not account for holidays. */

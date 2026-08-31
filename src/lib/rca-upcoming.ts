@@ -1,4 +1,4 @@
-import { rcaClasses, currentLessonNumber, CLT_TESTING_WEEK, centralToday } from "@/lib/rca";
+import { rcaClasses, currentLessonNumber, CLT_TESTING_WEEK, centralToday, nextTeachingDate } from "@/lib/rca";
 import { rcaContent } from "@/lib/rca-content";
 import { todaysLessonNumber } from "@/lib/rca-content/types";
 
@@ -29,13 +29,17 @@ function firstMatch(text: string): string | null {
 
 export function getUpcomingHighlights(today: Date = centralToday()): UpcomingHit[] {
   const hits: UpcomingHit[] = [];
+  // Same "advance past a completed teaching day" fix as LessonViewer — on a
+  // non-teaching day this must scan forward from the NEXT lesson, not stay
+  // pinned to the last one already taught.
+  const referenceDate = nextTeachingDate(today) ?? today;
 
   for (const cls of rcaClasses) {
     const content = rcaContent[cls.id];
     if (!content) continue;
     const total = content.lessons.length;
-    const weekday = today.toLocaleDateString("en-US", { weekday: "long" });
-    const estimate = todaysLessonNumber(content, currentLessonNumber(total, content.totalWeeks, today), weekday);
+    const weekday = referenceDate.toLocaleDateString("en-US", { weekday: "long" });
+    const estimate = todaysLessonNumber(content, currentLessonNumber(total, content.totalWeeks, referenceDate), weekday);
 
     for (let n = estimate; n <= Math.min(total, estimate + LOOKAHEAD_LESSONS); n++) {
       const lesson = content.lessons.find((l) => l.n === n);

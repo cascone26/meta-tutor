@@ -2,7 +2,7 @@
 // understanding-check quiz (/api/rca-understanding) — one place that knows how to
 // describe a class + its current lesson to the model.
 
-import { getRcaClass, rcaClasses, rcaSchedule, currentLessonNumber, isPacingCurrent, getNextScheduleItem, centralToday } from "@/lib/rca";
+import { getRcaClass, rcaClasses, rcaSchedule, currentLessonNumber, isPacingCurrent, getNextScheduleItem, centralToday, nextTeachingDate } from "@/lib/rca";
 import { rcaContent } from "@/lib/rca-content";
 import { todaysLessonNumber } from "@/lib/rca-content/types";
 import { getCatechismLessonsForWeekText } from "@/lib/rca-content/baltimore-catechism-guide";
@@ -141,10 +141,14 @@ export function buildClassGrounding(subjectId: string | undefined, lessonNOverri
     // Same weekday-correction as LessonViewer/rca/today — currentLessonNumber's
     // raw estimate can land on the right week but the wrong day for subjects
     // like Saxon that pace one lesson per calendar day, which would have had
-    // the AI assistant confidently teaching from the wrong day's lesson.
+    // the AI assistant confidently teaching from the wrong day's lesson. And
+    // same "advance past a completed teaching day" fix as LessonViewer — on a
+    // non-teaching day this must ground on the NEXT lesson, not the last one
+    // already taught, or the assistant would help prep for stale content.
+    const referenceDate = nextTeachingDate() ?? centralToday();
     const n = lessonNOverride && lessonNOverride >= 1 && lessonNOverride <= content.lessons.length
       ? lessonNOverride
-      : todaysLessonNumber(content, currentLessonNumber(content.lessons.length, content.totalWeeks), centralToday().toLocaleDateString("en-US", { weekday: "long" }));
+      : todaysLessonNumber(content, currentLessonNumber(content.lessons.length, content.totalWeeks, referenceDate), referenceDate.toLocaleDateString("en-US", { weekday: "long" }));
     const lesson = content.lessons.find((l) => l.n === n);
     const label = lessonNOverride ? "REVIEW LESSON" : "CURRENT LESSON";
     grounding += `\n${content.overview}\n\n${label} (Lesson ${n} of ${content.lessons.length}):\n`;

@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import type { SubjectContent } from "@/lib/rca-content/types";
 import { lessonWeekday, todaysLessonNumber } from "@/lib/rca-content/types";
-import { currentLessonNumber, isPacingCurrent, centralToday } from "@/lib/rca";
+import { currentLessonNumber, isPacingCurrent, centralToday, nextTeachingDate } from "@/lib/rca";
 import { ChevronIcon } from "@/components/rca/NatureIcons";
 import { useRcaPacingOffsets } from "@/lib/rca-pacing-client";
 import { nextFlexibleLesson } from "@/lib/rca-upcoming";
@@ -33,13 +33,22 @@ export default function LessonViewer({
   onLessonChange?: (n: number) => void;
 }) {
   const total = content.lessons.length;
-  const todayWeekday = centralToday().toLocaleDateString("en-US", { weekday: "long" });
+  // Key the estimate to the NEXT real teaching day, not literally today — on
+  // a non-teaching day (weekend, closure, staff-meeting Thursday) today's own
+  // date/weekday has no lesson to correct to, so this used to fall back to
+  // whatever the raw week-fraction estimate landed on and stay pinned to the
+  // LAST actual teaching day until the next one physically arrived (found
+  // 2026-08-30: still showing last Thursday's lesson all weekend instead of
+  // advancing to the upcoming Monday's, backwards for a page meant for
+  // prepping ahead of the next class).
+  const referenceDate = nextTeachingDate() ?? centralToday();
+  const todayWeekday = referenceDate.toLocaleDateString("en-US", { weekday: "long" });
   // currentLessonNumber()'s raw estimate can land on the right WEEK but the
   // wrong DAY for weekday-tagged subjects (Saxon-style) — found live on the
   // actual first day of term, where Saxon's initial lesson opened to the
   // Thursday entry while today was Monday. todaysLessonNumber corrects it;
   // it's a no-op for bundled-week subjects where there's no day to correct.
-  const rawTodayEstimate = todaysLessonNumber(content, currentLessonNumber(total, content.totalWeeks), todayWeekday);
+  const rawTodayEstimate = todaysLessonNumber(content, currentLessonNumber(total, content.totalWeeks, referenceDate), todayWeekday);
 
   const { offsets, loaded: offsetsLoaded, setOffset } = useRcaPacingOffsets();
   const offset = offsets[classId] ?? 0;
