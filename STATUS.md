@@ -1,5 +1,31 @@
 # Meta Tutor — Status
 
+## Tutor Core Phase 10: Estate memory bridge — all 10 phases done (2026-08-30)
+`src/lib/tutor-core/estate-bridge.ts` — pure `formatProfileAsMarkdown(profile)`, no I/O (Vercel can't
+write local files, same constraint Phase 9 was built around). The actual working sync is a local script,
+`~/.filament/estate-bridge/sync-learning-profile.py` (mirrors the TS formatting logic by hand — different
+runtimes, not worth a build step for ~20 lines of markdown), run via `~/.filament/bin/sync-learning-profile`.
+It queries `mt_learner_profile`/`mt_ambient_insights` directly (same service-role-key-from-.env.local
+pattern as Phase 9's correlator) and writes into the REAL fleet memory organ — corrected from the plan's
+approximate guessed path (`~/.claude-cobo/projects/meta-tutor/memory/`) to the actual one found by checking
+`ls ~/.claude-cobo/projects/`: `~/.claude-cobo/projects/-Users-scones/memory/meta-tutor-learner-profile.md`,
+with real frontmatter (`type: project`) matching this session's own memory-file format, and adds itself to
+`MEMORY.md`'s index exactly once (verified idempotent on a second sync, not just assumed).
+
+Verified live, three separate ways: (1) ran the real script against the real (not-yet-live) Supabase
+tables and got the correct, clear 404-based failure message, not a crash; (2) ran the markdown formatter
+against mock data and got correctly-structured output; (3) ran the file-write + index-update logic against
+a scratch directory and confirmed the index line is added once and never duplicated on a second run.
+`tsc --noEmit` and `npm run build` both clean.
+
+**All 10 phases of the Tutor Core plan are now built.** What's still genuinely outstanding, in order:
+(1) paste the updated `supabase-schema-hub.sql` (three new tables now: `mt_learner_profile`,
+`mt_ambient_insights`, plus whatever else has queued up) into the Supabase SQL Editor — the one step this
+whole plan has been waiting on since Phase 1; (2) a real login as Jacob to confirm the actual chat/profile
+flows end-to-end, the one thing that's never been possible to Handle-verify locally all session;
+(3) `~/.filament/bin/ambient-logger start` whenever Jacob wants ambient data to begin accumulating —
+that's calendar time, not build time, by design.
+
 ## Tutor Core Phase 9: correlate ambient data into dashboard insights (2026-08-30)
 `~/.filament/ambient-logger/correlate.py` — a LOCAL script (not part of the Next.js app; Vercel serverless
 can't read a local SQLite file, that was the real constraint this phase was built around from the start).
