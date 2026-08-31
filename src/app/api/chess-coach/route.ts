@@ -1,12 +1,7 @@
-import Anthropic from "@anthropic-ai/sdk";
 import { NextRequest } from "next/server";
-import { checkRateLimit, rateLimitResponse } from "@/lib/rate-limit";
-import { auth } from "@/auth";
-import { notifyIfAuthError } from "@/lib/alert";
+import { streamChat } from "@/lib/tutor-core/chat-router";
 
 export const maxDuration = 30;
-
-const anthropic = new Anthropic({ timeout: 25000 });
 
 // A real coach, not an answer machine — this is what the old "Hint" button (arrow to
 // the engine's best move) never was. Model gets the ground-truth engine data (best
@@ -28,69 +23,34 @@ CRITICAL — how to coach, not answer:
 - No markdown at all — no **bold**, no _italics_, no headers, no bullet lists. The chat UI displays raw
   text, so markdown syntax would show up as literal asterisks. Write like you're actually talking.`;
 
-export async function POST(req: NextRequest) {
-  const session = await auth();
-  if (!session) return new Response("Unauthorized", { status: 401 });
+type ChessContext = {
+  fenBefore?: string;
+  san?: string;
+  moveNumber?: number;
+  color?: "w" | "b";
+  phase?: string;
+  classification?: string;
+  cpLoss?: number;
+  bestMoveSan?: string;
+  openingName?: string;
+};
 
-  const userId = session.user?.email || "unknown";
-  const { allowed } = await checkRateLimit(userId);
-  if (!allowed) return rateLimitResponse();
-
-  try {
-    const { messages, context } = await req.json();
-
-    const contextBlock = context
-      ? `CONTEXT:
+function buildContextBlock(context: ChessContext | undefined): string {
+  if (!context) return "CONTEXT: none provided — this is a general chess question, not tied to a specific flagged move.";
+  return `CONTEXT:
 Position (FEN before the move): ${context.fenBefore ?? "unknown"}
 Move played: ${context.san ?? "unknown"} (move ${context.moveNumber ?? "?"}, ${context.color === "b" ? "Black" : "White"} to move)
 Game phase: ${context.phase ?? "unknown"}
 Move classification: ${context.classification ?? "unknown"}
 Centipawn loss vs. best: ${context.cpLoss ?? "unknown"}
 Engine's best move here: ${context.bestMoveSan ?? "unknown"}
-Opening (if known): ${context.openingName ?? "none identified"}`
-      : "CONTEXT: none provided — this is a general chess question, not tied to a specific flagged move.";
+Opening (if known): ${context.openingName ?? "none identified"}`;
+}
 
-    const stream = anthropic.messages.stream({
-      model: process.env.CLAUDE_MODEL || "claude-haiku-4-5-20251001",
-      max_tokens: 1024,
-      system: [
-        { type: "text" as const, text: baseSystemPrompt, cache_control: { type: "ephemeral" as const } },
-        { type: "text" as const, text: contextBlock },
-      ],
-      messages: messages.map((m: { role: string; content: string }) => ({
-        role: m.role as "user" | "assistant",
-        content: m.content,
-      })),
-    });
-
-    const encoder = new TextEncoder();
-    const readable = new ReadableStream({
-      async start(controller) {
-        let closed = false;
-        const safeEnqueue = (data: Uint8Array) => { if (!closed) controller.enqueue(data); };
-        const safeClose = () => { if (!closed) { closed = true; controller.close(); } };
-
-        stream.on("text", (text) => {
-          safeEnqueue(encoder.encode(`data: ${JSON.stringify({ text })}\n\n`));
-        });
-        stream.on("end", () => {
-          safeEnqueue(encoder.encode("data: [DONE]\n\n"));
-          safeClose();
-        });
-        stream.on("error", (err) => {
-          notifyIfAuthError(err);
-          safeEnqueue(encoder.encode(`data: ${JSON.stringify({ error: err.message })}\n\n`));
-          safeClose();
-        });
-      },
-    });
-
-    return new Response(readable, {
-      headers: { "Content-Type": "text/event-stream", "Cache-Control": "no-cache", Connection: "keep-alive" },
-    });
-  } catch (err) {
-    notifyIfAuthError(err);
-    const message = err instanceof Error ? err.message : "Unknown error";
-    return new Response(JSON.stringify({ error: message }), { status: 500, headers: { "Content-Type": "application/json" } });
-  }
+export async function POST(req: NextRequest) {
+  return streamChat(req, {
+    systemPrompt: baseSystemPrompt,
+    buildGrounding: (body) => buildContextBlock(body.context as ChessContext | undefined),
+    maxTokens: 1024,
+  });
 }

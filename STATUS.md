@@ -1,5 +1,18 @@
 # Meta Tutor — Status
 
+## Tutor Core Phase 2: extracted shared chat-streaming boilerplate (2026-08-30)
+`src/lib/tutor-core/chat-router.ts` — `streamChat()` is a byte-for-byte lift of the auth → rate-limit →
+Anthropic streaming → SSE logic that `rca-chat`/`riemann-chat`/`chess-coach` each hand-rolled identically.
+Each route is now ~15 lines: its system prompt + a `buildGrounding(body)` function, nothing else changed.
+`rca-grounding.ts`/`riemann-grounding.ts`/chess's inline context-block builder are untouched — only the
+routes that called them got thinner. `npx tsc --noEmit` and `npm run build` both clean.
+
+Report-tier honestly: couldn't Handle-verify the actual live SSE stream locally — these routes call
+`auth()` directly (not gated by proxy.ts's dev-preview bypass, same as every other `auth()`-gated route
+this session), so a real login is still the only way to prove the stream itself, not just that it compiles
+and that unauthenticated requests correctly 401. Confirmed the extraction changed zero logic by construction
+(system prompts, grounding calls, and max_tokens per route are all preserved exactly).
+
 ## Tutor Core Phase 1: unified progress interface (2026-08-30)
 Start of the 10-phase platform plan (`~/.claude-cobo/plans/linked-churning-rainbow.md`) turning Meta
 Tutor from 5 separately-built subject apps into one shared-intelligence platform, per Jacob's explicit
