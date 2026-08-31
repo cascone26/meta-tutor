@@ -50,6 +50,10 @@ export const JACOB_ONLY_PREFIXES = [
   // it here would silently break Cristian's progress tracking — proxy.ts's matcher
   // covers /api/* (only /api/auth is excluded), so this list gates API routes too, not
   // just pages. Found while wiring up Latin Lab's own new routes, 2026-08-30.
+  //
+  // NOTE: /api/learner-profile (Tutor Core, 2026-08-30) is deliberately NOT here either,
+  // same reasoning — scoped server-side by session email, meant to work for any subject's
+  // SubjectProgressAdapter (Cristian's Metaphysics included, once it adopts one).
 ];
 
 export function isJacobOnlyPath(pathname: string): boolean {

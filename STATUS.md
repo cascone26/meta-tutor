@@ -1,5 +1,16 @@
 # Meta Tutor — Status
 
+## Tutor Core Phase 3: cross-subject learner-profile API (2026-08-30)
+`src/lib/tutor-core/profile-aggregator.ts` (`upsertSubjectSnapshot`/`getLearnerProfile`, server-only,
+reads/writes `mt_learner_profile`) + `src/app/api/learner-profile/route.ts` (GET/POST, scoped by session
+email) + `src/lib/tutor-core/profile-client.ts` (client fetch wrapper for Phase 7). Deliberately NOT added
+to `JACOB_ONLY_PREFIXES` — documented with a comment in `access.ts` next to the existing
+`/api/subject-progress` note, same reasoning: server-side email scoping, must work for Cristian too once a
+subject of his adopts an adapter. Nothing writes to this table yet (that's Phase 5/6's job); the route
+itself works and was verified live: unauthenticated GET/POST both 302 via `proxy.ts`'s outer redirect
+before the route's own `auth()` check ever runs — same behavior as every other API route in this app, not
+a regression. `tsc --noEmit` and dev-server curl checks both clean.
+
 ## Tutor Core Phase 2: extracted shared chat-streaming boilerplate (2026-08-30)
 `src/lib/tutor-core/chat-router.ts` — `streamChat()` is a byte-for-byte lift of the auth → rate-limit →
 Anthropic streaming → SSE logic that `rca-chat`/`riemann-chat`/`chess-coach` each hand-rolled identically.
