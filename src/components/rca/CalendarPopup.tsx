@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { getCalendarEvents, type CalendarEvent } from "@/lib/rca-calendar";
 import { rcaSchedule } from "@/lib/rca";
+import { blockStartMinutes } from "@/lib/rca-upcoming";
 
 type ViewMode = "day" | "week" | "month";
 
@@ -231,7 +232,8 @@ function AgendaList({ days, byDate }: { days: Date[]; byDate: Map<string, Calend
     <div className="space-y-3">
       {days.map((d) => {
         const key = dateKey(d);
-        const dayEvents = (byDate.get(key) ?? []).slice().sort((a, b) => (a.kind === "class" && b.kind === "class" ? (a.block ?? "").localeCompare(b.block ?? "") : 0));
+        const hasBlock = (e: CalendarEvent) => e.kind === "class" || e.kind === "planning";
+        const dayEvents = (byDate.get(key) ?? []).slice().sort((a, b) => (hasBlock(a) && hasBlock(b) ? blockStartMinutes(a.block) - blockStartMinutes(b.block) : 0));
         const isToday = key === todayKey;
         return (
           <div key={key}>
@@ -254,6 +256,14 @@ function AgendaList({ days, byDate }: { days: Date[]; byDate: Map<string, Calend
                     return (
                       <div key={i} className="rounded-lg px-2.5 py-1.5 text-xs" style={{ background: "rgba(201,132,58,0.1)", color: "#8a6a2e" }}>
                         <span className="font-medium">{e.title}</span> — {e.time}
+                      </div>
+                    );
+                  }
+                  if (e.kind === "planning") {
+                    return (
+                      <div key={i} className="rounded-lg px-2.5 py-1.5 text-xs" style={{ background: "#f0efe8", border: "1px dashed #c4cbb8", color: "#6b7260" }}>
+                        <span className="font-medium">{e.title}</span>
+                        <span style={{ color: "#8a9a7c" }}> · {e.block}</span>
                       </div>
                     );
                   }

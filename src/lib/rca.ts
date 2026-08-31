@@ -35,6 +35,15 @@ export const rcaSchedule = {
   termEnd: "2027-05-24",
 };
 
+// Jacob's own planning/prep period. Sourced from Dr. Jennings' "specials changes and
+// schedule update" email (Option 2 specials table) — the Special 3 / Block 6 row lists
+// "Cascone, Schroeder" under the "Prep Period" column on the Monday sub-row. Same source
+// and same block already used for Music 3-4's Thursday Block 6 slot above (rcaClasses).
+export const rcaPlanningPeriod = {
+  block: "2:30 – 3:15 PM",
+  days: ["Monday"] as const,
+};
+
 // Real calendar events that override the generic Mon/Thu pattern — training
 // days, setup days, orientation, etc. Sourced from Dr. Jennings' KSC staff
 // emails (2026-08-10 "Staff Training This Week", 2026-08-11 "Schedules and

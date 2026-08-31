@@ -3,10 +3,11 @@
 // separate copy of the schedule. One source of truth: rca.ts owns what's
 // true, this file just projects it onto a date range.
 
-import { rcaClasses, rcaSchedule, rcaEvents, RCA_CLOSURES, getClosure } from "./rca";
+import { rcaClasses, rcaSchedule, rcaEvents, rcaPlanningPeriod, RCA_CLOSURES, getClosure } from "./rca";
 
 export type CalendarEvent =
   | { kind: "class"; date: string; classId: string; title: string; block?: string; room?: string }
+  | { kind: "planning"; date: string; title: string; block: string }
   | { kind: "closure"; date: string; title: string; estimated: boolean }
   | { kind: "rca-event"; date: string; title: string; detail: string; time: string };
 
@@ -54,6 +55,9 @@ export function getCalendarEvents(startKey: string, endKey: string): CalendarEve
       const classDays = c.days ?? rcaSchedule.days;
       if (!classDays.includes(dayName)) continue;
       events.push({ kind: "class", date: key, classId: c.id, title: c.name, block: c.block, room: c.room });
+    }
+    if ((rcaPlanningPeriod.days as readonly string[]).includes(dayName)) {
+      events.push({ kind: "planning", date: key, title: "Planning Period", block: rcaPlanningPeriod.block });
     }
   }
 
