@@ -1,5 +1,18 @@
 # Meta Tutor — Status
 
+## Tutor Core Phase 5: Latin Lab progress adapter — first real SubjectProgressAdapter (2026-08-30)
+`src/lib/latin-lab/progress-adapter.ts` implements the Phase 1 interface entirely on top of what already
+exists (FSRS `isDue()`, `getRollingAccuracy()`, `getWeakGrammarTags()`) — no new tracking, just a summary
+shape. `/api/latin-progress` now calls `syncLearnerProfile()` (best-effort, never fails the write it
+follows) after `seedUnit`/`reviewVocab`/`logComprehension`, so every real Latin Lab action starts
+populating `mt_learner_profile`. `tsc --noEmit` and `npm run build` clean.
+
+Report-tier, honestly: `mt_learner_profile` (added Phase 1) still hasn't been pasted into the Supabase SQL
+Editor, so there's nowhere for the sync to land yet — same manual step as every new table this session,
+batching it with whatever else needs pasting rather than interrupting the build for one table at a time.
+Once it's run, the first real Latin Lab comprehension check or vocab review will populate a real row —
+that's the actual Handle-tier proof this phase is waiting on, not something compiling clean can substitute for.
+
 ## Tutor Core Phase 4: subject-agnostic grounding registry (2026-08-30)
 `src/lib/tutor-core/grounding-registry.ts` (`registerGrounding`/`getGroundingBuilder`) +
 `src/lib/tutor-core/context-loader.ts` (`getContextForSubject`). `rca-grounding-adapter.ts` and

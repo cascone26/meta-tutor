@@ -3,6 +3,19 @@ import { auth } from "@/auth";
 import { getSupabase } from "@/lib/supabase";
 import { newCard, reviewCard, isDue, isMastered, stateLabel, type FsrsCardState, type RatingKey } from "@/lib/latin-lab/fsrs";
 import { getRollingAccuracy, getWeakGrammarTags } from "@/lib/latin-lab/server-progress";
+import { latinLabProgressAdapter } from "@/lib/latin-lab/progress-adapter";
+import { upsertSubjectSnapshot } from "@/lib/tutor-core/profile-aggregator";
+
+// Best-effort — a profile-sync failure must never fail the write that already
+// succeeded above it. See src/lib/latin-lab/progress-adapter.ts (Tutor Core Phase 5).
+async function syncLearnerProfile(userEmail: string): Promise<void> {
+  try {
+    const snapshot = await latinLabProgressAdapter.getSummaryForProfile(userEmail);
+    await upsertSubjectSnapshot(userEmail, snapshot);
+  } catch (e) {
+    console.error("Failed to sync learner profile:", e);
+  }
+}
 
 type VocabStateRow = {
   vocab_item: string;
@@ -92,6 +105,7 @@ export async function POST(req: NextRequest) {
       const { error } = await supabase.from("mt_latin_vocab_state").insert(toInsert);
       if (error) return new Response("Failed to seed vocab", { status: 500 });
     }
+    await syncLearnerProfile(userEmail);
     return Response.json({ ok: true, seeded: toInsert.length });
   }
 
@@ -127,6 +141,7 @@ export async function POST(req: NextRequest) {
       { onConflict: "user_email,vocab_item" }
     );
     if (error) return new Response("Failed to save review", { status: 500 });
+    await syncLearnerProfile(userEmail);
     return Response.json({ ok: true, card: updated });
   }
 
@@ -142,6 +157,7 @@ export async function POST(req: NextRequest) {
       response_ms: responseMs ?? null,
     });
     if (error) return new Response("Failed to log result", { status: 500 });
+    await syncLearnerProfile(userEmail);
     return Response.json({ ok: true });
   }
 
