@@ -1,5 +1,16 @@
 # Meta Tutor — Status
 
+## Tutor Core Phase 6: RCA progress adapter — proves the pattern generalizes (2026-08-30)
+`src/lib/rca/progress-adapter.ts` — aggregates across all of Jacob's `rca-{classId}` subject keys (same
+list `rca-progress` already queries via `rcaClasses`) into one "rca" entry in the profile. No SRS/due
+concept for RCA today, so `getDueItems()` is honestly `[]`, not faked. Wired into `/api/subject-progress`'s
+`saveResult` action — but guarded: only syncs when `subject.startsWith("rca-")`, so Cristian's Metaphysics
+writes through the exact same shared route are completely untouched (he has no adapter yet, and shouldn't
+have one forced on him). This is the actual proof-of-concept moment for the whole plan: two subjects with
+totally different backing storage (FSRS cards vs. plain quiz history) now feed the same profile shape.
+`tsc --noEmit` and `npm run build` clean; live proof (both Latin and RCA weak areas showing in one profile
+at once) is still waiting on the `mt_learner_profile` SQL paste, same as Phase 5.
+
 ## Tutor Core Phase 5: Latin Lab progress adapter — first real SubjectProgressAdapter (2026-08-30)
 `src/lib/latin-lab/progress-adapter.ts` implements the Phase 1 interface entirely on top of what already
 exists (FSRS `isDue()`, `getRollingAccuracy()`, `getWeakGrammarTags()`) — no new tracking, just a summary

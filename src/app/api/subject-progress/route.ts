@@ -1,6 +1,22 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { getSupabase } from "@/lib/supabase";
+import { rcaProgressAdapter } from "@/lib/rca/progress-adapter";
+import { upsertSubjectSnapshot } from "@/lib/tutor-core/profile-aggregator";
+
+// This route is shared by every rca-{classId} subject (Jacob) AND "metaphysics"
+// (Cristian) — only sync into the learner profile for subjects that have adopted a
+// SubjectProgressAdapter (RCA, as of Phase 6). Cristian's Metaphysics has none yet, so
+// his writes here are completely unaffected — no adapter forced on him.
+async function syncLearnerProfileIfAdopted(userEmail: string, subject: string): Promise<void> {
+  if (!subject.startsWith("rca-")) return;
+  try {
+    const snapshot = await rcaProgressAdapter.getSummaryForProfile(userEmail);
+    await upsertSubjectSnapshot(userEmail, snapshot);
+  } catch (e) {
+    console.error("Failed to sync learner profile:", e);
+  }
+}
 
 type WrongAnswerRow = {
   term: string;
@@ -130,6 +146,7 @@ export async function POST(req: Request) {
       weak_categories: result.weakCategories || [],
     });
     if (error) return new Response("Failed to save result", { status: 500 });
+    await syncLearnerProfileIfAdopted(userEmail, subject);
     return NextResponse.json({ ok: true });
   }
 
