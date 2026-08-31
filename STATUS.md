@@ -1,5 +1,34 @@
 # Meta Tutor — Status
 
+## Latin Lab: live-verified, silent-failure bug fixed (2026-08-30, same day)
+Drove the actual built app with the headless Viewer (Playwright over CDP, dev server +
+proxy.ts's existing `x-dev-preview` bypass — no OAuth needed) and read real screenshots
+of every tab with my own vision, per the fleet's own-eyes-only rule, instead of trusting
+`tsc`/`next build` passing as proof anything actually renders right (Report vs Handle:
+the previous entry below was Report-tier only — nobody had looked at it running).
+
+Found and fixed a real bug this surfaced: `ProgressPanel.tsx` and `VocabReview.tsx` both
+called `r.json()` on the `/api/latin-progress` response without checking `r.ok` — the
+route's 401 body is plain text ("Unauthorized"), so `r.json()` throws, and the empty
+`.catch(() => {})` swallowed it. Effect: `ProgressPanel` got stuck on "Loading…" forever
+(no `data` ever set), `VocabReview` showed "Nothing due for review right now — nice work"
+on a genuine fetch failure (false reassurance). This isn't dev-preview-specific — the same
+silent failure would hit real usage on any transient error (network blip, expired session,
+Supabase hiccup). Both now track a real `error` state with a Retry button. Verified fixed
+via the same screenshot method (committed proof: `~/estate/data/renders/latin-lab-verify/`
+screenshots taken before cleanup, not kept — see this entry as the record instead).
+Committed `7a10aed`, pushed to `main`. Vercel CLI auth had expired (`vercel login` needed —
+flagged to Jacob, not something to force), but the project is GitHub-linked so the push
+almost certainly auto-deployed; confirmed production is up and routes respond correctly
+post-push via curl (`/latin-lab` 302, `/hub` 308, `/api/latin-progress` 302, all
+unauthenticated-redirect as expected, no crash).
+
+Still Report-tier/unverified: the Supabase SQL for `mt_latin_vocab_state` and
+`mt_latin_comprehension` still hasn't been run (no DB URL, no Supabase CLI token, no
+stored dashboard session anywhere on this machine — checked, not assumed), so real
+FSRS/comprehension data still can't persist yet. Real human login test on either account:
+still not done.
+
 ## Latin Lab: research-based, adaptive standalone Latin course (2026-08-30)
 Jacob wants to test-drive what a genuinely "individualized learning station" version of
 Meta Tutor looks like (the pivot from Cristian's voicemail, see the entry below) — using
