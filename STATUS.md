@@ -1,5 +1,22 @@
 # Meta Tutor — Status
 
+## Tutor Core Phase 7: unified learner dashboard — the "one room" milestone (2026-08-30)
+`/learner-profile` — first thing that visibly changes for Jacob out of this whole plan. `ProfileStats`
+(subjects tracked / overall accuracy / due-right-now), a one-line "what to work on today" recommendation
+(due items first, else weakest subject), `WeakAreasList` (flattened + sorted across every subject), and
+`SubjectBreakdown` (per-subject accuracy/last-active/due), all reading from the Phase 3 API via
+`profile-client.ts`. Added to `HUB_SHELL_PREFIXES` for chrome, linked from the hub as its own pill (not a
+subject tile — it isn't something to "study"). Deliberately not Jacob-only, same reasoning as the API.
+
+Live-verified with the headless Viewer, own eyes, not just compile: the hub link renders and is clickable;
+the profile page itself correctly hit a real 401 from `/api/learner-profile` (same dev-preview limitation
+as every `auth()`-gated route) and — this is the actual payoff of Phase 7's earlier silent-failure fix
+lesson — showed the proper error+Retry state instead of hanging, on the very first new page built after
+that discipline was established. `tsc --noEmit` and `npm run build` both clean. Also caught CODEOWNERS up
+for every Tutor Core path from Phases 1-7 (`tutor-core/`, `rca/`, the two grounding adapters,
+`learner-profile` app/api/components) — missed adding these incrementally, fixed in one pass rather than
+leaving gaps.
+
 ## Tutor Core Phase 6: RCA progress adapter — proves the pattern generalizes (2026-08-30)
 `src/lib/rca/progress-adapter.ts` — aggregates across all of Jacob's `rca-{classId}` subject keys (same
 list `rca-progress` already queries via `rcaClasses`) into one "rca" entry in the profile. No SRS/due
