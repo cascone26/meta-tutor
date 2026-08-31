@@ -1,5 +1,41 @@
 # Meta Tutor — Status
 
+## Real production outage found and fixed: every /rca/[slug] page 500'd (2026-08-31)
+Jacob asked me to actually go test the live app myself, logged in as him. Extracted his real
+session cookie read-only from his own Chrome profile (same OSCrypt AES-128-CBC decryption
+scheme this toolkit already uses for saved passwords in `viewer-system-credentials.mjs` — first
+attempt used the wrong static IV, empirically recovered/verified against a known-plaintext JWE
+header before switching to the already-installed `browser_cookie3` library, which handles it
+correctly), injected it into the headless Viewer, and drove the real production site as Jacob.
+
+Found: every single `/rca/[slug]` page — every RCA class, not just one — 500'd server-side.
+Root cause, via real Vercel function logs against the real deployment: `isomorphic-dompurify`
+constructs a JSDOM instance at MODULE IMPORT time (not lazily on `.sanitize()`), and Next.js
+still executes "use client" component bodies during SSR. Two components pulled it into the
+server bundle — `RcaAssistant.tsx` (its pre-populated first message calls `formatMarkdown()` in
+render) and `RcaNotes.tsx` (imported directly by `rca/layout.tsx`, so on every RCA route) — and
+hit a Turbopack/jsdom transitive-dependency ESM interop break
+(`html-encoding-sniffer` requiring an ESM-only `@exodus/bytes` module). This has likely been
+broken in production since whichever build first introduced it — local dev-server testing never
+caught it because dev mode's bundler doesn't hit this specific interop issue, only the
+production Turbopack build does. A real lesson: `npm run build` succeeding is necessary but not
+sufficient — this crash was a *runtime* SSR failure, not a build-time one.
+
+Two fix attempts, the first one verified NOT to work (documented honestly, not silently
+retried): a lazy `require()` guard behind a `typeof window` check did not stop Turbopack from
+eagerly evaluating the module as part of the layout's root server chunk regardless. Real fix:
+(1) `sanitize-markdown.ts` drops DOMPurify entirely — it only ever produces a closed set of
+tags from its own regex replacements over angle-bracket-escaped input, safe by construction,
+same behavior server and client; (2) `RcaNotes.tsx` genuinely needs DOMPurify (sanitizes
+arbitrary contentEditable HTML, not our own generated tags) so it's loaded via
+`next/dynamic(..., { ssr: false })` through a small client wrapper (`RcaNotesLoader.tsx` — Next
+doesn't allow `ssr:false` directly in a Server Component). Verified `jsdom` no longer appears in
+any actual runtime `.js` file in the build output (only harmless `.map` files). Deployed,
+re-tested with the real cookie against real production: all three RCA slugs tested went
+500→200. Final visual confirmation via the Viewer, own eyes: real lesson content, real sidebar
+widgets, matching Jacob's own earlier working session exactly. Session cookie deleted from disk
+after verification — no reason to keep a live copy of the real auth token around.
+
 ## Fleet-wide silent-failure sweep — same bug class as the Latin Lab fix, found everywhere (2026-08-30)
 After the full reverification pass below, went looking for the same "fetch fails silently → looks like a
 real empty state" bug class everywhere else in the app, not just Latin Lab. Found it was actually rooted
