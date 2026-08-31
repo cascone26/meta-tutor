@@ -16,19 +16,30 @@ function findEnglish(latin: string): string {
 
 export default function VocabReview({ onDone }: { onDone: () => void }) {
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
   const [due, setDue] = useState<DueItem[]>([]);
   const [index, setIndex] = useState(0);
   const [revealed, setRevealed] = useState(false);
 
-  useEffect(() => {
+  function load() {
+    setLoading(true);
+    setError(false);
     fetch("/api/latin-progress")
-      .then((r) => r.json())
+      .then((r) => {
+        if (!r.ok) throw new Error(String(r.status));
+        return r.json();
+      })
       .then((data) => {
         setDue(data.due || []);
         setLoading(false);
       })
-      .catch(() => setLoading(false));
-  }, []);
+      .catch(() => {
+        setError(true);
+        setLoading(false);
+      });
+  }
+
+  useEffect(load, []);
 
   async function rate(rating: Rating) {
     const item = due[index];
@@ -43,6 +54,14 @@ export default function VocabReview({ onDone }: { onDone: () => void }) {
   }
 
   if (loading) return <p className="text-sm text-center py-10" style={{ color: "#a08b73" }}>Loading due vocabulary…</p>;
+  if (error) {
+    return (
+      <div className="text-center py-10">
+        <p className="text-sm mb-3" style={{ color: "#c26e6e" }}>Couldn&apos;t load your vocab review — try again.</p>
+        <button onClick={load} className="text-sm underline" style={{ color: "#c17a3a" }}>Retry</button>
+      </div>
+    );
+  }
   if (due.length === 0) {
     return (
       <div className="text-center py-10">

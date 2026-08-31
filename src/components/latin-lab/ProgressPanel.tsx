@@ -12,14 +12,30 @@ type ProgressData = {
 
 export default function ProgressPanel() {
   const [data, setData] = useState<ProgressData | null>(null);
+  const [error, setError] = useState(false);
 
-  useEffect(() => {
+  function load() {
+    setError(false);
+    setData(null);
     fetch("/api/latin-progress")
-      .then((r) => r.json())
+      .then((r) => {
+        if (!r.ok) throw new Error(String(r.status));
+        return r.json();
+      })
       .then(setData)
-      .catch(() => {});
-  }, []);
+      .catch(() => setError(true));
+  }
 
+  useEffect(load, []);
+
+  if (error) {
+    return (
+      <div className="text-center py-10">
+        <p className="text-sm mb-3" style={{ color: "#c26e6e" }}>Couldn&apos;t load your progress — try again.</p>
+        <button onClick={load} className="text-sm underline" style={{ color: "#c17a3a" }}>Retry</button>
+      </div>
+    );
+  }
   if (!data) return <p className="text-sm text-center py-10" style={{ color: "#a08b73" }}>Loading…</p>;
 
   const { stats, totalTracked, comprehensionAccuracy, weakGrammarTags } = data;
