@@ -1,6 +1,7 @@
 import { NextRequest } from "next/server";
 import { streamChat } from "@/lib/tutor-core/chat-router";
-import { buildLessonGrounding } from "@/lib/riemann-grounding";
+import { getContextForSubject } from "@/lib/tutor-core/context-loader";
+import "@/lib/riemann-grounding-adapter"; // side effect: registers "riemann" grounding
 
 export const maxDuration = 30;
 
@@ -9,6 +10,6 @@ const baseSystemPrompt = `You are Jacob's patient personal tutor for a self-stud
 export async function POST(req: NextRequest) {
   return streamChat(req, {
     systemPrompt: baseSystemPrompt,
-    buildGrounding: (body) => buildLessonGrounding(body.lessonN as number),
+    buildGrounding: (body) => getContextForSubject("riemann", { lessonN: body.lessonN }),
   });
 }

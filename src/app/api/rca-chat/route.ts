@@ -1,6 +1,7 @@
 import { NextRequest } from "next/server";
 import { streamChat } from "@/lib/tutor-core/chat-router";
-import { buildClassGrounding } from "@/lib/rca-grounding";
+import { getContextForSubject } from "@/lib/tutor-core/context-loader";
+import "@/lib/rca-grounding-adapter"; // side effect: registers "rca" grounding
 
 export const maxDuration = 30;
 
@@ -11,6 +12,6 @@ Help him prepare for class: suggest activities, anticipate where students will s
 export async function POST(req: NextRequest) {
   return streamChat(req, {
     systemPrompt: baseSystemPrompt,
-    buildGrounding: (body) => buildClassGrounding(body.subjectId as string),
+    buildGrounding: (body) => getContextForSubject("rca", { subjectId: body.subjectId }),
   });
 }

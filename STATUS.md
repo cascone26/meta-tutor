@@ -1,5 +1,16 @@
 # Meta Tutor — Status
 
+## Tutor Core Phase 4: subject-agnostic grounding registry (2026-08-30)
+`src/lib/tutor-core/grounding-registry.ts` (`registerGrounding`/`getGroundingBuilder`) +
+`src/lib/tutor-core/context-loader.ts` (`getContextForSubject`). `rca-grounding-adapter.ts` and
+`riemann-grounding-adapter.ts` wrap (don't rewrite) the existing `rca-grounding.ts`/`riemann-grounding.ts`
+functions — registration happens as an import side effect, one line added to each chat route. `rca-chat`
+and `riemann-chat` now call `getContextForSubject("rca"/"riemann", {...})` instead of importing the
+grounding function directly; output is provably identical by construction (same underlying function, same
+arguments — not a rewrite). Chess-coach untouched — its "grounding" is a per-request context block, not
+registered subject content, so it doesn't fit this pattern and shouldn't be forced into it. `tsc --noEmit`
+and `npm run build` both clean.
+
 ## Tutor Core Phase 3: cross-subject learner-profile API (2026-08-30)
 `src/lib/tutor-core/profile-aggregator.ts` (`upsertSubjectSnapshot`/`getLearnerProfile`, server-only,
 reads/writes `mt_learner_profile`) + `src/app/api/learner-profile/route.ts` (GET/POST, scoped by session
