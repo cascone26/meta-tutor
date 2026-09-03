@@ -1,5 +1,51 @@
 # Meta Tutor — Status
 
+## RCA per-student roster + attendance — first increment, live-verified (2026-09-02)
+New `mt_rca_roster`/`mt_rca_attendance` tables (per-subject student list + daily present/
+absent), `/api/rca-roster` route, `RcaRoster.tsx` wired into the existing per-class
+layout-drawer widget system (new `roster` WidgetId). Deliberately roster+attendance only —
+no per-student grades yet, that's a real separate data shape for a later increment, not
+assumed here. Handle-tier verified on production, not just Report: ran the real SQL live
+(same headless-Supabase-SQL-editor method as below), then a full API round-trip against
+`meta-tutor.vercel.app` as Jacob (add student → mark present → GET reflects it → remove) —
+all real, all 200s — then read a real screenshot of the rendered widget on `/rca/religion-6`
+with my own eyes. Test student cleaned up after verification, nothing left in the roster.
+
+## Live AI-check bug found and fixed: revoked Anthropic OAuth token (2026-09-02)
+Went to Handle-verify the RCA "Test my understanding" AI feature live (per Jacob's ask) and
+hit a real "Request failed (500)" on production. Root cause via a direct authenticated curl
+to `/api/rca-understanding` (bypassing the client's generic error message): the synced
+`ANTHROPIC_AUTH_TOKEN` had been revoked — confirmed the Keychain token itself was still valid
+by hitting `api.anthropic.com` directly, so this wasn't a dead Mac/logged-out Claude Code
+(the known documented risk) but something faster: the token-sync log showed "Token changed"
+on literally every 3-hourly check all day, meaning the local OAuth token rotates much faster
+than a 3-hour sync can keep up with — by the time a synced token reaches a live deployment,
+a newer local rotation has often already superseded (and Anthropic-side revoked) it. Real fix,
+two parts: (1) manually resynced + redeployed (had to improvise — the LaunchAgent's normal
+`vercel` CLI login isn't reachable from an interactive Claude Code Bash subprocess on this
+Mac; used the working `vcp_...` Vercel API token already sitting in
+`~/projects/LessonDraft/proxy/.vercel-token` with `--token=`/`--scope=` flags instead), then
+verified with a real generate+evaluate round-trip against production — real, accurate,
+correctly-grounded Baltimore Catechism Lesson 15 questions (right traditional numbering,
+matching the exact Lesson 15/Week 4 pacing shown on the page) and a well-calibrated grade on
+a deliberately fuzzy answer; (2) tightened `com.cobo.meta-tutor-token-sync`'s `StartInterval`
+10800s → 900s (3h → 15min) to shrink the average staleness window — reloaded, confirmed
+running. Also fixed the actual bug that made this hard to diagnose in the first place:
+`UnderstandingCheck.tsx` was swallowing the server's real `{error: message}` body behind a
+generic "Request failed (500). Try again in a moment." on any non-2xx — same silent-failure
+shape as the 2026-08-30 sweep below, just missed in this one component. Now reads and shows
+the real server error when present. **Residual, honestly**: this token-revocation race is
+architectural, not something a faster sync fully closes — as long as Jacob's own interactive
+Claude Code usage keeps rotating the same OAuth credential this app reuses (his deliberate,
+twice-confirmed choice to avoid a billed API key), brief AI-feature outages during heavy local
+Claude Code use are possible until the next sync catches up. Flagging honestly rather than
+overclaiming this is fully closed.
+
+## Pending Supabase schema SQL, round 2 — roster tables (2026-09-02)
+Same headless-Supabase-SQL-editor method as the entry below, re-run for the roster/attendance
+tables added to `supabase-schema-hub.sql` this session. Both `mt_rca_roster` and
+`mt_rca_attendance` confirmed live via REST (`200` on `limit=1` GET).
+
 ## PE 5-6 — original curriculum written (2026-09-02, DRAFT pending Jacob's review)
 `pe-5-6` already existed as a class entry (Thursdays, Cafe) but had no content module — RCA has
 never sent a PE 5-6 curriculum, either year. Per Jacob's direct ask (he leads PE 5-6 solo; PE 1-2
