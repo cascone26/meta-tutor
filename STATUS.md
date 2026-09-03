@@ -1,5 +1,45 @@
 # Meta Tutor — Status
 
+## Real book/poem reference content for History 6 + CLA6 grounding, live-verified (2026-09-02)
+Per Jacob's ask ("go get whatever previews/summaries/Quizlet-type stuff from every chapter you can, and
+get every poem"): fanned out 6 parallel research agents (one per book) plus did the 5 CLA6 poems myself.
+
+`poems.ts` — full, exact, verified text for all 5 poems CLA6 memorizes/recites word-for-word this year
+("The Charge of the Light Brigade," "The Lake Isle of Innisfree," "Jabberwocky," "The Fool's Prayer,"
+"The Destruction of Sennacherib") — all long public domain (pre-1929, authors deceased), so unlike the
+Baltimore Catechism situation there's no copyrighted-edition problem; these are the real texts, not
+paraphrases. "Charge of the Light Brigade" and "Sennacherib" transcribed directly from Wikisource's
+page-scan OCR of a real 1904 public-domain anthology (primary-source accuracy, not memory) — matters
+here specifically because RCA grades the recitation word-for-word.
+
+`history-6-books.ts` — original chapter/section summaries (paraphrased, these ARE real still-in-print
+books) for Book of the Ancient World (Dorothy Mills/Memoria Press — identified but no public chapter
+summaries exist, honest gap), Pyramid (Macaulay) + The Pharaohs of Ancient Egypt (Payne) — solid content
+structure, The Golden Goblet (McGraw) — well-documented chapter-by-chapter via BookRags/SuperSummary,
+Tirzah (Travis) — chapter titles + partial summaries (niche book, real gaps), God King (Williamson) —
+strong ch.1-3 + all real chapter titles for 4-26 (detailed summaries an honest gap), Victory on the
+Walls (Hyman) — thin, mostly opening chapters (real gap, not invented), and D'Aulaires' Book of Greek
+Myths — confirmed as RCA's actual curriculum choice (95%+ confidence, cited directly in MODG curriculum
+data RCA draws from) with 10 real myth summaries. Every gap the research agents hit is marked honestly
+in the file rather than fabricated — several chapters genuinely have no public summary.
+
+Wired both into `rca-grounding.ts`: CLA6 needed a real fix, not just a lookup — the pacing doc only
+names a poem in its INTRODUCTION week ("Introduce 'The Charge of the Light Brigade'"), every later week
+just says "Continue memorizing stanza 5" with no title, so a new `findActivePoemTitle()` scans backward
+through the lesson list to the most recent one that actually names a poem. History 6 restates the book
+title every single week, so a simpler keyword match on the current week's text is enough there.
+
+**Handle-tier, live-verified on production**, not just Report: hit `/api/rca-understanding` directly as
+Jacob for both subjects post-deploy — CLA6 generated real questions quoting exact lines from "The Charge
+of the Light Brigade" Stanza 4 (matching the real lesson's active poem); History 6 generated real
+questions correctly citing both "Book of the Ancient World Ch. 5, Section I" and specific *Pyramid*
+construction details (copper chisels, wooden sledges, levers, ramps, labor camps) — grounded in the real
+content, not generic. Along the way, hit the SAME revoked-OAuth-token race documented below one more
+time (token had rotated again since the last manual resync, confirming this is a recurring, not
+one-time, issue) — resynced again to verify; the 15-min LaunchAgent interval should catch this going
+forward without a manual intervention, but see that entry's honest caveat about why it's a mitigation
+not a full fix.
+
 ## RCA per-student roster + attendance — first increment, live-verified (2026-09-02)
 New `mt_rca_roster`/`mt_rca_attendance` tables (per-subject student list + daily present/
 absent), `/api/rca-roster` route, `RcaRoster.tsx` wired into the existing per-class
