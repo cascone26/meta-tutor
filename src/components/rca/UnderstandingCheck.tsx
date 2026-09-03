@@ -53,7 +53,12 @@ export default function UnderstandingCheck({
         body: JSON.stringify({ action: "generate", subjectId, lessonN }),
       });
       if (!res.ok) {
-        setErrorMsg(`Request failed (${res.status}). ${res.status === 401 ? "You may need to log in again." : "Try again in a moment."}`);
+        const detail = await res.json().catch(() => null);
+        setErrorMsg(
+          detail?.error
+            ? `Request failed (${res.status}): ${detail.error}`
+            : `Request failed (${res.status}). ${res.status === 401 ? "You may need to log in again." : "Try again in a moment."}`
+        );
         setPhase("error");
         return;
       }

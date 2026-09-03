@@ -11,6 +11,7 @@ import { classicalLanguageArts6Content } from "./classical-language-arts-6";
 import { firstFormLatin6Content } from "./first-form-latin-6";
 import { history6Content } from "./history-6";
 import { science6Content } from "./science-6";
+import { pe56Content } from "./pe-5-6";
 
 export const rcaContent: Record<string, SubjectContent> = {
   "music-34": music34Content,
@@ -21,4 +22,5 @@ export const rcaContent: Record<string, SubjectContent> = {
   "first-form-latin-6": firstFormLatin6Content,
   "history-6": history6Content,
   "science-6": science6Content,
+  "pe-5-6": pe56Content,
 };
