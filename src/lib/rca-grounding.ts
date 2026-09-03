@@ -4,10 +4,52 @@
 
 import { getRcaClass, rcaClasses, rcaSchedule, currentLessonNumber, isPacingCurrent, getNextScheduleItem, centralToday, nextTeachingDate } from "@/lib/rca";
 import { rcaContent } from "@/lib/rca-content";
-import { todaysLessonNumber } from "@/lib/rca-content/types";
+import { todaysLessonNumber, type SubjectContent } from "@/lib/rca-content/types";
 import { getCatechismLessonsForWeekText } from "@/lib/rca-content/baltimore-catechism-guide";
 import { phonograms } from "@/lib/rca-content/phonogram-sounds";
 import { latinNouns, sumConjugation, amoConjugation, latinAdjectives, latinNumbers, pronunciationRules } from "@/lib/rca-content/latin-core";
+import { poems } from "@/lib/rca-content/poems";
+import type { Lesson } from "@/lib/rca-content/types";
+import {
+  bookOfAncientWorld,
+  pyramidBook,
+  pharaohsBook,
+  goldenGoblet,
+  tirzah,
+  godKing,
+  victoryOnTheWalls,
+  greekMythsBook,
+  type BookGuide,
+} from "@/lib/rca-content/history-6-books";
+
+// CLA6's pacing doc only names a poem's title in its INTRODUCTION week
+// ("Introduce 'The Charge of the Light Brigade'...") — every later week just
+// says "Continue memorizing stanza 5," so weekText alone can't identify the
+// active poem past week 1 of each poem's cycle. Scan backward from the
+// current lesson to the most recent one that actually names a poem.
+function findActivePoemTitle(lessons: Lesson[], n: number): string | null {
+  for (let i = n; i >= 1; i--) {
+    const lesson = lessons.find((l) => l.n === i);
+    if (!lesson) continue;
+    const text = lesson.sections.map((s) => s.text).join(" ");
+    const match = poems.find((p) => text.includes(p.title));
+    if (match) return match.title;
+  }
+  return null;
+}
+
+// History 6's pacing doc DOES restate the book title + chapter every single
+// week ("Discuss BAW Ch. 6 & 7", "Discuss Pharaohs Ch. 3"), so weekText alone
+// is enough here — no lookback needed like CLA6's poems.
+const HISTORY_BOOK_MATCHERS: { keyword: string; guide: BookGuide }[] = [
+  { keyword: "BAW", guide: bookOfAncientWorld },
+  { keyword: "Pyramid", guide: pyramidBook },
+  { keyword: "Pharaohs", guide: pharaohsBook },
+  { keyword: "Golden Goblet", guide: goldenGoblet },
+  { keyword: "Tirzah", guide: tirzah },
+  { keyword: "God King", guide: godKing },
+  { keyword: "Victory on the Walls", guide: victoryOnTheWalls },
+];
 
 // Real per-subject reference content, keyed to the SAME week/lesson text
 // already resolved below — this is what actually fixes generated quiz/
@@ -22,7 +64,7 @@ import { latinNouns, sumConjugation, amoConjugation, latinAdjectives, latinNumbe
 // sounds.ts), and the real Latin vocab/pronunciation (latin-core.ts) — all
 // content that already existed in the app for reference pages/Sound Studio
 // but was never actually fed to the AI generator.
-function buildSubjectReferenceBlock(subjectId: string, weekText: string): string {
+function buildSubjectReferenceBlock(subjectId: string, weekText: string, content?: SubjectContent, n?: number): string {
   if (subjectId === "religion-6") {
     // Deliberately NOT baltimore-catechism.ts's "No. 2" edition — its
     // numbering doesn't match RCA's own citations (found live 2026-08-24:
@@ -49,6 +91,30 @@ function buildSubjectReferenceBlock(subjectId: string, weekText: string): string
   if (subjectId === "loe-essentials-c") {
     const sample = phonograms.slice(0, 15).map((p) => `${p.spelling} = ${p.sounds.map((s) => `${s.ipa} (${s.keyword})${s.note ? ` [${s.note}]` : ""}`).join(" / ")}`).join("\n");
     return `\nREAL PHONOGRAM SOUNDS (LOE) — every phonogram can say MULTIPLE sounds, always in this fixed order; get the count and order right (e.g. "i" has 3 real sounds, not 2):\n${sample}\n`;
+  }
+  if (subjectId === "classical-language-arts-6" && content && n !== undefined) {
+    const title = findActivePoemTitle(content.lessons, n);
+    const poem = title ? poems.find((p) => p.title === title) : undefined;
+    if (!poem) return "";
+    return `\nREAL POEM TEXT — "${poem.title}" by ${poem.author} (${poem.year}), the poem currently being memorized. Recitation is graded WORD-FOR-WORD, so ground any generated question/quiz on the EXACT text below, never a paraphrase or invented line:\n${poem.stanzas.map((s, i) => `Stanza ${i + 1}:\n${s}`).join("\n\n")}\n`;
+  }
+  if (subjectId === "history-6") {
+    const matched = HISTORY_BOOK_MATCHERS.filter((m) => weekText.includes(m.keyword));
+    const blocks = matched.map(({ guide }) => {
+      if (guide.chapters.length === 0) {
+        return `${guide.title} by ${guide.author}: ${guide.note}`;
+      }
+      const chapterText = guide.chapters
+        .map((c) => `- Ch. ${c.chapter}${c.title ? ` ("${c.title}")` : ""}: ${c.summary}`)
+        .join("\n");
+      return `${guide.title} by ${guide.author}:\n${chapterText}`;
+    });
+    if (weekText.includes("Greek Myths")) {
+      const myths = greekMythsBook.myths.map((m) => `- "${m.title}": ${m.summary}`).join("\n");
+      blocks.push(`${greekMythsBook.title} by ${greekMythsBook.author} — real stories to pick from:\n${myths}`);
+    }
+    if (blocks.length === 0) return "";
+    return `\nREAL BOOK CONTENT for the title(s) referenced this week — ground every generated question in THIS, not invented plot/facts:\n${blocks.join("\n\n")}\n`;
   }
   return "";
 }
@@ -157,7 +223,7 @@ export function buildClassGrounding(subjectId: string | undefined, lessonNOverri
       if (lesson.note) grounding += `Note: ${lesson.note}\n`;
     }
     const weekText = lesson ? lesson.sections.map((s) => s.text).join(" ") : "";
-    grounding += buildSubjectReferenceBlock(cls.id, weekText);
+    grounding += buildSubjectReferenceBlock(cls.id, weekText, content, n);
     const pacingWeeks = content.totalWeeks ?? content.lessons.length;
     if (!lessonNOverride && !isPacingCurrent(pacingWeeks)) {
       grounding += `\nPACING NOTE: This subject's documented pacing only covers the first ${pacingWeeks} weeks of the term — the "CURRENT LESSON" above is actually just the LAST one available, not necessarily what's really being taught this week. If Jacob asks what's happening "this week" or "today," say the real weekly plan isn't loaded yet rather than presenting this lesson as current.\n`;
