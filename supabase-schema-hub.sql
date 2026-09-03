@@ -206,3 +206,41 @@ create index if not exists idx_mt_custom_vocab_user on mt_custom_vocab(user_emai
 alter table mt_custom_vocab enable row level security;
 drop policy if exists "Service role full access" on mt_custom_vocab;
 create policy "Service role full access" on mt_custom_vocab for all using (true);
+
+-- Per-student roster + attendance (2026-09-02) — RCA is a co-op: parents are the
+-- primary teacher, Jacob tutors in-center 1-2x/week per class, so "roster" here
+-- means his own real class list per subject (kids can differ class to class),
+-- not a school-wide enrollment system. Deliberately minimal for a first
+-- increment — name + free-text notes + present/absent per date. No per-student
+-- grades yet (a real separate feature, not assumed here — attendance and grades
+-- are different data shapes, same reasoning mt_ambient_insights stayed separate
+-- from mt_learner_profile).
+create table if not exists mt_rca_roster (
+  id uuid default gen_random_uuid() primary key,
+  user_email text not null,
+  subject_id text not null,
+  name text not null,
+  notes text,
+  created_at timestamptz not null default now()
+);
+
+create index if not exists idx_mt_rca_roster_user_subject on mt_rca_roster(user_email, subject_id);
+
+alter table mt_rca_roster enable row level security;
+drop policy if exists "Service role full access" on mt_rca_roster;
+create policy "Service role full access" on mt_rca_roster for all using (true);
+
+create table if not exists mt_rca_attendance (
+  user_email text not null,
+  student_id uuid not null references mt_rca_roster(id) on delete cascade,
+  date text not null, -- YYYY-MM-DD, local date as entered (not a full timestamp — attendance is a day-level fact)
+  present boolean not null,
+  updated_at timestamptz not null default now(),
+  primary key (user_email, student_id, date)
+);
+
+create index if not exists idx_mt_rca_attendance_student on mt_rca_attendance(student_id);
+
+alter table mt_rca_attendance enable row level security;
+drop policy if exists "Service role full access" on mt_rca_attendance;
+create policy "Service role full access" on mt_rca_attendance for all using (true);

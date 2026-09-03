@@ -10,7 +10,7 @@
 // rca-pacing offsets) — no backend needed for a single-user layout
 // preference.
 
-export type WidgetId = "books" | "links" | "referenceMaterials" | "yearBLink" | "lesson" | "gradingChecklist" | "practice" | "teacherGuide";
+export type WidgetId = "books" | "links" | "referenceMaterials" | "yearBLink" | "lesson" | "gradingChecklist" | "roster" | "practice" | "teacherGuide";
 
 export const WIDGET_LABELS: Record<WidgetId, string> = {
   books: "Books",
@@ -19,6 +19,7 @@ export const WIDGET_LABELS: Record<WidgetId, string> = {
   yearBLink: "Year B archive link",
   lesson: "Lesson pacing",
   gradingChecklist: "Grading checklist",
+  roster: "Roster & attendance",
   practice: "Practice modes",
   teacherGuide: "Teacher's guide",
 };
@@ -30,6 +31,7 @@ export const DEFAULT_WIDGET_ORDER: WidgetId[] = [
   "yearBLink",
   "lesson",
   "gradingChecklist",
+  "roster",
   "practice",
   "teacherGuide",
 ];

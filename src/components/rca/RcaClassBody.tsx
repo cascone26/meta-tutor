@@ -6,6 +6,7 @@ import type { RcaClass } from "@/lib/rca";
 import type { SubjectContent } from "@/lib/rca-content/types";
 import LessonViewer from "@/components/rca/LessonViewer";
 import GradingChecklist from "@/components/rca/GradingChecklist";
+import RcaRoster from "@/components/rca/RcaRoster";
 import PracticeHub from "@/components/rca/PracticeHub";
 import TeacherGuide from "@/components/rca/TeacherGuide";
 import LayoutDrawer from "@/components/rca/LayoutDrawer";
@@ -96,6 +97,7 @@ export default function RcaClassBody({ cls, content }: { cls: RcaClass; content:
     ),
     lesson: <LessonViewer content={content} classId={cls.id} onLessonChange={setN} />,
     gradingChecklist: <GradingChecklist subjectId={cls.id} />,
+    roster: <RcaRoster subjectId={cls.id} />,
     practice: <PracticeHub subjectId={cls.id} subjectName={cls.name} lessonN={n ?? undefined} />,
     // Guard against a one-frame flash of "Lesson 1"'s guide before
     // LessonViewer's own onLessonChange reports its real estimate.
