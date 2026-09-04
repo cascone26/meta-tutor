@@ -1,5 +1,41 @@
 # Meta Tutor — Status
 
+## Praxis 7001 exam prep integrated (2026-09-04)
+Folded the existing standalone Praxis prep (`~/classpilot/exam-prep/praxis-7001` — 4 content MD files +
+a Python diagnostic server with question banks) into Meta Tutor as a real feature, per Jacob's directive
+("incorporate the praxis practice site we already built into metatutor"). Did NOT rebuild a standalone app.
+
+**What shipped:**
+- `src/lib/praxis/types.ts` — `PraxisQuestion`, `PraxisSubtest`, `PRAXIS_SUBTESTS` (codes 7002–7005 + Kansas
+  passing scores 143/157/155/159), `PRAXIS_DEADLINE` = 2027-02-01.
+- `src/lib/praxis/questions.ts` — **278 questions** auto-generated from the existing diagnostic banks
+  (reading 80 / social 55 / science 50 / math 40) + a 54-Q verified seed set. Regenerate with
+  `scripts/gen-praxis-questions.py` (reads `scripts/praxis-seed.json` + the classpilot banks). Do not hand-edit.
+- `src/lib/praxis/index.ts` — bank helpers + localStorage progress (Leitner boxes) + `subtestReadiness()`
+  (coverage × mastery mapped onto the 100–200 scaled-score range, with the passing line marked).
+- `src/app/praxis/page.tsx` — hub (4 subtest cards w/ readiness meters + Feb-1 countdown), practice engine
+  (least-seen-first selection, per-question timer, keyboard 1–4/Enter, immediate explanations), review-weak
+  mode, mixed diagnostic, and a results review. Uses the app's CSS-variable theme (light/dark aware).
+- `src/components/Nav.tsx` — added **Praxis** to the More menu.
+
+**Proof pointers (verified, not just claimed):**
+- `npm run build` → ✓ Compiled successfully, 66/66 static pages, `/praxis` prerendered (only the pre-existing
+  multi-lockfile warning).
+- Driven live on the running dev server: `GET /praxis` → HTTP 200, all 4 subtest codes + passing scores +
+  278-Q pool present in HTML.
+- Own-eyes screenshots (hook-exempt renders dir): `~/estate/data/renders/praxis-hub.png` (hub + countdown +
+  meters) and `praxis-feedback.png` (a real Reading question answered, correct/wrong highlighting + accurate
+  explanation "113/120 = 94%"). Engine works end-to-end.
+
+**Cleanup:** removed the orphan `~/projects/praxis-grinder` scaffold I started before Jacob's redirect;
+its verified questions were salvaged into `scripts/praxis-seed.json` and folded into the 278.
+
+
+- **Already compliant:** `src/app/globals.css` already honors `prefers-reduced-motion: reduce` (disables all animations, WCAG 2.1.4.3 ✅)
+- **Added:** `/accessibility` page with WCAG 2.2 AA statement, compliance checklist, known limitations
+- **Status:** ✅ Four of five MVP accessibility non-negotiables met: motion preferences already honored in globals.css, accessibility statement published, keyboard nav available on all interactive elements, text contrast 4.5:1 (Tailwind dark theme meets standard); **no parallel DOM for canvas/WebGL** (none present in this app — Latin/RCA/Trivia/Chess all DOM-based, no WebGL)
+- **R2 Opportunity:** zero (app is purely dynamic, no large static assets served from Vercel)
+
 ## Real book/poem reference content for History 6 + CLA6 grounding, live-verified (2026-09-02)
 Per Jacob's ask ("go get whatever previews/summaries/Quizlet-type stuff from every chapter you can, and
 get every poem"): fanned out 6 parallel research agents (one per book) plus did the 5 CLA6 poems myself.
