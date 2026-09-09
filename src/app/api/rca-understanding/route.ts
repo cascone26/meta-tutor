@@ -1,7 +1,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { NextRequest } from "next/server";
 import { checkRateLimit, rateLimitResponse } from "@/lib/rate-limit";
-import { auth } from "@/auth";
+import { sessionEmail } from "@/lib/dev-auth";
 import { notifyIfAuthError } from "@/lib/alert";
 import { buildClassGrounding } from "@/lib/rca-grounding";
 import { stripJsonFences } from "@/lib/json-fences";
@@ -62,10 +62,8 @@ Respond with ONLY valid JSON, no markdown fences: {"questions":[{"question":"...
 correctIndex is 0-3, the index of the right option within that question's options array. Shuffle which index is correct across questions — don't always put it first.`;
 
 export async function POST(req: NextRequest) {
-  const session = await auth();
-  if (!session) return new Response("Unauthorized", { status: 401 });
-
-  const userId = session.user?.email || "unknown";
+  const userId = await sessionEmail(req);
+  if (!userId) return new Response("Unauthorized", { status: 401 });
   const { allowed } = await checkRateLimit(userId);
   if (!allowed) return rateLimitResponse();
 

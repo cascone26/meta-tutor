@@ -1,6 +1,6 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { NextRequest } from "next/server";
-import { auth } from "@/auth";
+import { sessionEmail } from "@/lib/dev-auth";
 import { checkRateLimit, rateLimitResponse } from "@/lib/rate-limit";
 import { notifyIfAuthError } from "@/lib/alert";
 import { stripJsonFences } from "@/lib/json-fences";
@@ -38,9 +38,8 @@ Respond with ONLY valid JSON, no markdown fences: {"result":"correct"|"partial"|
 - incorrect: wrong, or doesn't address the actual question`;
 
 export async function POST(req: NextRequest) {
-  const session = await auth();
-  if (!session?.user?.email) return new Response("Unauthorized", { status: 401 });
-  const userEmail = session.user.email;
+  const userEmail = await sessionEmail(req);
+  if (!userEmail) return new Response("Unauthorized", { status: 401 });
 
   const { allowed } = await checkRateLimit(userEmail);
   if (!allowed) return rateLimitResponse();

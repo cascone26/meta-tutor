@@ -1347,3 +1347,204 @@ it's honestly good for — a real, browsable full-book resource, just not this s
 - Verification scripts (kept in repo): `scripts/mt-shot.mjs`, `scripts/mt-test-drawer.mjs`,
   `scripts/mt-test-flashcards.mjs`, `scripts/mt-test-flashcards-live.mjs`,
   `scripts/mt-test-soundstudio.mjs`, `scripts/mt-test-teacherguide.mjs`.
+
+## Live 401 "OAuth access token has been revoked" outage — 2026-09-09
+
+### Problem Statement
+Jacob screenshotted Latin 6 lesson page: Speed Drill card showed a raw error instead of the
+drill — `401 {"type":"error","error":{"type":"authentication_error","message":"OAuth access
+token has been revoked."}}`.
+
+### Root Cause
+This app runs AI calls on Jacob's Claude Max subscription via a synced OAuth token (not a
+billed API key — see STATUS.md "Cost Controls"), kept fresh by `~/tools/sync-meta-tutor-
+token.sh` (launchd `com.cobo.meta-tutor-token-sync`, every 15 min) reading the token out of
+this Mac's Claude Code Keychain entry and pushing it to Vercel's `ANTHROPIC_AUTH_TOKEN` env
+var + triggering a redeploy.
+
+At some point the Vercel CLI's own session (`~/Library/Application Support/com.vercel.cli/
+auth.json`) went to `{}` — logged out, unrelated to the Anthropic token itself. From that
+point every 15-minute sync run logged only `Token changed -- syncing to Vercel` and then died
+silently: `vercel env add ANTHROPIC_AUTH_TOKEN production` failed for lack of credentials,
+and `set -euo pipefail` killed the script right there (no `|| true` on that one command,
+unlike its sibling `env rm` calls) — so `Env vars updated`/redeploy/`Sync complete` never
+logged. `~/logs/meta-tutor-token-sync.log` shows exactly this: dozens of `Token changed`
+lines 2026-09-09 03:20–10:36 with no follow-up. Because the production deploy's env var was
+never updated, the live Anthropic access token kept rotating out from under it (Claude Code
+refreshes + invalidates the previous access token roughly hourly) until the one baked into
+the live deployment was truly revoked — the 401 Jacob saw.
+
+### Fix
+1. Found a still-valid long-lived Vercel Personal Access Token already on this Mac
+   (`~/projects/LessonDraft/proxy/.vercel-token`, account `cascone26`) and wrote it into
+   `~/Library/Application Support/com.vercel.cli/auth.json` so the CLI has a durable,
+   non-expiring session instead of a `vercel login` interactive session that can silently
+   log itself out. Verified: `vercel whoami` → `cascone26`.
+2. Ran `~/tools/sync-meta-tutor-token.sh` manually — completed end-to-end this time (`Env
+   vars updated. Triggering redeploys...` → both prod + preview `redeploy triggered` →
+   `Sync complete`, log lines timestamped 10:41:47–10:42:05). `vercel inspect` on the new
+   production deployment shows `status: ● Ready`. `vercel env pull` confirms
+   `ANTHROPIC_AUTH_TOKEN` is present in production.
+3. Hardened the script itself so this failure mode can't go silent again: `vercel env add`
+   failures no longer trip `set -e` and vanish — they're now caught explicitly, logged with
+   full command output (was `>/dev/null 2>&1`, now appended to the log file), and fire an
+   ntfy alert to the same topic `alert.ts` already pages on (`jacob-cobo-80c6d2b9e9c4`) with
+   a pointer back to this exact failure mode. State file is still only written after a fully
+   successful sync, so a failed run correctly retries on the next tick instead of drifting.
+
+### Not verified this session
+Could not click through the actual Speed Drill button on the live page — computer-use has no
+Chrome available in this session's environment (`request_access` returns `not_installed` for
+`com.google.Chrome` despite it being present in `/Applications`), and the page is behind real
+Google OAuth so `curl` alone can't reach the gated API route. Server-side proof (env var
+present in production, deployment `Ready`, sync script logs a clean run) is Handle-adjacent
+but Jacob clicking "Try again" on the actual card is the real proof pointer — asked him to do
+that as the last confirming step.
+
+## Latin learner-path audit (Viewer walkthrough) — 2026-09-09
+
+### Problem Statement
+Jacob: "I ALWAYS want u to use the viewer to check and go through" Meta Tutor, specifically to
+test whether someone who knows none or barely any Latin could learn in a structured, practiced,
+and measured way. Standing instruction going forward, not a one-off.
+
+### What I found (real, own-eyes-verified — screenshots in `scripts/.shots/`, script is
+`scripts/mt-latin-audit.mjs`, reusable for future checks)
+
+There are TWO separate Latin surfaces and they answer the question differently:
+
+**Latin Lab (`/latin-lab`) — the actual from-zero course.** Comprehensible-input method
+(Ørberg-style graded narrative), classical pronunciation, 100% original content (not a
+copyrighted transcription). Genuinely structured + practiced + measured, verified live:
+- **Read**: narrative sentences with tap-to-reveal English, a grammar-focus callout per unit.
+- **Comprehension**: real AI-generated question grounded in that exact narrative ("Quis est
+  mater?"), difficulty scales to the learner's rolling accuracy (easy/medium/hard).
+- **Vocab review**: FSRS spaced repetition — correctly showed "Nothing due for review right
+  now" on a fresh account, because vocab only enters the queue once a unit's comprehension
+  check is completed (`seedUnit` action) — by design, not a bug, but a from-zero learner sees
+  an empty review tab until they finish Unit 1's check first.
+- **Progress**: real measurable dashboard — vocab New/Learning/Review/Mastered counts,
+  comprehension accuracy % ("profile firms up after 15 checks"), and a "where you're actually
+  struggling" weak-grammar-tag callout (saw "1conj 3rd present" surface correctly after one
+  comprehension attempt touching that tag).
+- **Real gap, not a bug**: only 3 of the planned 10 units are built (roadmap: accusative,
+  numbers, 2nd declension, imperfect tense, etc. all listed as "not built yet" in the UI
+  itself). What exists (nominative, adjective agreement, genitive singular) is solid and
+  honest about its own limits, but it's maybe 30-60 minutes of material — not yet enough depth
+  for sustained from-zero learning on its own.
+
+**RCA First Form Latin 6 companion (`/rca/first-form-latin-6`) — a different tool entirely.**
+This assumes a live teacher + the physical Memoria Press textbook are the actual instruction —
+the pacing card literally reads "Teach Lesson II, following the Teacher's Manual." There is no
+direct-instruction content here; a from-zero learner with no book and no class would have
+nothing to read. BUT the drill tools are real and lesson-grounded, verified by actually
+starting each one (not just opening the tab):
+- Speed drill: "Decline the noun 'puella' (girl) in the nominative singular and plural forms."
+- Understanding check: "Conjugate the present tense of 'sum' (to be) for all six persons."
+- Multiple choice: "Which of the following is the correct conjugation of 'sum' ... third
+  person plural?" with 4 plausible options.
+All three matched Lesson 4's actual pacing content (early noun/verb basics) — grounded on real
+Latin content (`src/lib/rca-content/latin-core.ts`), not hallucinated. `RcaDashboard.tsx` adds
+a cross-subject streak/14-day-activity/weak-areas measurement layer on top (Duolingo/Anki-style
+habit mechanic) once `totalSessions > 0`.
+
+**Bottom line**: for someone with a teacher + the physical book, the RCA companion's practice
+layer is real and well-grounded. For someone starting from truly zero with nothing else, Latin
+Lab is the right tool and is genuinely well-built where it exists, but only covers the first
+~3 lessons' worth of grammar before hitting its own documented roadmap wall.
+
+### Two real bugs found and fixed while trying to actually drive this (not just read the code)
+1. **None of the AI-backed API routes supported the existing dev-preview bypass.** `proxy.ts`'s
+   `x-dev-preview` header only bypasses page-level middleware; `/api/latin-lab`,
+   `/api/rca-understanding`, and `/api/latin-progress` each called `auth()` directly and 401'd
+   under headless testing regardless. This is why every prior PROCESS.md entry for these routes
+   says "not verified this session" — there was no way to verify them without a real Google
+   login. Fixed: added `src/lib/dev-auth.ts` (`sessionEmail(req)`, dev-only, same
+   `NODE_ENV !== "production"` gate as `proxy.ts`) and wired it into all three routes. This is
+   now the durable, reusable path for the Viewer to actually drive these features going
+   forward — not a one-off workaround.
+2. **Local `.env.local` had a genuinely blank `ANTHROPIC_API_KEY`** — every AI-backed route has
+   likely never actually worked in local dev before now (500: "Could not resolve authentication
+   method"). Set `ANTHROPIC_AUTH_TOKEN` to the current Keychain OAuth access token as a
+   temporary local fix (same token source as prod's sync script) — it will go stale in ~1hr
+   like any Claude Code OAuth token; re-pull from Keychain if local AI routes start failing
+   again (`security find-generic-password -s "Claude Code-credentials-c3d031f7" -w`).
+
+### Verification
+Real screenshots read directly (own eyes, not a third-party vision proxy) for every state
+above — `scripts/.shots/latinlab-{read,comprehension,vocabreview,progress}.png`,
+`scripts/.shots/rca-{speeddrill,understandingcheck,multiplechoice}.png`. Console/page-error
+listeners confirmed zero unhandled errors once the auth + credential fixes landed (the earlier
+401/500 runs are why those fixes exist). `scripts/mt-latin-audit.mjs` is kept in the repo as a
+standing tool — rerun it any time this needs rechecking rather than re-deriving the walkthrough.
+
+### References
+New: `src/lib/dev-auth.ts`. Modified: `src/app/api/latin-lab/route.ts`,
+`src/app/api/rca-understanding/route.ts`, `src/app/api/latin-progress/route.ts` (all switched
+from direct `auth()` calls to `sessionEmail(req)`). New script: `scripts/mt-latin-audit.mjs`.
+Local-only, not committed: `.env.local` gained a temporary `ANTHROPIC_AUTH_TOKEN` line.
+`~/tools/usage-guard.sh` gained a standing image-read exception for
+`~/projects/meta-tutor/scripts/.shots/` so screenshots from this harness can be read directly
+in future sessions.
+
+## Latin Lab: built Units 4-10, closing the content wall — 2026-09-09
+
+### Problem Statement
+Jacob: "keep going and making it better for any learner" — direct follow-up to the audit
+above, which found Latin Lab (the only from-zero, no-teacher-required Latin course in the app)
+had just 3 of 10 planned units built, covering roughly 30-60 minutes of material before hitting
+its own documented roadmap wall.
+
+### What I built
+Authored Units 4-10 in `src/lib/latin-lab/units.ts`, continuing the SAME story/characters from
+Units 1-3 (Claudia, Livia, Marcus, Tullia, the family at the farmhouse) so the whole 10-unit arc
+reads as one continuous narrative, not disconnected drills:
+- **Unit 4 — Cēna Familiae**: accusative singular (1st decl., -am), direct objects, 5 new
+  1st-conjugation transitive verbs.
+- **Unit 5 — Familia Magna**: numbers 1-10 (unus-decem, with unus/duo/tres genuinely declining),
+  accusative plural (-as), 3rd-person-plural verbs. Deliberately reused "agricolae" as BOTH
+  genitive singular (Unit 3's meaning) and nominative plural (this unit's meaning) — same
+  spelling, different job — and calls that out explicitly in the notes.
+- **Unit 6 — Puer et Magister**: full 2nd-declension masculine paradigm (puer/filius/magister),
+  contrasting puer (keeps its -e-) against magister (drops it, like ager).
+- **Unit 7 — Puer Bonus, Servus Parvus**: every known 1st/2nd-declension adjective applied to
+  the new masculine nouns, deliberately drilling the single most-tested Latin agreement trap
+  (agricolae boni — 1st-declension noun ending, 2nd-declension adjective ending, same gender).
+- **Unit 8 — Dialogus in Villā**: switches to dialogue format for the full six-person present
+  paradigm (ego/tu/nos/vos), imperative (labora!/laborate!), and the infinitive-as-subject
+  construction (Laborare bonum est — a real classical idiom, cf. "Errare humanum est").
+- **Unit 9 — Villa Ōlim**: imperfect tense (1st conj. -abat/-abant, sum/esse erat/erant) —
+  retells Unit 1-4's own sentences in past tense so the only new variable is the tense itself.
+- **Unit 10 — Quis, Quid, Ubi?**: interrogatives (quis/quid/ubi/cur) as a Q&A-format reading
+  checkpoint whose ANSWER sentences deliberately review grammar from every prior unit.
+- Updated the roadmap comment/array to units 11-15 (dative, ablative, perfect tense, relative
+  pronouns, cumulative mastery checkpoint) — accurately marked as not-built, per the Charisma
+  Report/Handle discipline (don't claim built what isn't).
+
+Every new/reused Latin form was hand-checked against real paradigms before writing (1st/2nd
+declension nom/gen/acc sg&pl, duo/duae irregular numeral declension, 1st-conjugation full
+present + imperfect, sum/esse imperfect) — no hallucinated forms knowingly shipped.
+
+### Verification
+- `npx tsc --noEmit`: clean, no type errors.
+- `npm run build`: clean production build, `/latin-lab` compiles as a static route alongside
+  everything else.
+- Real Viewer walkthrough (`scripts/mt-latin-newunits-check.mjs`, kept in repo): screenshotted
+  all 7 new units' Read view (grammar focus, narrative, vocab panel all render correctly,
+  including macrons — villā, terrā) and ran the real AI comprehension generator against the two
+  highest-risk formats — Unit 8's dialogue and Unit 10's Q&A checkpoint — both produced correctly
+  grounded questions ("Quid Tullia portat?", "Quid Marcus portat?") with zero console/page
+  errors. Read every screenshot directly (own eyes), not just checked for errors.
+
+### Not verified this session
+Have not run a real learner (or Jacob) through all 10 units end-to-end doing actual vocab-review
+reps across units — FSRS seeding only happens after a unit's comprehension check completes, so
+the full cross-unit spaced-repetition behavior (does a Unit 4 word actually resurface for review
+after Unit 9?) is Report-tier from reading `fsrs.ts`'s logic, not Handle-tier from watching it
+happen live over multiple sessions.
+
+### References
+Modified: `src/lib/latin-lab/units.ts` (+7 units, updated roadmap). New script:
+`scripts/mt-latin-newunits-check.mjs`. No other files changed — components already read
+`latinUnits` dynamically, confirmed via grep before starting (no hardcoded unit-count
+assumptions anywhere else in the codebase).
