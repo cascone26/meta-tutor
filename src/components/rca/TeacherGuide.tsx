@@ -5,6 +5,8 @@ import { rcaContent } from "@/lib/rca-content";
 import { getCatechismLessonsForWeekText } from "@/lib/rca-content/baltimore-catechism-guide";
 import { getLatinLessonsForWeekText } from "@/lib/rca-content/latin-teacher-guide";
 import { getSaxonNotesForWeekText } from "@/lib/rca-content/saxon-teacher-guide";
+import { chartsForLesson } from "@/lib/rca-content/latin-grammar-charts";
+import GrammarChart from "@/components/rca/GrammarChart";
 import { LeafIcon } from "@/components/rca/NatureIcons";
 
 // Teacher's guide for going over Discussion Questions / True-or-False in
@@ -79,7 +81,11 @@ export default function TeacherGuide({ subjectId, lessonN }: { subjectId: string
             <p className="text-sm mb-3" style={{ color: "#3a4a34" }}>{guide.teachingTip}</p>
 
             <h3 className="text-xs font-semibold uppercase tracking-wide mb-1.5" style={{ color: "#6b8e5a" }}>Watch for</h3>
-            <p className="text-sm rounded-lg px-3 py-2" style={{ background: "#fbeee0", color: "#8a5a2a" }}>{guide.watchFor}</p>
+            <p className="text-sm rounded-lg px-3 py-2 mb-3" style={{ background: "#fbeee0", color: "#8a5a2a" }}>{guide.watchFor}</p>
+
+            {chartsForLesson(guide.n).map((chart) => (
+              <GrammarChart key={chart.id} chart={chart} />
+            ))}
           </div>
         ))}
       </div>

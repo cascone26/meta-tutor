@@ -1726,3 +1726,62 @@ alongside this session's, so no conflict.
 New: `src/lib/rca-content/latin-teacher-guide.ts`,
 `src/lib/rca-content/saxon-teacher-guide.ts`. Modified:
 `src/components/rca/TeacherGuide.tsx`, `src/lib/rca-grounding.ts`.
+
+## Grammar charts + memorize mode for First Form Latin's Teacher's Guide (2026-09-10)
+
+### Problem Statement
+Jacob: "we're still missing more catered learning to the lessons for rca latin for me...
+theres not rly resources moving along with me to help me with charts and memorizing and
+logic. the lesson progress every week/every other week so it needs to follow the plans
+that were given." The existing Teacher's Guide (built 2026-09-09) already covers the
+LOGIC — real prose explaining why each grammar point works, sourced from Jacob's
+photographed Memoria Press Teacher Guide — but it's prose only: no visual paradigm chart,
+no active-recall/memorization tool, and it must automatically track whatever lesson the
+real pacing doc says is current (not a separately-drifting schedule).
+
+### What I built
+`src/lib/rca-content/latin-grammar-charts.ts` — hand-verified paradigm chart data for
+every grammar point First Form Latin actually covers across its 31 real lessons, using
+the EXACT model words the Teacher Guide itself already names (amō/amāre for 1st conj. all
+six tenses, moneō/monēre for 2nd conj. all six tenses, sum/esse, mensa/servus/bellum/
+pater/nōmen/portus/rēs for the five declensions, bonus/-a/-um for 1st/2nd adjectives,
+numbers 1-10) — no invented substitutes, no hallucinated forms. Keyed by the SAME lesson
+`n` as `latin-teacher-guide.ts`, including review weeks referencing the same chart objects
+their component lessons already use (no duplicated data).
+
+`src/components/rca/GrammarChart.tsx` — renders each chart as a real HTML table (verb/
+noun/adjective/principal-parts/numbers, five distinct layouts) with a "The pattern" logic
+callout pulled from the same formation-rule prose, plus a **Memorize mode**: Latin forms
+hide behind a tap-to-reveal "?", then self-grade "knew it"/"missed" per cell with a running
+tally. Session-only, self-graded — an honest v1 (no persistent mastery tracking claimed).
+
+Wired into `TeacherGuide.tsx` right after each guide's existing Concept/Teaching-tip/
+Watch-for sections, so it inherits the SAME `lessonN` prop already flowing from
+LessonViewer's real pacing calculation — it follows the actual weekly/bi-weekly plan
+automatically, with zero separate scheduling logic to drift out of sync.
+
+### Verification
+- `npx tsc --noEmit` / `npm run build`: both clean.
+- Real Viewer walkthrough: screenshotted Lesson 4's week (shows Lessons II + III, the
+  imperfect and future tense charts, matching what Jacob said he's currently teaching)
+  and Lesson 14 (1st declension/mensa) — both render correctly, including macrons.
+- Found a real Playwright quirk during testing (NOT a product bug): coordinate-based
+  clicks on deeply-scrolled content in this app's nested-scroll layout can miss their
+  target and land on an unrelated fixed-position element instead (`elementFromPoint`
+  confirmed a click meant for a chart's "?" button actually hit LessonViewer's "Not
+  lesson 4? Correct it" button). Dispatching a real click directly on the DOM node
+  (`element.click()` via `page.evaluate`) bypasses this and confirmed the Memorize
+  flow works correctly end-to-end: revealed two cells, graded one "knew it" and one
+  "missed," tally correctly showed 1/2, matching a follow-up screenshot exactly.
+  Worth remembering for future deep-scroll Viewer scripts on this app.
+
+### Not verified this session
+Only spot-checked 2 of the 31 lessons' charts (imperfect/future tense, 1st declension)
+live in the browser — the other 29 lessons' chart data was hand-verified against known
+Latin morphology and the Teacher Guide's own stated forms, but not each individually
+screenshotted. Report-tier confidence on full 1-33 coverage; Handle-tier on the 2 spot-
+checked lessons and the underlying rendering code path (same component/logic for all).
+
+### References
+New: `src/lib/rca-content/latin-grammar-charts.ts`, `src/components/rca/GrammarChart.tsx`.
+Modified: `src/components/rca/TeacherGuide.tsx`.
