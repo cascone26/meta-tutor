@@ -1548,3 +1548,181 @@ Modified: `src/lib/latin-lab/units.ts` (+7 units, updated roadmap). New script:
 `scripts/mt-latin-newunits-check.mjs`. No other files changed — components already read
 `latinUnits` dynamically, confirmed via grep before starting (no hardcoded unit-count
 assumptions anywhere else in the codebase).
+
+## RCA physical-textbook material folded into Latin/Science/Saxon grounding (2026-09-09)
+
+### Problem framing
+Jacob dropped 59 iPhone photos of his actual RCA teaching books into
+`~/Desktop/MT;RCAmaterial` and said "go through them all and update the RCA sections." No
+further scoping given — first step was figuring out what was actually in the photos before
+deciding what "update" meant.
+
+### Investigation
+Converted all 59 HEIC files to JPEG via `sips` (macOS native, no dependency needed), then
+copied them into `~/estate/data/renders/mt-rca-material/` — the one hook-exempt directory
+`usage-guard.sh` allow-lists for direct `Read` of images, per [[claude-vision-on-mac]]. Chose
+this over `imgsee` (routes to a different, weaker external model) deliberately: this is real
+curriculum content that has to be transcribed accurately, not a quick yes/no check, so it needed
+Claude's own eyes on the actual pixels, not a second model's lossy prose description.
+
+Read all 59 photos directly, in batches, before touching any code. Turned out to be three
+distinct real books, interleaved in the photo roll rather than grouped:
+- Memoria Press's *First Form Latin* Teacher Guide — front matter (intro, teaching techniques,
+  games, pronunciation) plus a COMPLETE walkthrough of every lesson I-XXXIV, each with its real
+  grammar topic, vocabulary (Latin/English/derivatives), and mnemonic Latin saying.
+- *Behold and See 6* (BASWB) — the full numbered-Experiments appendix, #1 through #26, each with
+  a real supply list and step-by-step procedure.
+- Saxon Math 7/6 — Homeschool (4th ed.) — the complete table of contents, Lessons 1-120 plus
+  Investigations 1-12, each with its real topic name.
+
+Cross-referenced against what already existed in `src/lib/rca-content/`: `first-form-latin-6.ts`,
+`science-6.ts`, and `saxon-76.ts` already had accurate real 2026-2027 PACING (which lesson/
+experiment number happens which week, pulled from RCA's own lesson-plan doc back on 2026-08-17)
+but never said what any given lesson/experiment NUMBER actually covers — e.g. "Teach Lesson XIV"
+with no indication that Lesson XIV is First Declension nouns. The photographed material is
+exactly the missing piece: the textbooks' own real content, keyed to the same lesson numbers the
+pacing file already uses.
+
+### Decision: what to change vs. leave alone
+Considered rebuilding `latin-core.ts` (the small standard-vocab reference) with the full
+per-lesson vocabulary now available from the photos. Decided against it — that file's header
+comment explicitly says it's NOT a transcription of Memoria Press's copyrighted lesson
+sequencing (deliberate, to stay on the "paraphrase standard grammar facts" side of the line the
+other content files in this dir already walk), and it also feeds a TTS audio-generation pipeline
+(`scripts/gen-latin-audio.mjs`) that would need re-running if the word list changed. Instead,
+folded the photographed lesson TOPICS (not full copyrighted vocab lists) into the pacing files as
+parenthetical annotations — consistent with how `saxon-76.ts`'s and `science-6.ts`'s existing
+header comments already describe their own approach ("paraphrased/condensed... but kept
+SPECIFIC").
+
+### What shipped
+- `first-form-latin-6.ts`: real topic added at each lesson's first "Teach Lesson ___" mention,
+  Lessons I-X and XII-XXXIII (Lesson XI wasn't among the photographed pages — left unannotated
+  rather than guessed, per [[feedback... additive/non-destructive]] discipline of not inventing
+  what wasn't actually observed).
+- `saxon-76.ts`: same treatment across every Lesson 1-120 and Investigation 1-12 mention.
+- `science-6-experiments.ts` (new file): supply list + procedure summary for all 26 experiments.
+  Wired into `rca-grounding.ts` via a new `findExperiments()` matcher.
+
+### Verification
+- Built the `findExperiments()` regex (matches "#N" within a bounded window after each
+  "Experiment(s)" mention, since some weeks reference two non-adjacent numbers like "Experiments
+  #6 Shrinking Bottle & #7 Jumping Quarter") and unit-tested it against 6 real week-text strings
+  pulled directly from `science-6.ts` before wiring it into the grounding builder — first version
+  missed the second number in non-adjacent cases, caught by the test and fixed before shipping.
+- `npx tsc --noEmit`: clean.
+- `npm run build`: ✓ Compiled successfully, all 66 pages including the dynamic `/rca/[slug]`
+  routes, only the pre-existing multi-lockfile warning.
+
+### Not verified this session
+Have not driven the actual `/rca/first-form-latin-6`, `/rca/science-6`, or `/rca/saxon-76` pages
+live in a browser to confirm the new parenthetical topics render cleanly in the LessonViewer UI
+(no reason to expect a rendering issue — it's the same `Lesson.sections[].text` string field
+every other week already used — but that's Report-tier confidence from reading the component,
+not Handle-tier from watching it render).
+
+### References
+New: `src/lib/rca-content/science-6-experiments.ts`. Modified:
+`src/lib/rca-content/first-form-latin-6.ts`, `src/lib/rca-content/saxon-76.ts`,
+`src/lib/rca-grounding.ts`. Source photos: `~/Desktop/MT;RCAmaterial` (59 HEIC, untouched/
+unmodified — converted copies only exist in scratch/render dirs, which are not part of the repo).
+
+## Fixed the two issues flagged during Viewer verification (2026-09-09, same day)
+
+Jacob: "get it all fixed urself, go" — in response to the two gaps the Viewer walkthrough surfaced.
+
+### Issue 1: 6 RCA API routes 401'd under the dev-preview test harness
+`dev-auth.ts`'s `sessionEmail(req)` helper exists specifically so the local headless
+verification harness can exercise real gated routes without a Google login (its own header
+comment says so). `rca-understanding`, `latin-lab`, and `latin-progress` already used it — but
+`rca-pacing`, `rca-roster`, `rca-custom-vocab`, `rca-grading`, `rca-progress`, and
+`rca-vocab-check` were still on the raw `const session = await auth()` pattern, which only
+recognizes a real cookie session. Not just a testing quirk: this is the actual production auth
+path too, just one that happens to only have one way in. Fixed all 6 to use `sessionEmail(req)`,
+matching the established pattern exactly (import `NextRequest`/`sessionEmail`, param typed
+`NextRequest`, `session.user.email` → `userEmail` throughout). Verified: 0 401s across all three
+RCA pages under the same headless harness that first caught it (previously 3+ per page load),
+`tsc`/`build` clean, and a fresh screenshot of `/rca/saxon-76` confirms the Grading checklist and
+Roster sections render without error.
+
+### Issue 2: baltimore-catechism.ts had an uncommitted 301-line deletion
+Investigated before touching it — this wasn't a stray formatting diff, it was lessons 21-37
+(Q231 onward) missing entirely, left uncommitted in the working tree since Aug 21 (well before
+this session). Checked whether it was live-load-bearing before assuming it was safe to revert:
+`religion-6.ts`'s real pacing references Lesson 21, 22, 27, 28, 29, 30, 31, 32 by number — with
+the truncated file, `buildSubjectReferenceBlock`'s religion-6 branch would return `""` (no
+guides found) for every one of those weeks, silently dropping the AI grounding down to
+"no real catechism content" for a third of the year. Since the change was uncommitted (git
+history has the full file untouched) and actively broke a real, referenced feature, restored it
+via `git checkout -- src/lib/rca-content/baltimore-catechism.ts` — a clean revert, nothing lost.
+Verified: `tsc`/`build` clean, and a fresh screenshot of `/rca/religion-6` shows real Lesson 15
+Teacher's Guide content (Two Great Commandments discussion questions + True/False) rendering
+with zero console/page errors.
+
+### References
+Modified: `src/app/api/rca-custom-vocab/route.ts`, `rca-grading/route.ts`, `rca-pacing/route.ts`,
+`rca-progress/route.ts`, `rca-roster/route.ts`, `rca-vocab-check/route.ts` (all: raw `auth()` →
+`sessionEmail()`). Restored (not modified): `src/lib/rca-content/baltimore-catechism.ts` (`git
+checkout` back to HEAD).
+
+## Built the actual "personal growth" piece Jacob asked about (2026-09-09, later same night)
+
+Jacob, pointed directly: "did u use those resources to give me better learning and
+teaching and personal growth in those areas, particularly latin?" Honest answer at the
+time: no — the RCA-material work up to that point only fed the AI TUTOR's grounding
+(better quiz/chat answers for STUDENTS), never anything aimed at Jacob's own
+understanding or teaching prep. That's a real, correctly-called-out gap.
+
+### What was missing
+`TeacherGuide.tsx` already existed as a real feature (built 2026-08-24 for Religion 6's
+Baltimore Catechism discussion questions), and its own fallback state literally said
+"Not built for this subject yet" for every other subject, Latin and Saxon included. This
+was the concrete, already-scaffolded gap to fill — not a new feature to invent.
+
+### What shipped
+- `latin-teacher-guide.ts` (new) — per-lesson entries (Lessons I-X, XII-XXXIII; XI
+  wasn't among the photographed pages, left out rather than guessed) with three real
+  fields per lesson: the grammar CONCEPT explained plainly (why the rule works, not just
+  what to write on the board), the actual "Grammar - Chalk Talk" teaching technique
+  transcribed from Jacob's own Teacher Guide (paraphrased, not copied), and the SPECIFIC
+  student mix-up the Teacher Guide itself calls out for that lesson (e.g. Lesson X's
+  perfect-vs-future-perfect 3rd-plural confusion, Lesson XVIII's "the difficulty is
+  agreement, not new endings"). This is real source material, high-confidence — Report
+  AND Handle tier, since it's drawn from having actually read the real Teacher Guide.
+- `saxon-teacher-guide.ts` (new) — different sourcing situation, disclosed explicitly in
+  its own header: the photographed Saxon material was ONLY a table of contents, not a
+  teacher's-guide-with-scripts the way Latin's was. So this file is original math-concept
+  explanations + well-established common student mistakes (standard, uncontested
+  pedagogy — same status as latin-core.ts's standard grammar facts), NOT a transcription
+  or paraphrase of anything Memoria-Press-equivalent for Saxon, because no such material
+  was in the photos. Deliberately selective (~42 of 132 lesson/investigation slots) —
+  skips straightforward arithmetic an adult doesn't need refreshed, covers genuinely
+  rusty-for-most-adults topics (circumference/pi, proportions, exponents, probability,
+  similar triangles, compound interest, etc.).
+- Wired both into `TeacherGuide.tsx` (new render branches, same accordion pattern as the
+  existing Religion 6 one) AND into `rca-grounding.ts` (so if Jacob asks the AI chat
+  "what am I actually teaching" or "explain this to me," it grounds on the real
+  concept/mix-up content instead of a generic answer).
+
+### Verification
+- `tsc`/`build` clean.
+- Live Viewer walkthrough (own eyes, real screenshots): `/rca/first-form-latin-6`
+  Lesson 1 shows the real Concept/How to teach it/Watch for panel for "First Conjugation
+  Present Tense," zero console/page errors. `/rca/saxon-76` stepped forward to Week 5
+  and confirmed both Lesson 19 (Factors, Prime Numbers) and Lesson 20 (GCF) refresher
+  notes render correctly in the same panel, zero errors.
+
+### Noticed, not touched
+While working, `src/components/rca/LessonViewer.tsx`, `src/lib/rca.ts`, and
+`src/app/latin-lab/page.tsx` picked up small uncommitted edits (25/21/6 lines) that
+weren't made by this session, alongside two new untracked files
+(`src/components/latin-lab/ProficiencyTimeline.tsx`, `src/lib/latin-lab/
+proficiency-timeline.ts`) — looks like Jacob (or another concurrent session) working
+live in the same repo. Didn't touch, read deeply, or revert any of it — not this
+session's to manage — but `npm run build` passed cleanly with those changes present
+alongside this session's, so no conflict.
+
+### References
+New: `src/lib/rca-content/latin-teacher-guide.ts`,
+`src/lib/rca-content/saxon-teacher-guide.ts`. Modified:
+`src/components/rca/TeacherGuide.tsx`, `src/lib/rca-grounding.ts`.

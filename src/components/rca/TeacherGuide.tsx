@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { rcaContent } from "@/lib/rca-content";
 import { getCatechismLessonsForWeekText } from "@/lib/rca-content/baltimore-catechism-guide";
+import { getLatinLessonsForWeekText } from "@/lib/rca-content/latin-teacher-guide";
+import { getSaxonNotesForWeekText } from "@/lib/rca-content/saxon-teacher-guide";
 import { LeafIcon } from "@/components/rca/NatureIcons";
 
 // Teacher's guide for going over Discussion Questions / True-or-False in
@@ -43,6 +45,89 @@ export default function TeacherGuide({ subjectId, lessonN }: { subjectId: string
     });
   }
 
+  if (subjectId === "first-form-latin-6") {
+    const weekLesson = rcaContent["first-form-latin-6"]?.lessons.find((l) => l.n === lessonN);
+    const weekText = weekLesson ? weekLesson.sections.map((s) => s.text).join(" ") : "";
+    const guides = getLatinLessonsForWeekText(weekText);
+
+    if (guides.length === 0) {
+      return (
+        <div className="rounded-2xl p-4 mb-6" style={{ background: "#fbf8f0", border: "1px solid #d9e4d3" }}>
+          <h2 className="text-sm font-semibold mb-1 flex items-center gap-2" style={{ color: "#2f5e7a" }}>
+            <LeafIcon size={14} />
+            Teacher&apos;s guide
+          </h2>
+          <p className="text-xs" style={{ color: "#8a9a7c" }}>No guide content for this week (a pure practice/quiz/closure week, no new lesson number referenced).</p>
+        </div>
+      );
+    }
+
+    return (
+      <div className="rounded-2xl p-4 mb-6" style={{ background: "#fbf8f0", border: "1px solid #d9e4d3" }}>
+        <h2 className="text-sm font-semibold mb-3 flex items-center gap-2" style={{ color: "#2f5e7a" }}>
+          <LeafIcon size={14} />
+          Teacher&apos;s guide
+        </h2>
+        {guides.map((guide, gi) => (
+          <div key={guide.n} className={gi > 0 ? "mt-5 pt-4" : ""} style={gi > 0 ? { borderTop: "1px solid #e6e0d0" } : undefined}>
+            <p className="text-sm font-semibold mb-2" style={{ color: "#33402c" }}>Lesson {guide.roman} — {guide.title}</p>
+
+            <h3 className="text-xs font-semibold uppercase tracking-wide mb-1.5" style={{ color: "#6b8e5a" }}>The concept</h3>
+            <p className="text-sm mb-3" style={{ color: "#3a4a34" }}>{guide.concept}</p>
+
+            <h3 className="text-xs font-semibold uppercase tracking-wide mb-1.5" style={{ color: "#6b8e5a" }}>How to teach it</h3>
+            <p className="text-sm mb-3" style={{ color: "#3a4a34" }}>{guide.teachingTip}</p>
+
+            <h3 className="text-xs font-semibold uppercase tracking-wide mb-1.5" style={{ color: "#6b8e5a" }}>Watch for</h3>
+            <p className="text-sm rounded-lg px-3 py-2" style={{ background: "#fbeee0", color: "#8a5a2a" }}>{guide.watchFor}</p>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  if (subjectId === "saxon-76") {
+    const weekLesson = rcaContent["saxon-76"]?.lessons.find((l) => l.n === lessonN);
+    const weekText = weekLesson ? weekLesson.sections.map((s) => s.text).join(" ") : "";
+    const notes = getSaxonNotesForWeekText(weekText);
+
+    if (notes.length === 0) {
+      return (
+        <div className="rounded-2xl p-4 mb-6" style={{ background: "#fbf8f0", border: "1px solid #d9e4d3" }}>
+          <h2 className="text-sm font-semibold mb-1 flex items-center gap-2" style={{ color: "#2f5e7a" }}>
+            <LeafIcon size={14} />
+            Teacher&apos;s guide
+          </h2>
+          <p className="text-xs" style={{ color: "#8a9a7c" }}>
+            No refresher note for this week&apos;s lessons — coverage is deliberately selective (skips
+            straightforward arithmetic/review lessons an adult doesn&apos;t need refreshed) rather than
+            all 120 lessons.
+          </p>
+        </div>
+      );
+    }
+
+    return (
+      <div className="rounded-2xl p-4 mb-6" style={{ background: "#fbf8f0", border: "1px solid #d9e4d3" }}>
+        <h2 className="text-sm font-semibold mb-3 flex items-center gap-2" style={{ color: "#2f5e7a" }}>
+          <LeafIcon size={14} />
+          Teacher&apos;s guide
+        </h2>
+        {notes.map((note, gi) => (
+          <div key={note.key} className={gi > 0 ? "mt-5 pt-4" : ""} style={gi > 0 ? { borderTop: "1px solid #e6e0d0" } : undefined}>
+            <p className="text-sm font-semibold mb-2" style={{ color: "#33402c" }}>{note.key.startsWith("Investigation") ? note.key : `Lesson ${note.key}`} — {note.title}</p>
+
+            <h3 className="text-xs font-semibold uppercase tracking-wide mb-1.5" style={{ color: "#6b8e5a" }}>The concept</h3>
+            <p className="text-sm mb-3" style={{ color: "#3a4a34" }}>{note.concept}</p>
+
+            <h3 className="text-xs font-semibold uppercase tracking-wide mb-1.5" style={{ color: "#6b8e5a" }}>Watch for</h3>
+            <p className="text-sm rounded-lg px-3 py-2" style={{ background: "#fbeee0", color: "#8a5a2a" }}>{note.watchFor}</p>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
   if (subjectId !== "religion-6") {
     return (
       <div className="rounded-2xl p-4 mb-6" style={{ background: "#fbf8f0", border: "1px solid #d9e4d3" }}>
@@ -51,8 +136,8 @@ export default function TeacherGuide({ subjectId, lessonN }: { subjectId: string
           Teacher&apos;s guide
         </h2>
         <p className="text-xs" style={{ color: "#8a9a7c" }}>
-          Not built for this subject yet — currently covers Religion 6&apos;s Baltimore Catechism discussion
-          questions and True/False review.
+          Not built for this subject yet — currently covers Religion 6&apos;s Baltimore Catechism, First
+          Form Latin&apos;s grammar concepts, and Saxon 7/6&apos;s math refreshers.
         </p>
       </div>
     );

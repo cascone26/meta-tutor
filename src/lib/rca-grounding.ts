@@ -9,6 +9,9 @@ import { getCatechismLessonsForWeekText } from "@/lib/rca-content/baltimore-cate
 import { phonograms } from "@/lib/rca-content/phonogram-sounds";
 import { latinNouns, sumConjugation, amoConjugation, latinAdjectives, latinNumbers, pronunciationRules } from "@/lib/rca-content/latin-core";
 import { poems } from "@/lib/rca-content/poems";
+import { findExperiments } from "@/lib/rca-content/science-6-experiments";
+import { getLatinLessonsForWeekText } from "@/lib/rca-content/latin-teacher-guide";
+import { getSaxonNotesForWeekText } from "@/lib/rca-content/saxon-teacher-guide";
 import type { Lesson } from "@/lib/rca-content/types";
 import {
   bookOfAncientWorld,
@@ -86,7 +89,15 @@ function buildSubjectReferenceBlock(subjectId: string, weekText: string, content
     const amo = amoConjugation.map((v) => `${v.latin} = ${v.english}`).join(", ");
     const adj = latinAdjectives.slice(0, 6).map((v) => `${v.latin} = ${v.english}`).join(", ");
     const pron = pronunciationRules.slice(0, 5).map((r) => `${r.letter}: ${r.ecclesiastical}`).join("; ");
-    return `\nREAL LATIN CONTENT (ecclesiastical pronunciation, what RCA teaches) — ground every generated question in THIS real vocab/grammar, not invented forms:\nNouns: ${vocab}\nsum (to be): ${sum}\namo (to love): ${amo}\nAdjectives: ${adj}\nNumbers 1-10: ${numbers}\nPronunciation notes: ${pron}\n`;
+    let block = `\nREAL LATIN CONTENT (ecclesiastical pronunciation, what RCA teaches) — ground every generated question in THIS real vocab/grammar, not invented forms:\nNouns: ${vocab}\nsum (to be): ${sum}\namo (to love): ${amo}\nAdjectives: ${adj}\nNumbers 1-10: ${numbers}\nPronunciation notes: ${pron}\n`;
+    const teacherGuides = getLatinLessonsForWeekText(weekText);
+    if (teacherGuides.length > 0) {
+      const tgBlock = teacherGuides
+        .map((g) => `Lesson ${g.roman} — ${g.title}:\nConcept: ${g.concept}\nCommon student mix-up: ${g.watchFor}`)
+        .join("\n\n");
+      block += `\nTHIS WEEK'S GRAMMAR CONCEPT (for explaining it to Jacob himself, not just quizzing students) — if Jacob asks "what am I actually teaching" or "explain this to me," ground the answer in THIS, not a generic Latin-grammar summary:\n${tgBlock}\n`;
+    }
+    return block;
   }
   if (subjectId === "loe-essentials-c") {
     const sample = phonograms.slice(0, 15).map((p) => `${p.spelling} = ${p.sounds.map((s) => `${s.ipa} (${s.keyword})${s.note ? ` [${s.note}]` : ""}`).join(" / ")}`).join("\n");
@@ -115,6 +126,22 @@ function buildSubjectReferenceBlock(subjectId: string, weekText: string, content
     }
     if (blocks.length === 0) return "";
     return `\nREAL BOOK CONTENT for the title(s) referenced this week — ground every generated question in THIS, not invented plot/facts:\n${blocks.join("\n\n")}\n`;
+  }
+  if (subjectId === "science-6") {
+    const experiments = findExperiments(weekText);
+    if (experiments.length === 0) return "";
+    const blocks = experiments
+      .map((e) => `Experiment #${e.n} — ${e.title}:\nSupplies: ${e.supplies.join(", ")}\n${e.summary}${e.safety ? `\nSAFETY: ${e.safety}` : ""}`)
+      .join("\n\n");
+    return `\nREAL EXPERIMENT CONTENT for the experiment(s) referenced this week — ground any prep help, supply lists, or explanation in THIS, not invented steps:\n${blocks}\n`;
+  }
+  if (subjectId === "saxon-76") {
+    const notes = getSaxonNotesForWeekText(weekText);
+    if (notes.length === 0) return "";
+    const blocks = notes
+      .map((n) => `${n.key.startsWith("Investigation") ? n.key : `Lesson ${n.key}`} — ${n.title}:\nConcept: ${n.concept}\nCommon student mix-up: ${n.watchFor}`)
+      .join("\n\n");
+    return `\nMATH CONCEPT REFRESHER for the lesson(s) referenced this week (for explaining it to Jacob himself, not just quizzing students) — if Jacob asks "what am I actually teaching" or "explain this to me," ground the answer in THIS:\n${blocks}\n`;
   }
   return "";
 }

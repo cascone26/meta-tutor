@@ -515,3 +515,24 @@ export function isPacingCurrent(totalWeeks: number, today: Date = centralToday()
   const weeksElapsed = Math.floor((today.getTime() - start.getTime()) / msPerWeek);
   return weeksElapsed + 1 <= totalWeeks;
 }
+
+/** Jacob's standing rule (2026-09-09): for material he personally teaches, he should always
+ * be at least a week — ideally two — ahead of wherever the kids actually are, not just
+ * prepped for the single next class. Returns the lesson-number band that corresponds to
+ * real calendar +7 to +14 days from `referenceDate` (defaults to the next teaching day, same
+ * anchor LessonViewer already uses for "what lesson are the kids on"). Reuses
+ * currentLessonNumber()'s own week-fraction math so it stays consistent with whatever
+ * "today's lesson" already means for a given subject's real pacing. */
+export function prepAheadLessonRange(
+  totalLessons: number,
+  totalWeeks: number = totalLessons,
+  referenceDate: Date = nextTeachingDate() ?? centralToday()
+): { in1WeekN: number; in2WeeksN: number } {
+  const msPerDay = 24 * 60 * 60 * 1000;
+  const in1Week = new Date(referenceDate.getTime() + 7 * msPerDay);
+  const in2Weeks = new Date(referenceDate.getTime() + 14 * msPerDay);
+  return {
+    in1WeekN: currentLessonNumber(totalLessons, totalWeeks, in1Week),
+    in2WeeksN: currentLessonNumber(totalLessons, totalWeeks, in2Weeks),
+  };
+}

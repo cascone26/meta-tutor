@@ -1,14 +1,14 @@
-import { NextResponse } from "next/server";
-import { auth } from "@/auth";
+import { NextRequest, NextResponse } from "next/server";
+import { sessionEmail } from "@/lib/dev-auth";
 import { getSupabase } from "@/lib/supabase";
 
 // Per-student roster + attendance for a subject (see mt_rca_roster/mt_rca_attendance
 // in supabase-schema-hub.sql). First increment — roster + attendance only, no grades
 // yet (a real separate feature).
 
-export async function GET(req: Request) {
-  const session = await auth();
-  if (!session?.user?.email) return new Response("Unauthorized", { status: 401 });
+export async function GET(req: NextRequest) {
+  const userEmail = await sessionEmail(req);
+  if (!userEmail) return new Response("Unauthorized", { status: 401 });
 
   const url = new URL(req.url);
   const subjectId = url.searchParams.get("subjectId");
@@ -19,7 +19,7 @@ export async function GET(req: Request) {
   const { data: students, error } = await supabase
     .from("mt_rca_roster")
     .select("id, name, notes")
-    .eq("user_email", session.user.email)
+    .eq("user_email", userEmail)
     .eq("subject_id", subjectId)
     .order("created_at", { ascending: true });
 
@@ -33,7 +33,7 @@ export async function GET(req: Request) {
     const { data: rows, error: attError } = await supabase
       .from("mt_rca_attendance")
       .select("student_id, present")
-      .eq("user_email", session.user.email)
+      .eq("user_email", userEmail)
       .eq("date", date)
       .in("student_id", students.map((s) => s.id));
     if (attError) {
@@ -48,9 +48,9 @@ export async function GET(req: Request) {
   });
 }
 
-export async function POST(req: Request) {
-  const session = await auth();
-  if (!session?.user?.email) return new Response("Unauthorized", { status: 401 });
+export async function POST(req: NextRequest) {
+  const userEmail = await sessionEmail(req);
+  if (!userEmail) return new Response("Unauthorized", { status: 401 });
 
   const body = await req.json();
   const supabase = getSupabase();
@@ -60,7 +60,7 @@ export async function POST(req: Request) {
     if (!subjectId || !name?.trim()) return new Response("Missing subjectId or name", { status: 400 });
     const { data, error } = await supabase
       .from("mt_rca_roster")
-      .insert({ user_email: session.user.email, subject_id: subjectId, name: name.trim() })
+      .insert({ user_email: userEmail, subject_id: subjectId, name: name.trim() })
       .select("id, name, notes")
       .single();
     if (error) {
@@ -76,7 +76,7 @@ export async function POST(req: Request) {
     const { error } = await supabase
       .from("mt_rca_roster")
       .delete()
-      .eq("user_email", session.user.email)
+      .eq("user_email", userEmail)
       .eq("id", studentId);
     if (error) {
       console.error("[rca-roster POST removeStudent]", error);
@@ -91,7 +91,7 @@ export async function POST(req: Request) {
       return new Response("Missing/invalid studentId, date, or present", { status: 400 });
     }
     const { error } = await supabase.from("mt_rca_attendance").upsert(
-      { user_email: session.user.email, student_id: studentId, date, present, updated_at: new Date().toISOString() },
+      { user_email: userEmail, student_id: studentId, date, present, updated_at: new Date().toISOString() },
       { onConflict: "user_email,student_id,date" }
     );
     if (error) {

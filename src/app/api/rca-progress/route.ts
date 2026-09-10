@@ -1,5 +1,5 @@
-import { NextResponse } from "next/server";
-import { auth } from "@/auth";
+import { NextRequest, NextResponse } from "next/server";
+import { sessionEmail } from "@/lib/dev-auth";
 import { getSupabase } from "@/lib/supabase";
 import { rcaClasses } from "@/lib/rca";
 import { computeStreak } from "@/lib/rca-streak";
@@ -14,9 +14,9 @@ const MODE_LABEL: Record<string, string> = {
   gravity: "Gravity",
 };
 
-export async function GET() {
-  const session = await auth();
-  if (!session?.user?.email) return new Response("Unauthorized", { status: 401 });
+export async function GET(req: NextRequest) {
+  const userEmail = await sessionEmail(req);
+  if (!userEmail) return new Response("Unauthorized", { status: 401 });
 
   const subjects = rcaClasses.map((c) => `rca-${c.id}`);
   const supabase = getSupabase();
@@ -24,7 +24,7 @@ export async function GET() {
   const { data, error } = await supabase
     .from("mt_quiz_history")
     .select("subject, mode, weak_categories, created_at, percentage")
-    .eq("user_email", session.user.email)
+    .eq("user_email", userEmail)
     .in("subject", subjects)
     .order("created_at", { ascending: false })
     .limit(500);

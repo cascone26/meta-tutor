@@ -6,8 +6,9 @@ import UnitReader from "@/components/latin-lab/UnitReader";
 import ComprehensionCheck from "@/components/latin-lab/ComprehensionCheck";
 import VocabReview from "@/components/latin-lab/VocabReview";
 import ProgressPanel from "@/components/latin-lab/ProgressPanel";
+import ProficiencyTimeline from "@/components/latin-lab/ProficiencyTimeline";
 
-type View = "read" | "check" | "review" | "progress";
+type View = "read" | "check" | "review" | "progress" | "timeline";
 
 export default function LatinLabPage() {
   const [unitId, setUnitId] = useState(latinUnits[0].id);
@@ -45,7 +46,7 @@ export default function LatinLabPage() {
 
       {/* View tabs */}
       <div className="flex gap-1 mb-5 rounded-lg p-1" style={{ background: "#241b14" }}>
-        {(["read", "check", "review", "progress"] as View[]).map((v) => (
+        {(["read", "check", "review", "progress", "timeline"] as View[]).map((v) => (
           <button
             key={v}
             onClick={() => setView(v)}
@@ -61,6 +62,7 @@ export default function LatinLabPage() {
       {view === "check" && <ComprehensionCheck unit={unit} onDone={() => setView("read")} />}
       {view === "review" && <VocabReview onDone={() => setView("progress")} />}
       {view === "progress" && <ProgressPanel />}
+      {view === "timeline" && <ProficiencyTimeline />}
 
       <div className="mt-8 rounded-xl p-4" style={{ background: "#1f1712", border: "1px dashed #3a2d1f" }}>
         <p className="text-xs font-semibold mb-2" style={{ color: "#7a6852" }}>Roadmap — not built yet</p>

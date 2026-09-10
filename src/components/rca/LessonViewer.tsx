@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import type { SubjectContent } from "@/lib/rca-content/types";
 import { lessonWeekday, todaysLessonNumber } from "@/lib/rca-content/types";
-import { currentLessonNumber, isPacingCurrent, centralToday, nextTeachingDate } from "@/lib/rca";
+import { currentLessonNumber, isPacingCurrent, centralToday, nextTeachingDate, prepAheadLessonRange } from "@/lib/rca";
 import { ChevronIcon } from "@/components/rca/NatureIcons";
 import { useRcaPacingOffsets } from "@/lib/rca-pacing-client";
 import { nextFlexibleLesson } from "@/lib/rca-upcoming";
@@ -89,6 +89,12 @@ export default function LessonViewer({
   // Past that point currentLessonNumber() clamps to the last lesson forever
   // — flag it so "Lesson N" doesn't silently read as this week's real plan.
   const pacingStale = !isPacingCurrent(content.totalWeeks ?? total);
+  // Jacob's standing rule: always be a week or two ahead of the kids, not just
+  // prepped for the next single class — surfaced explicitly rather than left
+  // for him to remember, since "next class" and "should be prepping" are
+  // different lessons by design (see prepAheadLessonRange in rca.ts).
+  const { in1WeekN, in2WeeksN } = prepAheadLessonRange(total, content.totalWeeks ?? total, referenceDate);
+  const prepBehind = in1WeekN > n;
   // The overview is a real paragraph (pacing, tests, breaks) — worth having in
   // full, but showing all of it by default reads as a wall of text sitting
   // between the header and the actual lesson nav. Collapsed to 2 lines with
@@ -128,6 +134,23 @@ export default function LessonViewer({
           Documented pacing only covers the first {content.totalWeeks} weeks of the term — the lesson below
           is the last one available, not necessarily what&apos;s actually happening this week.
         </p>
+      )}
+
+      {offsetsLoaded && prepBehind && (
+        <div className="flex items-center justify-between gap-2 flex-wrap rounded-lg px-2.5 py-1.5 mb-3" style={{ background: "#eaf1e4", color: "#4a6a3a" }}>
+          <span className="text-[11px]">
+            Kids will be here around Lesson {in1WeekN}–{in2WeeksN} in 1-2 weeks — you&apos;re currently viewing Lesson {n}.
+            Stay ahead: prep at least through Lesson {in1WeekN}.
+          </span>
+          <button
+            type="button"
+            onClick={() => { setUserMoved(true); setN(in1WeekN); }}
+            className="text-[11px] font-semibold px-2 py-1 rounded-full shrink-0"
+            style={{ background: "#4a6a3a", color: "#fff" }}
+          >
+            Jump to Lesson {in1WeekN} →
+          </button>
+        </div>
       )}
 
       {offsetsLoaded && offset < 0 && (() => {

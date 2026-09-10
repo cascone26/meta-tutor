@@ -1,5 +1,85 @@
 # Meta Tutor — Status
 
+## Real Teacher's Guide content built for Latin + Saxon (2026-09-09, later same night)
+Jacob asked directly whether the RCA photo material had actually been used to grow
+*his own* teaching/understanding, particularly Latin — honest answer at the time was no,
+it had only fed the AI tutor's student-facing grounding. Fixed that: `TeacherGuide.tsx`
+already existed (built 2026-08-24 for Religion 6) but said "not built for this subject
+yet" for every other class. Built the real thing for the two that had source material:
+- **First Form Latin** (`latin-teacher-guide.ts`) — per-lesson grammar concept explained
+  plainly, the real "Grammar - Chalk Talk" technique from Jacob's own Teacher Guide, and
+  the specific student mix-up the guide itself flags (Lessons I-X, XII-XXXIII; XI wasn't
+  in the photos, left out rather than guessed).
+- **Saxon 7/6** (`saxon-teacher-guide.ts`) — since the Saxon photos were only a table of
+  contents (no real teaching-script material like Latin had), this is honestly original
+  math-concept refreshers + standard common mistakes for the ~42 genuinely non-trivial
+  topics (circumference/pi, proportions, exponents, similar triangles, compound
+  interest, etc.) — not claimed as sourced from anything that wasn't actually there.
+
+Both wired into the on-page Teacher's Guide panel AND the AI chat's grounding. Verified
+live: real screenshots of `/rca/first-form-latin-6` (Lesson 1) and `/rca/saxon-76`
+(Lessons 19-20) show the new Concept/How to teach it/Watch for panels rendering
+correctly, zero console/page errors, clean `tsc`/`build`. Full writeup in PROCESS.md.
+
+**Noticed, not touched:** small uncommitted edits appeared mid-session in
+`LessonViewer.tsx`/`rca.ts`/`latin-lab/page.tsx` plus 2 new untracked files
+(`ProficiencyTimeline.tsx` + `proficiency-timeline.ts`) that this session didn't make —
+looks like Jacob or another session working live in the same repo concurrently. Left
+alone; build passed clean alongside them.
+
+## Fixed 2 real bugs found by Viewer walkthrough of the RCA content update (2026-09-09)
+Drove `/rca/first-form-latin-6`, `/rca/saxon-76`, `/rca/religion-6` live with a headless browser
+to verify the RCA content update below, and found two real issues (both now fixed):
+1. **6 RCA API routes 401'd** (`rca-pacing`, `rca-roster`, `rca-custom-vocab`, `rca-grading`,
+   `rca-progress`, `rca-vocab-check`) — they used a raw `auth()` check instead of the
+   `sessionEmail()` helper other RCA routes already use, which is the actual production-vs-dev
+   distinction, not just a test artifact. Fixed all 6 to match the established pattern.
+2. **`baltimore-catechism.ts` had an uncommitted 301-line deletion** (lessons 21-37 missing,
+   left in the working tree since Aug 21) that was actively breaking AI grounding for every week
+   `religion-6.ts`'s real pacing references Lesson 21+ (a third of the year). Restored via `git
+   checkout` — clean revert, nothing lost since it was never committed.
+
+Verified: `tsc`/`build` clean, 0 console/API errors across all 3 pages under the same headless
+harness that first caught the 401s, fresh own-eyes screenshots of `/rca/saxon-76` and
+`/rca/religion-6` confirm both fixes render correctly live. Full writeup in PROCESS.md.
+
+## RCA physical-textbook material folded into Latin/Science/Saxon grounding (2026-09-09)
+Jacob dropped 59 photos of his real RCA teaching books into `~/Desktop/MT;RCAmaterial` (First Form
+Latin Teacher Guide, the Behold and See 6 Experiments appendix, Saxon Math 7/6 table of contents) and
+asked to "go through them all and update the RCA sections." Converted every HEIC to JPG (`sips`),
+copied into the `~/estate/data/renders/` hook-exempt dir per [[claude-vision-on-mac]], and read all 59
+directly (own eyes, not a third-party vision proxy — this is real curriculum content that has to be
+accurate).
+
+**What the photos actually were:** a complete page-by-page walkthrough of Memoria Press's First Form
+Latin Teacher Guide (front matter + every lesson I-XXXIV with its real grammar topic, vocab, and Latin
+saying), the Behold and See 6 workbook's full Experiments appendix (#1-26, supply lists + procedures),
+and Saxon Math 7/6's complete table of contents (Lessons 1-120 + Investigations 1-12, real topic names).
+
+**What shipped:**
+- `src/lib/rca-content/first-form-latin-6.ts` — added the REAL topic of each Roman-numeral lesson in
+  parentheses at its first "Teach Lesson ___" mention (Lessons I-X, XII-XXXIII confirmed directly off
+  the photographed Teacher Guide; Lesson XI wasn't among the photographed pages, left unannotated
+  rather than guessed).
+- `src/lib/rca-content/saxon-76.ts` — same treatment for every Lesson/Investigation number, sourced
+  from the real textbook TOC (all 120 lessons + 12 investigations now have their actual topic inline,
+  not just a bare number).
+- `src/lib/rca-content/science-6-experiments.ts` (new) — real supply list + procedure summary for all
+  26 numbered experiments, paraphrased from the workbook (same paraphrase-not-copy approach as every
+  other content file here). Wired into `rca-grounding.ts`'s `buildSubjectReferenceBlock` for
+  `science-6` via a new `findExperiments()` matcher (handles multi-experiment weeks like "Experiments
+  #6 & #7" via a bounded post-"Experiment" character window, verified against real week-text strings
+  from the pacing file).
+- Deliberately did NOT touch `latin-core.ts` (the small standard-vocab/TTS-audio-manifest file) — its
+  header comment explains it's intentionally NOT a transcription of Memoria Press's copyrighted lesson
+  sequencing, and rebuilding it with full per-lesson vocab would also require regenerating its TTS
+  audio pipeline. The pacing-file topic annotations above are the safe, high-value version of the same
+  idea.
+
+**Proof pointers:** `npx tsc --noEmit` clean; `npm run build` → ✓ Compiled successfully, all 66 pages
+including `/rca/[slug]` prerendered (only the pre-existing multi-lockfile warning). Regex matcher
+verified against 6 real week-text strings pulled straight from `science-6.ts` before wiring it in.
+
 ## Praxis 7001 exam prep integrated (2026-09-04)
 Folded the existing standalone Praxis prep (`~/classpilot/exam-prep/praxis-7001` — 4 content MD files +
 a Python diagnostic server with question banks) into Meta Tutor as a real feature, per Jacob's directive

@@ -1,7 +1,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { NextRequest } from "next/server";
 import { checkRateLimit, rateLimitResponse } from "@/lib/rate-limit";
-import { auth } from "@/auth";
+import { sessionEmail } from "@/lib/dev-auth";
 import { notifyIfAuthError } from "@/lib/alert";
 import { stripJsonFences } from "@/lib/json-fences";
 
@@ -26,10 +26,9 @@ Respond with ONLY valid JSON, no markdown fences:
 "valid" is false only if this isn't real Latin at all. "corrected" is the best real Latin spelling either way (echo the input back, cleaned up, if it was already correct). "wasCorrected" is true only if "corrected" differs from the original input beyond macrons/case/whitespace.`;
 
 export async function POST(req: NextRequest) {
-  const session = await auth();
-  if (!session) return new Response("Unauthorized", { status: 401 });
+  const userId = await sessionEmail(req);
+  if (!userId) return new Response("Unauthorized", { status: 401 });
 
-  const userId = session.user?.email || "unknown";
   const { allowed } = await checkRateLimit(userId);
   if (!allowed) return rateLimitResponse();
 

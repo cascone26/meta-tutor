@@ -1,5 +1,5 @@
-import { NextResponse } from "next/server";
-import { auth } from "@/auth";
+import { NextRequest, NextResponse } from "next/server";
+import { sessionEmail } from "@/lib/dev-auth";
 import { getSupabase } from "@/lib/supabase";
 
 // Server-side mirror of useCustomVocab()'s localStorage — see the comment on
@@ -18,15 +18,15 @@ type VocabRow = {
   created_at: string;
 };
 
-export async function GET() {
-  const session = await auth();
-  if (!session?.user?.email) return new Response("Unauthorized", { status: 401 });
+export async function GET(req: NextRequest) {
+  const userEmail = await sessionEmail(req);
+  if (!userEmail) return new Response("Unauthorized", { status: 401 });
 
   const supabase = getSupabase();
   const { data, error } = await supabase
     .from("mt_custom_vocab")
     .select("id, latin, english, category, note, audio_ready, created_at")
-    .eq("user_email", session.user.email);
+    .eq("user_email", userEmail);
 
   if (error) return new Response("Failed to load custom vocab", { status: 500 });
 
@@ -42,9 +42,9 @@ export async function GET() {
   return NextResponse.json({ items });
 }
 
-export async function POST(req: Request) {
-  const session = await auth();
-  if (!session?.user?.email) return new Response("Unauthorized", { status: 401 });
+export async function POST(req: NextRequest) {
+  const userEmail = await sessionEmail(req);
+  if (!userEmail) return new Response("Unauthorized", { status: 401 });
 
   const body = await req.json();
   const { id, latin, english, category, note } = body;
@@ -52,7 +52,7 @@ export async function POST(req: Request) {
 
   const supabase = getSupabase();
   const { error } = await supabase.from("mt_custom_vocab").upsert({
-    user_email: session.user.email,
+    user_email: userEmail,
     id,
     latin,
     english,
@@ -63,15 +63,15 @@ export async function POST(req: Request) {
   return NextResponse.json({ ok: true });
 }
 
-export async function DELETE(req: Request) {
-  const session = await auth();
-  if (!session?.user?.email) return new Response("Unauthorized", { status: 401 });
+export async function DELETE(req: NextRequest) {
+  const userEmail = await sessionEmail(req);
+  if (!userEmail) return new Response("Unauthorized", { status: 401 });
 
   const id = new URL(req.url).searchParams.get("id");
   if (!id) return new Response("Missing id", { status: 400 });
 
   const supabase = getSupabase();
-  const { error } = await supabase.from("mt_custom_vocab").delete().eq("user_email", session.user.email).eq("id", id);
+  const { error } = await supabase.from("mt_custom_vocab").delete().eq("user_email", userEmail).eq("id", id);
   if (error) return new Response("Failed to delete", { status: 500 });
   return NextResponse.json({ ok: true });
 }
