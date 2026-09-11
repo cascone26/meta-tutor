@@ -1,5 +1,5 @@
-import { NextResponse } from "next/server";
-import { auth } from "@/auth";
+import { NextRequest, NextResponse } from "next/server";
+import { sessionEmail } from "@/lib/dev-auth";
 import { getSupabase } from "@/lib/supabase";
 import { rcaProgressAdapter } from "@/lib/rca/progress-adapter";
 import { upsertSubjectSnapshot } from "@/lib/tutor-core/profile-aggregator";
@@ -50,15 +50,14 @@ function computeWeakAreas(history: HistoryRow[]) {
   return { terms, categories };
 }
 
-export async function GET(req: Request) {
-  const session = await auth();
-  if (!session?.user?.email) return new Response("Unauthorized", { status: 401 });
+export async function GET(req: NextRequest) {
+  const userEmail = await sessionEmail(req);
+  if (!userEmail) return new Response("Unauthorized", { status: 401 });
 
   const subject = new URL(req.url).searchParams.get("subject");
   if (!subject) return new Response("Missing subject", { status: 400 });
 
   const supabase = getSupabase();
-  const userEmail = session.user.email;
 
   const [{ data: wrongAnswers, error: waErr }, { data: history, error: hErr }] = await Promise.all([
     supabase
@@ -88,11 +87,10 @@ export async function GET(req: Request) {
   });
 }
 
-export async function POST(req: Request) {
-  const session = await auth();
-  if (!session?.user?.email) return new Response("Unauthorized", { status: 401 });
+export async function POST(req: NextRequest) {
+  const userEmail = await sessionEmail(req);
+  if (!userEmail) return new Response("Unauthorized", { status: 401 });
 
-  const userEmail = session.user.email;
   const supabase = getSupabase();
   const body = await req.json();
   const { action, subject } = body;
