@@ -1,5 +1,48 @@
 # Meta Tutor — Status
 
+## Three "use it more" features shipped: pre-class brief, reverse homework, prep-contact (2026-09-11)
+Jacob picked ideas #4, #7, #10 from a brainstorm on making Meta Tutor stickier. All three built,
+`tsc`/`build` clean, and Viewer-verified with own-eyes screenshots (per the standing rule).
+
+**#4 — Teaching-day pre-class brief.** The one thing `/rca/today` (+`/rca/week`) lacked was the
+Teacher's-Guide "watch for" note — the single mix-up most worth remembering before teaching a lesson.
+New `src/lib/rca-content/teacher-watchfor.ts` resolves classId+lessonN → the real watch-for (Latin +
+Saxon guides today; others return null). Surfaced as an amber chip on the cram cards (`PacedLesson.tsx`)
+and as a new server route `/api/preclass-brief` (reuses the exact same pacing/lesson logic as the page,
+never re-derived). A Mon/Thu 6:15am LaunchAgent (`com.metatutor.preclass-brief`, script
+`~/tools/meta-tutor-preclass-brief.sh` → `scripts/preclass-brief.mjs`) fires a local Mac notification
+with the day's headline + writes the full brief to `~/logs/preclass-brief-latest.txt`. Local-only, no
+phone push. **VERIFIED live:** the amber "WATCH FOR — Present System Review…" chip renders correctly on
+`/rca/week`'s First Form Latin card (own-eyes screenshot `scripts/.shots/new-week-watchfor.png`).
+
+**#7 — Reverse homework.** Turns the standing "stay a week ahead" rule (only a passive banner before)
+into concrete, dated, checkable prep tasks the app assigns Jacob. New `/api/prep-assignments` (GET list /
+POST AI-generate / PATCH toggle / DELETE) computes the prep-ahead lesson via `prepAheadLessonRange`, grounds
+a Claude generation in the real lesson content + watch-for, and stores tasks in new table
+`mt_prep_assignments`. New page `/rca/prep` (linked from the RCA hub) with subject picker + checkable
+task cards + due dates. **VERIFIED:** page renders cleanly and degrades gracefully with own eyes
+(`new-prep-initial.png`); AI generation confirmed working live (POST returned 500 *only* on the DB insert
+= `PGRST205 table-not-found`, i.e. generation succeeded, tasks produced in ~5s). **NEEDS ONE MANUAL STEP:**
+run the `mt_prep_assignments` CREATE TABLE from `supabase-schema-hub.sql` in the Supabase SQL Editor —
+same manual-migration gate as every other table in this project. Until then GET/POST 500 and the page
+shows a graceful "Couldn't load" message (no crash).
+
+**#10 — Prep-contact ("count what you're already doing").** Extended the already-running local ambient
+logger's `correlate.py` (`~/.filament/ambient-logger/`) to compute `prep_contact_minutes_7d` — active
+minutes over the last 7 days in unambiguous native prep apps (Preview, Pages, Word, Books, Notes…).
+Browsers are DELIBERATELY excluded (no window titles → can't tell lesson-doc prep from YouTube; Meta Tutor
+already tracks its own browser usage server-side), so it honestly undercounts, and the UI labels it an
+estimate. Flows type→aggregator→`AmbientInsights.tsx` (new "~Xh of prep-app time this week" line on
+`/learner-profile`). **VERIFIED:** computation ran against the real `activity.db` → correct output (0 now,
+since the log currently only holds Terminal time — it populates as real prep apps get used); data plumbing
+returns the new fields live (200 JSON, null-safe). The UI line renders once the two `mt_ambient_insights`
+ALTERs (in `supabase-schema-hub.sql`) run and prep-app time accrues. Also fixed along the way:
+`/api/learner-profile` now uses `sessionEmail` (dev-preview-driveable) per the standing Viewer rule.
+
+**Honest status boundary:** #4 fully live. #7 and #10 are code-complete + verified up to the one manual
+Supabase migration each (both SQL blocks written into `supabase-schema-hub.sql`, both idempotent). Nothing
+crashes pre-migration — every new surface degrades gracefully.
+
 ## Daily engagement nudge shipped (2026-09-11)
 Jacob asked how to improve Meta Tutor and use it more. Diagnosis: the app is deep
 (10 RCA subjects, Latin Lab, Praxis prep, a real cross-subject `mt_learner_profile`

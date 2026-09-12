@@ -32,6 +32,11 @@ export type AmbientInsight = {
   peakFocusHour: number | null; // 0-23, local time
   avgSessionMinutes: number | null;
   sampleDays: number;
+  // "Count what you're already doing" (2026-09-11): estimated active minutes in
+  // native prep apps over the last 7 days (browsers excluded — see correlate.py).
+  // Null until the extended correlator has run against a populated log.
+  prepContactMinutes7d: number | null;
+  topPrepApps: { app: string; minutes: number }[] | null;
   computedAt: string; // ISO timestamp
 };
 

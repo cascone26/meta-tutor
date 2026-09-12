@@ -4,6 +4,7 @@ import type { SubjectContent } from "@/lib/rca-content/types";
 import { todaysLessonNumber } from "@/lib/rca-content/types";
 import { currentLessonNumber, isPacingCurrent } from "@/lib/rca";
 import { useRcaPacingOffsets } from "@/lib/rca-pacing-client";
+import { getTeacherWatchFor } from "@/lib/rca-content/teacher-watchfor";
 
 // The lesson-number + key-points block on /rca/today, as its own client island
 // so it can apply the same persisted pacing offset LessonViewer uses (see
@@ -17,6 +18,7 @@ export default function PacedLesson({ classId, content, weekday }: { classId: st
   const n = Math.min(total, Math.max(1, rawEstimate + (offsets[classId] ?? 0)));
   const lesson = content.lessons.find((l) => l.n === n);
   const stale = !isPacingCurrent(content.totalWeeks ?? total);
+  const watch = getTeacherWatchFor(classId, n);
 
   return (
     <>
@@ -53,6 +55,14 @@ export default function PacedLesson({ classId, content, weekday }: { classId: st
         </div>
       ) : (
         <p className="text-sm" style={{ color: "#8a9a7c" }}>No lesson content for lesson {n}.</p>
+      )}
+      {watch && (
+        <div className="rounded-xl p-3 mt-2 print:border print:border-solid" style={{ background: "#fdf6ee", border: "1px solid #ecd9bf" }}>
+          <p className="text-xs font-semibold uppercase tracking-widest mb-1" style={{ color: "#a97b3a" }}>
+            Watch for — {watch.title}
+          </p>
+          <p className="text-sm" style={{ color: "#6b532b" }}>{watch.watchFor}</p>
+        </div>
       )}
     </>
   );

@@ -19,14 +19,21 @@ type AmbientInsightRow = {
   peak_focus_hour: number | null;
   avg_session_minutes: number | null;
   sample_days: number;
+  // Optional: only present once the 2026-09-11 ALTERs have been run (see
+  // supabase-schema-hub.sql). select("*") tolerates their absence.
+  prep_contact_minutes_7d?: number | null;
+  top_prep_apps?: { app: string; minutes: number }[] | null;
   computed_at: string;
 };
 
 async function getAmbientInsight(userEmail: string): Promise<AmbientInsight | null> {
   const supabase = getSupabase();
+  // select("*") on purpose — the prep-contact columns are added by a manual
+  // migration, so naming them explicitly would 400 until that runs; "*" just
+  // returns whatever columns exist today.
   const { data } = await supabase
     .from("mt_ambient_insights")
-    .select("peak_focus_hour, avg_session_minutes, sample_days, computed_at")
+    .select("*")
     .eq("user_email", userEmail)
     .maybeSingle();
 
@@ -36,6 +43,8 @@ async function getAmbientInsight(userEmail: string): Promise<AmbientInsight | nu
     peakFocusHour: row.peak_focus_hour,
     avgSessionMinutes: row.avg_session_minutes,
     sampleDays: row.sample_days,
+    prepContactMinutes7d: row.prep_contact_minutes_7d ?? null,
+    topPrepApps: row.top_prep_apps ?? null,
     computedAt: row.computed_at,
   };
 }

@@ -12,16 +12,43 @@ export default function AmbientInsights({ insight }: { insight: AmbientInsight |
   if (insight.peakFocusHour !== null) parts.push(`you focus best around ${hourLabel(insight.peakFocusHour)}`);
   if (insight.avgSessionMinutes !== null) parts.push(`typical session is ~${Math.round(insight.avgSessionMinutes)} min`);
 
-  if (parts.length === 0) return null;
+  const prepMin = insight.prepContactMinutes7d;
+  const hasPrep = typeof prepMin === "number" && prepMin > 0;
+
+  if (parts.length === 0 && !hasPrep) return null;
 
   return (
     <div className="rounded-xl p-4 mb-4" style={{ background: "#1a1d2b", border: "1px solid #2a2d3d" }}>
       <p className="text-xs font-semibold mb-2" style={{ color: "#8a9bd8" }}>
         From your activity {insight.sampleDays < 7 ? `(${insight.sampleDays} day${insight.sampleDays === 1 ? "" : "s"} so far)` : ""}
       </p>
-      <p className="text-sm" style={{ color: "#e8e6f0" }}>
-        {parts.join(", ")}.
-      </p>
+      {parts.length > 0 && (
+        <p className="text-sm" style={{ color: "#e8e6f0" }}>
+          {parts.join(", ")}.
+        </p>
+      )}
+      {hasPrep && (
+        <div className={parts.length > 0 ? "mt-3" : ""}>
+          <p className="text-sm" style={{ color: "#e8e6f0" }}>
+            ~{prepHours(prepMin!)} of prep-app time in the last 7 days
+            {insight.topPrepApps && insight.topPrepApps.length > 0
+              ? ` — mostly ${insight.topPrepApps.slice(0, 2).map((a) => a.app).join(", ")}`
+              : ""}
+            .
+          </p>
+          <p className="text-xs mt-1" style={{ color: "#6b7299" }}>
+            Estimated from which app was in front (browsers excluded — they can&apos;t be told apart
+            from non-prep), so this undercounts. It&apos;s here to give you credit for work you already do.
+          </p>
+        </div>
+      )}
     </div>
   );
+}
+
+function prepHours(minutes: number): string {
+  if (minutes < 60) return `${minutes} min`;
+  const h = Math.floor(minutes / 60);
+  const m = minutes % 60;
+  return m === 0 ? `${h}h` : `${h}h ${m}m`;
 }

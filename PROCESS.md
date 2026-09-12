@@ -1785,3 +1785,81 @@ checked lessons and the underlying rendering code path (same component/logic for
 ### References
 New: `src/lib/rca-content/latin-grammar-charts.ts`, `src/components/rca/GrammarChart.tsx`.
 Modified: `src/components/rca/TeacherGuide.tsx`.
+
+---
+
+## 2026-09-11 — "Use it more" trio: pre-class brief, reverse homework, prep-contact
+
+### Problem framing
+Jacob: "how can we improve meta tutor and make me use it more?" then, after a brainstorm,
+picked exactly three ideas: **#4** teaching-day pre-class auto-brief, **#7** reverse homework
+(app assigns HIM prep), **#10** count prep he's already doing. Also "better looks overall."
+
+Diagnosis (from the prior nudge session): the app is deep but pull-only. The fix isn't more
+features to visit — it's making the app reach him (brief), give him a reason to open it with a
+deadline (reverse homework), and give him credit for work he already does (prep-contact).
+
+### search-before-build (paid off big — did NOT build from zero)
+- `/rca/today` + `/rca/week` already compute the whole teaching-day view (classes, materials,
+  paced lesson per class via `currentLessonNumber`/`todaysLessonNumber`). #4's ONLY genuinely
+  missing piece was the Teacher's-Guide "watch for" note, which lived only on class detail pages.
+- The "stay a week ahead" concept already exists as `prepAheadLessonRange` (rca.ts) but only as a
+  passive banner in LessonViewer. #7 = turn that into real dated tasks. Reused the function.
+- The ambient logger (`~/.filament/ambient-logger/`) was ALREADY RUNNING (activity.db live,
+  937KB). #10 = extend its `correlate.py`, not build a tracker.
+
+### Decisions / forks
+- **#4 delivery:** rejected phone push (Jacob's 2026-09-09 no-automated-push policy). Chose
+  (a) surface the watch-for chip on the existing cram cards + (b) a local Mac notification at
+  Mon/Thu 6:15am. Built `/api/preclass-brief` as the single source so the notification script
+  never re-derives pacing math — DRY against PacedLesson's own logic.
+- **#7 due date:** each generated task is due `nextTeachingDate()` — "before the next time he's
+  in front of kids" — concrete and honest, vs a vague "in a week."
+- **#10 honesty fork (the important one):** the logger stores NO window titles by design, so a
+  frontmost browser can't be told apart from non-prep browsing. Rather than count all browser
+  time (dishonest overcount) or fake precision, I EXCLUDED browsers entirely and count only
+  unambiguous native doc/prep apps (Preview/Pages/Word/Books/Notes…). This undercounts (misses
+  Google-Docs/FACTS/Meta-Tutor-in-browser — but Meta Tutor already tracks its own usage
+  server-side), and the UI says so. Charisma Report/Handle discipline: the estimate is labeled
+  an estimate, every counted minute is defensible.
+
+### What broke / corrections
+- Local AI routes 401'd: `.env.local`'s `ANTHROPIC_AUTH_TOKEN` was revoked. Refreshed it from the
+  live Keychain OAuth session (what `sync-meta-tutor-token.sh` does), backed up as
+  `.env.local.bak-tokenrefresh`. After refresh, prep generation worked (500-on-insert, not
+  502-on-generate, proved it).
+- Two dev servers on the box (PID 18673 from another session on :3000; mine deferred to :3002
+  which turned out to be an unrelated service). Verified against :3000 (has my code via hot-reload),
+  left 18673 untouched per the never-touch-another-session's-work discipline.
+- `/api/learner-profile` used raw `auth()`, so the Viewer harness couldn't drive it (401 in the
+  first walkthrough). Switched it to `sessionEmail` (dev-preview-driveable, production-safe) per
+  the standing Meta Tutor Viewer rule.
+
+### Proof pointers
+- `npx tsc --noEmit` clean; first `npm run build` compiled the full route tree incl.
+  `/rca/prep`, `/api/preclass-brief`, `/api/prep-assignments` (2nd build run only hit a flaky
+  Google-Fonts fetch — network, not code).
+- #4 watch-for chip: own-eyes screenshot `scripts/.shots/new-week-watchfor.png` (real amber chip,
+  real Latin mix-up text, on the First Form Latin card).
+- #7 page: `scripts/.shots/new-prep-initial.png` (renders + graceful degrade). Generation live:
+  POST /api/prep-assignments → 500 `PGRST205` (table missing) = generation succeeded, insert-only
+  fail.
+- #10 computation: `python3 -c` run of `compute_prep_contact` against real `activity.db` → valid
+  output. Data plumbing: `curl /api/learner-profile` → 200 with `prepContactMinutes7d` field present.
+
+### Not done / needs Jacob (one step each)
+Two idempotent SQL blocks written into `supabase-schema-hub.sql` must be run once in the Supabase
+SQL Editor (no DDL access from the service key — same manual gate as every table here):
+1. `create table mt_prep_assignments (...)` — unblocks #7.
+2. two `alter table mt_ambient_insights add column if not exists ...` — unblocks #10's UI line.
+Both pieces degrade gracefully until then. Deploy is safe now (nothing crashes pre-migration).
+
+### References
+New: `src/lib/rca-content/teacher-watchfor.ts`, `src/app/api/preclass-brief/route.ts`,
+`src/app/api/prep-assignments/route.ts`, `src/app/rca/prep/page.tsx`, `scripts/preclass-brief.mjs`,
+`scripts/mt-new-features-audit.mjs`, `~/tools/meta-tutor-preclass-brief.sh`,
+`~/Library/LaunchAgents/com.metatutor.preclass-brief.plist`.
+Modified: `src/components/rca/PacedLesson.tsx`, `src/app/rca/page.tsx`,
+`src/lib/tutor-core/types.ts`, `src/lib/tutor-core/profile-aggregator.ts`,
+`src/components/learner-profile/AmbientInsights.tsx`, `src/app/api/learner-profile/route.ts`,
+`supabase-schema-hub.sql`, `~/.filament/ambient-logger/correlate.py`.

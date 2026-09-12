@@ -90,6 +90,30 @@ alter table mt_rca_grading_checklist enable row level security;
 drop policy if exists "Service role full access" on mt_rca_grading_checklist;
 create policy "Service role full access" on mt_rca_grading_checklist for all using (true);
 
+-- Added 2026-09-11: "reverse homework" — the app assigns JACOB (the teacher)
+-- concrete, dated prep tasks for the lesson he should be prepping ahead to (see
+-- prepAheadLessonRange in rca.ts + the AI generation in /api/prep-assignments),
+-- so "stay a week ahead" stops being a passive banner and becomes a real checklist
+-- with a due date before the class. One row per generated task; done rows are kept
+-- (not deleted) so the app can show recent completions.
+create table if not exists mt_prep_assignments (
+  id uuid not null default gen_random_uuid(),
+  user_email text not null,
+  subject_id text not null,
+  lesson_n int,
+  task text not null,
+  rationale text,
+  due_date date,
+  done boolean not null default false,
+  created_at timestamptz not null default now(),
+  primary key (id)
+);
+create index if not exists idx_prep_assignments_user on mt_prep_assignments(user_email, done, due_date);
+
+alter table mt_prep_assignments enable row level security;
+drop policy if exists "Service role full access" on mt_prep_assignments;
+create policy "Service role full access" on mt_prep_assignments for all using (true);
+
 -- Added 2026-08-30: Latin Lab — a standalone, research-based (comprehensible-input /
 -- Ørberg-style) Latin course, separate from RCA's First Form Latin 6 curriculum, built
 -- as the individualized-adaptive-learning prototype (Jacob-only for now, testbed for
@@ -175,6 +199,18 @@ create table if not exists mt_ambient_insights (
   sample_days int not null default 0,
   computed_at timestamptz not null default now()
 );
+
+-- Added 2026-09-11 ("count what you're already doing"): passive prep-contact
+-- estimate. Active minutes over the last 7 days spent in unambiguous native
+-- document/prep apps (Preview, Pages, Word, Books, Notes, …) — deliberately
+-- EXCLUDES browsers, whose frontmost-app signal can't tell lesson-doc prep from
+-- YouTube (the logger stores no window titles by design). So this UNDERcounts
+-- (misses Google-Docs/FACTS/Meta-Tutor-in-browser, which Meta Tutor already
+-- tracks server-side) but every counted minute is defensible. It's an estimate,
+-- and the UI labels it as one. Run these two ALTERs once in the Supabase SQL
+-- Editor (idempotent):
+alter table mt_ambient_insights add column if not exists prep_contact_minutes_7d int;
+alter table mt_ambient_insights add column if not exists top_prep_apps jsonb;
 
 alter table mt_ambient_insights enable row level security;
 drop policy if exists "Service role full access" on mt_ambient_insights;

@@ -242,10 +242,21 @@ export default function RcaPage() {
       <Reveal>
         <Link
           href="/rca/week"
-          className="flex items-center justify-between rounded-2xl px-4 py-3 mb-6 transition-transform hover:scale-[1.01]"
+          className="flex items-center justify-between rounded-2xl px-4 py-3 mb-3 transition-transform hover:scale-[1.01]"
           style={{ background: "rgba(63,126,166,0.1)", color: "#2f5e7a", border: "1px solid rgba(63,126,166,0.25)" }}
         >
           <span className="text-sm font-semibold">Week ahead — plan Sunday night, coming tests/events</span>
+          <span aria-hidden>→</span>
+        </Link>
+      </Reveal>
+
+      <Reveal>
+        <Link
+          href="/rca/prep"
+          className="flex items-center justify-between rounded-2xl px-4 py-3 mb-6 transition-transform hover:scale-[1.01]"
+          style={{ background: "rgba(107,142,90,0.12)", color: "#4a6b3a", border: "1px solid rgba(107,142,90,0.3)" }}
+        >
+          <span className="text-sm font-semibold">My prep — get assigned concrete homework to stay a week ahead</span>
           <span aria-hidden>→</span>
         </Link>
       </Reveal>
