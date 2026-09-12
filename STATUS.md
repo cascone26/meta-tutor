@@ -1,5 +1,33 @@
 # Meta Tutor — Status
 
+## Daily engagement nudge shipped (2026-09-11)
+Jacob asked how to improve Meta Tutor and use it more. Diagnosis: the app is deep
+(10 RCA subjects, Latin Lab, Praxis prep, a real cross-subject `mt_learner_profile`
+table already fed by Latin Lab + RCA progress routes) but 100% pull — nothing ever
+reaches Jacob, he has to remember to open it. Real data confirms the cost: Latin Lab's
+own row shows `last_activity_at: null` (never opened since it started syncing) and
+Praxis (deadline 2027-02-01, the one already missed once per GCU) isn't synced into
+`mt_learner_profile` at all, so it's invisible to any cross-subject view.
+
+Shipped first: `scripts/daily-nudge.mjs` + LaunchAgent `com.metatutor.daily-nudge`
+(5pm daily) — queries `mt_learner_profile` for real due-counts and per-subject
+staleness, adds the live Praxis countdown, and pushes one real digest via
+`~/tools/notify/notify.js`. Fires as a local Mac notification always; deliberately
+does NOT pass `--explicit`, so it respects Jacob's 2026-09-09 "no automated phone
+pushes" policy rather than working around it — phone push stays off unless Jacob
+decides to grant an exception. Verified against real Supabase data (not a stub).
+
+**Next (not yet built, named so a future session doesn't have to rediscover this):**
+1. Wire Praxis progress into `mt_learner_profile` (still localStorage-only — the
+   subject most at risk of being missed again is the one invisible to the digest).
+2. Build a real "Today" landing view aggregating the same `mt_learner_profile` rows,
+   so opening the root page answers "what do I do right now" without picking a
+   subject first (currently the hub is a thin nav; the aggregated view only exists
+   piecemeal in the older `/dashboard`, which isn't wired to RCA/Latin Lab/Praxis).
+3. Extend `src/lib/streaks.ts` (currently only wired to the old `/study` tool) to
+   cover RCA/Latin Lab/Praxis so streak/badge motivation applies to what's actually
+   used today.
+
 ## Real Teacher's Guide content built for Latin + Saxon (2026-09-09, later same night)
 Jacob asked directly whether the RCA photo material had actually been used to grow
 *his own* teaching/understanding, particularly Latin — honest answer at the time was no,
