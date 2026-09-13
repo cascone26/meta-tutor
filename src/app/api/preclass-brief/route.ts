@@ -43,7 +43,16 @@ async function getPacingOffsets(): Promise<Record<string, number>> {
   }
 }
 
-export async function GET() {
+export async function GET(req: Request) {
+  // Reachable without a browser session (it's excluded from the middleware login
+  // redirect in proxy.ts) so the teaching-morning cron can hit it — but guarded on a
+  // shared token so it isn't actually public. When BRIEF_TOKEN is set (production), a
+  // matching x-brief-token header is required; when it's unset (local dev), open.
+  const secret = process.env.BRIEF_TOKEN;
+  if (secret && req.headers.get("x-brief-token") !== secret) {
+    return new Response("Unauthorized", { status: 401 });
+  }
+
   const today = centralToday();
   const todayKey = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
   const weekday = today.toLocaleDateString("en-US", { weekday: "long" });

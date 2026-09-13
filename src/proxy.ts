@@ -25,5 +25,9 @@ export default auth((req) => {
 });
 
 export const config = {
-  matcher: ["/((?!api/auth|_next/static|_next/image|favicon.ico|icon.png|apple-icon.png|chi-rho.png|rca-logo.png|login).*)"],
+  // api/preclass-brief is excluded here so the unauthenticated teaching-morning cron
+  // (scripts/preclass-brief.mjs, no browser session) can reach it — the route itself
+  // then guards on a shared BRIEF_TOKEN, so it isn't actually public. Everything else
+  // still gets the login redirect.
+  matcher: ["/((?!api/auth|api/preclass-brief|_next/static|_next/image|favicon.ico|icon.png|apple-icon.png|chi-rho.png|rca-logo.png|login).*)"],
 };

@@ -21,7 +21,10 @@ const BRIEF_URL = process.env.BRIEF_URL || "https://meta-tutor.vercel.app/api/pr
 const OUT_FILE = path.join(process.env.HOME, "logs", "preclass-brief-latest.txt");
 
 async function main() {
-  const res = await fetch(BRIEF_URL);
+  // Shared token guards the (session-less) production route — read from env or a
+  // local file the LaunchAgent wrapper exports. Omitted in local dev (route is open).
+  const token = process.env.BRIEF_TOKEN || "";
+  const res = await fetch(BRIEF_URL, token ? { headers: { "x-brief-token": token } } : undefined);
   if (!res.ok) throw new Error(`brief fetch failed: ${res.status}`);
   const brief = await res.json();
 
