@@ -1,47 +1,49 @@
 import { NextRequest, NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
+import { randomUUID } from "crypto";
 import { sessionEmail } from "@/lib/dev-auth";
-import { getSupabase } from "@/lib/supabase";
 import { getRcaClass, currentLessonNumber, prepAheadLessonRange, nextTeachingDate, centralToday } from "@/lib/rca";
 import { rcaContent } from "@/lib/rca-content";
 import { getTeacherWatchFor } from "@/lib/rca-content/teacher-watchfor";
+import { getPrepTasks, savePrepTasks, type PrepAssignment } from "@/lib/prep-store";
 
-// "Reverse homework": the app assigns Jacob (the teacher) concrete, dated prep
-// tasks for the lesson he should be prepping AHEAD to — turning the standing
-// "stay a week ahead" rule (prepAheadLessonRange in rca.ts, today only a passive
-// banner in LessonViewer) into a real, checkable, due-dated to-do list. Tasks are
-// AI-generated but grounded in the real lesson content + his own Teacher's Guide
-// watch-for, then stored so they persist and can be checked off / correlate into
-// the learner profile later.
+// "Reverse homework": the app assigns Jacob (the teacher) concrete, dated prep tasks for
+// the lesson he should be prepping AHEAD to — turning the standing "stay a week ahead" rule
+// (prepAheadLessonRange in rca.ts) into a real, checkable, due-dated to-do list. Tasks are
+// AI-generated but grounded in the real lesson content + his own Teacher's Guide watch-for.
+//
+// Storage: the mt_learner_profile table's jsonb column (see prep-store.ts) instead of a
+// dedicated table — DDL isn't reachable with the service_role key, so this reuses an
+// existing table the key can fully write. Fully functional, no migration required.
 export const maxDuration = 30;
 
 const anthropic = new Anthropic({ timeout: 25000 });
 
 function dueDateISO(): string {
-  // Prep is "due before the next time he's in front of kids."
   const d = nextTeachingDate() ?? centralToday();
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+
+function sortTasks(tasks: PrepAssignment[]): PrepAssignment[] {
+  return tasks.slice().sort((a, b) => {
+    if (a.done !== b.done) return a.done ? 1 : -1;
+    const ad = a.due_date || "", bd = b.due_date || "";
+    if (ad !== bd) return ad < bd ? -1 : 1;
+    return (b.created_at || "") < (a.created_at || "") ? -1 : 1;
+  });
 }
 
 // GET — all assignments for the user, open first, each sorted by due date.
 export async function GET(req: NextRequest) {
   const userEmail = await sessionEmail(req);
   if (!userEmail) return new Response("Unauthorized", { status: 401 });
-
-  const supabase = getSupabase();
-  const { data, error } = await supabase
-    .from("mt_prep_assignments")
-    .select("id, subject_id, lesson_n, task, rationale, due_date, done, created_at")
-    .eq("user_email", userEmail)
-    .order("done", { ascending: true })
-    .order("due_date", { ascending: true })
-    .order("created_at", { ascending: false });
-
-  if (error) {
-    console.error("[prep-assignments GET]", error);
+  try {
+    const tasks = await getPrepTasks(userEmail);
+    return NextResponse.json({ assignments: sortTasks(tasks) });
+  } catch (e) {
+    console.error("[prep-assignments GET]", e);
     return new Response("Failed to load prep assignments", { status: 500 });
   }
-  return NextResponse.json({ assignments: data || [] });
 }
 
 // POST { subjectId } — generate 2-3 grounded prep tasks for the prep-ahead lesson.
@@ -55,8 +57,6 @@ export async function POST(req: NextRequest) {
   if (!klass || !content) return new Response("Unknown or contentless subject", { status: 400 });
 
   const total = content.lessons.length;
-  // The lesson kids reach ~1 week out is the one Jacob should have prepped by his
-  // next class — that's what we build tasks around.
   const { in1WeekN } = prepAheadLessonRange(total, content.totalWeeks ?? total);
   const targetN = Math.min(total, Math.max(currentLessonNumber(total, content.totalWeeks), in1WeekN));
   const lesson = content.lessons.find((l) => l.n === targetN);
@@ -76,7 +76,7 @@ Write 2 to 3 CONCRETE prep tasks for Jacob to do before he teaches this. Each mu
 
 Respond with ONLY a JSON array, no prose, no markdown fences. Each element: {"task": "...", "rationale": "one short sentence on why this matters"}.`;
 
-  let tasks: { task: string; rationale?: string }[] = [];
+  let generated: { task: string; rationale?: string }[] = [];
   try {
     const msg = await anthropic.messages.create({
       model: process.env.CLAUDE_MODEL || "claude-haiku-4-5-20251001",
@@ -84,12 +84,11 @@ Respond with ONLY a JSON array, no prose, no markdown fences. Each element: {"ta
       messages: [{ role: "user", content: prompt }],
     });
     const text = msg.content.filter((b) => b.type === "text").map((b) => (b as { text: string }).text).join("");
-    // Be defensive: strip any accidental fences, grab the first JSON array.
     const cleaned = text.replace(/```json\s*|```/g, "").trim();
     const match = cleaned.match(/\[[\s\S]*\]/);
     const parsed = JSON.parse(match ? match[0] : cleaned);
     if (Array.isArray(parsed)) {
-      tasks = parsed
+      generated = parsed
         .filter((t) => t && typeof t.task === "string" && t.task.trim())
         .slice(0, 3)
         .map((t) => ({ task: String(t.task).trim(), rationale: t.rationale ? String(t.rationale).trim() : undefined }));
@@ -99,26 +98,30 @@ Respond with ONLY a JSON array, no prose, no markdown fences. Each element: {"ta
     return new Response("Failed to generate prep tasks", { status: 502 });
   }
 
-  if (tasks.length === 0) return new Response("No tasks generated", { status: 502 });
+  if (generated.length === 0) return new Response("No tasks generated", { status: 502 });
 
   const due = dueDateISO();
-  const rows = tasks.map((t) => ({
-    user_email: userEmail,
+  const now = new Date().toISOString();
+  const newTasks: PrepAssignment[] = generated.map((t) => ({
+    id: randomUUID(),
     subject_id: subjectId,
     lesson_n: targetN,
     task: t.task,
     rationale: t.rationale ?? null,
     due_date: due,
     done: false,
+    created_at: now,
   }));
 
-  const supabase = getSupabase();
-  const { data, error } = await supabase.from("mt_prep_assignments").insert(rows).select();
-  if (error) {
-    console.error("[prep-assignments POST] insert:", error);
+  try {
+    const existing = await getPrepTasks(userEmail);
+    const all = [...newTasks, ...existing];
+    await savePrepTasks(userEmail, all);
+    return NextResponse.json({ assignments: sortTasks(all), lessonN: targetN, subject: klass.name });
+  } catch (e) {
+    console.error("[prep-assignments POST] save:", e);
     return new Response("Failed to save prep tasks", { status: 500 });
   }
-  return NextResponse.json({ assignments: data, lessonN: targetN, subject: klass.name });
 }
 
 // PATCH { id, done } — check off / un-check a task.
@@ -129,16 +132,9 @@ export async function PATCH(req: NextRequest) {
   const { id, done } = await req.json();
   if (!id || typeof done !== "boolean") return new Response("Missing/invalid id or done", { status: 400 });
 
-  const supabase = getSupabase();
-  const { error } = await supabase
-    .from("mt_prep_assignments")
-    .update({ done })
-    .eq("id", id)
-    .eq("user_email", userEmail);
-  if (error) {
-    console.error("[prep-assignments PATCH]", error);
-    return new Response("Failed to update task", { status: 500 });
-  }
+  const tasks = await getPrepTasks(userEmail);
+  const next = tasks.map((t) => (t.id === id ? { ...t, done } : t));
+  await savePrepTasks(userEmail, next);
   return NextResponse.json({ ok: true });
 }
 
@@ -150,15 +146,7 @@ export async function DELETE(req: NextRequest) {
   const { id } = await req.json();
   if (!id) return new Response("Missing id", { status: 400 });
 
-  const supabase = getSupabase();
-  const { error } = await supabase
-    .from("mt_prep_assignments")
-    .delete()
-    .eq("id", id)
-    .eq("user_email", userEmail);
-  if (error) {
-    console.error("[prep-assignments DELETE]", error);
-    return new Response("Failed to delete task", { status: 500 });
-  }
+  const tasks = await getPrepTasks(userEmail);
+  await savePrepTasks(userEmail, tasks.filter((t) => t.id !== id));
   return NextResponse.json({ ok: true });
 }

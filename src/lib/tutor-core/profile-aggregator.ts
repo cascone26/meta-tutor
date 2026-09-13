@@ -3,6 +3,7 @@
 // src/lib/latin-lab/progress-adapter.ts, Phase 5). Only ever import from an
 // app/api/**/route.ts file, same convention as src/lib/latin-lab/server-progress.ts.
 import { getSupabase } from "@/lib/supabase";
+import { getPrepContact, isSyntheticSubject } from "@/lib/prep-store";
 import type { SubjectSnapshot, LearnerProfile, AmbientInsight } from "./types";
 
 type ProfileRow = {
@@ -19,33 +20,32 @@ type AmbientInsightRow = {
   peak_focus_hour: number | null;
   avg_session_minutes: number | null;
   sample_days: number;
-  // Optional: only present once the 2026-09-11 ALTERs have been run (see
-  // supabase-schema-hub.sql). select("*") tolerates their absence.
-  prep_contact_minutes_7d?: number | null;
-  top_prep_apps?: { app: string; minutes: number }[] | null;
   computed_at: string;
 };
 
 async function getAmbientInsight(userEmail: string): Promise<AmbientInsight | null> {
   const supabase = getSupabase();
-  // select("*") on purpose — the prep-contact columns are added by a manual
-  // migration, so naming them explicitly would 400 until that runs; "*" just
-  // returns whatever columns exist today.
-  const { data } = await supabase
-    .from("mt_ambient_insights")
-    .select("*")
-    .eq("user_email", userEmail)
-    .maybeSingle();
+  // peak-focus/session live in mt_ambient_insights; prep-contact lives in a synthetic
+  // mt_learner_profile row (see prep-store.ts — no new columns needed since DDL isn't
+  // reachable with the service key). Fetch both and merge.
+  const [{ data }, prep] = await Promise.all([
+    supabase
+      .from("mt_ambient_insights")
+      .select("peak_focus_hour, avg_session_minutes, sample_days, computed_at")
+      .eq("user_email", userEmail)
+      .maybeSingle(),
+    getPrepContact(userEmail),
+  ]);
 
-  if (!data) return null;
-  const row = data as AmbientInsightRow;
+  if (!data && prep.prepContactMinutes7d === null) return null;
+  const row = (data || {}) as Partial<AmbientInsightRow>;
   return {
-    peakFocusHour: row.peak_focus_hour,
-    avgSessionMinutes: row.avg_session_minutes,
-    sampleDays: row.sample_days,
-    prepContactMinutes7d: row.prep_contact_minutes_7d ?? null,
-    topPrepApps: row.top_prep_apps ?? null,
-    computedAt: row.computed_at,
+    peakFocusHour: row.peak_focus_hour ?? null,
+    avgSessionMinutes: row.avg_session_minutes ?? null,
+    sampleDays: row.sample_days ?? 0,
+    prepContactMinutes7d: prep.prepContactMinutes7d,
+    topPrepApps: prep.topPrepApps,
+    computedAt: row.computed_at ?? new Date().toISOString(),
   };
 }
 
@@ -76,7 +76,9 @@ export async function getLearnerProfile(userEmail: string): Promise<LearnerProfi
     getAmbientInsight(userEmail),
   ]);
 
-  const rows = (data || []) as ProfileRow[];
+  // Drop the synthetic rows prep-store.ts uses for prep tasks / prep-contact — they
+  // aren't real learnable subjects and must never show in the profile's subject list.
+  const rows = ((data || []) as ProfileRow[]).filter((r) => !isSyntheticSubject(r.subject_id));
   const subjects: SubjectSnapshot[] = rows.map((r) => ({
     subjectId: r.subject_id,
     accuracy: r.accuracy,

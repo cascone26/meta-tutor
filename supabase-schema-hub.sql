@@ -90,29 +90,17 @@ alter table mt_rca_grading_checklist enable row level security;
 drop policy if exists "Service role full access" on mt_rca_grading_checklist;
 create policy "Service role full access" on mt_rca_grading_checklist for all using (true);
 
--- Added 2026-09-11: "reverse homework" — the app assigns JACOB (the teacher)
--- concrete, dated prep tasks for the lesson he should be prepping ahead to (see
--- prepAheadLessonRange in rca.ts + the AI generation in /api/prep-assignments),
--- so "stay a week ahead" stops being a passive banner and becomes a real checklist
--- with a due date before the class. One row per generated task; done rows are kept
--- (not deleted) so the app can show recent completions.
-create table if not exists mt_prep_assignments (
-  id uuid not null default gen_random_uuid(),
-  user_email text not null,
-  subject_id text not null,
-  lesson_n int,
-  task text not null,
-  rationale text,
-  due_date date,
-  done boolean not null default false,
-  created_at timestamptz not null default now(),
-  primary key (id)
-);
-create index if not exists idx_prep_assignments_user on mt_prep_assignments(user_email, done, due_date);
-
-alter table mt_prep_assignments enable row level security;
-drop policy if exists "Service role full access" on mt_prep_assignments;
-create policy "Service role full access" on mt_prep_assignments for all using (true);
+-- 2026-09-11: "reverse homework" (#7) and "prep-contact" (#10) deliberately need NO new
+-- table/columns. DDL isn't reachable with the credentials this project runs on (the
+-- service_role key is PostgREST data-plane only — no CREATE TABLE/ALTER — and the Supabase
+-- dashboard/CLI weren't reachable headlessly), so both features store their data in
+-- SYNTHETIC rows of the existing mt_learner_profile table, using its jsonb `weak_areas`
+-- column, via src/lib/prep-store.ts:
+--   subject_id = '__prep_tasks__'   → weak_areas = array of prep-assignment objects (#7)
+--   subject_id = '__prep_contact__' → due_count = minutes, weak_areas = top prep apps (#10)
+-- getLearnerProfile() filters any subject_id starting with '__' out of the real subject
+-- list, so nothing user-facing sees them. If real DDL ever becomes available these rows
+-- migrate 1:1 to a dedicated table — but nothing needs to be run for the features to work.
 
 -- Added 2026-08-30: Latin Lab — a standalone, research-based (comprehensible-input /
 -- Ørberg-style) Latin course, separate from RCA's First Form Latin 6 curriculum, built
@@ -200,17 +188,9 @@ create table if not exists mt_ambient_insights (
   computed_at timestamptz not null default now()
 );
 
--- Added 2026-09-11 ("count what you're already doing"): passive prep-contact
--- estimate. Active minutes over the last 7 days spent in unambiguous native
--- document/prep apps (Preview, Pages, Word, Books, Notes, …) — deliberately
--- EXCLUDES browsers, whose frontmost-app signal can't tell lesson-doc prep from
--- YouTube (the logger stores no window titles by design). So this UNDERcounts
--- (misses Google-Docs/FACTS/Meta-Tutor-in-browser, which Meta Tutor already
--- tracks server-side) but every counted minute is defensible. It's an estimate,
--- and the UI labels it as one. Run these two ALTERs once in the Supabase SQL
--- Editor (idempotent):
-alter table mt_ambient_insights add column if not exists prep_contact_minutes_7d int;
-alter table mt_ambient_insights add column if not exists top_prep_apps jsonb;
+-- Note (2026-09-11): the prep-contact estimate (#10) is NOT stored here as extra columns
+-- (that would need an ALTER we can't run) — it lives in a synthetic mt_learner_profile row,
+-- see the mt_prep_assignments-replacement note above and src/lib/prep-store.ts.
 
 alter table mt_ambient_insights enable row level security;
 drop policy if exists "Service role full access" on mt_ambient_insights;
