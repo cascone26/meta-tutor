@@ -15,6 +15,7 @@ export default function MultipleChoiceQuiz({ subjectId, subjectName, lessonN }: 
   const [index, setIndex] = useState(0);
   const [picked, setPicked] = useState<number | null>(null);
   const [correctCount, setCorrectCount] = useState(0);
+  const [saveFailed, setSaveFailed] = useState(false);
 
   async function start() {
     setPhase("loading");
@@ -49,25 +50,31 @@ export default function MultipleChoiceQuiz({ subjectId, subjectName, lessonN }: 
     if (i === q.correctIndex) {
       setCorrectCount((c) => c + 1);
     } else {
-      logWrongAnswer(progressKey, q.question.slice(0, 80), q.options[q.correctIndex], subjectName, "multiple-choice");
+      logWrongAnswer(progressKey, q.question.slice(0, 80), q.options[q.correctIndex], subjectName, "multiple-choice").catch((e) => console.error("logWrongAnswer failed:", e));
     }
   }
 
-  function next() {
+  async function next() {
     if (index + 1 < questions.length) {
       setIndex(index + 1);
       setPicked(null);
     } else {
-      saveResult(progressKey, {
-        mode: "multiple-choice",
-        date: new Date().toLocaleDateString(),
-        timestamp: Date.now(),
-        score: correctCount,
-        total: questions.length,
-        percentage: Math.round((correctCount / questions.length) * 100),
-        weakTerms: [],
-        weakCategories: correctCount < questions.length ? [subjectName] : [],
-      });
+      try {
+        await saveResult(progressKey, {
+          mode: "multiple-choice",
+          date: new Date().toLocaleDateString(),
+          timestamp: Date.now(),
+          score: correctCount,
+          total: questions.length,
+          percentage: Math.round((correctCount / questions.length) * 100),
+          weakTerms: [],
+          weakCategories: correctCount < questions.length ? [subjectName] : [],
+        });
+        setSaveFailed(false);
+      } catch (e) {
+        console.error("saveResult failed:", e);
+        setSaveFailed(true);
+      }
       setPhase("done");
     }
   }
@@ -137,7 +144,12 @@ export default function MultipleChoiceQuiz({ subjectId, subjectName, lessonN }: 
 
       {phase === "done" && (
         <div>
-          <p className="text-sm font-semibold mb-3" style={{ color: "#2f5e7a" }}>{correctCount} / {questions.length} correct</p>
+          <p className="text-sm font-semibold mb-2" style={{ color: "#2f5e7a" }}>{correctCount} / {questions.length} correct</p>
+          {saveFailed && (
+            <p className="text-xs mb-3 rounded-lg px-2.5 py-1.5" style={{ background: "#fdf0e0", color: "#8a6a2e", border: "1px solid rgba(201,132,58,0.3)" }}>
+              This result didn&apos;t save (connection issue) — it won&apos;t show up in Prep progress.
+            </p>
+          )}
           <button onClick={start} className="px-4 py-2 rounded-lg text-sm font-medium" style={{ background: "#3f7ea6", color: "#fff" }}>
             Run it again
           </button>

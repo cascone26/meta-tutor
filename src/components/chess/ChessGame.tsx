@@ -175,7 +175,7 @@ export default function ChessGame() {
             `Played ${san} on move ${moveNumber} during the ${phase}.`,
             cls,
             "play"
-          );
+          ).catch((e) => console.error("logWrongAnswer failed:", e));
           const badContext: CoachContext = {
             fenBefore,
             san,
@@ -254,7 +254,7 @@ export default function ChessGame() {
       // in the same category list, so "recent weak areas" says *when* mistakes happen,
       // not just how bad they were.
       weakCategories: Array.from(new Set([...classes.filter((c) => BAD_TIERS.includes(c)), ...phaseTags])),
-    });
+    }).catch((e) => console.error("saveResult failed:", e));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status]);
 

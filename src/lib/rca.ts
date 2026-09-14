@@ -106,6 +106,16 @@ export const rcaEvents: RcaEvent[] = [
 // osascript route rather than re-guessing.
 export type RcaClosure = { start: string; end: string; label: string; estimated: boolean };
 
+// FLAGGED 2026-09-14 (Claude, HP autonomous session): first-form-latin-6.ts's
+// own week-by-week content shows REAL class content (incl. a Latin Quiz) for
+// Sep 28 - Oct 2 ("Week 7") — directly contradicting the Fall Break dates
+// below — and has an unexplained gap Oct 12-16 instead (no lesson entry for
+// that week at all). One of these two "confirmed real" sources is wrong. Did
+// NOT guess which and silently change it; currentLessonNumber() below is now
+// closure-aware either way, but the wrong date here will still make
+// week-ahead/pacing display incorrectly for that stretch until resolved
+// against Jacob's actual KSC calendar (same osascript-pull method as the
+// note above this list).
 export const RCA_CLOSURES: RcaClosure[] = [
   { start: "2026-08-15", end: "2026-08-15", label: "Solemnity of the Assumption of the BVM", estimated: false },
   { start: "2026-09-07", end: "2026-09-07", label: "Labor Day", estimated: false },
@@ -491,29 +501,60 @@ export function nextTeachingDate(today: Date = centralToday()): Date | null {
   return null;
 }
 
-/** Roughly which lesson we're on, given the term started `rcaSchedule.termStart` and these
- * lessons are paced across `totalWeeks` (defaults to 1 lesson/week if omitted). Clamped to
- * [1, totalLessons]. Does not account for holidays. */
-export function currentLessonNumber(totalLessons: number, totalWeeks: number = totalLessons, today: Date = centralToday()): number {
+/** A calendar week (identified by its Monday) where BOTH of RCA's real teaching
+ * days fall inside an RCA_CLOSURES range — i.e. a week where literally no class
+ * meets at all (Fall Break, Thanksgiving, Christmas, Mid-Winter, Easter). A week
+ * with only ONE day closed (Labor Day, Immaculate Conception, Ascension — real
+ * single-day closures inside an otherwise normal week) is NOT fully closed: the
+ * content docs still give that week its own lesson-plan entry (see
+ * first-form-latin-6.ts week 4, "Labor Day — RCA closed, no work" is still a
+ * real numbered entry), so it must still advance the teaching-week count. Only a
+ * week where NEITHER scheduled day happens should be skipped. */
+function isFullyClosedWeek(weekMonday: Date): boolean {
+  const thursday = new Date(weekMonday);
+  thursday.setDate(weekMonday.getDate() + 3);
+  return !!getClosure(weekMonday) && !!getClosure(thursday);
+}
+
+/** How many real teaching weeks (Mon/Thu weeks, minus any week that's FULLY
+ * closed per isFullyClosedWeek) have started as of `today`, counting from
+ * rcaSchedule.termStart. This is the denominator currentLessonNumber() and
+ * isPacingCurrent() both need — raw calendar weeks overcounts by however many
+ * whole weeks of Fall/Thanksgiving/Christmas/Mid-Winter/Easter break have
+ * passed, which is why the old date-math version drifted further ahead of
+ * the real lesson with every multi-week closure (found 2026-09-14: by spring,
+ * ~7 weeks of full closures mean the old math would clamp at "final lesson"
+ * roughly 7 real teaching weeks before the term's actual last lesson). */
+function teachingWeeksElapsed(today: Date): number {
   const start = new Date(rcaSchedule.termStart + "T00:00:00");
   const msPerWeek = 7 * 24 * 60 * 60 * 1000;
-  const weeksElapsed = Math.floor((today.getTime() - start.getTime()) / msPerWeek);
-  const week = Math.min(Math.max(weeksElapsed + 1, 1), totalWeeks);
+  const calendarWeeksElapsed = Math.floor((today.getTime() - start.getTime()) / msPerWeek);
+  let count = 0;
+  for (let i = 0; i <= calendarWeeksElapsed; i++) {
+    const weekMonday = new Date(start.getTime() + i * msPerWeek);
+    if (!isFullyClosedWeek(weekMonday)) count++;
+  }
+  return count;
+}
+
+/** Roughly which lesson we're on, given the term started `rcaSchedule.termStart` and these
+ * lessons are paced across `totalWeeks` real TEACHING weeks (defaults to 1 lesson/week if
+ * omitted), skipping fully-closed weeks (see teachingWeeksElapsed). Clamped to [1, totalLessons].
+ * Does not account for single-day closures shifting content within a week. */
+export function currentLessonNumber(totalLessons: number, totalWeeks: number = totalLessons, today: Date = centralToday()): number {
+  const week = Math.min(Math.max(teachingWeeksElapsed(today), 1), totalWeeks);
   return Math.min(Math.max(Math.round((week / totalWeeks) * totalLessons), 1), totalLessons);
 }
 
-// currentLessonNumber() CLAMPS once real elapsed weeks pass a subject's
-// totalWeeks, silently returning the last documented lesson forever after —
-// which reads as "this is today's real lesson" with zero signal that the
-// pacing data actually ran out. Several subjects' content only covers the
+// currentLessonNumber() CLAMPS once real elapsed TEACHING weeks pass a
+// subject's totalWeeks, silently returning the last documented lesson forever
+// after — which reads as "this is today's real lesson" with zero signal that
+// the pacing data actually ran out. Several subjects' content only covers the
 // first 25-33 of the term's real ~42 weeks (found 2026-08-16: doc access for
 // the back half is still 401ing). This tells callers when that's happening
 // so they can say so instead of presenting stale content as current.
 export function isPacingCurrent(totalWeeks: number, today: Date = centralToday()): boolean {
-  const start = new Date(rcaSchedule.termStart + "T00:00:00");
-  const msPerWeek = 7 * 24 * 60 * 60 * 1000;
-  const weeksElapsed = Math.floor((today.getTime() - start.getTime()) / msPerWeek);
-  return weeksElapsed + 1 <= totalWeeks;
+  return teachingWeeksElapsed(today) <= totalWeeks;
 }
 
 /** Jacob's standing rule (2026-09-09): for material he personally teaches, he should always

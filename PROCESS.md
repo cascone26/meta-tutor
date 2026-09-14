@@ -1916,3 +1916,108 @@ New: `src/lib/prep-store.ts`. Modified: `src/app/api/prep-assignments/route.ts` 
 `src/lib/tutor-core/profile-aggregator.ts` (read prep-contact from synthetic row; filter `__` subjects),
 `supabase-schema-hub.sql` (removed unused table/ALTERs + reuse note), `~/.filament/ambient-logger/correlate.py`
 (write prep-contact to synthetic row).
+
+## Pacing Bug Fix + Write-Path Silent-Failure Completion — 2026-09-14 (HP autonomous session)
+
+### Problem framing, and a process mistake worth recording
+Jacob's check-in, sent as he went to sleep: "the 'week ahead' info isn't right. also the 'my prep'
+section isn't working at all... the latin stuff still isn't enough... [meta tutor should] learn from
+how I learn!... you have full access, go." No back-and-forth possible.
+
+**HP's local clone was 40 commits stale** (last synced ~2026-08-24, three weeks of untouched work
+sitting on `origin/main`: fleet-wide silent-failure fixes, a full "Latin Lab" adaptive course with
+FSRS spaced repetition, 10 phases of a cross-subject "Tutor Core" learner-profile system, real
+per-lesson Latin teacher-guide content sourced from Jacob's actual photographed Teacher's Manual, and
+more). This session initially built a full diagnosis + fix set against that stale base — a new
+`latin-grammar.ts` catalog, a redesigned `subject-progress.ts`, a new `/rca/first-form-latin-6/grammar`
+page — WITHOUT running `git fetch`/`git log origin/main` first, a direct violation of this fleet's own
+"search-before-build" discipline. Caught it before pushing (the push was rejected — "40 commits
+behind" — which is what triggered the actual fetch/investigation). **Recorded here specifically so a
+future session doesn't repeat it**: always `git fetch origin main` and diff against it before touching
+a repo that isn't the one just worked in, especially one with known autonomous/other-session activity.
+
+Stashed and discarded the stale-base work once the real state was visible — most of it was redundant
+or inferior to what already existed (my `latin-grammar.ts` catalog was reasoned-estimate placements;
+the real `latin-teacher-guide.ts` already had per-lesson content sourced from Jacob's actual photographed
+guide, e.g. exact Lesson VII coverage of principal parts including the 4 real irregular exceptions
+do/sto/juvo/lavo — objectively better). What follows is what was ACTUALLY still missing after reading
+the real current code.
+
+### 1. Week-ahead pacing — confirmed STILL genuinely broken, fixed
+Checked `currentLessonNumber()` against the real (40-commits-newer) `rca.ts` before assuming anything —
+it was unchanged from the stale version: still raw calendar-weeks-elapsed since term start, zero
+RCA_CLOSURES awareness. The "Advance lesson pointer to next teaching day instead of last one taught"
+commit (e83679a) fixed a different bug (weekday selection within a week), not this one. So this was a
+real, confirmed, still-open bug, not a stale-diagnosis error. Re-applied the same fix from the discarded
+stash (`isFullyClosedWeek()` + `teachingWeeksElapsed()`, skipping only weeks where BOTH real teaching
+days are closed) against the current file, preserving `centralToday()` and the newer
+`prepAheadLessonRange()`'s dependency on the same signature. Re-verified against the pacing doc's own
+dated labels: 2026-09-14 -> lesson 5 ("Week 5 (Sep 14-18)", exact), 2026-10-19 -> lesson 9 ("Week 9 (Oct
+19-23)", exact).
+
+Also re-flagged (didn't resolve, didn't guess): `first-form-latin-6.ts`'s own content shows real class +
+a quiz for Sep 28-Oct 2, directly contradicting `RCA_CLOSURES`' Fall Break dates (same range) — with an
+unexplained gap Oct 12-16 instead. Comment left in `rca.ts` pointing at it.
+
+### 2. "My Prep" — the read-path fix already existed; the write path never got it
+`getSubjectProgress` was already fixed (2026-08-30, per its own comment — "same failure class as the
+Latin Lab silent-failure fix") to throw on failure instead of swallowing to an empty-looking result, and
+`ProgressTrend.tsx`/`PuzzleMode.tsx` already catch it correctly and show a real error+retry state.
+
+**But `saveResult` and `logWrongAnswer` — the WRITE path, called from every quiz's `finish()` — were
+still the original silent try/catch-to-console.error, completely unfixed.** This is the still-live
+mechanism behind "My Prep isn't working at all": finish a check, `saveResult()` silently fails, the UI
+still shows "3/4 correct — Run another check" as if it worked, `/rca/progress` forever shows nothing.
+Confirmed by reading the actual current file, not assumed from the stale one.
+
+Fix: both functions now throw on failure (matching `getSubjectProgress`'s already-established
+convention, not a new competing design). Updated every real caller found via `grep -rln` across the
+whole `src/` tree — `UnderstandingCheck.tsx`, `SpeedDrill.tsx`, `MultipleChoiceQuiz.tsx` (all 3 now
+await `saveResult` and show an inline "didn't save" warning on the done screen, `.catch()` the
+fire-and-forget `logWrongAnswer` mid-quiz calls), `SoundStudio.tsx`'s two quiz modes, `GravityGame.tsx`,
+`MatchGame.tsx`, and — found by the same grep, unrelated to RCA but using the same shared lib —
+`ChessGame.tsx` and `PuzzleMode.tsx`. Every one of these was a genuinely unhandled throw risk the moment
+`saveResult`/`logWrongAnswer` started throwing; fixed all of them in the same pass rather than leaving
+some silently broken in a new way.
+
+### 3. Latin depth / "learns how I learn" — already substantially built, not rebuilt
+`Latin Lab` (`/latin-lab`) already exists: a full separate course, comprehensible-input method,
+classical pronunciation (explicitly NOT RCA's ecclesiastical system — the app's own copy says "a
+separate, research-based course from RCA's Latin"), genuinely adaptive (FSRS spaced repetition for
+vocab, AI-generated comprehension checks that scale difficulty with real accuracy). `Tutor Core`
+(10 phases) already provides a cross-subject learner-profile, grounding registry, and progress adapters.
+`latin-teacher-guide.ts` already provides real per-lesson grammar content sourced from Jacob's own
+photographed Teacher's Manual, already wired into both the AI grounding AND the on-page Teacher's Guide
+panel.
+
+**Found, not fixed (a real gap, but a UX/product decision, not a bug)**: Latin Lab is not linked from
+anywhere in the RCA flow or the main dashboard (`grep -rln "latin-lab"` outside its own directory found
+nothing but a label-mapping file) — it's fully built and adaptive but effectively undiscoverable unless
+Jacob already knows the URL. Given the two courses use DIFFERENT pronunciation systems (classical vs.
+RCA's real ecclesiastical), linking them together without Jacob's steer risks confusing his actual
+lesson-prep flow rather than helping it — left this as a flagged decision for Jacob rather than a 1am
+unilateral link. Did not build a competing Latin content catalog given how much better the real one
+already is.
+
+### Verification
+- `npx tsc --noEmit`: clean, 0 errors, after `rm -rf .next && npm install` (stale build cache + missing
+  `ts-fsrs` dep from the 3-week-old `node_modules` were the only real errors, both environmental, neither
+  from this session's edits).
+- `npx eslint` on every touched file: clean, EXCEPT 10 pre-existing errors in `SoundStudio.tsx` (ref-
+  during-render) and `MatchGame.tsx` (impure `Date.now()` during render) — confirmed via `git stash` that
+  these exist identically on pristine `origin/main`, not introduced by this session. Not fixed (real but
+  out of scope for tonight's ask; flagged for a future pass).
+- `npm run build`: clean, all routes compile including the newer ones (`/latin-lab`, `/learner-profile`,
+  `/praxis`, `/rca/prep`) this session hadn't known about before the fetch.
+- `currentLessonNumber()` re-verified against the doc's own dated labels post-reconciliation (see above).
+- **Not live-verified**: same as before, no production Supabase/Anthropic credentials in this session's
+  env, so the actual fix landing correctly against real production data is unconfirmed.
+
+### References
+- Reverted/discarded (never pushed): the stale-base `latin-grammar.ts`, `LatinGrammarCatalog.tsx`,
+  `/rca/first-form-latin-6/grammar` page, and the first `subject-progress.ts`/`rca.ts` fix attempt — all
+  stashed under `hp-session-2026-09-14-stale-base-before-discovering-40-commits-ahead`, not applied.
+- Actually shipped: `src/lib/rca.ts` (pacing fix, reapplied), `src/lib/subject-progress.ts` (write-path
+  throw), `src/components/rca/{UnderstandingCheck,SpeedDrill,SoundStudio}.tsx`,
+  `src/components/rca/games/{MultipleChoiceQuiz,GravityGame,MatchGame}.tsx`,
+  `src/components/chess/{ChessGame,PuzzleMode}.tsx`.

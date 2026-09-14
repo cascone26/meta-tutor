@@ -1,5 +1,35 @@
 # Meta Tutor — Status
 
+## Pacing bug fix + completed the write-path silent-failure fix (2026-09-14, HP autonomous session)
+Jacob's list: "week ahead" info wrong, "My Prep" not working at all, Latin content still too shallow,
+plus the bigger "anything and everything, learns how I learn" ask. Full write-up + a process mistake
+worth reading: PROCESS.md, same date.
+
+- **HP's clone was 40 commits stale** — a large amount of relevant work (fleet-wide silent-failure fix,
+  Latin Lab, Tutor Core 10 phases, real per-lesson Latin teacher-guide content) already existed and
+  wasn't fetched before this session started building. Caught before pushing; discarded the redundant
+  stale-base work rather than push over better existing code. Recorded as a process lesson in PROCESS.md.
+- **Week-ahead pacing**: `currentLessonNumber()` was STILL genuinely broken even in the real current
+  code (confirmed by reading it, not assumed) — ignored closures entirely, drifting further ahead of
+  reality with every multi-week break. Fixed to count real teaching weeks. Verified against the Latin
+  pacing doc's own dated labels (exact match at 2 checkpoints).
+- **Found, not resolved**: `RCA_CLOSURES` says Fall Break is Sep 28-Oct 2; `first-form-latin-6.ts`'s own
+  content shows real class + a quiz that exact week, with an unexplained gap Oct 12-16 instead. Flagged
+  in rca.ts — needs Jacob's real KSC calendar to resolve.
+- **My Prep**: the READ path (`getSubjectProgress`) was already fixed 2026-08-30. The WRITE path
+  (`saveResult`/`logWrongAnswer`, called from every quiz's finish()) was never touched and was still
+  silently swallowing failures — the actual still-live mechanism behind "isn't working at all." Fixed
+  to match the read path's established throw-on-failure convention, and fixed every real caller across
+  the whole app (RCA quiz modes, Sound Studio, chess) that would otherwise have hit a new unhandled
+  rejection from the same change.
+- **Latin depth**: did NOT build new content — found Latin Lab (full adaptive course, FSRS spaced
+  repetition) and real per-lesson teacher-guide content already exist and are considerably better than
+  what this session initially built against the stale base. Real gap found instead: Latin Lab isn't
+  linked from anywhere in the RCA flow — flagged for Jacob's call rather than force-linked (different
+  pronunciation systems, could confuse lesson prep without his steer).
+- Build-verified: `tsc --noEmit` clean, `eslint` clean (except 10 pre-existing, confirmed-unrelated
+  errors in SoundStudio/MatchGame), `npm run build` clean.
+
 ## Three "use it more" features shipped: pre-class brief, reverse homework, prep-contact (2026-09-11)
 Jacob picked ideas #4, #7, #10 from a brainstorm on making Meta Tutor stickier. All three built,
 `tsc`/`build` clean, and Viewer-verified with own-eyes screenshots (per the standing rule).

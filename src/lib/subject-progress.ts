@@ -81,28 +81,32 @@ export async function getSubjectProgress(subject: string): Promise<SubjectProgre
   };
 }
 
+// Throws on failure now (2026-09-14 HP session), matching getSubjectProgress's own
+// throw-on-failure fix above — before this, only the READ path got that treatment;
+// the WRITE path (this function + saveResult below) still silently swallowed every
+// failure into a bare console.error nobody reads on a deployed site. That's the
+// literal mechanism behind "My Prep isn't working at all" (Jacob, 2026-09-14): run a
+// check, finish() fires saveResult(), a transient failure is caught-and-forgotten,
+// the UI still shows "3/4 correct — Run another check" as if it worked, and
+// /rca/progress forever shows "no checks run yet" with zero indication anything ever
+// tried to write. Callers (UnderstandingCheck/SpeedDrill/MultipleChoiceQuiz's finish())
+// now catch this explicitly and show a real "didn't save" warning instead.
 export async function logWrongAnswer(subject: string, term: string, definition: string, category: string, mode: string) {
-  try {
-    await fetch("/api/subject-progress", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ action: "logWrongAnswer", subject, term, definition, category, mode }),
-    });
-  } catch (e) {
-    console.error("Failed to log wrong answer:", e);
-  }
+  const res = await fetch("/api/subject-progress", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ action: "logWrongAnswer", subject, term, definition, category, mode }),
+  });
+  if (!res.ok) throw new Error(`logWrongAnswer failed: ${res.status}`);
 }
 
 export async function saveResult(subject: string, result: QuizResult) {
-  try {
-    await fetch("/api/subject-progress", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ action: "saveResult", subject, result }),
-    });
-  } catch (e) {
-    console.error("Failed to save quiz result:", e);
-  }
+  const res = await fetch("/api/subject-progress", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ action: "saveResult", subject, result }),
+  });
+  if (!res.ok) throw new Error(`saveResult failed: ${res.status}`);
 }
 
 export async function clearWrongAnswer(subject: string, term: string) {

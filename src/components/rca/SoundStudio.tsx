@@ -252,7 +252,7 @@ function ReverseQuizMode({ pool, subjectName, progressKey }: { pool: SoundCard[]
     if (gotIt) setRight((r) => r + 1);
     else {
       setWrong((w) => w + 1);
-      logWrongAnswer(progressKey, card.sounds.map((s) => s.label).join("; "), card.front, subjectName, "sound-reverse-quiz");
+      logWrongAnswer(progressKey, card.sounds.map((s) => s.label).join("; "), card.front, subjectName, "sound-reverse-quiz").catch((e) => console.error("logWrongAnswer failed:", e));
     }
     if (index + 1 < order.length) {
       const nextI = index + 1;
@@ -271,7 +271,7 @@ function ReverseQuizMode({ pool, subjectName, progressKey }: { pool: SoundCard[]
         percentage: Math.round(((gotIt ? right + 1 : right) / order.length) * 100),
         weakTerms: [],
         weakCategories: [],
-      });
+      }).catch((e) => console.error("saveResult failed:", e));
     }
   }
 
@@ -590,7 +590,7 @@ function QuizMode({ pool, subjectName, progressKey }: { pool: SoundCard[]; subje
     if (gotIt) setRight((r) => r + 1);
     else {
       setWrong((w) => w + 1);
-      logWrongAnswer(progressKey, card.front, card.sounds.map((s) => s.label).join("; "), subjectName, "sound-quiz");
+      logWrongAnswer(progressKey, card.front, card.sounds.map((s) => s.label).join("; "), subjectName, "sound-quiz").catch((e) => console.error("logWrongAnswer failed:", e));
     }
     if (index + 1 < order.length) {
       setIndex(index + 1);
@@ -605,7 +605,7 @@ function QuizMode({ pool, subjectName, progressKey }: { pool: SoundCard[]; subje
         percentage: Math.round(((gotIt ? right + 1 : right) / order.length) * 100),
         weakTerms: [],
         weakCategories: [],
-      });
+      }).catch((e) => console.error("saveResult failed:", e));
     }
   }
 

@@ -22,6 +22,7 @@ export default function SpeedDrill({ subjectId, subjectName, lessonN }: { subjec
   const [sessionStreak, setSessionStreak] = useState(0);
   const [bestSessionStreak, setBestSessionStreak] = useState(0);
   const [elapsedMs, setElapsedMs] = useState(0);
+  const [saveFailed, setSaveFailed] = useState(false);
   const startRef = useRef(0);
 
   useEffect(() => {
@@ -71,7 +72,7 @@ export default function SpeedDrill({ subjectId, subjectName, lessonN }: { subjec
       });
     } else {
       setSessionStreak(0);
-      logWrongAnswer(progressKey, q.question.slice(0, 80), q.answer, subjectName, "speed-drill");
+      logWrongAnswer(progressKey, q.question.slice(0, 80), q.answer, subjectName, "speed-drill").catch((e) => console.error("logWrongAnswer failed:", e));
     }
     if (index + 1 < questions.length) {
       setIndex(index + 1);
@@ -81,17 +82,23 @@ export default function SpeedDrill({ subjectId, subjectName, lessonN }: { subjec
     }
   }
 
-  function finish(finalCorrect: number) {
-    saveResult(progressKey, {
-      mode: "speed-drill",
-      date: new Date().toLocaleDateString(),
-      timestamp: Date.now(),
-      score: finalCorrect,
-      total: questions.length,
-      percentage: Math.round((finalCorrect / questions.length) * 100),
-      weakTerms: [],
-      weakCategories: finalCorrect < questions.length ? [subjectName] : [],
-    });
+  async function finish(finalCorrect: number) {
+    try {
+      await saveResult(progressKey, {
+        mode: "speed-drill",
+        date: new Date().toLocaleDateString(),
+        timestamp: Date.now(),
+        score: finalCorrect,
+        total: questions.length,
+        percentage: Math.round((finalCorrect / questions.length) * 100),
+        weakTerms: [],
+        weakCategories: finalCorrect < questions.length ? [subjectName] : [],
+      });
+      setSaveFailed(false);
+    } catch (e) {
+      console.error("saveResult failed:", e);
+      setSaveFailed(true);
+    }
     setPhase("done");
   }
 
@@ -162,6 +169,11 @@ export default function SpeedDrill({ subjectId, subjectName, lessonN }: { subjec
             {correctCount} / {questions.length} in {(elapsedMs / 1000).toFixed(1)}s
           </p>
           <p className="text-xs mb-3" style={{ color: "#8a9a7c" }}>Best streak this round: {bestSessionStreak}</p>
+          {saveFailed && (
+            <p className="text-xs mb-3 rounded-lg px-2.5 py-1.5" style={{ background: "#fdf0e0", color: "#8a6a2e", border: "1px solid rgba(201,132,58,0.3)" }}>
+              This result didn&apos;t save (connection issue) — it won&apos;t show up in Prep progress.
+            </p>
+          )}
           <button onClick={start} className="px-4 py-2 rounded-lg text-sm font-medium" style={{ background: "#c9843a", color: "#fff" }}>
             Run it again
           </button>

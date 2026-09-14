@@ -65,7 +65,7 @@ export default function GravityGame({ subjectId, subjectName, lessonN }: { subje
       percentage: Math.round((scoreRef.current / total) * 100),
       weakTerms: [],
       weakCategories: scoreRef.current < total ? [subjectName] : [],
-    });
+    }).catch((e) => console.error("saveResult failed:", e));
     setPhase("done");
   }
 
@@ -78,7 +78,7 @@ export default function GravityGame({ subjectId, subjectName, lessonN }: { subje
       setScore(scoreRef.current);
       setFeedback("hit");
     } else {
-      logWrongAnswer(progressKey, card.term, card.answer, subjectName, "gravity");
+      logWrongAnswer(progressKey, card.term, card.answer, subjectName, "gravity").catch((e) => console.error("logWrongAnswer failed:", e));
       setFeedback("miss");
     }
     setTimeout(() => advance(cards.length), 500);

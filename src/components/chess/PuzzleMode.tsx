@@ -47,7 +47,7 @@ export default function PuzzleMode({ prefs }: { prefs: ChessPrefs }) {
       if (sourceSquare !== expectedFrom || targetSquare !== expectedTo) {
         setStatus("wrong");
         playSound("wrong", prefs.soundOn);
-        logWrongAnswer("chess-puzzles", `${puzzle.theme} (${puzzle.id})`, `Correct move was ${puzzle.move}`, puzzle.theme, "puzzle");
+        logWrongAnswer("chess-puzzles", `${puzzle.theme} (${puzzle.id})`, `Correct move was ${puzzle.move}`, puzzle.theme, "puzzle").catch((e) => console.error("logWrongAnswer failed:", e));
         setStreak(0);
         return false;
       }
@@ -71,7 +71,7 @@ export default function PuzzleMode({ prefs }: { prefs: ChessPrefs }) {
         percentage: 100,
         weakTerms: [],
         weakCategories: [],
-      });
+      }).catch((e) => console.error("saveResult failed:", e));
       return true;
     },
     [status, puzzle, gameRef, streak, prefs.soundOn]

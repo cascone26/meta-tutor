@@ -93,7 +93,7 @@ export default function MatchGame({ subjectId, subjectName, lessonN }: { subject
       percentage: Math.round((score / total) * 100),
       weakTerms: [],
       weakCategories: mistakes > 0 ? [subjectName] : [],
-    });
+    }).catch((e) => console.error("saveResult failed:", e));
     setPhase("done");
   }
 

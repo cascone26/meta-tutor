@@ -33,6 +33,7 @@ export default function UnderstandingCheck({
   const [evaluated, setEvaluated] = useState<Evaluated[]>([]);
   const [weakAreas, setWeakAreas] = useState<{ terms: string[]; categories: string[] }>({ terms: [], categories: [] });
   const [sessionsLogged, setSessionsLogged] = useState(0);
+  const [saveFailed, setSaveFailed] = useState(false);
 
   useEffect(() => {
     getSubjectProgress(progressKey)
@@ -99,7 +100,11 @@ export default function UnderstandingCheck({
       setEvaluated((prev) => [...prev, result]);
 
       if (result.result !== "correct") {
-        logWrongAnswer(progressKey, q.question.slice(0, 80), q.answer, subjectName, "understanding-check");
+        // Best-effort — a failed log here loses one "recently missed" tag, not the
+        // whole session's result (that's saveResult in finish(), which DOES surface
+        // a failure). Caught so a transient error doesn't become an unhandled
+        // rejection, not silently ignored on purpose beyond that.
+        logWrongAnswer(progressKey, q.question.slice(0, 80), q.answer, subjectName, "understanding-check").catch((e) => console.error("logWrongAnswer failed:", e));
       }
       setPhase("result");
     } catch (e) {
@@ -118,19 +123,25 @@ export default function UnderstandingCheck({
     }
   }
 
-  function finish() {
+  async function finish() {
     const score = evaluated.filter((e) => e.result === "correct").length;
     const total = evaluated.length;
-    saveResult(progressKey, {
-      mode: "understanding-check",
-      date: new Date().toLocaleDateString(),
-      timestamp: Date.now(),
-      score,
-      total,
-      percentage: total ? Math.round((score / total) * 100) : 0,
-      weakTerms: evaluated.filter((e) => e.result !== "correct").map((e) => e.question.slice(0, 80)),
-      weakCategories: evaluated.some((e) => e.result !== "correct") ? [subjectName] : [],
-    });
+    try {
+      await saveResult(progressKey, {
+        mode: "understanding-check",
+        date: new Date().toLocaleDateString(),
+        timestamp: Date.now(),
+        score,
+        total,
+        percentage: total ? Math.round((score / total) * 100) : 0,
+        weakTerms: evaluated.filter((e) => e.result !== "correct").map((e) => e.question.slice(0, 80)),
+        weakCategories: evaluated.some((e) => e.result !== "correct") ? [subjectName] : [],
+      });
+      setSaveFailed(false);
+    } catch (e) {
+      console.error("saveResult failed:", e);
+      setSaveFailed(true);
+    }
     setPhase("done");
   }
 
@@ -218,9 +229,14 @@ export default function UnderstandingCheck({
 
       {phase === "done" && (
         <div>
-          <p className="text-sm font-semibold mb-3" style={{ color: "#2f5e7a" }}>
+          <p className="text-sm font-semibold mb-2" style={{ color: "#2f5e7a" }}>
             {evaluated.filter((e) => e.result === "correct").length} / {evaluated.length} correct
           </p>
+          {saveFailed && (
+            <p className="text-xs mb-3 rounded-lg px-2.5 py-1.5" style={{ background: "#fdf0e0", color: "#8a6a2e", border: "1px solid rgba(201,132,58,0.3)" }}>
+              This result didn&apos;t save (connection issue) — it won&apos;t show up in Prep progress. Your score above is real, just not recorded.
+            </p>
+          )}
           <button onClick={start} className="px-4 py-2 rounded-lg text-sm font-medium" style={{ background: "#6b8e5a", color: "#fff" }}>
             Run another check
           </button>
