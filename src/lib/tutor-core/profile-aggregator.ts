@@ -50,6 +50,11 @@ async function getAmbientInsight(userEmail: string): Promise<AmbientInsight | nu
 }
 
 export async function upsertSubjectSnapshot(userEmail: string, snapshot: SubjectSnapshot): Promise<void> {
+  // Never let a real subject snapshot land on a synthetic "__…" row — those hold prep-store
+  // payloads (prep tasks / prep-contact) in the same table, and an upsert would clobber them.
+  if (isSyntheticSubject(snapshot.subjectId)) {
+    throw new Error(`Refusing to upsert reserved synthetic subject_id: ${snapshot.subjectId}`);
+  }
   const supabase = getSupabase();
   await supabase.from("mt_learner_profile").upsert(
     {

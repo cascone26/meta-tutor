@@ -5,7 +5,7 @@ import { sessionEmail } from "@/lib/dev-auth";
 import { getRcaClass, currentLessonNumber, prepAheadLessonRange, nextTeachingDate, centralToday } from "@/lib/rca";
 import { rcaContent } from "@/lib/rca-content";
 import { getTeacherWatchFor } from "@/lib/rca-content/teacher-watchfor";
-import { getPrepTasks, savePrepTasks, type PrepAssignment } from "@/lib/prep-store";
+import { getPrepTasks, mutatePrepTasks, type PrepAssignment } from "@/lib/prep-store";
 
 // "Reverse homework": the app assigns Jacob (the teacher) concrete, dated prep tasks for
 // the lesson he should be prepping AHEAD to — turning the standing "stay a week ahead" rule
@@ -51,7 +51,12 @@ export async function POST(req: NextRequest) {
   const userEmail = await sessionEmail(req);
   if (!userEmail) return new Response("Unauthorized", { status: 401 });
 
-  const { subjectId } = await req.json();
+  let subjectId: string;
+  try {
+    ({ subjectId } = await req.json());
+  } catch {
+    return new Response("Invalid JSON body", { status: 400 });
+  }
   const klass = getRcaClass(subjectId);
   const content = rcaContent[subjectId];
   if (!klass || !content) return new Response("Unknown or contentless subject", { status: 400 });
@@ -114,9 +119,7 @@ Respond with ONLY a JSON array, no prose, no markdown fences. Each element: {"ta
   }));
 
   try {
-    const existing = await getPrepTasks(userEmail);
-    const all = [...newTasks, ...existing];
-    await savePrepTasks(userEmail, all);
+    const all = await mutatePrepTasks(userEmail, (existing) => [...newTasks, ...existing]);
     return NextResponse.json({ assignments: sortTasks(all), lessonN: targetN, subject: klass.name });
   } catch (e) {
     console.error("[prep-assignments POST] save:", e);
@@ -129,12 +132,15 @@ export async function PATCH(req: NextRequest) {
   const userEmail = await sessionEmail(req);
   if (!userEmail) return new Response("Unauthorized", { status: 401 });
 
-  const { id, done } = await req.json();
+  let id: string, done: boolean;
+  try {
+    ({ id, done } = await req.json());
+  } catch {
+    return new Response("Invalid JSON body", { status: 400 });
+  }
   if (!id || typeof done !== "boolean") return new Response("Missing/invalid id or done", { status: 400 });
 
-  const tasks = await getPrepTasks(userEmail);
-  const next = tasks.map((t) => (t.id === id ? { ...t, done } : t));
-  await savePrepTasks(userEmail, next);
+  await mutatePrepTasks(userEmail, (tasks) => tasks.map((t) => (t.id === id ? { ...t, done } : t)));
   return NextResponse.json({ ok: true });
 }
 
@@ -143,10 +149,14 @@ export async function DELETE(req: NextRequest) {
   const userEmail = await sessionEmail(req);
   if (!userEmail) return new Response("Unauthorized", { status: 401 });
 
-  const { id } = await req.json();
+  let id: string;
+  try {
+    ({ id } = await req.json());
+  } catch {
+    return new Response("Invalid JSON body", { status: 400 });
+  }
   if (!id) return new Response("Missing id", { status: 400 });
 
-  const tasks = await getPrepTasks(userEmail);
-  await savePrepTasks(userEmail, tasks.filter((t) => t.id !== id));
+  await mutatePrepTasks(userEmail, (tasks) => tasks.filter((t) => t.id !== id));
   return NextResponse.json({ ok: true });
 }

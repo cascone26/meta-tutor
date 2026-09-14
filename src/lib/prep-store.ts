@@ -30,31 +30,71 @@ export type PrepAssignment = {
   created_at: string;
 };
 
-export async function getPrepTasks(userEmail: string): Promise<PrepAssignment[]> {
+async function readPrepRow(userEmail: string): Promise<{ tasks: PrepAssignment[]; updatedAt: string | null }> {
   const supabase = getSupabase();
-  const { data, error } = await supabase
+  const { data } = await supabase
     .from("mt_learner_profile")
-    .select("weak_areas")
+    .select("weak_areas, updated_at")
     .eq("user_email", userEmail)
     .eq("subject_id", PREP_TASKS_SUBJECT)
     .maybeSingle();
-  if (error || !data) return [];
-  const arr = (data as { weak_areas: unknown }).weak_areas;
-  return Array.isArray(arr) ? (arr as PrepAssignment[]) : [];
+  if (!data) return { tasks: [], updatedAt: null };
+  const row = data as { weak_areas: unknown; updated_at: string | null };
+  return {
+    tasks: Array.isArray(row.weak_areas) ? (row.weak_areas as PrepAssignment[]) : [],
+    updatedAt: row.updated_at ?? null,
+  };
 }
 
-export async function savePrepTasks(userEmail: string, tasks: PrepAssignment[]): Promise<void> {
+export async function getPrepTasks(userEmail: string): Promise<PrepAssignment[]> {
+  return (await readPrepRow(userEmail)).tasks;
+}
+
+// Read-modify-write with optimistic concurrency, so concurrent generate/toggle/delete
+// requests can't silently clobber each other (the store is a single jsonb row, so a naive
+// upsert would lose whichever write landed first). Uses the existing updated_at column as a
+// version stamp — no DDL. `mutate` receives the current task list and returns the new one;
+// on a lost CAS race we re-read and re-apply, up to a few tries.
+export async function mutatePrepTasks(
+  userEmail: string,
+  mutate: (tasks: PrepAssignment[]) => PrepAssignment[]
+): Promise<PrepAssignment[]> {
   const supabase = getSupabase();
-  await supabase.from("mt_learner_profile").upsert(
-    {
+  for (let attempt = 0; attempt < 5; attempt++) {
+    const { tasks, updatedAt } = await readPrepRow(userEmail);
+    const next = mutate(tasks);
+    const stamp = new Date().toISOString();
+    const payload = {
       user_email: userEmail,
       subject_id: PREP_TASKS_SUBJECT,
-      weak_areas: tasks,
-      due_count: tasks.filter((t) => !t.done).length,
-      updated_at: new Date().toISOString(),
-    },
-    { onConflict: "user_email,subject_id" }
-  );
+      weak_areas: next,
+      due_count: next.filter((t) => !t.done).length,
+      updated_at: stamp,
+    };
+
+    if (updatedAt === null) {
+      // No row yet — insert. If someone else inserted first, this conflicts → retry as update.
+      const { error } = await supabase.from("mt_learner_profile").insert(payload);
+      if (!error) return next;
+      // 23505 = unique_violation (row now exists) → loop and take the update path.
+      if ((error as { code?: string }).code !== "23505") throw error;
+      continue;
+    }
+
+    // Row exists — conditional update guarded on the version we read. select() returns the
+    // affected rows; an empty result means another writer moved updated_at → re-read & retry.
+    const { data, error } = await supabase
+      .from("mt_learner_profile")
+      .update(payload)
+      .eq("user_email", userEmail)
+      .eq("subject_id", PREP_TASKS_SUBJECT)
+      .eq("updated_at", updatedAt)
+      .select("subject_id");
+    if (error) throw error;
+    if (data && data.length > 0) return next;
+    // Lost the race — loop re-reads the now-newer row and re-applies mutate.
+  }
+  throw new Error("prep-tasks write kept losing the optimistic-lock race");
 }
 
 export type PrepContact = {

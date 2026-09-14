@@ -43,12 +43,26 @@ async function fetchLearnerProfile(env) {
   const url = env.NEXT_PUBLIC_SUPABASE_URL;
   const key = env.SUPABASE_SERVICE_ROLE_KEY;
   const userEmail = env.JACOB_EMAIL || "cobo.cascone@gmail.com";
-  const res = await fetch(
-    `${url}/rest/v1/mt_learner_profile?user_email=eq.${encodeURIComponent(userEmail)}&select=subject_id,due_count,last_activity_at`,
-    { headers: { apikey: key, Authorization: `Bearer ${key}` } }
-  );
-  if (!res.ok) throw new Error(`Supabase fetch failed: ${res.status}`);
-  return res.json();
+  // Retry transient failures (Supabase occasionally 504s) so one blip doesn't skip the nudge.
+  let lastErr;
+  for (let attempt = 0; attempt < 3; attempt++) {
+    try {
+      const res = await fetch(
+        `${url}/rest/v1/mt_learner_profile?user_email=eq.${encodeURIComponent(userEmail)}&select=subject_id,due_count,last_activity_at`,
+        { headers: { apikey: key, Authorization: `Bearer ${key}` } }
+      );
+      if (!res.ok) throw new Error(`Supabase fetch failed: ${res.status}`);
+      const rows = await res.json();
+      // Drop the synthetic prep-store rows (subject_id starts with "__") — they carry
+      // non-subject data (e.g. __prep_contact__ due_count = minutes) that must never be
+      // counted as "items due". Same filter as getLearnerProfile in the app.
+      return rows.filter((r) => !String(r.subject_id).startsWith("__"));
+    } catch (e) {
+      lastErr = e;
+      await new Promise((r) => setTimeout(r, 1500 * (attempt + 1)));
+    }
+  }
+  throw lastErr;
 }
 
 function buildMessage(rows) {

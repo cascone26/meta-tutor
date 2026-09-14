@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { timingSafeEqual } from "crypto";
 import {
   rcaClasses,
   rcaSchedule,
@@ -49,8 +50,12 @@ export async function GET(req: Request) {
   // shared token so it isn't actually public. When BRIEF_TOKEN is set (production), a
   // matching x-brief-token header is required; when it's unset (local dev), open.
   const secret = process.env.BRIEF_TOKEN;
-  if (secret && req.headers.get("x-brief-token") !== secret) {
-    return new Response("Unauthorized", { status: 401 });
+  if (secret) {
+    const got = Buffer.from(req.headers.get("x-brief-token") ?? "");
+    const want = Buffer.from(secret);
+    if (got.length !== want.length || !timingSafeEqual(got, want)) {
+      return new Response("Unauthorized", { status: 401 });
+    }
   }
 
   const today = centralToday();
