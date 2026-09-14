@@ -110,6 +110,16 @@ export default function RcaClassBody({ cls, content }: { cls: RcaClass; content:
 
   return (
     <>
+      {cls.id === "first-form-latin-6" && (
+        <a
+          href="/rca/first-form-latin-6/drill"
+          className="flex items-center justify-between rounded-2xl px-4 py-3 mb-4 transition-transform hover:scale-[1.01]"
+          style={{ background: "#6b8e5a", color: "#fff", boxShadow: "0 8px 24px -10px rgba(107,142,90,0.5)" }}
+        >
+          <span className="text-sm font-semibold">Drill me on Latin — adaptive, remembers what you miss</span>
+          <span aria-hidden>→</span>
+        </a>
+      )}
       <LayoutDrawer classId={cls.id} onChange={(o, h) => { setOrder(o); setHidden(h); }} />
       {order.filter((id) => !hiddenSet.has(id)).map((id) => (
         <div key={id}>{widgetMap[id]}</div>

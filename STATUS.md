@@ -1,5 +1,28 @@
 # Meta Tutor — Status
 
+## First Form Latin adaptive drill for Jacob (2026-09-14)
+Jacob: the Latin RCA section wasn't helping HIM learn ("I just suck at latin and yet I still
+have to teach them it"). He wants to ace the quizzes / prep hours before class / actually learn —
+all of it. He gave the real material: a Google Doc of the actual RCA First Form Latin **quizzes +
+answer keys, Lessons 1–31**. Built a real adaptive drill:
+- **Content (verified):** `src/lib/ff-latin/vocab-data.ts` — 70 vocab pairs + sayings parsed from
+  the real quiz keys (locked to Lessons 1–12, Jacob's active range, hand-verified; regen via
+  `scripts/gen-ff-vocab.py`). Paradigm forms come from the already-verified `latin-grammar-charts.ts`
+  (every conjugation + declension form), NOT the messy quiz tables. A subagent extraction was tried
+  and REJECTED — it hallucinated garbage forms; verified against source and thrown out.
+- **Engine:** `content.ts` builds 270 drill items (vocab/sayings/conjugate/decline). FSRS adaptive
+  scheduling (reuses `latin-lab/fsrs.ts`) tracks per-item mastery in an isolated synthetic
+  `mt_learner_profile` jsonb row (`__ff_latin_mastery__`) via the CAS `jsonb-store.ts` — no DDL.
+  Grading is DETERMINISTIC (exact match, macron-insensitive, flags 1-letter near-misses) — instant,
+  free, correct; no AI needed.
+- **UI:** `/rca/first-form-latin-6/drill` — Adaptive mix / Prep next class (JIT) / Quiz a lesson,
+  typed-answer flow with live feedback + mastery stats. Linked from the First Form Latin page.
+- **Verified:** tsc + build clean; own-eyes Viewer — typed "voco" for "I call" → green Correct,
+  wrong/near/macron cases all grade right, FSRS tracks. Deployed.
+- **Next passes:** vocab for Lessons 14–31 (declension-format parse); parse/translate + real
+  quiz-replica scoring; adjective-chart drills; an AI grader for free-form translation.
+
+
 ## Full check-in sweep (2026-09-14, teaching-day morning)
 Viewer-swept all 39 routes (every one 200, zero page errors) + adversarial code-review of the
 recent jsonb work. Found and fixed real issues:
