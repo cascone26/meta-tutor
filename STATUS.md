@@ -1,5 +1,24 @@
 # Meta Tutor — Status
 
+## Full check-in sweep (2026-09-14, teaching-day morning)
+Viewer-swept all 39 routes (every one 200, zero page errors) + adversarial code-review of the
+recent jsonb work. Found and fixed real issues:
+- **Prep-store race/data-loss** — GET/POST/PATCH/DELETE did naive read-modify-write on one jsonb
+  row; concurrent requests clobbered each other. Added optimistic-lock compare-and-swap
+  (`mutatePrepTasks`, keyed on the existing `updated_at`, no DDL). Proven: 5 concurrent PATCH
+  writes → 0 tasks lost.
+- **daily-nudge synthetic-row leak** (my regression) — counted the `__prep_contact__` row's
+  `due_count` (= minutes) as "items due." Now filters `__` rows + retries transient 504s.
+- **`upsertSubjectSnapshot`** now refuses `__`-reserved subject_ids (can't clobber prep-store rows).
+- POST/PATCH/DELETE return 400 (not 500) on malformed JSON; timing-safe BRIEF_TOKEN compare.
+- **Fleet bug**: `~/tools/notify/notify.js` crashed on any message with an apostrophe (today's
+  Latin "sum's" watch-for) — shell-single-quote-wrapped AppleScript. Switched to `execFileSync`.
+- Confirmed features live in prod: 3 real Latin Lesson-6 prep tasks were generated Sat night.
+- Note: the 6:15am pre-class brief didn't fire (Mac asleep — launchd doesn't wake it); value is
+  on /rca/today regardless. `/trivia` + `/notes` show a dev-only 401 (auth() not dev-preview) —
+  pre-existing, works in prod.
+
+
 ## Pacing bug fix + completed the write-path silent-failure fix (2026-09-14, HP autonomous session)
 Jacob's list: "week ahead" info wrong, "My Prep" not working at all, Latin content still too shallow,
 plus the bigger "anything and everything, learns how I learn" ask. Full write-up + a process mistake
