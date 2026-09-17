@@ -11,7 +11,7 @@ export const FF_MASTERY_SUBJECT = "__ff_latin_mastery__";
 
 export type FFCard = {
   key: string;       // stable item id, e.g. "L5:vocab:voco" or "L5:conj:porto:present"
-  itemType: string;  // "vocab" | "saying" | "conjugate" | "decline" | "parse" | "translate"
+  itemType: string;  // "vocab" | "saying" | "conjugate" | "decline" | "principal-parts" | "parse" | "translate"
   lesson: number;    // highest lesson this item belongs to (for JIT / cumulative filtering)
   fsrs: FsrsCardState;
 };

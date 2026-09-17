@@ -6,7 +6,7 @@
 export type DrillItem = {
   key: string;
   lesson: number;            // earliest lesson this item is taught (for cumulative/JIT filtering)
-  itemType: "vocab" | "saying" | "conjugate" | "decline" | "parse" | "translate";
+  itemType: "vocab" | "saying" | "conjugate" | "decline" | "principal-parts" | "parse" | "translate";
   prompt: string;            // shown to Jacob
   direction?: string;        // e.g. "English → Latin"
   answer: string;            // the canonical correct answer
@@ -51,5 +51,5 @@ export function gradeExact(item: DrillItem, answer: string): GradeResult {
 
 /** Item types that grade deterministically (no AI). parse/translate may need AI for phrasing. */
 export function isExactType(t: DrillItem["itemType"]): boolean {
-  return t === "vocab" || t === "saying" || t === "conjugate" || t === "decline";
+  return t === "vocab" || t === "saying" || t === "conjugate" || t === "decline" || t === "principal-parts";
 }

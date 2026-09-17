@@ -12,6 +12,9 @@ const PERSON_NUMBER: [string, string][] = [
   ["1st", "plural"], ["2nd", "plural"], ["3rd", "plural"],
 ];
 
+const CASES = ["Nominative", "Genitive", "Dative", "Accusative", "Ablative"] as const;
+const PP_LABEL = ["1st", "2nd", "3rd", "4th"] as const;
+
 function tenseFromId(id: string): string {
   const t = id.split("-").slice(1).join(" ");
   return t.replace("futureperfect", "future perfect").replace("pluperfect", "pluperfect");
@@ -66,8 +69,34 @@ export function buildAllItems(): DrillItem[] {
           add({ key: `num:${num.value}`, lesson: n, itemType: "vocab",
                 prompt: `${num.english} (${num.value})`, direction: "English → Latin", answer: num.latin });
         }
+      } else if (chart.kind === "adjective") {
+        // Same shape as a noun decline item, but keyed/prompted per gender too — agreement
+        // (which gender/case/number the noun it modifies takes) is the actual skill being
+        // tested, not just recognizing one paradigm.
+        const model = chart.modelWord.split("—")[0].trim();
+        for (const g of chart.genders) {
+          CASES.forEach((cse, i) => {
+            for (const [num, forms] of [["singular", g.singular], ["plural", g.plural]] as const) {
+              add({ key: `decl:${chart.id}:${g.gender}:${cse}:${num}`, lesson: n, itemType: "decline",
+                    prompt: `${model} — ${g.gender} ${cse} ${num}`,
+                    direction: "Give the Latin form", answer: forms[i] });
+            }
+          });
+        }
+      } else if (chart.kind === "principal-parts") {
+        // Only the 2nd-4th parts are drillable (the 1st part is the vocab headword itself,
+        // already tested as a vocab item). Skip "—" (verb genuinely lacks that part) and
+        // skip multi-word deponent forms only where they'd collide with norm()'s punctuation
+        // stripping — plain multi-word answers like "gāvīsus sum" still grade fine as-is.
+        for (const v of chart.irregulars) {
+          v.parts.forEach((part, i) => {
+            if (i === 0 || part === "—") return;
+            add({ key: `pp:${chart.id}:${v.latin}:${i}`, lesson: n, itemType: "principal-parts",
+                  prompt: `${v.latin} (${v.english}) — give the ${PP_LABEL[i]} principal part`,
+                  direction: "Give the Latin form", answer: part });
+          });
+        }
       }
-      // adjective / principal-parts charts: reference-heavy; deferred from drilling for now.
     }
   }
 
