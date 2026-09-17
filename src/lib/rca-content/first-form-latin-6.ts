@@ -64,6 +64,14 @@ export const firstFormLatin6Content: SubjectContent = {
     { n: 24, sections: [{ label: "Week 24 (Mar 1-5)", text: "Monday — Teach Lesson XXIV (Third Declension Review), following the Teacher's Manual." }, { label: "Week 24 (Mar 1-5)", text: "Thursday — Practice Lesson XXIII-XXIV. Latin Quiz: Lesson XXIII-XXIV. HW Check: Lesson XXIII - Ex. I, III, IV, V & Lesson XXIV - Ex. II, III, V." }] },
     { n: 25, sections: [{ label: "Week 25 (Mar 8-12)", text: "Monday — Teach Lesson XXV (Fourth Declension), following the Teacher's Manual." }, { label: "Week 25 (Mar 8-12)", text: "Thursday — Practice Lesson XXV. Do Lesson XXV - Ex. IV and V, check and correct." }], note: "Easter Break follows (two weeks)." },
     { n: 26, sections: [{ label: "Week 26 (Mar 15-19)", text: "Monday — Teach Lesson XXVI (Fifth Declension), following the Teacher's Manual. Do Lesson XXVI - Ex. VI." }, { label: "Week 26 (Mar 15-19)", text: "Thursday — Practice Lesson XXV-XXVI. Latin Quiz: Lesson XXV-XXVI. HW Check: Lesson XXV - Ex. I, III, IV, V & Lesson XXVI - Ex. I, III, IV." }], note: "Resume after Easter Break." },
+    // FLAGGED 2026-09-16 — internal contradiction in RCA's own source doc, not resolved here.
+    // Monday's parenthetical says "Lessons XXVII-XXVIII are skipped this year," but the SAME
+    // week's Thursday explicitly practices/quizzes/HW-checks Lesson XXVII, and the real quiz
+    // doc (~/Desktop/MT_RCAmaterial/first-form-latin-quizzes.txt) is literally titled "Lessons
+    // 27 & 29 Quiz" with real Lesson-XXVII vocab/declension content on it. The weight of
+    // evidence says only Lesson XXVIII is actually skipped and the parenthetical is an error
+    // (likely a garbled copy of the Lesson-XIII skip note at n=14) — but left as-is pending
+    // Jacob confirming with RCA/the Teacher's Manual, per the non-destructive rule.
     { n: 27, sections: [{ label: "Week 27 (Mar 22-26)", text: "Monday — Teach Lesson XXIX (Second Conjugation Present Tense), following the Teacher's Manual (Lessons XXVII-XXVIII are skipped this year)." }, { label: "Week 27 (Mar 22-26)", text: "Thursday — Practice Lesson XXVII & XXIX. Latin Quiz: Lesson XXVII & XXIX. HW Check: Lesson XXVII - Ex. II, III, IV, V & Lesson XXIX - Ex. I, III, IV." }] },
     { n: 28, sections: [{ label: "Week 28 (Apr 12-16)", text: "Monday — Teach Lesson XXX (Second Conjugation Imperfect & Future Tenses), following the Teacher's Manual." }, { label: "Week 28 (Apr 12-16)", text: "Thursday — Practice Lesson XXX. Introduce Lesson XXXI." }] },
     { n: 29, sections: [{ label: "Week 29 (Apr 19-23)", text: "Monday — No work — CLT Testing." }, { label: "Week 29 (Apr 19-23)", text: "Thursday — Practice Lesson XXX-XXXI." }] },

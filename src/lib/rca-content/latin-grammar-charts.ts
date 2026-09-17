@@ -249,7 +249,7 @@ const MONEO_PRINCIPAL_PARTS: PrincipalPartsChart = {
     { latin: "teneō", parts: ["teneō", "tenēre", "tenuī", "tentus"], english: "to hold" },
     { latin: "ardeō", parts: ["ardeō", "ardēre", "arsī", "arsūrus"], english: "to burn" },
     { latin: "jubeō", parts: ["jubeō", "jubēre", "jussī", "jussus"], english: "to order" },
-    { latin: "maneō", parts: ["maneō", "manēre", "mansī", "mansūrus"], english: "to remain" },
+    { latin: "maneō", parts: ["maneō", "manēre", "mansī", "mansus"], english: "to remain" },
     { latin: "gaudeō", parts: ["gaudeō", "gaudēre", "gāvīsus sum", "—"], english: "to rejoice" },
     { latin: "caveō", parts: ["caveō", "cavēre", "cāvī", "cautus"], english: "to beware" },
     { latin: "sedeō", parts: ["sedeō", "sedēre", "sēdī", "sessūrus"], english: "to sit" },
