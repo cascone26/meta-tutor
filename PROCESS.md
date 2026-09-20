@@ -2021,3 +2021,63 @@ already is.
   throw), `src/components/rca/{UnderstandingCheck,SpeedDrill,SoundStudio}.tsx`,
   `src/components/rca/games/{MultipleChoiceQuiz,GravityGame,MatchGame}.tsx`,
   `src/components/chess/{ChessGame,PuzzleMode}.tsx`.
+
+## /rca/week date-mapping bug: cards showed the prior week's lesson — 2026-09-20
+
+### Problem framing
+Jacob, from a screenshot of `/rca/week` viewed Sunday 9/20, 7:17am: "i think this stuff isnt right for
+the dates and matching up. u NEED TO MAKE SURE EVERYTHING IS VERFIFIED CORRECT TO THE LESSON PLANS!" —
+demanded a real cross-check against the actual source lesson-plan documents, not a code-only glance.
+
+### Investigation
+Found the real source PDFs already on disk at `~/Desktop/RCA Folder/` — `Saxon 76 lesson plan- 2026-2027-
+Mr. Cascone.pdf` and `6th Grade lesson plans- 2026-2027- Mr. Cascone.pdf`, the exact same docs open as
+Chrome tabs in Jacob's screenshots. Read the Saxon PDF in full (12 pages) and hand-verified Weeks 1-8
+against `src/lib/rca-content/saxon-76.ts` line by line — the content data itself was already 100% correct,
+including the Week 6 (Sep 21-25) entry (`n: 11`, "Teach Lessons 22, 23, 24 ... Today's practice: Lesson
+22") matching the PDF exactly.
+
+The actual bug was in the pacing/selection engine, not the content. `rca.ts`'s `currentLessonNumber()`
+takes an optional `today` parameter used to compute how many teaching weeks have elapsed since
+`termStart`. `LessonViewer.tsx` (the single-lesson detail view) already passes a real `referenceDate`
+(`nextTeachingDate() ?? centralToday()`). But `PacedLesson.tsx` — the shared "key points" card used by
+`/rca/week`, `/rca/today`, and `/rca/substitute` — called `currentLessonNumber(total, content.totalWeeks)`
+with NO date argument, silently defaulting to `centralToday()` (literal today) every time. `/rca/week`
+renders TWO day-cards (Monday + Thursday) from a real per-card `Date` computed in
+`getUpcomingTeachingDays()`, but `page.tsx` only ever passed the derived `weekday` string ("Monday")
+down through `RcaClassBlock` → `PacedLesson`, never the `Date` itself — so both cards silently computed
+their week-estimate against whatever day it happened to be when the page loaded, not the date the card
+actually represented.
+
+Concretely: viewed on Sunday 9/20, `teachingWeeksElapsed(Sep 20)` = 5 (rounds to Saxon lesson estimate 10,
+weekday-corrected to entry `n:9`, Week 5, "Teach Lessons 18, 19, 20"). But `teachingWeeksElapsed(Sep 21)`
+(the Monday card's OWN date) = 6, correctly landing on entry `n:11`, Week 6, "Teach Lessons 22, 23, 24."
+The card was silently showing an entire week behind for every subject on the page (Religion 6/Latin
+5→6 of 33 too), any day the page was loaded on a non-teaching day or before the card's own date.
+
+### Fix
+Threaded the actual `date: Date` through the chain: `RcaClassBlock` now accepts an optional `date` prop
+and forwards it to `PacedLesson`, which passes it into `currentLessonNumber(total, content.totalWeeks,
+date ?? centralToday())` instead of relying on the implicit default. All three callers updated to pass
+their real per-card date: `/rca/week/page.tsx` passes the loop's own `date` (was previously discarded
+after deriving `weekday` from it), `/rca/today/page.tsx` and `/rca/substitute/page.tsx` pass their
+existing `today` variable (harmless no-op for those single-day pages since it already equalled
+`centralToday()`, but now correct-by-construction rather than correct-by-coincidence).
+
+### Verification
+- `npx tsc --noEmit`: clean, 0 errors.
+- `npm run build`: clean, all routes compile.
+- Started `npm run dev` in the background (no foreground/focus steal), curled `/rca/week` with the
+  `x-dev-preview: 1` header (dev-only auth bypass, `src/proxy.ts`) — confirmed the Monday 9/21 card's
+  rendered HTML now reads "Week 6 (Sep 21-25) ... Teach Lessons 22, 23, 24 ... Today's practice: Lesson
+  22" (was Week 5/lesson 18), and Religion 6/Latin now read "Lesson 6 of 33" (was 5).
+  - Own-eyes confirmation per [[feedback_metatutor_viewer_check]]: `node scripts/mt-shot.mjs /rca/week
+    week-fix-verify` → real headless screenshot, read directly (`scripts/.shots/week-fix-verify.png`) —
+    visually confirms the same corrected content.
+- Committed `8673f80`, pushed to `cascone26/meta-tutor` main.
+
+### References
+- Source-of-truth docs used for verification: `~/Desktop/RCA Folder/Saxon 76 lesson plan- 2026-2027- Mr.
+  Cascone.pdf`, `~/Desktop/RCA Folder/6th Grade lesson plans- 2026-2027- Mr. Cascone.pdf`.
+- Files changed: `src/components/rca/PacedLesson.tsx`, `src/components/rca/RcaClassBlock.tsx`,
+  `src/app/rca/{week,today,substitute}/page.tsx`.
