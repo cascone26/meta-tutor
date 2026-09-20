@@ -7,7 +7,7 @@ import PacedLesson from "@/components/rca/PacedLesson";
 // Jacob said he'd copy straight onto a physical whiteboard before students
 // arrive. Shared between both pages (today = just today, week = Monday +
 // Thursday together) so a pacing fix in one place doesn't drift from the other.
-export default function RcaClassBlock({ classId, name, block, room, weekday }: { classId: string; name: string; block?: string; room?: string; weekday: string }) {
+export default function RcaClassBlock({ classId, name, block, room, weekday, date }: { classId: string; name: string; block?: string; room?: string; weekday: string; date?: Date }) {
   const content = rcaContent[classId];
 
   return (
@@ -23,7 +23,7 @@ export default function RcaClassBlock({ classId, name, block, room, weekday }: {
       {!content ? (
         <p className="text-sm" style={{ color: "#8a9a7c" }}>No lesson content on file for this class yet.</p>
       ) : (
-        <PacedLesson classId={classId} content={content} weekday={weekday} />
+        <PacedLesson classId={classId} content={content} weekday={weekday} date={date} />
       )}
     </div>
   );

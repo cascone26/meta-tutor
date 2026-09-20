@@ -105,7 +105,7 @@ export default function WeekPage() {
               <h2 className="text-base font-bold mb-3" style={{ color: "#2f5e7a" }}>{dateLabel}</h2>
               <div className="space-y-4">
                 {classes.map((c) => (
-                  <RcaClassBlock key={c.id} classId={c.id} name={c.name} block={c.block} room={c.room} weekday={weekday} />
+                  <RcaClassBlock key={c.id} classId={c.id} name={c.name} block={c.block} room={c.room} weekday={weekday} date={date} />
                 ))}
               </div>
             </div>

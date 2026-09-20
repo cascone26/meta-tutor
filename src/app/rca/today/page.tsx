@@ -114,7 +114,7 @@ export default function TodayPage() {
 
           <div className="space-y-4">
             {todaysClasses.map((c) => (
-              <RcaClassBlock key={c.id} classId={c.id} name={c.name} block={c.block} room={c.room} weekday={weekday} />
+              <RcaClassBlock key={c.id} classId={c.id} name={c.name} block={c.block} room={c.room} weekday={weekday} date={today} />
             ))}
           </div>
         </>

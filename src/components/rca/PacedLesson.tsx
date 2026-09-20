@@ -2,7 +2,7 @@
 
 import type { SubjectContent } from "@/lib/rca-content/types";
 import { todaysLessonNumber } from "@/lib/rca-content/types";
-import { currentLessonNumber, isPacingCurrent } from "@/lib/rca";
+import { currentLessonNumber, isPacingCurrent, centralToday } from "@/lib/rca";
 import { useRcaPacingOffsets } from "@/lib/rca-pacing-client";
 import { getTeacherWatchFor } from "@/lib/rca-content/teacher-watchfor";
 
@@ -11,9 +11,16 @@ import { getTeacherWatchFor } from "@/lib/rca-content/teacher-watchfor";
 // /api/rca-pacing) — otherwise a correction made on a class's detail page
 // wouldn't be reflected on the whiteboard-cram day view, which defeats the
 // point of correcting it in the first place.
-export default function PacedLesson({ classId, content, weekday }: { classId: string; content: SubjectContent; weekday: string }) {
+export default function PacedLesson({ classId, content, weekday, date }: { classId: string; content: SubjectContent; weekday: string; date?: Date }) {
   const total = content.lessons.length;
-  const rawEstimate = todaysLessonNumber(content, currentLessonNumber(total, content.totalWeeks), weekday);
+  // Must estimate against THIS card's own date, not implicit "real today" —
+  // on a multi-day view (e.g. /rca/week showing both Monday and Thursday
+  // cards) every card used to fall back to centralToday() regardless of
+  // which day it represented, so a card for a few days out could land on
+  // last week's pacing (found 2026-09-20: Sunday-rendered Monday card showed
+  // the prior week's lesson instead of the upcoming week's). See LessonViewer's
+  // referenceDate for the same fix applied to the single-lesson viewer.
+  const rawEstimate = todaysLessonNumber(content, currentLessonNumber(total, content.totalWeeks, date ?? centralToday()), weekday);
   const { offsets } = useRcaPacingOffsets();
   const n = Math.min(total, Math.max(1, rawEstimate + (offsets[classId] ?? 0)));
   const lesson = content.lessons.find((l) => l.n === n);
