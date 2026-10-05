@@ -321,7 +321,7 @@ export default function RcaPage() {
         )}
         <p className="text-xs mt-1" style={{ color: "#8a9a7c" }}>{rcaSchedule.address}</p>
         <p className="text-xs mt-2" style={{ color: "#8a9a7c" }}>
-          Term: {rcaSchedule.termStart} – {rcaSchedule.termEnd}. Block times below are real (KSC staff schedule, printed 2026-08-13).
+          Term: {rcaSchedule.termStart} – {rcaSchedule.termEnd}. Block times below are real (KSC staff schedule, corrected 2026-10-04).
         </p>
       </div>
 

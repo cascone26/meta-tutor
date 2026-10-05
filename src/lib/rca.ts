@@ -11,7 +11,7 @@ export type RcaClass = {
   books: string[];
   lessonPlanUrl?: string;
   driveUrls?: { label: string; url: string }[];
-  /** Real block time, from KSC's official 2026-2027 staff schedule (printed 2026-08-13). */
+  /** Real block time, from KSC's official 2026-2027 staff schedule (Jennings' correction, 2026-10-04, effective 2026-10-05). */
   block?: string;
   /** Real room assignment, same source. */
   room?: string;
@@ -137,21 +137,32 @@ export const RCA_CLOSURES: RcaClosure[] = [
 export const CLT_TESTING_WEEK = { start: "2027-04-15", end: "2027-04-22", estimated: false };
 
 function dateKey(d: Date): string {
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+  return `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, "0")}-${String(d.getUTCDate()).padStart(2, "0")}`;
 }
 
 /** RCA (Overland Park, KS) always runs on Central time — but a plain `new
- * Date()` reflects whatever timezone the CODE is running in, not KS. On the
- * client (Jacob's own browser) that's already Central, so it's harmless
- * there; on the server (Vercel functions default to UTC) it silently rolls
- * "today" over to tomorrow's date/weekday around 7pm Central, since UTC has
- * already crossed midnight. That mismatch between a server-computed weekday
- * and a client-computed one is exactly what produced a real live bug
- * (found 2026-08-30): /rca/today's server-rendered weekday said "Monday"
- * (already past midnight UTC) while the client-side lesson-pacing math still
- * used the real Central "Sunday," and the two got stitched together into a
- * lesson from two weeks earlier. Use this everywhere "today" means "the real
- * KS school day," server or client, so both sides always agree. */
+ * Date()` reflects whatever timezone the CODE is running in, not KS. This
+ * resolves the real Central calendar day, then anchors it to a UTC instant
+ * (the "Z" suffix) so the returned Date represents the exact same moment
+ * regardless of which timezone later reads it.
+ *
+ * That anchor only holds if every reader also uses UTC getters/setters
+ * (getUTCDate, getUTCDay, setUTCDate, etc.) — mixing UTC construction with
+ * LOCAL getters reintroduces the same bug one layer down. Found 2026-09-21:
+ * this function used to build the date string with no "Z", so `new Date()`
+ * parsed it as local-to-whatever-environment-constructed-it. On the server
+ * (Vercel, UTC) that's indistinguishable from correct; the *same* Date
+ * object, once passed as a prop into a client component and read there with
+ * LOCAL getters (Jacob's browser, real Central time), silently rolled back
+ * to 7pm the PREVIOUS day — which flipped an entire teaching-week count off
+ * by one (Monday showing the prior week's lesson) with zero server-side
+ * signal anything was wrong, since the server's own UTC-getter reads of the
+ * unanchored Date always looked right. A near-identical bug was "fixed" here
+ * 2026-08-30 by centralizing on this function, but that fix only guaranteed
+ * server and client each independently land on the correct calendar day when
+ * they call centralToday() themselves — it didn't cover a single Date object
+ * crossing the server→client boundary and being read with each side's own
+ * local getters, which is exactly what /rca/today's shared `date` prop does. */
 export function centralToday(): Date {
   const parts = new Intl.DateTimeFormat("en-US", {
     timeZone: "America/Chicago",
@@ -162,7 +173,7 @@ export function centralToday(): Date {
   const y = parts.find((p) => p.type === "year")!.value;
   const m = parts.find((p) => p.type === "month")!.value;
   const d = parts.find((p) => p.type === "day")!.value;
-  return new Date(`${y}-${m}-${d}T00:00:00`);
+  return new Date(`${y}-${m}-${d}T00:00:00Z`);
 }
 
 /** Minutes since midnight, Central time, right now — for "up next" wall-clock
@@ -199,10 +210,15 @@ const sixthGradeParentDrive = "https://drive.google.com/drive/folders/1d1F3iB0vl
 // Ordered by block start time (Jacob's actual daily walk-through order), not
 // insertion order — the /rca hub and every other list built off this array
 // should read top-to-bottom the way his day actually runs. Religion 6 and
-// First Form Latin 6 share the same 10:10-10:55 block/room on the source
-// schedule (unusual — flagged, not silently resolved); PE 1-2/PE 5-6 tie on
-// time too but are Mon-only/Thu-only so they never actually land on the same
-// real day.
+// First Form Latin 6 share the same block/room on the source schedule
+// (unusual — flagged, not silently resolved); PE 1-2/PE 5-6 tie on time too
+// but are Mon-only/Thu-only so they never actually land on the same real day.
+//
+// 2026-10-04: Laura Jennings emailed a corrected Lower School bell schedule
+// ("[KSC Staff] Re: Lower School Schedule", Heiman-reviewed), effective
+// Monday 2026-10-05 (return from Fall Break) — LOE's time allotment was
+// wrong, which reshuffled CLA/Poetry, LOE, and Religion/Latin. Saxon 7/6 and
+// the afternoon Block 4-6 (PE/History/Science/Music) times were unchanged.
 export const rcaClasses: RcaClass[] = [
   {
     id: "saxon-76",
@@ -220,29 +236,13 @@ export const rcaClasses: RcaClass[] = [
     ],
   },
   {
-    id: "religion-6",
-    name: "Religion 6",
+    id: "classical-language-arts-6",
+    name: "Classical Language Arts 6",
     grade: "6th",
     area: "Academic",
-    summary: "Baltimore Catechism memory work + sequential Gospel reading — Mark in the fall, Luke in the spring.",
-    books: ["Baltimore Catechism", "Bible (Gospel of Mark / Luke)"],
-    block: "10:10 – 10:55 AM",
-    room: "St. Monica",
-    lessonPlanUrl: sixthGradeMasterDoc,
-    driveUrls: [
-      { label: "6th Grade Tutor Resource Manual", url: sixthGradeTrm },
-      { label: "Tutor Resources", url: sixthGradeTutorDrive },
-      { label: "Parent & Tutor Resources", url: sixthGradeParentDrive },
-    ],
-  },
-  {
-    id: "first-form-latin-6",
-    name: "First Form Latin 6",
-    grade: "6th",
-    area: "Academic",
-    summary: "First Form Latin — weekly lessons, memory work (sayings/grammar/vocab), Form Drills, quizzes every 2-3 weeks. Vocab/grammar drills and quizzing live here (folded in from the old standalone Latin station).",
-    books: ["First Form Latin"],
-    block: "10:10 – 10:55 AM",
+    summary: "Narration-essay writing cycles (8/year) + poetry memorization (4 poems, stanza-by-stanza with recitation quizzes).",
+    books: [],
+    block: "10:05 – 10:20 AM",
     room: "St. Monica",
     lessonPlanUrl: sixthGradeMasterDoc,
     driveUrls: [
@@ -258,7 +258,7 @@ export const rcaClasses: RcaClass[] = [
     area: "Academic",
     summary: "Logic of English Essentials C — 30 units of phonograms, spelling, grammar, and vocabulary, with Thursday dictation assessments and concurrent cursive practice.",
     books: ["Logic of English Essentials"],
-    block: "10:55 – 11:55 AM",
+    block: "10:20 – 11:35 AM",
     room: "St. Monica",
     lessonPlanUrl: "https://docs.google.com/document/d/1_-48gBlz8-bdBnzyoH4rvSC5RBudEetZzOD7C0Nv0LI/edit?usp=sharing",
     driveUrls: [
@@ -267,13 +267,29 @@ export const rcaClasses: RcaClass[] = [
     ],
   },
   {
-    id: "classical-language-arts-6",
-    name: "Classical Language Arts 6",
+    id: "religion-6",
+    name: "Religion 6",
     grade: "6th",
     area: "Academic",
-    summary: "Narration-essay writing cycles (8/year) + poetry memorization (4 poems, stanza-by-stanza with recitation quizzes).",
-    books: [],
-    block: "12:45 – 1:00 PM",
+    summary: "Baltimore Catechism memory work + sequential Gospel reading — Mark in the fall, Luke in the spring.",
+    books: ["Baltimore Catechism", "Bible (Gospel of Mark / Luke)"],
+    block: "12:25 – 1:10 PM",
+    room: "St. Monica",
+    lessonPlanUrl: sixthGradeMasterDoc,
+    driveUrls: [
+      { label: "6th Grade Tutor Resource Manual", url: sixthGradeTrm },
+      { label: "Tutor Resources", url: sixthGradeTutorDrive },
+      { label: "Parent & Tutor Resources", url: sixthGradeParentDrive },
+    ],
+  },
+  {
+    id: "first-form-latin-6",
+    name: "First Form Latin 6",
+    grade: "6th",
+    area: "Academic",
+    summary: "First Form Latin — weekly lessons, memory work (sayings/grammar/vocab), Form Drills, quizzes every 2-3 weeks. Vocab/grammar drills and quizzing live here (folded in from the old standalone Latin station).",
+    books: ["First Form Latin"],
+    block: "12:25 – 1:10 PM",
     room: "St. Monica",
     lessonPlanUrl: sixthGradeMasterDoc,
     driveUrls: [
@@ -399,13 +415,11 @@ export type ScheduleItem =
  * day" INSIDE that break instead of recognizing it as closed (found
  * 2026-08-13, sick-him audit). */
 export function getNextScheduleItem(today: Date = centralToday()): ScheduleItem {
-  // Local date, NOT toISOString() — that converts to UTC, which silently
-  // rolls "today" over to tomorrow's date in the evening (Central time
-  // crosses UTC midnight around 7pm), comparing against rcaEvents' plain
-  // local-calendar-date strings a day early.
-  const todayKey = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
-  const termStart = new Date(rcaSchedule.termStart + "T00:00:00");
-  const termEnd = new Date(rcaSchedule.termEnd + "T00:00:00");
+  // dateKey() reads UTC getters, matching centralToday()'s UTC-anchored
+  // instant — see centralToday()'s comment for why this has to match exactly.
+  const todayKey = dateKey(today);
+  const termStart = new Date(rcaSchedule.termStart + "T00:00:00Z");
+  const termEnd = new Date(rcaSchedule.termEnd + "T00:00:00Z");
 
   // rcaSchedule.termEnd was defined but never actually checked anywhere —
   // without this, the Mon/Thu walk-forward below would happily keep
@@ -422,7 +436,7 @@ export function getNextScheduleItem(today: Date = centralToday()): ScheduleItem 
   // An rcaEvent happening TODAY always wins — it overrides whatever the day
   // would otherwise be (training day, a staff meeting instead of teaching, etc.)
   if (upcoming && upcoming.date === todayKey) {
-    return { kind: "event", date: new Date(upcoming.date + "T00:00:00"), label: upcoming.label, detail: upcoming.detail, time: upcoming.time, isToday: true };
+    return { kind: "event", date: new Date(upcoming.date + "T00:00:00Z"), label: upcoming.label, detail: upcoming.detail, time: upcoming.time, isToday: true };
   }
 
   const todaysClosure = getClosure(today);
@@ -434,7 +448,7 @@ export function getNextScheduleItem(today: Date = centralToday()): ScheduleItem 
     // Before the term starts there's no regular Mon/Thu pattern yet to compare
     // against, so any real upcoming event (training/setup days) just wins outright.
     if (upcoming) {
-      return { kind: "event", date: new Date(upcoming.date + "T00:00:00"), label: upcoming.label, detail: upcoming.detail, time: upcoming.time, isToday: false };
+      return { kind: "event", date: new Date(upcoming.date + "T00:00:00Z"), label: upcoming.label, detail: upcoming.detail, time: upcoming.time, isToday: false };
     }
     return { kind: "teaching", date: termStart, isToday: false };
   }
@@ -445,9 +459,9 @@ export function getNextScheduleItem(today: Date = centralToday()): ScheduleItem 
   let nextTeaching: Date | null = null;
   for (let i = 0; i <= 21; i++) {
     const d = new Date(today);
-    d.setDate(today.getDate() + i);
+    d.setUTCDate(today.getUTCDate() + i);
     if (d > termEnd) break;
-    const day = d.getDay();
+    const day = d.getUTCDay();
     if (day !== 1 && day !== 4) continue; // Mon=1, Thu=4
     if (getClosure(d)) continue;
     nextTeaching = d;
@@ -461,7 +475,7 @@ export function getNextScheduleItem(today: Date = centralToday()): ScheduleItem 
   // "tomorrow" was training/setup week because of a staff meeting 4 days out,
   // when tomorrow was actually a normal Monday).
   if (upcoming && (!nextTeaching || upcoming.date <= dateKey(nextTeaching))) {
-    return { kind: "event", date: new Date(upcoming.date + "T00:00:00"), label: upcoming.label, detail: upcoming.detail, time: upcoming.time, isToday: false };
+    return { kind: "event", date: new Date(upcoming.date + "T00:00:00Z"), label: upcoming.label, detail: upcoming.detail, time: upcoming.time, isToday: false };
   }
 
   if (nextTeaching) {
@@ -484,14 +498,14 @@ export function getNextScheduleItem(today: Date = centralToday()): ScheduleItem 
  * returns kind "closure"/"event" on those days), not "which class-day should
  * lesson content be keyed to." */
 export function nextTeachingDate(today: Date = centralToday()): Date | null {
-  const termStart = new Date(rcaSchedule.termStart + "T00:00:00");
-  const termEnd = new Date(rcaSchedule.termEnd + "T00:00:00");
+  const termStart = new Date(rcaSchedule.termStart + "T00:00:00Z");
+  const termEnd = new Date(rcaSchedule.termEnd + "T00:00:00Z");
   const start = today < termStart ? termStart : today;
   for (let i = 0; i <= 21; i++) {
     const d = new Date(start);
-    d.setDate(start.getDate() + i);
+    d.setUTCDate(start.getUTCDate() + i);
     if (d > termEnd) break;
-    const day = d.getDay();
+    const day = d.getUTCDay();
     if (day !== 1 && day !== 4) continue; // Mon=1, Thu=4
     if (getClosure(d)) continue;
     const key = dateKey(d);
@@ -512,7 +526,7 @@ export function nextTeachingDate(today: Date = centralToday()): Date | null {
  * week where NEITHER scheduled day happens should be skipped. */
 function isFullyClosedWeek(weekMonday: Date): boolean {
   const thursday = new Date(weekMonday);
-  thursday.setDate(weekMonday.getDate() + 3);
+  thursday.setUTCDate(weekMonday.getUTCDate() + 3);
   return !!getClosure(weekMonday) && !!getClosure(thursday);
 }
 
@@ -526,7 +540,7 @@ function isFullyClosedWeek(weekMonday: Date): boolean {
  * ~7 weeks of full closures mean the old math would clamp at "final lesson"
  * roughly 7 real teaching weeks before the term's actual last lesson). */
 function teachingWeeksElapsed(today: Date): number {
-  const start = new Date(rcaSchedule.termStart + "T00:00:00");
+  const start = new Date(rcaSchedule.termStart + "T00:00:00Z");
   const msPerWeek = 7 * 24 * 60 * 60 * 1000;
   const calendarWeeksElapsed = Math.floor((today.getTime() - start.getTime()) / msPerWeek);
   let count = 0;
