@@ -6,7 +6,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { NextRequest } from "next/server";
 import { checkRateLimit, rateLimitResponse } from "@/lib/rate-limit";
-import { auth } from "@/auth";
+import { sessionEmail } from "@/lib/dev-auth";
 import { notifyIfAuthError } from "@/lib/alert";
 
 export const anthropic = new Anthropic({ timeout: 25000 });
@@ -21,10 +21,9 @@ export async function streamChat(
     maxTokens?: number;
   }
 ): Promise<Response> {
-  const session = await auth();
-  if (!session) return new Response("Unauthorized", { status: 401 });
+  const userId = await sessionEmail(req);
+  if (!userId) return new Response("Unauthorized", { status: 401 });
 
-  const userId = session.user?.email || "unknown";
   const { allowed } = await checkRateLimit(userId);
   if (!allowed) return rateLimitResponse();
 
