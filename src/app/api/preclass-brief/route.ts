@@ -59,9 +59,9 @@ export async function GET(req: Request) {
   }
 
   const today = centralToday();
-  const todayKey = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
-  const weekday = today.toLocaleDateString("en-US", { weekday: "long" });
-  const dateLabel = today.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });
+  const todayKey = `${today.getUTCFullYear()}-${String(today.getUTCMonth() + 1).padStart(2, "0")}-${String(today.getUTCDate()).padStart(2, "0")}`;
+  const weekday = today.toLocaleDateString("en-US", { weekday: "long", timeZone: "UTC" });
+  const dateLabel = today.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", timeZone: "UTC" });
 
   const closure = getClosure(today);
   const event = rcaEvents.find((e) => e.date === todayKey);

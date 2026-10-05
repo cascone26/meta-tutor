@@ -177,7 +177,7 @@ export default function RcaPage() {
   const academic = rcaClasses.filter((c) => c.area === "Academic");
   const specials = rcaClasses.filter((c) => c.area === "Specials");
   const next = getNextScheduleItem();
-  const nextLabel = next.kind === "term-ended" ? "" : next.date.toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric" });
+  const nextLabel = next.kind === "term-ended" ? "" : next.date.toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric", timeZone: "UTC" });
 
   // Ground-scene layout constants — used by both the JSX below and by the
   // verification harness (scripts/verify-scene.mjs) reasoning about expected

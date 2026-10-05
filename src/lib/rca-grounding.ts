@@ -152,7 +152,7 @@ const CURRENT_CONTENT_NOTE =
 function buildScheduleNote(): string {
   const next = getNextScheduleItem();
   if (next.kind === "event") {
-    const when = next.isToday ? "TODAY" : next.date.toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric" });
+    const when = next.isToday ? "TODAY" : next.date.toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric", timeZone: "UTC" });
     const termStart = new Date(rcaSchedule.termStart + "T00:00:00");
     // Pre-term events (training/setup days) mean there's no regular teaching
     // pattern yet at all. Events DURING the term (e.g. the monthly Lead Tutor
@@ -182,8 +182,8 @@ function buildScheduleNote(): string {
     // block time) instead of leaving the model to infer/filter the full
     // class list itself by day, which is where "what's tomorrow" answers
     // used to go vague or wrong.
-    const when = next.isToday ? "TODAY" : next.date.toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric" });
-    const weekday = next.date.toLocaleDateString("en-US", { weekday: "long" }) as "Monday" | "Thursday";
+    const when = next.isToday ? "TODAY" : next.date.toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric", timeZone: "UTC" });
+    const weekday = next.date.toLocaleDateString("en-US", { weekday: "long", timeZone: "UTC" }) as "Monday" | "Thursday";
     const classList = rcaClasses
       .filter((c) => (c.days ?? rcaSchedule.days).includes(weekday))
       .map((c) => `- ${c.name}${c.block ? ` — ${c.block}` : ""}${c.room ? `, ${c.room}` : ""}`)
@@ -199,10 +199,10 @@ function buildScheduleNote(): string {
 // "tomorrow" (found 2026-08-30). Always compute this fresh, never cached.
 function todayDateLine(): string {
   const now = centralToday();
-  const formatted = now.toLocaleDateString("en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric" });
+  const formatted = now.toLocaleDateString("en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric", timeZone: "UTC" });
   const tomorrow = new Date(now);
-  tomorrow.setDate(now.getDate() + 1);
-  const tomorrowFormatted = tomorrow.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });
+  tomorrow.setUTCDate(now.getUTCDate() + 1);
+  const tomorrowFormatted = tomorrow.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", timeZone: "UTC" });
   return `TODAY'S REAL DATE: ${formatted}. "Tomorrow" always means ${tomorrowFormatted} — compute "today"/"tomorrow"/"this week" from THIS real date, never from whatever date the schedule note below happens to mention.`;
 }
 
@@ -241,7 +241,7 @@ export function buildClassGrounding(subjectId: string | undefined, lessonNOverri
     const referenceDate = nextTeachingDate() ?? centralToday();
     const n = lessonNOverride && lessonNOverride >= 1 && lessonNOverride <= content.lessons.length
       ? lessonNOverride
-      : todaysLessonNumber(content, currentLessonNumber(content.lessons.length, content.totalWeeks, referenceDate), referenceDate.toLocaleDateString("en-US", { weekday: "long" }));
+      : todaysLessonNumber(content, currentLessonNumber(content.lessons.length, content.totalWeeks, referenceDate), referenceDate.toLocaleDateString("en-US", { weekday: "long", timeZone: "UTC" }));
     const lesson = content.lessons.find((l) => l.n === n);
     const label = lessonNOverride ? "REVIEW LESSON" : "CURRENT LESSON";
     grounding += `\n${content.overview}\n\n${label} (Lesson ${n} of ${content.lessons.length}):\n`;
