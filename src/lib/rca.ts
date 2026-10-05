@@ -39,8 +39,9 @@ export const rcaSchedule = {
 // schedule update" email (Option 2 specials table) — the Special 3 / Block 6 row lists
 // "Cascone, Schroeder" under the "Prep Period" column on the Monday sub-row. Same source
 // and same block already used for Music 3-4's Thursday Block 6 slot above (rcaClasses).
+// Updated with it per Jennings' 2026-10-04 Lower School Schedule correction.
 export const rcaPlanningPeriod = {
-  block: "2:30 – 3:15 PM",
+  block: "2:50 – 3:25 PM",
   days: ["Monday"] as const,
 };
 
@@ -311,7 +312,10 @@ export const rcaClasses: RcaClass[] = [
     // changes and schedule update", confirmed with Dr. Jennings): Special 1 runs 1:00-1:45,
     // killing the 10-minute gap before Special 2 at 1:45. Supersedes the 12:50-1:35 in the
     // original Option 2 table. 12:45-1:00 is Classical Literature / chores time.
-    block: "1:00 – 1:45 PM",
+    // Superseded again by Jennings' 2026-10-04 Lower School Schedule correction ("Block 4,
+    // 5, and 6 are the specials/History/Science as they were previously, but with the
+    // revised time schedule") -- Block 4 now starts 1:20 PM (chores 1:10-1:20).
+    block: "1:20 – 2:05 PM",
     room: "Gym",
     days: ["Monday"],
   },
@@ -327,7 +331,9 @@ export const rcaClasses: RcaClass[] = [
     // what this file previously said. Source: Dr. Jennings' 2026-08-19/20 schedule emails.
     // Block 4 time corrected to 1:00-1:45 per Mrs. Uffman's 2026-08-20 follow-up (confirmed
     // with Dr. Jennings) — supersedes the 12:50-1:35 in the original Option 2 table.
-    block: "1:00 – 1:45 PM",
+    // Superseded again by Jennings' 2026-10-04 Lower School Schedule correction -- Block 4
+    // now starts 1:20 PM (chores 1:10-1:20), same as PE 1-2 above.
+    block: "1:20 – 2:05 PM",
     room: "Cafe",
     days: ["Thursday"],
   },
@@ -338,7 +344,7 @@ export const rcaClasses: RcaClass[] = [
     area: "Academic",
     summary: "Ancient Egypt (fall) then Ancient Near East/Israel (spring) — maps, paragraph writing, and a research paper each semester.",
     books: ["Book of the Ancient World (BAW)"],
-    block: "1:55 – 2:40 PM",
+    block: "2:05 – 2:50 PM", // Block 5, corrected per Jennings 2026-10-04 Lower School Schedule email
     room: "St. Monica",
     lessonPlanUrl: sixthGradeMasterDoc,
     driveUrls: [
@@ -354,7 +360,7 @@ export const rcaClasses: RcaClass[] = [
     area: "Academic",
     summary: "Behold and See 6 — matter/forces/machines (fall), biomes and astronomy (spring), plus a Science Fair project.",
     books: ["Behold and See 6"],
-    block: "1:55 – 2:40 PM",
+    block: "2:05 – 2:50 PM", // Block 5, corrected per Jennings 2026-10-04 Lower School Schedule email
     room: "St. Monica",
     lessonPlanUrl: sixthGradeMasterDoc,
     driveUrls: [
@@ -376,7 +382,9 @@ export const rcaClasses: RcaClass[] = [
     // 2:30-3:15; room/day unchanged (Jacob leads, Schroeder assists, still Thursday, St.
     // Gianna). Explicitly labeled "Option 2" / "first week, working out the kinks" in the
     // source email — re-verify if a further correction email comes in.
-    block: "2:30 – 3:15 PM",
+    // Superseded again by Jennings' 2026-10-04 Lower School Schedule correction -- Block 6
+    // now starts 2:50 PM (cleanup/Afternoon Assembly follow at 3:25).
+    block: "2:50 – 3:25 PM",
     room: "St. Gianna",
     days: ["Thursday"],
     // The "3/4 LP" link from Dr. Jennings' 2026-08-20 "Music A lesson plan and music folder"
