@@ -5,6 +5,13 @@
 Two people build on this repo: Jacob (owner/admin) and Cristian ("Cris"). This file is auto-loaded by
 Claude Code for anyone working in this directory — read it before making changes.
 
+## Staying in sync
+Claude's own memory (the thing that remembers context across sessions) is private per machine — it
+does NOT travel between Jacob's and Cris's computers. The only durable, shared memory between the two
+of you is what's committed to this repo: `CLAUDE.md` (this file), `STATUS.md`, `PROCESS.md`, and the
+code itself. **Pull `main` at the start of every session** (`git pull origin main`) before starting
+work — otherwise you're building against a stale picture of what the other person already did.
+
 ## Lane separation — stay in your own area
 Every subject is its own top-level route under `src/app/`, with matching `src/components/<subject>/`
 and `src/lib/<subject>-content/` folders (see `rca/`, `latin-lab/`, `praxis/`, `metaphysics/` as
@@ -32,8 +39,10 @@ touch `access.ts` if you're deliberately changing who can reach what, and say so
 3. Open a PR — Vercel auto-builds a preview deployment with the real server-side env vars already
    configured (Anthropic key, Google OAuth, Supabase). Log into the preview with your own
    already-whitelisted account to test for real; no local secrets needed.
-4. Get it reviewed/merged. Merging to `main` is what ships to production
-   (`meta-tutor.vercel.app`).
+4. Merge it. The PR requirement is a safety rail (audit trail, no force-push), not an approval gate —
+   you don't need to wait on the other person to merge your own PR, especially for work inside your
+   own lane. Merging to `main` is what ships to production (`meta-tutor.vercel.app`), so give it a
+   real look (see Verification below) before merging, same as you would before any other ship.
 
 Never force-push or delete `main`. Local `npm run dev` works fine for anything that doesn't need live
 secrets (plain pages/UI); for AI calls, auth, or DB reads, test via the preview URL instead of copying
@@ -47,7 +56,8 @@ build is necessary but not sufficient.
 
 ## Process log — write back what you did
 `STATUS.md` is the running log of real work sessions: what was built, how it was verified, what's
-still open. Append an entry (don't overwrite prior ones) when you finish something non-trivial —
-future sessions (yours or anyone else's) rely on it to know what's actually been done vs. just
-planned. `PROCESS.md` is for deeper incident/decision writeups when something broke or a design
+still open. Prepend an entry (don't overwrite prior ones) when you finish something non-trivial, and
+tag it with who did it (`(Jacob)` / `(Cris)`) since two people now write to the same log — future
+sessions (yours or the other person's) rely on it to know what's actually been done vs. just planned,
+and by whom. `PROCESS.md` is for deeper incident/decision writeups when something broke or a design
 choice needs the reasoning preserved.
