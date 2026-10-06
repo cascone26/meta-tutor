@@ -1,5 +1,35 @@
 # Meta Tutor — Status
 
+## Multi-contributor safety setup for cousin's new section (2026-10-06)
+Jacob's cousin is joining to build his own area (new content modules + his own login/class+college
+tracking), coding from his own computer via Claude Code. Goal: he can't break production.
+
+**Done:**
+- Parked uncommitted WIP (TodayCompact hub view, streak wiring, Praxis sync route) onto
+  `wip/jacob-2026-10-06-todaycompact-praxis-streaks`, pushed. `main` working tree is clean and
+  matches `origin/main` (`3bb25c8`) so cousin branches from a known-good state.
+- Added a GitHub ruleset (`protect-main`, id `24601798`) on `cascone26/meta-tutor`: `main` now
+  requires a PR (0 required approvals, so Jacob isn't blocked soloing), blocks force-push and
+  branch deletion. Jacob's repo-admin role bypasses it (`current_user_can_bypass: always`) — his
+  existing direct-push-to-main habit is untouched. Any future non-admin collaborator (cousin) must
+  go through a PR, which auto-generates a Vercel preview URL instead of touching production.
+- Confirmed existing lane pattern: every subject is its own top-level route under `src/app/`
+  (`rca/`, `latin-lab/`, `praxis/`, `faith/`, `chess/`, etc.), each with its own `src/components/<x>/`
+  and `src/lib/<x>-content/`. Cousin's new area should follow the same pattern (new top-level route
+  + matching component/lib folders) so his files never physically overlap Jacob's.
+- Several API routes (`/api/rca-understanding`, learner-profile) are already `auth()`-gated by
+  session email with per-user Postgres rows — the multi-user plumbing already exists; cousin
+  logging in with his own account should get his own profile data for free in anything built on
+  that pattern.
+
+**Still open / blocked on Jacob:**
+- Cousin needs a GitHub account before he can be added as a collaborator (push access).
+- Once he has one, add him via `gh api repos/cascone26/meta-tutor/collaborators/<username> -X PUT`
+  (or GitHub UI) — he'll get push access but `main` stays ruleset-protected for him.
+- Not yet verified: Vercel project's "Production Branch" setting (should be `main`, giving every
+  other branch/PR an isolated preview URL) — couldn't check, `vercel` CLI wasn't logged in locally
+  this session. Spot-check in the Vercel dashboard before cousin's first push.
+
 ## First Form Latin adaptive drill for Jacob (2026-09-14)
 Jacob: the Latin RCA section wasn't helping HIM learn ("I just suck at latin and yet I still
 have to teach them it"). He wants to ace the quizzes / prep hours before class / actually learn —
