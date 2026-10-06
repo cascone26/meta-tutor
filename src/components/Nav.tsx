@@ -29,6 +29,7 @@ const mainTabs = [
 ];
 
 const moreTabs = [
+  { href: "/ethics", label: "Ethics" },
   { href: "/praxis", label: "Praxis" },
   { href: "/notes", label: "Notes" },
   { href: "/sources", label: "Sources" },
