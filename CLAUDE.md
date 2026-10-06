@@ -36,17 +36,50 @@ touch `access.ts` if you're deliberately changing who can reach what, and say so
 `main` requires a PR for anyone who isn't a repo admin (GitHub ruleset `protect-main`). Flow:
 1. Branch: `git checkout -b <name>/<short-description>`
 2. Build, commit, push
-3. Open a PR — Vercel auto-builds a preview deployment with the real server-side env vars already
-   configured (Anthropic key, Google OAuth, Supabase). Log into the preview with your own
-   already-whitelisted account to test for real; no local secrets needed.
-4. Merge it. The PR requirement is a safety rail (audit trail, no force-push), not an approval gate —
-   you don't need to wait on the other person to merge your own PR, especially for work inside your
-   own lane. Merging to `main` is what ships to production (`meta-tutor.vercel.app`), so give it a
-   real look (see Verification below) before merging, same as you would before any other ship.
+3. Open a PR — CI (`.github/workflows/ci.yml`) automatically runs `tsc --noEmit` + `npm run build`
+   against the real production env vars (stored as repo secrets) and **must pass before the PR can
+   be merged** — this is a required status check, enforced for everyone including admins' own PRs.
+   If there's also a Vercel-connected deployment on this repo giving you a preview URL, log into it
+   with your own already-whitelisted account to test for real; the Vercel project situation here has
+   some historical tangle (multiple accounts from a past migration), so don't assume a preview exists
+   — CI passing is the thing that's guaranteed.
+4. Merge it. The PR requirement is a safety rail (audit trail, no force-push, CI gate), not a
+   human-approval gate — you don't need to wait on the other person to merge your own PR, especially
+   for work inside your own lane. Merging to `main` is what ships to production
+   (`meta-tutor.vercel.app`), so give it a real look (see Verification below) before merging.
 
 Never force-push or delete `main`. Local `npm run dev` works fine for anything that doesn't need live
-secrets (plain pages/UI); for AI calls, auth, or DB reads, test via the preview URL instead of copying
-production secrets to your own machine.
+secrets (plain pages/UI); for AI calls, auth, or DB reads, test via a preview URL if one exists, or
+pull real `.env.local` values from whoever has them rather than guessing.
+
+## Shared code — duplicate, don't import
+If you're building something that resembles an existing feature (e.g. Cris building his own
+RCA-style class tracker), **copy the relevant files into your own lane and modify the copy** — don't
+import from or edit `src/components/rca/`, `src/lib/rca-content/`, or any other file under someone
+else's subject folder. Route-level lane separation only stops you from editing the same *file*; it
+doesn't stop you from importing a shared helper and changing its behavior out from under the other
+person's live feature. A little duplication here is the point, not a smell — it's what guarantees
+your changes can never break the other person's working tool, even by accident.
+
+## Database changes — schema edits need a reviewed file, not live DDL
+All tables are `mt_`-prefixed in a Supabase project shared between both of you (see
+`supabase-schema-hub.sql`, `supabase-schema-trivia.sql`). The existing RCA tables (`mt_rca_roster`,
+`mt_rca_attendance`, `mt_rca_pacing_override`, `mt_rca_grading_checklist`) are already safely
+multi-tenant — every one is keyed by `user_email` in its primary key/index, so two people's data in
+the same table never collides, *as long as new tables follow that same pattern*.
+- **New table?** Add the `CREATE TABLE` to a new or existing `supabase-schema-*.sql` file in a PR,
+  keyed by `user_email` (and whatever else distinguishes rows) in the primary key, same as the
+  existing tables. Get it applied by whoever has Supabase dashboard access — don't run ad hoc DDL
+  directly against the shared database. A bad migration there has no undo.
+- **Changing an existing table** (`ALTER`/`DROP`) is higher-risk than adding a new one — flag it
+  explicitly in the PR description, since it can affect the other person's live data even if the
+  table is nominally "yours."
+
+## API quota — AI features share one account
+AI calls in this app run on Jacob's own Anthropic account (Max subscription quota / API key,
+configured as env vars, not something either of you should hardcode or share outside this repo's
+secrets). Adding AI-chat-heavy features (like `/rca-chat`) adds load to that same shared quota —
+not a breakage risk, but worth knowing before building something quota-heavy.
 
 ## Verification — don't call it done on a type-check alone
 Established standard in this repo (see `STATUS.md` history): `npx tsc --noEmit` clean is the floor,
