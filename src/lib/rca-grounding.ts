@@ -2,7 +2,7 @@
 // understanding-check quiz (/api/rca-understanding) — one place that knows how to
 // describe a class + its current lesson to the model.
 
-import { getRcaClass, rcaClasses, rcaSchedule, currentLessonNumber, isPacingCurrent, getNextScheduleItem, centralToday, nextTeachingDate } from "@/lib/rca";
+import { getRcaClass, rcaClasses, rcaSchedule, currentLessonNumber, isPacingCurrent, getNextScheduleItem, centralToday, nextTeachingDate, RCA_CLOSURES } from "@/lib/rca";
 import { rcaContent } from "@/lib/rca-content";
 import { todaysLessonNumber, type SubjectContent } from "@/lib/rca-content/types";
 import { getCatechismLessonsForWeekText } from "@/lib/rca-content/baltimore-catechism-guide";
@@ -149,6 +149,22 @@ function buildSubjectReferenceBlock(subjectId: string, weekText: string, content
 const CURRENT_CONTENT_NOTE =
   "This class's lesson content below is from RCA's real 2026-2027 curriculum doc (arrived 2026-08-12), not a placeholder — dates/pacing are this year's.";
 
+// buildScheduleNote() below only covers "what's the very next thing" (today or the
+// next upcoming event/closure) -- it has no way to answer "when is Easter Break"
+// or any other future-dated question, which left the model guessing from general
+// knowledge instead of RCA's real confirmed calendar (found 2026-10-06: asked "what's
+// the mid-winter break date" and it confidently answered with Christmas Break's
+// dates instead). This gives every closure for the year explicitly so date
+// questions about ANY break, not just the next one, ground on real data.
+function buildClosuresList(): string {
+  const lines = RCA_CLOSURES.map((c) => {
+    const range = c.start === c.end ? c.start : `${c.start} to ${c.end}`;
+    const estimated = c.estimated ? " (estimated, not yet confirmed)" : "";
+    return `- ${c.label}: ${range}${estimated}`;
+  });
+  return `ALL CONFIRMED SCHOOL CLOSURES THIS TERM (use this for ANY question about a specific break's dates, not just the next upcoming one):\n${lines.join("\n")}`;
+}
+
 function buildScheduleNote(): string {
   const next = getNextScheduleItem();
   if (next.kind === "event") {
@@ -211,7 +227,7 @@ function buildGeneralGrounding(): string {
     .map((c) => `- ${c.name} (${c.grade}, ${c.area})${c.block ? ` — ${(c.days ?? rcaSchedule.days).join("/")}, ${c.block}${c.room ? `, ${c.room}` : ""}` : ""}`)
     .join("\n");
   const scheduleNote = buildScheduleNote();
-  return `${todayDateLine()}\n\nCONTEXT: Regina Caeli Academy (KSC, Overland Park KS) — a Catholic classical homeschool hybrid. Jacob is the 6th Grade Lead plus Music 3-4 tutor, on campus ${rcaSchedule.days.join(" & ")} (his real teaching days/deadlines once the term starts) ${rcaSchedule.startTime}-${rcaSchedule.endTime}. He's not currently viewing a specific class page, so answer generally across his full teaching load unless he names a subject.\n\n${scheduleNote}\n\nHIS CLASSES:\n${list}\n\n${CURRENT_CONTENT_NOTE}`;
+  return `${todayDateLine()}\n\nCONTEXT: Regina Caeli Academy (KSC, Overland Park KS) — a Catholic classical homeschool hybrid. Jacob is the 6th Grade Lead plus Music 3-4 tutor, on campus ${rcaSchedule.days.join(" & ")} (his real teaching days/deadlines once the term starts) ${rcaSchedule.startTime}-${rcaSchedule.endTime}. He's not currently viewing a specific class page, so answer generally across his full teaching load unless he names a subject.\n\n${scheduleNote}\n\n${buildClosuresList()}\n\nHIS CLASSES:\n${list}\n\n${CURRENT_CONTENT_NOTE}`;
 }
 
 // `lessonNOverride` lets a caller ground on a SPECIFIC past lesson instead of
@@ -227,6 +243,7 @@ export function buildClassGrounding(subjectId: string | undefined, lessonNOverri
   let grounding = `${todayDateLine()}\n\nCLASS: ${cls.name} (${cls.grade}, ${cls.area}) at Regina Caeli Academy — a Catholic classical homeschool hybrid. Jacob (the tutor) meets this class ${meetDays}${cls.block ? `, ${cls.block}` : ""}${cls.room ? ` in ${cls.room}` : ""} as part of his on-campus schedule.\nSUMMARY: ${cls.summary}\n`;
   const scheduleNote = buildScheduleNote();
   if (scheduleNote) grounding += `\n${scheduleNote}\n`;
+  grounding += `\n${buildClosuresList()}\n`;
   if (cls.books.length) grounding += `BOOKS: ${cls.books.join(", ")}\n`;
 
   const content = rcaContent[cls.id];

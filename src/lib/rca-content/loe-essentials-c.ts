@@ -57,9 +57,15 @@ export const loeEssentialsCContent: SubjectContent = {
     { n: 23, sections: [{ label: "Week 23 (Feb 22-26)", text: "Unit 22." }, { label: "Monday", text: "Parts 1 & 2 (Unit 22 intro)." }, { label: "Thursday", text: "Parts 4 & 5; Dictation - Unit 22." }], note: "Resume after Mid-Winter Break." },
     { n: 24, sections: [{ label: "Week 24 (Mar 1-5)", text: "Unit 23." }, { label: "Monday", text: "Parts 1 & 2 (Unit 23 intro)." }, { label: "Thursday", text: "Parts 4 & 5; Dictation - Unit 23." }] },
     { n: 25, sections: [{ label: "Week 25 (Mar 8-12)", text: "Unit 24." }, { label: "Monday", text: "Parts 1 & 2 (Unit 24 intro)." }, { label: "Thursday", text: "Parts 4 & 5; Dictation - Unit 24." }] },
-    { n: 26, sections: [{ label: "Week 26 (Mar 15-19)", text: "Unit 25." }, { label: "Monday", text: "Parts 1 & 2 (Unit 25 intro)." }, { label: "Thursday", text: "Parts 4 & 5; Dictation - Unit 25." }] },
-    { n: 27, sections: [{ label: "Week 27 (Mar 22-26)", text: "Unit 26." }, { label: "Monday", text: "Parts 1 & 2 (Unit 26 intro)." }, { label: "Thursday", text: "Parts 4 & 5; Dictation - Unit 26." }], note: "Easter Break follows (two weeks)." },
-    { n: 28, sections: [{ label: "Week 28 (Apr 12-16)", text: "Review week — no new unit." }, { label: "Monday", text: "Targeted review with games if CLT does not interfere with LOE time." }, { label: "Thursday", text: "Targeted review with games if CLT does not interfere with LOE time." }], note: "Resume after Easter Break; CLT testing week." },
+    { n: 26, sections: [{ label: "Week 26 (Mar 15-19)", text: "Unit 25." }, { label: "Monday", text: "Parts 1 & 2 (Unit 25 intro)." }, { label: "Thursday", text: "Parts 4 & 5; Dictation - Unit 25." }], note: "Easter Break follows (two weeks)." },
+    { n: 27, sections: [{ label: "Week 27 (Apr 5-9)", text: "Unit 26." }, { label: "Monday", text: "Parts 1 & 2 (Unit 26 intro)." }, { label: "Thursday", text: "Parts 4 & 5; Dictation - Unit 26." }], note: "Resume after Easter Break." },
+    // FLAGGED 2026-10-06: this review week is labeled "Week 28 (Apr 12-16)" and hedges
+    // "if CLT does not interfere," but KSC's real confirmed 3rd-6th grade CLT days are
+    // Mon 4/19 + Thu 4/22 -- i.e. "Week 29 (Apr 19-23)" below, not this week. Every other
+    // 6th-grade subject file correctly has its CLT-week content on Week 29. Did NOT
+    // silently reorder Unit 26/27/review here, since swapping which week is the review
+    // week vs. Unit 27 is a real curriculum-pacing call, not a pure date-label fix.
+    { n: 28, sections: [{ label: "Week 28 (Apr 12-16)", text: "Review week — no new unit." }, { label: "Monday", text: "Targeted review with games." }, { label: "Thursday", text: "Targeted review with games." }] },
     { n: 29, sections: [{ label: "Week 29 (Apr 19-23)", text: "Unit 27." }, { label: "Monday", text: "Parts 1 & 2 (Unit 27 intro)." }, { label: "Thursday", text: "Parts 4 & 5; Dictation - Unit 27." }] },
     { n: 30, sections: [{ label: "Week 30 (Apr 26-30)", text: "Unit 28." }, { label: "Monday", text: "Parts 1 & 2 (Unit 28 intro)." }, { label: "Thursday", text: "Feast of the Ascension of the Lord: RCA closed, no work." }], note: "Unit 28's dictation shifts to Wednesday (home day) this week and is parent-administered, not collected/graded by Jacob — a one-off schedule shift caused by this closure." },
     { n: 31, sections: [{ label: "Week 31 (May 3-7)", text: "Unit 29." }, { label: "Monday", text: "Parts 1 & 2 (Unit 29 intro)." }, { label: "Thursday", text: "Parts 4 & 5; Dictation - Unit 29 (do not collect or grade)." }] },

@@ -90,10 +90,17 @@ export const saxon76Content: SubjectContent = {
     { n: 49, sections: [{ label: "Week 25 (Mar 8-12)", text: "Monday — Teach Lessons 96 (Functions; Graphing Functions), 97 (Transversals), 98 (Sum of the Angle Measures of Triangles and Quadrilaterals). Today's practice: Lesson 96." }] },
     { n: 50, sections: [{ label: "Week 25 (Mar 8-12)", text: "Thursday — Teach Lessons 99 (Fraction-Decimal-Percent Equivalents), 100 (Algebraic Addition of Integers). Today's practice: Lesson 99." }] },
     { n: 51, sections: [{ label: "Week 26 (Mar 15-19)", text: "Monday — Teach Lesson 101 (Ratio Problems Involving Totals, if time permits). Investigation 10 (Compound Experiments)." }] },
-    { n: 52, sections: [{ label: "Week 26 (Mar 15-19)", text: "Thursday — Teach Lesson 102 (Mass and Weight). Today's practice: Lesson 102. Homework Check 13: Lessons 97, 98, 100, 101." }] },
-    { n: 53, sections: [{ label: "Week 27 (Mar 22-26)", text: "Monday — Teach Lessons 103 (Perimeter of Complex Shapes), 104 (Algebraic Addition Activity), 105 (Using Proportions to Solve Percent Problems), 106 (Two-Step Equations), 107 (Area of Complex Shapes). Today's practice: Lesson 103." }] },
-    { n: 54, sections: [{ label: "Week 27 (Mar 22-26)", text: "Thursday — Math Test 9 (material thru lesson 100 included); Homework Check 14: Lessons 104 and 105." }], note: "Easter Break follows (two weeks)." },
-    { n: 55, sections: [{ label: "Week 28 (Apr 12-16)", text: "Monday — CLT Testing, no new lessons." }], note: "Resume after Easter Break." },
+    { n: 52, sections: [{ label: "Week 26 (Mar 15-19)", text: "Thursday — Teach Lesson 102 (Mass and Weight). Today's practice: Lesson 102. Homework Check 13: Lessons 97, 98, 100, 101." }], note: "Easter Break follows (two weeks)." },
+    { n: 53, sections: [{ label: "Week 27 (Apr 5-9)", text: "Monday — Teach Lessons 103 (Perimeter of Complex Shapes), 104 (Algebraic Addition Activity), 105 (Using Proportions to Solve Percent Problems), 106 (Two-Step Equations), 107 (Area of Complex Shapes). Today's practice: Lesson 103." }], note: "Resume after Easter Break." },
+    { n: 54, sections: [{ label: "Week 27 (Apr 5-9)", text: "Thursday — Math Test 9 (material thru lesson 100 included); Homework Check 14: Lessons 104 and 105." }] },
+    // FLAGGED 2026-10-06: CLT Testing below is labeled "Week 28 (Apr 12-16)" but KSC's
+    // real confirmed 3rd-6th grade CLT days are Mon 4/19 + Thu 4/22 (see CLT_TESTING_WEEK
+    // in rca.ts and every other 6th-grade subject file, which all correctly land CLT on
+    // "Week 29 (Apr 19-23)"). This is one week early and leaves no real lesson content for
+    // the actual Apr 12-16 week -- did NOT silently guess/shift this one, since it needs a
+    // real curriculum-pacing call (push lessons back a week? add new Apr12-16 content?),
+    // not a pure date-label fix like the rest of this Easter-week correction.
+    { n: 55, sections: [{ label: "Week 28 (Apr 12-16)", text: "Monday — CLT Testing, no new lessons." }] },
     { n: 56, sections: [{ label: "Week 28 (Apr 12-16)", text: "Thursday — CLT Testing, no new lessons." }] },
     { n: 57, sections: [{ label: "Week 29 (Apr 19-23)", text: "Monday — Teach Lesson 108 (Transformations), 109 (Corresponding Parts; Similar Triangles). Today's practice: Lesson 108." }] },
     { n: 58, sections: [{ label: "Week 29 (Apr 19-23)", text: "Thursday — Teach Lesson 111 (Applications Using Division). Today's practice: Lesson 111." }] },
