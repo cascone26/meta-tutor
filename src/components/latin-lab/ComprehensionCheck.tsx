@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { recordStudySession } from "@/lib/streaks";
 import type { LatinUnit } from "@/lib/latin-lab/units";
 
 type Question = { question: string; answer: string; grammarTags: string[] };
@@ -91,6 +92,7 @@ export default function ComprehensionCheck({ unit, onDone }: { unit: LatinUnit; 
           vocab: unit.newVocab.map((v) => ({ latin: v.latin, grammarTags: unit.grammarTags })),
         }),
       }).catch(() => {});
+      recordStudySession();
       onDone();
       return;
     }

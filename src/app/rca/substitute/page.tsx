@@ -11,9 +11,11 @@ export const dynamic = "force-dynamic";
 
 export default function SubstitutePage() {
   const today = centralToday();
-  const todayKey = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
-  const weekday = today.toLocaleDateString("en-US", { weekday: "long" });
-  const dateLabel = today.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });
+  // centralToday() anchors to a UTC instant — every read pins timeZone: "UTC"
+  // to match, see centralToday()'s own comment for why.
+  const todayKey = `${today.getUTCFullYear()}-${String(today.getUTCMonth() + 1).padStart(2, "0")}-${String(today.getUTCDate()).padStart(2, "0")}`;
+  const weekday = today.toLocaleDateString("en-US", { weekday: "long", timeZone: "UTC" });
+  const dateLabel = today.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", timeZone: "UTC" });
 
   const closure = getClosure(today);
   const event = rcaEvents.find((e) => e.date === todayKey);

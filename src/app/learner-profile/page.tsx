@@ -7,6 +7,7 @@ import ProfileStats from "@/components/learner-profile/ProfileStats";
 import WeakAreasList from "@/components/learner-profile/WeakAreasList";
 import SubjectBreakdown from "@/components/learner-profile/SubjectBreakdown";
 import AmbientInsights from "@/components/learner-profile/AmbientInsights";
+import StreakDisplay from "@/components/learner-profile/StreakDisplay";
 import { subjectLabel } from "@/components/learner-profile/subject-label";
 
 function recommend(profile: LearnerProfile): string | null {
@@ -52,6 +53,7 @@ export default function LearnerProfilePage() {
       {!error && profile && (
         <>
           <ProfileStats profile={profile} />
+          <StreakDisplay />
           {recommend(profile) && (
             <div className="rounded-xl p-4 mb-4" style={{ background: "#1f2438", border: "1px solid #3a4066" }}>
               <p className="text-sm" style={{ color: "#c3cbf0" }}>{recommend(profile)}</p>

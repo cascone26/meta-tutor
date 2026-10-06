@@ -18,20 +18,22 @@ export const dynamic = "force-dynamic";
 // getNextScheduleItem() in rca.ts, just collecting both weekdays instead of
 // stopping at the first hit.
 function getUpcomingTeachingDays(today: Date): { date: Date; weekday: "Monday" | "Thursday" }[] {
-  const termStart = new Date(rcaSchedule.termStart + "T00:00:00");
-  const termEnd = new Date(rcaSchedule.termEnd + "T00:00:00");
+  // centralToday() anchors to a UTC instant, so every read here uses UTC
+  // getters/setters to match — see centralToday()'s own comment for why.
+  const termStart = new Date(rcaSchedule.termStart + "T00:00:00Z");
+  const termEnd = new Date(rcaSchedule.termEnd + "T00:00:00Z");
   const found: { date: Date; weekday: "Monday" | "Thursday" }[] = [];
   const have = new Set<string>();
 
   for (let i = 0; i <= 13 && found.length < 2; i++) {
     const d = new Date(today);
-    d.setDate(today.getDate() + i);
+    d.setUTCDate(today.getUTCDate() + i);
     if (d < termStart || d > termEnd) continue;
-    const day = d.getDay();
+    const day = d.getUTCDay();
     if (day !== 1 && day !== 4) continue;
     const weekday = day === 1 ? "Monday" : "Thursday";
     if (have.has(weekday)) continue;
-    const todayKey = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+    const todayKey = `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, "0")}-${String(d.getUTCDate()).padStart(2, "0")}`;
     if (getClosure(d)) continue;
     if (rcaEvents.some((e) => e.date === todayKey)) continue;
     found.push({ date: d, weekday });
@@ -94,7 +96,7 @@ export default function WeekPage() {
         <p className="text-sm" style={{ color: "#8a9a7c" }}>No more scheduled teaching days on the calendar right now.</p>
       ) : (
         teachingDays.map(({ date, weekday }) => {
-          const dateLabel = date.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });
+          const dateLabel = date.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", timeZone: "UTC" });
           const classes = rcaClasses
             .filter((c) => (c.days ?? rcaSchedule.days).includes(weekday))
             .slice()

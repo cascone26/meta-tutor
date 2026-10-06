@@ -38,7 +38,9 @@ export function getUpcomingHighlights(today: Date = centralToday()): UpcomingHit
     const content = rcaContent[cls.id];
     if (!content) continue;
     const total = content.lessons.length;
-    const weekday = referenceDate.toLocaleDateString("en-US", { weekday: "long" });
+    // centralToday()-family dates anchor to a UTC instant — timeZone: "UTC" must
+    // match, or a real Central-time reader rolls this back to the previous day.
+    const weekday = referenceDate.toLocaleDateString("en-US", { weekday: "long", timeZone: "UTC" });
     const estimate = todaysLessonNumber(content, currentLessonNumber(total, content.totalWeeks, referenceDate), weekday);
 
     for (let n = estimate; n <= Math.min(total, estimate + LOOKAHEAD_LESSONS); n++) {

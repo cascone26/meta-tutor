@@ -42,7 +42,10 @@ export default function LessonViewer({
   // advancing to the upcoming Monday's, backwards for a page meant for
   // prepping ahead of the next class).
   const referenceDate = nextTeachingDate() ?? centralToday();
-  const todayWeekday = referenceDate.toLocaleDateString("en-US", { weekday: "long" });
+  // centralToday()/nextTeachingDate() anchor to a UTC instant — timeZone: "UTC"
+  // here must match, or hydrating in a real Central-time browser silently rolls
+  // this back to the previous day (see centralToday()'s own comment for why).
+  const todayWeekday = referenceDate.toLocaleDateString("en-US", { weekday: "long", timeZone: "UTC" });
   // currentLessonNumber()'s raw estimate can land on the right WEEK but the
   // wrong DAY for weekday-tagged subjects (Saxon-style) — found live on the
   // actual first day of term, where Saxon's initial lesson opened to the

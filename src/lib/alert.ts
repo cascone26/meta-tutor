@@ -18,12 +18,12 @@ export function notifyOps(message: string, key: string = message): void {
   if (now - (lastSent[key] ?? 0) < COOLDOWN_MS) return;
   lastSent[key] = now;
 
-  fetch(`https://ntfy.sh/${NTFY_TOPIC}`, {
-    method: "POST",
-    body: `Meta Tutor: ${message}`,
-  }).catch(() => {
-    // best-effort — if ntfy itself is unreachable there's nothing more to do here
-  });
+  const { execSync } = require("child_process");
+  try {
+    execSync(`node ${process.env.HOME}/tools/notify/notify.js "Meta Tutor: ${message.replace(/"/g, '\\"')}" --priority default`, { stdio: "ignore" });
+  } catch {
+    // best-effort — if notify gate is unreachable there's nothing more to do here
+  }
 }
 
 // The Anthropic OAuth token synced from Jacob's Keychain (~/tools/sync-meta-tutor-

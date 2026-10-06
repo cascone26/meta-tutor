@@ -83,6 +83,30 @@ export default function TeacherGuide({ subjectId, lessonN }: { subjectId: string
             <h3 className="text-xs font-semibold uppercase tracking-wide mb-1.5" style={{ color: "#6b8e5a" }}>Watch for</h3>
             <p className="text-sm rounded-lg px-3 py-2 mb-3" style={{ background: "#fbeee0", color: "#8a5a2a" }}>{guide.watchFor}</p>
 
+            {guide.differentiation && (
+              <div style={{ borderTop: "1px solid #e6e0d0", paddingTop: "1rem", marginTop: "1rem" }}>
+                <h3 className="text-xs font-semibold uppercase tracking-wide mb-2" style={{ color: "#6b5a8a" }}>MTSS support strategies (Tier 1–3)</h3>
+                {guide.differentiation.tier1 && (
+                  <div className="mb-2">
+                    <p className="text-xs font-semibold" style={{ color: "#5a5a6a" }}>Tier 1 (whole-class):</p>
+                    <p className="text-sm mb-2" style={{ color: "#3a4a34" }}>{guide.differentiation.tier1}</p>
+                  </div>
+                )}
+                {guide.differentiation.tier2 && (
+                  <div className="mb-2">
+                    <p className="text-xs font-semibold" style={{ color: "#5a5a6a" }}>Tier 2 (small-group reteach):</p>
+                    <p className="text-sm mb-2" style={{ color: "#3a4a34" }}>{guide.differentiation.tier2}</p>
+                  </div>
+                )}
+                {guide.differentiation.tier3 && (
+                  <div>
+                    <p className="text-xs font-semibold" style={{ color: "#5a5a6a" }}>Tier 3 (intensive):</p>
+                    <p className="text-sm" style={{ color: "#3a4a34" }}>{guide.differentiation.tier3}</p>
+                  </div>
+                )}
+              </div>
+            )}
+
             {chartsForLesson(guide.n).map((chart) => (
               <GrammarChart key={chart.id} chart={chart} />
             ))}

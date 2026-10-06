@@ -127,6 +127,24 @@ export default function PraxisPage() {
     }
   }, [chosen, idx, questions.length, timer]);
 
+  // Sync progress to server when a session ends (phase changes to results)
+  useEffect(() => {
+    if (phase !== "results" || progress.sessions === 0) return;
+    const syncProgress = async () => {
+      try {
+        await fetch("/api/praxis-progress", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ progress }),
+        });
+      } catch (e) {
+        // Sync failure is non-fatal — localStorage is the source of truth
+        console.warn("Praxis sync failed:", e);
+      }
+    };
+    syncProgress();
+  }, [phase, progress]);
+
   // per-question countdown timer
   useEffect(() => {
     if (phase !== "playing" || timer === 0 || chosen !== null) return;

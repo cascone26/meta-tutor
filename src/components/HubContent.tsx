@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { subjects, umbrellas } from "@/lib/subjects";
+import TodayCompact from "@/components/TodayCompact";
 
 type ThemeId = "dark" | "light";
 
@@ -104,13 +105,15 @@ export default function HubContent({ firstName }: { firstName: string | null }) 
 
         <Link
           href="/learner-profile"
-          className="group flex items-center justify-center gap-2 rounded-full px-4 py-2 mb-5 text-xs font-medium transition-all duration-300 mx-auto w-fit"
+          className="group flex items-center justify-center gap-2 rounded-full px-4 py-2 mb-3 text-xs font-medium transition-all duration-300 mx-auto w-fit"
           style={{ background: t.cardBg, border: `1px solid ${t.cardBorder}`, color: t.muted }}
         >
           <span className="w-1.5 h-1.5 rounded-full" style={{ background: "#8a9bd8", boxShadow: "0 0 8px #8a9bd8" }} />
           Your Learning Profile
           <span className="transition-transform duration-300 group-hover:translate-x-0.5">→</span>
         </Link>
+
+        {mounted && <TodayCompact theme={theme} themes={THEMES} />}
 
         {umbrellas.length > 0 && (
           <div className="grid gap-3 mb-5">

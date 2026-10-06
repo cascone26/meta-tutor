@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { logWrongAnswer, saveResult } from "@/lib/subject-progress";
+import { recordStudySession } from "@/lib/streaks";
 import { FlameIcon } from "./NatureIcons";
 
 type Question = { question: string; answer: string };
@@ -94,6 +95,7 @@ export default function SpeedDrill({ subjectId, subjectName, lessonN }: { subjec
         weakTerms: [],
         weakCategories: finalCorrect < questions.length ? [subjectName] : [],
       });
+      recordStudySession();
       setSaveFailed(false);
     } catch (e) {
       console.error("saveResult failed:", e);

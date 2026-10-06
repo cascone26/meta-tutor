@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { recordStudySession } from "@/lib/streaks";
 import { latinUnits } from "@/lib/latin-lab/units";
 
 type DueItem = { vocabItem: string; unitId: string; grammarTags: string[] };
@@ -49,8 +50,12 @@ export default function VocabReview({ onDone }: { onDone: () => void }) {
       body: JSON.stringify({ action: "reviewVocab", vocabItem: item.vocabItem, unitId: item.unitId, grammarTags: item.grammarTags, rating }),
     }).catch(() => {});
     setRevealed(false);
-    if (index + 1 >= due.length) onDone();
-    else setIndex((i) => i + 1);
+    if (index + 1 >= due.length) {
+      recordStudySession();
+      onDone();
+    } else {
+      setIndex((i) => i + 1);
+    }
   }
 
   if (loading) return <p className="text-sm text-center py-10" style={{ color: "#a08b73" }}>Loading due vocabulary…</p>;

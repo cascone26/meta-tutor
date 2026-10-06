@@ -22,14 +22,18 @@ export const dynamic = "force-dynamic";
 
 export default function TodayPage() {
   const today = centralToday();
-  const todayKey = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
-  const weekday = today.toLocaleDateString("en-US", { weekday: "long" });
-  const dateLabel = today.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });
+  // centralToday() anchors to a UTC instant (see its own comment for why) — every
+  // read of it, including these locale-formatted labels, must pin timeZone: "UTC"
+  // to match, or a client whose real local timezone differs (Jacob's own browser,
+  // Central time) silently rolls "today" back to the previous day around 7pm.
+  const todayKey = `${today.getUTCFullYear()}-${String(today.getUTCMonth() + 1).padStart(2, "0")}-${String(today.getUTCDate()).padStart(2, "0")}`;
+  const weekday = today.toLocaleDateString("en-US", { weekday: "long", timeZone: "UTC" });
+  const dateLabel = today.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", timeZone: "UTC" });
 
   const closure = getClosure(today);
   const event = rcaEvents.find((e) => e.date === todayKey);
-  const termStart = new Date(rcaSchedule.termStart + "T00:00:00");
-  const termEnd = new Date(rcaSchedule.termEnd + "T00:00:00");
+  const termStart = new Date(rcaSchedule.termStart + "T00:00:00Z");
+  const termEnd = new Date(rcaSchedule.termEnd + "T00:00:00Z");
   const inTerm = today >= termStart && today <= termEnd;
   const isTeachingWeekday = weekday === "Monday" || weekday === "Thursday";
   const isRealTeachingDay = inTerm && isTeachingWeekday && !closure && !event;

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { getSubjectProgress, logWrongAnswer, saveResult } from "@/lib/subject-progress";
+import { recordStudySession } from "@/lib/streaks";
 import { LeafIcon } from "./NatureIcons";
 
 type Question = { question: string; answer: string };
@@ -137,6 +138,7 @@ export default function UnderstandingCheck({
         weakTerms: evaluated.filter((e) => e.result !== "correct").map((e) => e.question.slice(0, 80)),
         weakCategories: evaluated.some((e) => e.result !== "correct") ? [subjectName] : [],
       });
+      recordStudySession();
       setSaveFailed(false);
     } catch (e) {
       console.error("saveResult failed:", e);
