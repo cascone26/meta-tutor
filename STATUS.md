@@ -22,13 +22,29 @@ tracking), coding from his own computer via Claude Code. Goal: he can't break pr
   logging in with his own account should get his own profile data for free in anything built on
   that pattern.
 
-**Still open / blocked on Jacob:**
-- Cousin needs a GitHub account before he can be added as a collaborator (push access).
-- Once he has one, add him via `gh api repos/cascone26/meta-tutor/collaborators/<username> -X PUT`
-  (or GitHub UI) — he'll get push access but `main` stays ruleset-protected for him.
+**Update (same day):** cousin turned out to be an existing user — `crisvalldeperas@gmail.com` is
+already "Cristian" in `src/lib/access.ts`, scoped to `/metaphysics`. He now also works at RCA and
+is adding his own classes/RCA/college content. Resolved:
+- GitHub: invited `chrishansonclaude` as a collaborator with push access (PR #1 is his test —
+  worked cleanly, ruleset required the PR, merge went through).
+- Access control: no `access.ts` change needed — it's a deny-list (`JACOB_ONLY_PREFIXES`), so any
+  new route not in that list is reachable by Cristian by default.
+- Scaffolded `src/app/cris/`, `/cris/classes`, `/cris/rca` as placeholder pages (merged via PR #1,
+  `4aaf598`) — his own route namespace, deliberately separate from Jacob's `/rca` so the two never
+  collide. He builds inside `/cris/*` (+ his own `src/components/cris/`, `src/lib/cris-content/`
+  as needed), Jacob stays in `/rca`, `/hub`, `/chess`, `/latin-lab`, etc.
+- Workflow going forward: cousin branches, pushes, opens a PR → Vercel auto-builds a preview URL
+  with the real server-side env vars already configured in the Vercel project (he never needs his
+  own copy of `ANTHROPIC_API_KEY`/Google OAuth secret/Supabase key on his machine). He logs into
+  the preview with his own already-whitelisted Google account to test. Jacob reviews/merges the PR
+  to ship to production. Local `npm run dev` on his machine works for anything that doesn't need
+  live secrets (plain pages); if he needs local AI/DB calls, that requires sharing real secrets —
+  default to testing via preview URLs instead.
+
+**Still open:**
 - Not yet verified: Vercel project's "Production Branch" setting (should be `main`, giving every
   other branch/PR an isolated preview URL) — couldn't check, `vercel` CLI wasn't logged in locally
-  this session. Spot-check in the Vercel dashboard before cousin's first push.
+  this session. Spot-check in the Vercel dashboard before cousin's first real feature push.
 
 ## First Form Latin adaptive drill for Jacob (2026-09-14)
 Jacob: the Latin RCA section wasn't helping HIM learn ("I just suck at latin and yet I still
