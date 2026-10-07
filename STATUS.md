@@ -1,5 +1,51 @@
 # Meta Tutor — Status
 
+## (Cris) Ethics section: Chat + Study (T/F) + Glossary (2026-10-06)
+Backfilled by Jacob's session (2026-10-07) — Cris's PR didn't include a STATUS.md entry, so this is
+reconstructed from the PR/commit itself for the record. New `/ethics` section (PR #6, merged by Cris):
+AI chat tuned for T/F exam prep, 85-question T/F study quiz across 8 topics, 48-term searchable
+glossary. New files only (`src/app/ethics/*`, `src/lib/ethics-*.ts`, `src/app/api/ethics-chat/route.ts`)
+plus a 1-line additive change to the shared `src/components/Nav.tsx` (added Ethics to the `moreTabs`
+dropdown) — verified safe since that component hard-excludes itself from rendering on any of Jacob's
+`/rca`/hub-shell routes. CI (`build` check) passed before merge. Verified clean in a follow-up sweep:
+real headless screenshots of all three sub-pages, zero console/server errors, fresh `npm run build` on
+`main` clean.
+
+**Process note:** the CLAUDE.md convention (prepend a tagged STATUS.md entry per session) didn't hold
+on the very first real PR — worth a reminder next time, not yet worth hard-enforcing in CI.
+
+## (Jacob) Fixed the actual Vercel deploy pipeline for this repo (2026-10-07)
+Cris reported he couldn't test (`sign-in doesn't work locally` — expected, no local secrets by design
+— `and Vercel needs you for something to run correctly publicly` — this was real). Root cause found:
+the `cascone26/meta-tutor` GitHub repo was connected to **three** separate Vercel projects across
+three different accounts from a past account-migration mess (see `vercel-fair-use-block-2026-09`
+memory), and the only one this session has real API/CLI access to
+(`cascone26s-projects/meta-tutor`, `prj_4q5ZpoCbe5iaaFvOEYj8EA78uMIn`) had **no Git repository
+connected at all** (`"link": null` via the Vercel API) and most of its real secrets
+(`AUTH_SECRET`, Google OAuth, Supabase) were scoped to Production only, never Preview — so even a
+working preview deployment would have had broken sign-in.
+
+**Fixed:**
+- `vercel git connect https://github.com/cascone26/meta-tutor.git` — this project now deploys
+  automatically from the repo.
+- Added `AUTH_SECRET`, `AUTH_GOOGLE_ID`, `AUTH_GOOGLE_SECRET`, `AUTH_TRUST_HOST`,
+  `NEXT_PUBLIC_SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` to the **Preview** environment (previously
+  Production-only).
+- Triggered a real production deploy to confirm end-to-end: live at
+  `https://meta-tutor-six.vercel.app`, confirmed `/` and `/ethics` both resolve correctly
+  (302 → `/login`, not an error).
+
+**Still open — needs Jacob, not fixable via CLI/API:** Google OAuth's "Authorized redirect URIs" list
+for the web client (`525332629745-....apps.googleusercontent.com`, project `gptagentaccess`) is
+Console-UI-only — confirmed no `gcloud`/API path exists to read or edit it for a standard OAuth web
+client. If `https://meta-tutor-six.vercel.app/api/auth/callback/google` isn't already in that list
+(Google Cloud Console → APIs & Services → Credentials → this OAuth client → Authorized redirect URIs),
+sign-in will still fail there even though everything else is now wired correctly. Two-minute check —
+add it if missing, and the same will apply to any other stable domain used for testing going forward.
+PR-specific preview URLs (random per-deployment hash) will likely never satisfy Google's exact-match
+redirect requirement — recommend testing sign-in-gated features against the stable
+`meta-tutor-six.vercel.app` alias, not a one-off preview URL, until/unless that's worth solving properly.
+
 ## Multi-contributor safety setup for cousin's new section (2026-10-06)
 Jacob's cousin is joining to build his own area (new content modules + his own login/class+college
 tracking), coding from his own computer via Claude Code. Goal: he can't break production.
