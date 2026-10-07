@@ -39,18 +39,18 @@ touch `access.ts` if you're deliberately changing who can reach what, and say so
 3. Open a PR — CI (`.github/workflows/ci.yml`) automatically runs `tsc --noEmit` + `npm run build`
    against the real production env vars (stored as repo secrets) and **must pass before the PR can
    be merged** — this is a required status check, enforced for everyone including admins' own PRs.
-   If there's also a Vercel-connected deployment on this repo giving you a preview URL, log into it
-   with your own already-whitelisted account to test for real; the Vercel project situation here has
-   some historical tangle (multiple accounts from a past migration), so don't assume a preview exists
-   — CI passing is the thing that's guaranteed.
 4. Merge it. The PR requirement is a safety rail (audit trail, no force-push, CI gate), not a
    human-approval gate — you don't need to wait on the other person to merge your own PR, especially
-   for work inside your own lane. Merging to `main` is what ships to production
-   (`meta-tutor.vercel.app`), so give it a real look (see Verification below) before merging.
+   for work inside your own lane. Merging to `main` is what ships to production.
 
 Never force-push or delete `main`. Local `npm run dev` works fine for anything that doesn't need live
-secrets (plain pages/UI); for AI calls, auth, or DB reads, test via a preview URL if one exists, or
-pull real `.env.local` values from whoever has them rather than guessing.
+secrets (plain pages/UI). For auth-gated features (AI chat, DB reads, anything behind login), test
+against **`https://meta-tutor-six.vercel.app`** — the one deployment with Git connected and real
+Preview/Production secrets wired up (fixed 2026-10-07, see `STATUS.md`). There's a messier,
+multi-account Vercel history behind this repo (`meta-tutor.vercel.app` itself lives on a different,
+not-currently-accessible account) — `meta-tutor-six.vercel.app` is the one that's actually guaranteed
+to work end to end, so use it over a one-off PR preview URL, since per-PR preview URLs get a random
+hostname each time and Google OAuth won't recognize an unregistered redirect URI.
 
 ## Shared code — duplicate, don't import
 If you're building something that resembles an existing feature (e.g. Cris building his own
