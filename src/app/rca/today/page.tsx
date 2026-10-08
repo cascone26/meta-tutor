@@ -28,11 +28,18 @@ export default function TodayPage() {
 
   const closure = getClosure(today);
   const event = rcaEvents.find((e) => e.date === todayKey);
+  const fullDayEvent = event?.fullDay ? event : undefined;
   const termStart = new Date(rcaSchedule.termStart + "T00:00:00");
   const termEnd = new Date(rcaSchedule.termEnd + "T00:00:00");
   const inTerm = today >= termStart && today <= termEnd;
   const isTeachingWeekday = weekday === "Monday" || weekday === "Thursday";
-  const isRealTeachingDay = inTerm && isTeachingWeekday && !closure && !event;
+  // A partial-day event (e.g. the monthly Lead Tutor Staff Meeting, "after
+  // Angelus") is an add-on, not a day-replacer — classes still happen, so it
+  // must NOT suppress todaysClasses/materials. Only a fullDay event (an
+  // all-staff training day with no classes at all) does that. Found
+  // 2026-10-08: the old `!event` check hid the entire day's class list and
+  // "Bring today" materials behind a staff-meeting-only banner.
+  const isRealTeachingDay = inTerm && isTeachingWeekday && !closure && !fullDayEvent;
 
   const todaysClasses = isRealTeachingDay
     ? rcaClasses
@@ -72,11 +79,11 @@ export default function TodayPage() {
             ? `Term hasn't started yet — first day is ${rcaSchedule.termStart}.`
             : `The 2026-2027 term ended ${rcaSchedule.termEnd} — no more scheduled class days.`}
         </StatusBanner>
-      ) : event ? (
+      ) : fullDayEvent ? (
         <StatusBanner tone="event">
-          <p className="text-base font-semibold" style={{ color: "#8a6a2e" }}>{event.label}</p>
-          <p className="text-sm mt-1">{event.time}</p>
-          <p className="text-sm mt-1">{event.detail}</p>
+          <p className="text-base font-semibold" style={{ color: "#8a6a2e" }}>{fullDayEvent.label}</p>
+          <p className="text-sm mt-1">{fullDayEvent.time}</p>
+          <p className="text-sm mt-1">{fullDayEvent.detail}</p>
         </StatusBanner>
       ) : closure ? (
         <StatusBanner tone="closure">
@@ -88,6 +95,13 @@ export default function TodayPage() {
         <StatusBanner tone="neutral">Not a scheduled teaching day — Monday &amp; Thursday only.</StatusBanner>
       ) : (
         <>
+          {event && (
+            <StatusBanner tone="event">
+              <p className="text-base font-semibold" style={{ color: "#8a6a2e" }}>{event.label}</p>
+              <p className="text-sm mt-1">{event.time}</p>
+              <p className="text-sm mt-1">{event.detail}</p>
+            </StatusBanner>
+          )}
           <StatusBanner tone="teaching">
             <p className="text-base font-semibold" style={{ color: "#2f5e7a" }}>
               Teaching day — {todaysClasses.length} class{todaysClasses.length === 1 ? "" : "es"}, {rcaSchedule.startTime}–{rcaSchedule.endTime}
