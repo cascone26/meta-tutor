@@ -49,7 +49,11 @@ export const rcaPlanningPeriod = {
 // days, setup days, orientation, etc. Sourced from Dr. Jennings' KSC staff
 // emails (2026-08-10 "Staff Training This Week", 2026-08-11 "Schedules and
 // students in FACTS"), not guessed. Add to this as new emails come in.
-export type RcaEvent = { date: string; label: string; detail: string; time: string };
+// fullDay: true means the event REPLACES the teaching day entirely (e.g. an
+// all-staff training day with no classes). Omitted/false means it's an
+// add-on to an otherwise normal teaching day (e.g. the monthly Lead Tutor
+// Staff Meeting, which only eats "after Angelus" — classes still happen).
+export type RcaEvent = { date: string; label: string; detail: string; time: string; fullDay?: boolean };
 
 export const rcaEvents: RcaEvent[] = [
   {
@@ -57,18 +61,21 @@ export const rcaEvents: RcaEvent[] = [
     label: "All-Staff Training",
     detail: "Mandatory for all staff. Bring: lunch, notebook, phone (2-step verification for clock-in), iSolved login, laptop.",
     time: "8:00 AM – 5:00 PM",
+    fullDay: true,
   },
   {
     date: "2026-08-13",
     label: "Lead Tutor Training + Center Set-Up + Meet & Greet",
     detail: "Training 8-5. Center Set-Up at 1:00 PM (come help if not already there). Tutor Meet & Greet at 4:00 PM. Parent Orientation follows, ~5:00 PM.",
     time: "8:00 AM – 5:00 PM",
+    fullDay: true,
   },
   {
     date: "2026-08-14",
     label: "Optional Prep Day",
     detail: "Not mandatory. Set up your classroom (plan to put everything back at day's end), adapt lesson plans, copy materials, prep FACTS gradebooks — at the center or from home.",
     time: "Optional",
+    fullDay: true,
   },
   // Monthly lead-tutor staff meetings — from Dr. Jennings' 2026-08-24 KSC
   // "Staff Meetings" email. All Thursdays; start after Angelus in the St.
