@@ -1,12 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import Nav from "@/components/Nav";
-import KeyboardShortcuts from "@/components/KeyboardShortcuts";
-import Onboarding from "@/components/Onboarding";
-import SessionTimer from "@/components/SessionTimer";
-import Prayer from "@/components/Prayer";
-import ErrorBoundary from "@/components/ErrorBoundary";
+import AppChrome from "@/components/AppChrome";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -42,16 +37,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <ErrorBoundary>
-          <div className="flex flex-col h-dvh overflow-hidden">
-            <Nav />
-            <div className="flex-1 overflow-hidden">{children}</div>
-          </div>
-        </ErrorBoundary>
-        <KeyboardShortcuts />
-        <Onboarding />
-        <SessionTimer />
-        <Prayer />
+        <AppChrome>{children}</AppChrome>
       </body>
     </html>
   );
