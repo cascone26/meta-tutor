@@ -1,10 +1,24 @@
 // Two-account access control: Jacob (admin, sees everything) and Cristian (scoped to his
-// own Metaphysics-suite pages only). Emails are configurable via env so they're not hardcoded
-// secrets in source; defaults match the two real accounts as of 2026-08-29.
+// own Metaphysics-suite pages only). No hardcoded fallback on purpose — this repo is public,
+// and a real personal email baked into source as a "sensible default" is still a real email
+// published to anyone who looks. Set JACOB_EMAIL/CRISTIAN_EMAIL in every environment that
+// needs real auth (Vercel Production/Preview, and .env.local for local dev); missing either
+// one fails loudly at import time instead of silently matching nobody.
 export type Role = "jacob" | "cristian";
 
-const JACOB_EMAIL = (process.env.JACOB_EMAIL ?? "cobo.cascone@gmail.com").toLowerCase();
-const CRISTIAN_EMAIL = (process.env.CRISTIAN_EMAIL ?? "crisvalldeperas@gmail.com").toLowerCase();
+function requireEmailEnv(name: "JACOB_EMAIL" | "CRISTIAN_EMAIL"): string {
+  const value = process.env[name];
+  if (!value) {
+    throw new Error(
+      `${name} is not set — access.ts can't resolve roles without it. Set it in .env.local ` +
+        `for local dev, and in Vercel's Production/Preview env vars for deployed environments.`
+    );
+  }
+  return value.toLowerCase();
+}
+
+const JACOB_EMAIL = requireEmailEnv("JACOB_EMAIL");
+const CRISTIAN_EMAIL = requireEmailEnv("CRISTIAN_EMAIL");
 
 export function roleForEmail(email: string | null | undefined): Role | null {
   if (!email) return null;
