@@ -25,7 +25,12 @@ import { getSupabase } from "@/lib/supabase";
 // (no other user's data is reachable here).
 export const dynamic = "force-dynamic";
 
-const JACOB_EMAIL = (process.env.JACOB_EMAIL ?? "cobo.cascone@gmail.com").toLowerCase();
+// No hardcoded fallback — this repo is public, see src/lib/access.ts for why. Set
+// JACOB_EMAIL in every environment that needs this route (Vercel + .env.local).
+if (!process.env.JACOB_EMAIL) {
+  throw new Error("JACOB_EMAIL is not set — required for the preclass-brief cron route.");
+}
+const JACOB_EMAIL = process.env.JACOB_EMAIL.toLowerCase();
 
 async function getPacingOffsets(): Promise<Record<string, number>> {
   try {
