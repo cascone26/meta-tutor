@@ -29,3 +29,5 @@ jobs:
           AUTH_TRUST_HOST: "true"
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          JACOB_EMAIL: ${{ secrets.JACOB_EMAIL }}
+          CRISTIAN_EMAIL: ${{ secrets.CRISTIAN_EMAIL }}
