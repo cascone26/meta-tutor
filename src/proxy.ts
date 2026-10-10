@@ -33,7 +33,14 @@ export default auth((req) => {
 export const config = {
   // api/preclass-brief is excluded here so the unauthenticated teaching-morning cron
   // (scripts/preclass-brief.mjs, no browser session) can reach it — the route itself
-  // then guards on a shared BRIEF_TOKEN, so it isn't actually public. Everything else
-  // still gets the login redirect.
-  matcher: ["/((?!api/auth|api/preclass-brief|_next/static|_next/image|favicon.ico|icon.png|apple-icon.png|chi-rho.png|rca-logo.png|login).*)"],
+  // then guards on a shared BRIEF_TOKEN, so it isn't actually public. manifest.webmanifest
+  // is excluded because the browser's native <link rel="manifest"> fetch doesn't send
+  // cookies (a real Chromium behavior, not a bug on our end) — gating it behind auth meant
+  // every single page load, for both Jacob and Cristian, logged out or not, got a 302-to-
+  // /login response for the manifest and threw a console "Manifest ... Syntax error" on
+  // every page, forever. Found 2026-10-09 by actually driving the live app as Jacob and
+  // watching the real console, not from a build/typecheck pass. Manifest content itself
+  // (app name, icons, theme color) isn't sensitive — no reason it needs auth at all.
+  // Everything else still gets the login redirect.
+  matcher: ["/((?!api/auth|api/preclass-brief|manifest.webmanifest|_next/static|_next/image|favicon.ico|icon.png|apple-icon.png|chi-rho.png|rca-logo.png|login).*)"],
 };
