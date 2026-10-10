@@ -1,5 +1,31 @@
 # Meta Tutor — Status
 
+## (Jacob) Fixed manifest-auth console error + every AI feature app-wide was down for 2+ days (2026-10-09)
+Jacob asked for a real hands-on recheck ("use the viewer... i dont think u just sit and look at stuff").
+Drove the live production app as Jacob via a real authenticated browser session (28 routes, plus real
+interactions — a chess move, a trivia answer, a Latin Lab comprehension attempt, an Ethics chat
+message), not just build/typecheck.
+
+**Found and fixed two real bugs:**
+1. `manifest.webmanifest` was getting caught by the auth redirect — browsers don't send cookies on
+   `<link rel="manifest">` fetches, so every page load for both Jacob and Cristian threw a console
+   error. Excluded it from `proxy.ts`'s auth matcher (PR #12).
+2. **Bigger one: every AI-backed feature in the app — Latin Lab comprehension, Ethics chat, RCA chat,
+   Chess coach, Trivia generation, Riemann chat — has been down since 2026-10-07.** Root cause:
+   `~/tools/sync-meta-tutor-token.sh` (the LaunchAgent that keeps the Claude OAuth token fresh in
+   Vercel, see 2026-08-09 entry below) was still hardcoded to the OLD Vercel account (`scones-team`)
+   from before this repo's Vercel project moved to `cascone26s-projects` on 2026-10-07 — silently
+   failing every 15 minutes since, while the real token sat 18+ days stale. Fixed the script's account
+   reference, ran it, confirmed via `launchctl kickstart` the automated path works, and re-verified
+   live: Latin Lab comprehension and Ethics chat both return real AI responses now instead of a raw
+   401. Full writeup in PROCESS.md.
+
+**Also removed hardcoded personal emails from source** (`access.ts`, `dev-auth.ts`,
+`preclass-brief/route.ts`) — this repo is public, and both Jacob's and Cristian's real Gmail addresses
+were sitting in it as fallback defaults regardless of whether env vars were ever set. Added
+`JACOB_EMAIL`/`CRISTIAN_EMAIL` to Vercel (all 3 environments) and GitHub Actions repo secrets first,
+then removed the fallback so it fails loudly instead of silently if either goes missing (PRs #10, #11).
+
 ## (Cris) Ethics section: Chat + Study (T/F) + Glossary (2026-10-06)
 Backfilled by Jacob's session (2026-10-07) — Cris's PR didn't include a STATUS.md entry, so this is
 reconstructed from the PR/commit itself for the record. New `/ethics` section (PR #6, merged by Cris):
