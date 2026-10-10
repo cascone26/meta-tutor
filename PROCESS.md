@@ -2081,3 +2081,82 @@ existing `today` variable (harmless no-op for those single-day pages since it al
   Cascone.pdf`, `~/Desktop/RCA Folder/6th Grade lesson plans- 2026-2027- Mr. Cascone.pdf`.
 - Files changed: `src/components/rca/PacedLesson.tsx`, `src/components/rca/RcaClassBlock.tsx`,
   `src/app/rca/{week,today,substitute}/page.tsx`.
+
+## Every AI feature app-wide was broken: stale OAuth token sync script pointed at the wrong Vercel account (2026-10-09)
+
+### Problem statement
+Jacob asked for a real, hands-on recheck of the live app ("use the viewer") after an unrelated
+session's manifest-auth fix. Drove the actual production app as Jacob via a real authenticated
+browser session (not curl, not build/typecheck) and clicked all the way through 28 routes, then went
+deeper and actually exercised interactive features — a real chess move, a real trivia answer, a real
+Latin Lab comprehension attempt, a real Ethics chat message.
+
+### What was actually found
+Chess, Trivia, and every static route were clean. But **both AI-backed interactions tested — Latin
+Lab's comprehension check and Ethics chat — failed outright**: a raw `401
+{"type":"error","error":{"type":"authentication_error","message":"OAuth access token has been
+revoked."}}` surfaced directly to the user (itself a second, smaller bug — a raw API error shown
+verbatim instead of a friendly message, not fixed this pass, flagged for later).
+
+### Root cause
+This repo already has a known mechanism for this exact failure class (see the 2026-08-09 PROCESS.md
+entry above) — `~/tools/sync-meta-tutor-token.sh`, a LaunchAgent firing every 15 minutes, pulls a
+fresh Claude Code OAuth token from this Mac's Keychain and pushes it to Vercel + triggers a redeploy,
+because these access tokens only live a few hours and nothing else refreshes them.
+
+**That script had been silently failing on every single run since 2026-10-07**, when meta-tutor's
+Vercel project moved from `scones-team` to `cascone26s-projects` (see that date's STATUS.md entry —
+"Fixed the actual Vercel deploy pipeline for this repo"). The sync script was never updated for the
+move: it was still hardcoded to `--scope scones-team` and reading `~/.vercel-scones/auth.json` for
+its CLI credentials. Every run threw `Error: Could not retrieve Project Settings` (the CLI token could
+authenticate to Vercel, just not to *this* project, which had moved to a different team), logged an
+ALERT line, and correctly refused to update its own state file — so it kept retrying every 15 minutes,
+failing every time, for over two days, never actually refreshing the real token sitting in the live
+project. That real token (production's `ANTHROPIC_AUTH_TOKEN`) was already 18+ days old by the time
+this was found — nowhere close to its ~7-hour real lifetime.
+
+**Net effect: every AI-backed feature in the entire app — Latin Lab comprehension, Ethics chat,
+RCA chat, Chess coach, Trivia question generation, Riemann chat — has been down since 2026-10-07**,
+not just the one feature that happened to get tested.
+
+### Fix
+Rewrote `~/tools/sync-meta-tutor-token.sh` (not part of this repo's git history — a local Mac tool,
+per the 2026-08-09 entry's own "infra-only, no source changes" pattern):
+- `VERCEL_SCOPE` changed from `scones-team` to `cascone26s-projects` (verified against this repo's own
+  `.vercel/project.json` orgId, the same cross-check the prior incident's writeup recommended doing
+  "whenever this breaks a third time" — it broke a second time, same failure shape, different wrong
+  account).
+- `VERCEL_AUTH_FILE` changed from `~/.vercel-scones/auth.json` to the default CLI auth file
+  (`~/Library/Application Support/com.vercel.cli/auth.json`), which this session confirmed has a live,
+  working session for `cascone26s-projects`.
+- Dropped the `hub-shell`-branch-specific Preview redeploy logic — that was a long-lived branch from
+  the pre-PR-workflow era that no longer exists; Preview env vars still get updated (so new PR preview
+  builds pick up the fresh token), just without a forced redeploy of a specific stale preview URL.
+
+### Verification
+Not just "the script ran without error" — ran it manually, confirmed the log showed real
+`Added Environment Variable ANTHROPIC_AUTH_TOKEN/ANTHROPIC_REFRESH_TOKEN to Project meta-tutor` lines
+(previously only ever showed the `Could not retrieve Project Settings` failure), confirmed the
+triggered production redeploy reached `Ready` via `vercel ls`, then **re-drove the exact two broken
+interactions through the live authenticated browser session again**: Latin Lab's comprehension check
+now returns a real AI-generated question ("Quis in villā laborat?") instead of the 401; Ethics chat now
+returns a real, correct, detailed answer about vincible vs. invincible ignorance instead of the error.
+Also triggered the LaunchAgent itself via `launchctl kickstart` (not just a manual `bash` invocation)
+to confirm the actual automated path — not just my manual intervention — works end to end; it ran
+clean and correctly logged "Token unchanged, nothing to do" since the token was already fresh.
+
+### Standing lesson
+This is the second time this exact failure shape has taken down the AI layer: a Vercel-account/scope
+reference baked into a local sync script going stale after an account migration, failing silently
+(well, loudly in a log nobody was tailing) for days before anyone noticed because the failure mode is
+"AI features 401, static pages still look fine" — invisible to anything short of actually exercising
+the AI-backed interactions, which neither a build pass nor a page-load sweep would ever catch. Any
+future Vercel account/project migration for this repo needs this script's `VERCEL_SCOPE`/
+`VERCEL_AUTH_FILE` checked as part of the migration, not as an afterthought once AI features start
+failing.
+
+### Proof pointers
+`~/tools/sync-meta-tutor-token.sh` (rewritten, not in this repo's git history), 
+`~/logs/meta-tutor-token-sync.log` (shows the before/after — failures through 2026-10-09 22:58, real
+success from 23:01 on), live re-test of Latin Lab comprehension + Ethics chat via an authenticated
+browser session.
