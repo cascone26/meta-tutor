@@ -18,6 +18,10 @@ export type RcaClass = {
   /** Which of rcaSchedule.days this class actually meets on, if not both — e.g. PE 5-6 is
    * Monday-only and Music 3-4 is Thursday-only on the real schedule (they share Block 6). */
   days?: readonly ("Monday" | "Thursday")[];
+  /** Accent color for calendar/agenda chips — lets the eye tell classes apart at a
+   * glance across a week/month grid instead of reading every label. Muted/pastel to
+   * match the nature theme; red and amber are reserved elsewhere (closures/estimated). */
+  color: string;
 };
 
 export const rcaSchedule = {
@@ -242,6 +246,7 @@ export const rcaClasses: RcaClass[] = [
       { label: "Tutor Resources", url: "https://drive.google.com/drive/folders/134sGerTmpk4Uxml9zxNAtv_A2lUfdsTd?usp=drive_link" },
       { label: "Parent & Tutor Folder", url: "https://drive.google.com/drive/folders/1g5JgqvINFeinxNur0z92LCbQbUJkkCCU?usp=drive_link" },
     ],
+    color: "#3f7ea6",
   },
   {
     id: "classical-language-arts-6",
@@ -258,6 +263,7 @@ export const rcaClasses: RcaClass[] = [
       { label: "Tutor Resources", url: sixthGradeTutorDrive },
       { label: "Parent & Tutor Resources", url: sixthGradeParentDrive },
     ],
+    color: "#7a5aa6",
   },
   {
     id: "loe-essentials-c",
@@ -273,6 +279,7 @@ export const rcaClasses: RcaClass[] = [
       { label: "Tutor Resources", url: "https://drive.google.com/drive/folders/1EIYfu1k9G4QC--WmuNG7H5MROZY2rqHM?usp=drive_link" },
       { label: "Parent & Tutor Folder", url: "https://drive.google.com/drive/folders/1kx1O0lQO6MVxE0dM_HsnN4Dr8P-5v2Rm?usp=drive_link" },
     ],
+    color: "#2f8a6a",
   },
   {
     id: "religion-6",
@@ -289,6 +296,7 @@ export const rcaClasses: RcaClass[] = [
       { label: "Tutor Resources", url: sixthGradeTutorDrive },
       { label: "Parent & Tutor Resources", url: sixthGradeParentDrive },
     ],
+    color: "#a67a3a",
   },
   {
     id: "first-form-latin-6",
@@ -305,6 +313,7 @@ export const rcaClasses: RcaClass[] = [
       { label: "Tutor Resources", url: sixthGradeTutorDrive },
       { label: "Parent & Tutor Resources", url: sixthGradeParentDrive },
     ],
+    color: "#a65a8a",
   },
   {
     id: "pe-1-2",
@@ -325,6 +334,7 @@ export const rcaClasses: RcaClass[] = [
     block: "1:20 – 2:05 PM",
     room: "Gym",
     days: ["Monday"],
+    color: "#4a9aa6",
   },
   {
     id: "pe-5-6",
@@ -343,6 +353,7 @@ export const rcaClasses: RcaClass[] = [
     block: "1:20 – 2:05 PM",
     room: "Cafe",
     days: ["Thursday"],
+    color: "#4a9aa6",
   },
   {
     id: "history-6",
@@ -359,6 +370,7 @@ export const rcaClasses: RcaClass[] = [
       { label: "Tutor Resources", url: sixthGradeTutorDrive },
       { label: "Parent & Tutor Resources", url: sixthGradeParentDrive },
     ],
+    color: "#8a6a3a",
   },
   {
     id: "science-6",
@@ -375,6 +387,7 @@ export const rcaClasses: RcaClass[] = [
       { label: "Tutor Resources", url: sixthGradeTutorDrive },
       { label: "Parent & Tutor Resources", url: sixthGradeParentDrive },
     ],
+    color: "#5a9a3a",
   },
   {
     id: "music-34",
@@ -404,6 +417,7 @@ export const rcaClasses: RcaClass[] = [
       // "Tutor Folder" for Music 3/4, same 2026-08-20 email.
       { label: "Music 3/4 Tutor Folder", url: "https://drive.google.com/open?id=1EbSoma_qVItHeHUCpqK_YO4x-tArA6Wj" },
     ],
+    color: "#c96a9a",
   },
 ];
 
