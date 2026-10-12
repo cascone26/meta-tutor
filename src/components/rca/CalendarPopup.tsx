@@ -53,14 +53,14 @@ export default function CalendarPopup() {
   const rangeStart = useMemo(() => {
     if (view === "day") return anchor;
     if (view === "week") return startOfWeek(anchor);
-    return startOfMonth(startOfWeek(startOfMonth(anchor))); // pad to full weeks
+    return startOfWeek(startOfMonth(anchor)); // pad to full weeks
   }, [view, anchor]);
 
   const rangeEnd = useMemo(() => {
     if (view === "day") return anchor;
     if (view === "week") return addDays(startOfWeek(anchor), 6);
     const monthEnd = new Date(anchor.getFullYear(), anchor.getMonth() + 1, 0);
-    return addDays(startOfWeek(monthEnd), 6 - monthEnd.getDay());
+    return addDays(startOfWeek(monthEnd), 6); // Monday-anchored week always ends 6 days later
   }, [view, anchor]);
 
   const events = useMemo(
