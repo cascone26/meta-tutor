@@ -45,12 +45,26 @@ touch `access.ts` if you're deliberately changing who can reach what, and say so
 
 Never force-push or delete `main`. Local `npm run dev` works fine for anything that doesn't need live
 secrets (plain pages/UI). For auth-gated features (AI chat, DB reads, anything behind login), test
-against **`https://meta-tutor-six.vercel.app`** — the one deployment with Git connected and real
-Preview/Production secrets wired up (fixed 2026-10-07, see `STATUS.md`). There's a messier,
-multi-account Vercel history behind this repo (`meta-tutor.vercel.app` itself lives on a different,
-not-currently-accessible account) — `meta-tutor-six.vercel.app` is the one that's actually guaranteed
-to work end to end, so use it over a one-off PR preview URL, since per-PR preview URLs get a random
-hostname each time and Google OAuth won't recognize an unregistered redirect URI.
+against production: **both `https://meta-tutor.vercel.app` and `https://meta-tutor-six.vercel.app`**
+work — they're two Domains on the same `cascone26s-projects/meta-tutor` Vercel project (the one with
+Git connected and real Preview/Production secrets wired up), so either one always serves whatever
+most recently built successfully on `main`. Don't use a one-off PR preview URL for this — per-PR
+preview URLs get a random hostname each time and Google OAuth won't recognize an unregistered
+redirect URI.
+
+(2026-10-12 fix, after this exact mix-up recurred multiple times: `meta-tutor.vercel.app` used to be
+parked as a stale alias on a disconnected old project under a different Vercel account — freed from
+there and re-registered as a real Domain on the correct project, confirmed the Google OAuth redirect
+URI for it is still allow-listed. It now auto-follows production exactly like `-six` does; no more
+reason to treat it as broken or to prefer one over the other.)
+
+**If the live site looks stale after a merge**, don't assume the code is wrong before checking the
+deploy itself: `vercel ls` (scope `cascone26s-projects`) and look at the newest Production entry's
+status. Vercel's GitHub integration occasionally throws a build-pipeline error unrelated to the code
+(seen 2026-10-12: `errorCode: "git_info_fail"`, even though the identical commit's CI build and PR
+preview build both succeeded) — when that happens production silently stays pinned to the last
+successful build instead of retrying. Fix: `vercel --prod` from a local checkout of `main` forces a
+fresh production build/deploy immediately, no new commit needed.
 
 ## Shared code — duplicate, don't import
 If you're building something that resembles an existing feature (e.g. Cris building his own
