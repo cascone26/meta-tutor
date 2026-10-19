@@ -1,0 +1,21 @@
+#!/bin/bash
+# Block committing real Anthropic API keys
+STAGED=$(git diff --cached --name-only 2>/dev/null)
+if [ -z "$STAGED" ]; then exit 0; fi
+
+FOUND=$(echo "$STAGED" | grep -v "^scripts/git-hooks/" | xargs grep -l "sk-ant-api03-" 2>/dev/null | grep -v "\.example$" || true)
+if [ -n "$FOUND" ]; then
+  echo "ERROR: Anthropic API key (sk-ant-api03-...) detected in staged files:"
+  echo "$FOUND"
+  echo ""
+  echo "Remove the key before committing."
+  exit 1
+fi
+
+# Parse-check staged JS/TS files: catches duplicate const/let/function and
+# real syntax errors before they land. Single-file check (no project
+# resolution), ~0.2s/file. Ported from LessonDraft's hook 2026-10-19.
+if command -v node >/dev/null 2>&1; then
+  node scripts/git-hooks/parse-check.cjs
+  if [ $? -ne 0 ]; then exit 1; fi
+fi
