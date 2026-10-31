@@ -33,6 +33,15 @@ export const umbrellas: Umbrella[] = [
     accentDark: "#7ec8e3",
     status: "building",
   },
+  {
+    id: "veritas",
+    name: "Veritas",
+    tagline: "Catholic theology & apologetics — Library, Ask Aquinas, Daily Question, Flashcards, Objection Handler, Debate Prep",
+    href: "/veritas",
+    accent: "#b8793a",
+    accentDark: "#d9a05c",
+    status: "live",
+  },
 ];
 
 export const subjects: Subject[] = [
@@ -95,7 +104,7 @@ export const subjects: Subject[] = [
 // Latin lives inside the RCA umbrella now (it's his actual RCA class, First Form
 // Latin 6) — /latin permanently redirects there via next.config.ts, kept in the
 // hub-shell prefix list so the redirect still gets the chrome-free treatment mid-flight.
-const HUB_SHELL_PREFIXES = ["/", "/hub", "/chess", "/latin", "/latin-lab", "/rca", "/riemann", "/trivia", "/learner-profile"];
+const HUB_SHELL_PREFIXES = ["/", "/hub", "/chess", "/latin", "/latin-lab", "/rca", "/riemann", "/trivia", "/learner-profile", "/veritas"];
 
 export function isHubShellRoute(pathname: string): boolean {
   return HUB_SHELL_PREFIXES.some((p) => pathname === p || (p !== "/" && pathname.startsWith(p + "/")));

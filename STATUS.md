@@ -1,5 +1,67 @@
 # Meta Tutor — Status
 
+## (Jacob) Added Veritas as a new station (2026-10-31)
+Ported the standalone Veritas app (`~/projects/veritas`, Catholic theology/apologetics built on
+Aquinas's complete works — originally a separate Next.js project, ~31K lines, dead in production:
+`veritas-mauve-nu.vercel.app` 404s and the deployment no longer exists under the Vercel account)
+into Meta Tutor as a new Umbrella station (`/veritas`), same pattern as RCA — Jacob asked for it
+to sit alongside Chess and Latin Lab.
+
+**Phase 1 shipped** (library + 5 of the original ~55 feature pages — the AI tools and the core
+reading/reference surfaces; the other ~45 pages from the standalone app, e.g. Summa/SCG/Bible/CCC
+readers, Saints, Heresies, Typology, are not yet ported):
+- `/veritas` — sub-hub landing page (7 station cards)
+- `/veritas/library` + `/veritas/library/[slug]` — 141-book catalog, 127 full texts readable
+  on-site (ported verbatim from `public/books/*.md` → `public/veritas-books/`), chapter reader
+  with highlight/note-taking and font/theme/line-width settings (all localStorage, no DB)
+- `/veritas/ask` — "Ask Aquinas" AI chat
+- `/veritas/daily` — daily theology question generator (falls back to a static question if the
+  API call fails, e.g. no session)
+- `/veritas/flashcards` — AI-generated flashcards + SM-2-style spaced repetition review
+- `/veritas/objection` — Objection Handler (paste an anti-Catholic argument, get a structured
+  Thomistic disputatio-style response)
+- `/veritas/debate` — Debate Prep briefings by topic + opponent type
+- `/veritas/glossary` — 342-term glossary (route also lives as the GlossaryTooltip's target)
+
+**What changed vs. the original standalone app** (not a blind copy):
+- The 5 AI routes (`/api/veritas-chat`, `-daily`, `-debate`, `-flashcard`, `-objection`) were
+  rewired onto this repo's existing `streamChat`/Tutor Core plumbing (auth + rate-limit +
+  SSE streaming) instead of the old app's raw unauthenticated Anthropic SDK calls — matches
+  every other subject's chat route (rca-chat/riemann-chat/chess-coach/ethics-chat) instead of
+  introducing a second streaming convention. Model follows the repo-wide
+  `process.env.CLAUDE_MODEL || "claude-haiku-4-5-20251001"` convention (was hardcoded to a
+  stale `claude-sonnet-4-20250514` in the original).
+- Fixed a real bug found while porting: `src/data/veritas/glossary.ts`'s source data has two
+  duplicate terms ("Theosis", "Voluntarism") that threw a React duplicate-key error on the
+  glossary list — deduped at the data layer (`GLOSSARY_ENTRIES` is now a deduped view over the
+  raw array) rather than hand-editing the 2,296-line pasted data file.
+- `/veritas` and its 5 API routes added to `JACOB_ONLY_PREFIXES` in `access.ts` (Cristian-gated,
+  same as RCA/Chess/Latin Lab/Riemann/Trivia) and to `HUB_SHELL_PREFIXES` in `subjects.ts` for
+  chrome-free rendering.
+
+**Verified**: `npx tsc --noEmit` clean, `npm run build` clean (all 9 pages + 5 API routes
+compiled). Drove the real local dev server via the `x-dev-preview` bypass (per
+`scripts/verify-scene.mjs`'s established pattern) and looked at real screenshots of all 8 pages
+with my own eyes — hub, library (141 books), book reader (Confessions, real chapter text),
+glossary (342 terms, post-dedupe-fix clean console), flashcards, objection handler, debate prep,
+and daily (graceful fallback question when the API 401s, confirmed by design — the dev-preview
+header bypasses `proxy.ts`'s page-level gate but not each route's own `auth()` session check, so
+local AI-call testing needs a real session).
+
+**Not yet verified**: the actual Claude API round-trip (streaming chat text, daily/flashcard JSON
+parsing) end-to-end with a live response — blocked locally by the same session-gating above, and
+blocked in production because `meta-tutor.vercel.app` is currently `402 DEPLOYMENT_DISABLED`
+(Vercel spend-management pause, unrelated to this change — flagged to Jacob separately). The 5
+routes are code-identical in shape to the already-working `ethics-chat`/`rca-chat` routes, so this
+is a real gap, not a guess dressed as done — next session should re-verify live once either a
+local session is set up or the Vercel pause is lifted.
+
+**Not done**: the other ~45 pages from the standalone app (Summa/SCG/Bible/CCC full-text readers
+with structured citation targets — `citations.ts`'s auto-linker already points at `/veritas/summa`
+etc., which 404 until those are built; Saints/Heresies/Typology/Councils/Encyclicals encyclopedia
+pages; Weakness Tracker; Debate Simulator; social/notes/reading-tracker personal pages). Phase 2,
+not started.
+
 ## (Jacob) Fixed manifest-auth console error + every AI feature app-wide was down for 2+ days (2026-10-09)
 Jacob asked for a real hands-on recheck ("use the viewer... i dont think u just sit and look at stuff").
 Drove the live production app as Jacob via a real authenticated browser session (28 routes, plus real
