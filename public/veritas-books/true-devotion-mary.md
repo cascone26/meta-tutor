@@ -1,0 +1,5068 @@
+# True Devotion to Mary
+
+*By St. Louis de Montfort*
+
+
+It was through the Blessed Virgin Mary 
+that Jesus came into the world, and it is 
+also through her that he must reign in the 
+world. 
+
+Because Mary remained hidden during her 
+life she is called by the Holy Spirit and the 
+Church "Alma Mater", Mother hidden and 
+unknown. So great was her humility that 
+she desired nothing more upon earth than 
+to remain unknown to herself and to 
+others, and to be known only to God. 
+
+In answer to her prayers to remain hidden, poor and lowly, 
+God was pleased to conceal her from nearly every other 
+human creature in her conception, her birth, her life, her 
+mysteries, her resurrection and assumption. Her own parents 
+did not really know her; and the angels would often ask one 
+another, "Who can she possibly be?", for God had hidden 
+her from them, or if he did reveal anything to them, it was 
+nothing compared with what he withheld. 
+
+God the Father willed that she should perform no miracle 
+during her life, at least no public one, although he had given 
+her the power to do so. God the Son willed that she should 
+speak very little although he had imparted his wisdom to 
+her. 
+
+Even though Mary was his faithful spouse, God the Holy 
+Spirit willed that his apostles and evangelists should say 
+very little about her and then only as much as was 
+necessary to make Jesus known. 
+
+
+Mary is the supreme masterpiece of Almighty God and he 
+has reserved the knowledge and possession of her for 
+himself. She is the glorious Mother of God the Son who chose 
+to humble and conceal her during her lifetime in order to 
+foster her humility. He called her "Woman" as if she were a 
+stranger, although in his heart he esteemed and loved her 
+above all men and angels. Mary is the sealed fountain and 
+the faithful spouse of the Holy Spirit where only he may 
+enter. She is the sanctuary and resting-place of the Blessed 
+Trinity where God dwells in greater and more divine splendor 
+than anywhere else in the universe, not excluding his 
+dwelling above the cherubim and seraphim. No creature, 
+however pure, may enter there without being specially 
+privileged. 
+
+I declare with the saints: Mary is the earthly paradise of 
+Jesus Christ the new Adam, where he became man by the 
+power of the Holy Spirit, in order to accomplish in her 
+wonders beyond our understanding. She is the vast and 
+divine world of God where unutterable marvels and beauties 
+are to be found. She is the magnificence of the Almighty 
+where he hid his only Son, as in his own bosom, and with 
+him everything that is most excellent and precious. What 
+great and hidden things the all-powerful God has done for 
+this wonderful creature, as she herself had to confess in 
+spite of her great humility, "The Almighty has done great 
+things for me." The world does not know these things 
+because it is incapable and unworthy of knowing them. 
+
+The saints have said wonderful things of Mary, the holy City 
+of God, and, as they themselves admit, they were never 
+more eloquent and more pleased than when they spoke of 
+her. And yet they maintain that the height of her merits 
+rising up to the throne of the Godhead cannot be perceived; 
+the breadth of her love which is wider than the earth cannot 
+be measured; the greatness of the power which she wields 
+
+
+over one who is God cannot be conceived; and the depths of 
+her profound humility and all her virtues and graces cannot 
+be sounded. What incomprehensible height! What 
+indescribable breadth! What immeasurable greatness! What 
+an impenetrable abyss! 
+
+Every day, from one end of the earth to the other, in the 
+highest heaven and in the lowest abyss, all things preach, 
+all things proclaim the wondrous Virgin Mary. The nine choirs 
+of angels, men and women of every age, rank and religion, 
+both good and evil, even the very devils themselves are 
+compelled by the force of truth, willingly or unwillingly, to 
+call her blessed. According to Saint Bonaventure, all the 
+angels in heaven unceasingly call out to her: "Holy, holy, 
+holy Mary, Virgin Mother of God." They greet her countless 
+times each day with the angelic greeting, "Hail, Mary", while 
+prostrating themselves before her, begging her as a favor to 
+honor them with one of her requests. According to Saint 
+Augustine, even Saint Michael, though prince of all the 
+heavenly court, is the most eager of all the angels to honor 
+her and lead others to honor her. At all times he awaits the 
+privilege of going at her word to the aid of one of her 
+servants. 
+
+The whole world is filled with her glory, and this is especially 
+true of Christian peoples, who have chosen her as guardian 
+and protectress of kingdoms, provinces, dioceses, and 
+towns. Many cathedrals are consecrated to God in her name. 
+There is no church without an altar dedicated to her, no 
+country or region without at least one of her miraculous 
+images where all kinds of afflictions are cured and all sorts of 
+benefits received. Many are the confraternities and 
+associations honoring her as patron; many are the orders 
+under her name and protection; many are the members of 
+sodalities and religious of all congregations who voice her 
+praises and make known her compassion. There is not a 
+
+
+child who does not praise her by lisping a Hail Mary. There is 
+scarcely a sinner, however hardened, who does not possess 
+some spark of confidence in her. The very devils in hell, 
+while fearing her, show her respect. 
+
+And yet in truth we must still say with the saints: De Maria 
+numquam satis : We have still not praised, exalted, honored, 
+loved and served Mary adequately. She is worthy of even 
+more praise, respect, love and service. 
+
+Moreover, we should repeat after the Holy Spirit, "All the 
+glory of the king's daughter is within", meaning that all the 
+external glory which heaven and earth vie with each other 
+to give her is nothing compared to what she has received 
+interiorly from her Creator, namely, a glory unknown to 
+insignificant creatures like us, who cannot penetrate into the 
+secrets of the king. 
+
+Finally, we must say in the words of the apostle Paul, "Eye 
+has not seen, nor ear heard, nor has the heart of man 
+understood" the beauty, the grandeur, the excellence of 
+Mary, who is indeed a miracle of miracles of grace, nature 
+and glory. "If you wish to understand the Mother," says a 
+saint, "then understand the Son. She is a worthy Mother of 
+God." Hie taceat omnis lingua : Here let every tongue be 
+silent. 
+
+My heart has dictated with special joy all that I have written 
+to show that Mary has been unknown up till now, and that 
+that is one of the reasons why Jesus Christ is not known as 
+he should be. If then, as is certain, the knowledge and the 
+kingdom of Jesus Christ must come into the world, it can 
+only be as a necessary consequence of the knowledge and 
+reign of Mary. She who first gave him to the world will 
+establish his kingdom in the world. 
+
+
+# PART I: TRUE DEVOTION TO OUR LADY IN GENERAL
+
+
+## Chapter One - Necessity of Devotion to Our Lady
+
+
+Mary's part in the Incarnation 
+
+With the whole Church I acknowledge that 
+Mary, being a mere creature fashioned by 
+the hands of God is, compared to his 
+infinite majesty, less than an atom, or 
+rather is simply nothing, since he alone 
+can say, "I am he who is". Consequently, 
+this great Lord, who is ever independent 
+and self-sufficient, never had and does not 
+now have any absolute need of the 
+Blessed Virgin for the accomplishment of 
+his will and the manifestation of his glory. To do all things he 
+has only to will them. 
+
+However, I declare that, considering things as they are, 
+because God has decided to begin and accomplish his 
+greatest works through the Blessed Virgin ever since he 
+created her, we can safely believe that he will not change 
+his plan in the time to come, for he is God and therefore 
+does not change in his thoughts or his way of acting. 
+
+God the Father gave his only Son to the world only through 
+Mary. Whatever desires the patriarchs may have cherished, 
+whatever entreaties the prophets and saints of the Old Law 
+may have had for 4,000 years to obtain that treasure, it was 
+Mary alone who merited it and found grace before God by 
+the power of her prayers and the perfection of her virtues. 
+"The world being unworthy," said Saint Augustine, "to 
+receive the Son of God directly from the hands of the Father, 
+
+
+he gave his Son to Mary for the world to receive him from 
+her." 
+
+The Son of God became man for our salvation but only in 
+Mary and through Mary. 
+
+God the Holy Spirit formed Jesus Christ in Mary but only 
+after having asked her consent through one of the chief 
+ministers of his court. 
+
+God the Father imparted to Mary his fruitfulness as far as a 
+mere creature was capable of receiving it, to enable her to 
+bring forth his Son and all the members of his mystical body. 
+
+God the Son came into her virginal womb as a new Adam 
+into his earthly paradise, to take his delight there and 
+produce hidden wonders of grace. 
+
+God-made-man found freedom in imprisoning himself in her 
+womb. He displayed power in allowing himself to be borne 
+by this young maiden. He found his glory and that of his 
+Father in hiding his splendors from all creatures here below 
+and revealing them only to Mary. He glorified his 
+independence and his majesty in depending upon this 
+lovable virgin in his conception, his birth, his presentation in 
+the temple, and in the thirty years of his hidden life. Even at 
+his death she had to be present so that he might be united 
+with her in one sacrifice and be immolated with her consent 
+to the eternal Father, just as formerly Isaac was offered in 
+sacrifice by Abraham when he accepted the will of God. It 
+was Mary who nursed him, fed him, cared for him, reared 
+him, and sacrificed him for us. 
+
+The Holy Spirit could not leave such wonderful and 
+inconceivable dependence of God unmentioned in the 
+Gospel, though he concealed almost all the wonderful things 
+that Wisdom Incarnate did during his hidden life in order to 
+
+
+bring home to us its infinite value and glory. Jesus gave more 
+glory to God his Father by submitting to his Mother for thirty 
+years than he would have given him had he converted the 
+whole world by working the greatest miracles. How highly 
+then do we glorify God when to please him we submit 
+ourselves to Mary, taking Jesus as our sole model. 
+
+If we examine closely the remainder of the life of Jesus 
+Christ, we see that he chose to begin his miracles through 
+Mary. It was by her word that he sanctified Saint John the 
+Baptist in the womb of his mother, Saint Elizabeth; no 
+sooner had Mary spoken than John was sanctified. This was 
+his first and greatest miracle of grace. At the wedding in 
+Cana he changed water into wine at her humble prayer, and 
+this was his first miracle in the order of nature. He began 
+and continued his miracles through Mary and he will 
+continue them through her until the end of time. 
+
+God the Holy Spirit, who does not produce any divine 
+person, became fruitful through Mary whom he espoused. It 
+was with her, in her and of her that he produced his 
+masterpiece, God-made-man, and that he produces every 
+day until the end of the world the members of the body of 
+this adorable Head. For this reason the more he finds Mary 
+his dear and inseparable spouse in a soul the more powerful 
+and effective he becomes in producing Jesus Christ in that 
+soul and that soul in Jesus Christ. 
+
+This does not mean that the Blessed Virgin confers on the 
+Holy Spirit a fruitfulness which he does not already possess. 
+Being God, he has the ability to produce just like the Father 
+and the Son, although he does not use this power and so 
+does not produce another divine person. But it does mean 
+that the Holy Spirit chose to make use of our Blessed Lady, 
+although he had no absolute need of her, in order to become 
+actively fruitful in producing Jesus Christ and his members in 
+
+
+her and by her. This is a mystery of grace unknown even to 
+many of the most learned and spiritual of Christians. 
+
+Mary's part in the sanctification of souls 
+
+The plan adopted by the three persons of the Blessed Trinity 
+in the Incarnation, the first coming of Jesus Christ, is 
+adhered to each day in an invisible manner throughout the 
+Church and they will pursue it to the end of time until the 
+last coming of Jesus Christ. 
+
+God the Father gathered all the waters together and called 
+them the seas (maria). He gathered all his graces together 
+and called them Mary (Maria). The great God has a treasury 
+or storehouse full of riches in which he has enclosed all that 
+is beautiful, resplendent, rare, and precious, even his own 
+Son. This immense treasury is none other than Mary whom 
+the saints call the "treasury of the Lord". From her fullness 
+all men are made rich. 
+
+God the Son imparted to his mother all that he gained by his 
+life and death, namely, his infinite merits and his eminent 
+virtues. He made her the treasurer of all his Father had given 
+him as heritage. Through her he applies his merits to his 
+members and through her he transmits his virtues and 
+distributes his graces. She is his mystical channel, his 
+aqueduct, through which he causes his mercies to flow 
+gently and abundantly. 
+
+God the Holy Spirit entrusted his wondrous gifts to Mary, his 
+faithful spouse, and chose her as the dispenser of all he 
+possesses, so that she distributes all his gifts and graces to 
+whom she wills, as much as she wills, how she wills and 
+when she wills. No heavenly gift is given to men which does 
+not pass through her virginal hands. Such indeed is the will 
+of God, who has decreed that we should have all things 
+
+
+through Mary, so that, making herself poor and lowly,, and 
+hiding herself in the depths of nothingness during her whole 
+life, she might be enriched, exalted and honored by 
+almighty God. Such are the views of the Church and the 
+early Fathers. 
+
+Were I speaking to the so-called intellectuals of today, I 
+would prove at great length by quoting Latin texts taken 
+from Scripture and the Fathers of the Church all that I am 
+now stating so simply. I could also instance solid proofs 
+which can be read in full in Father Poir's book "The Triple 
+Crown of the Blessed Virgin". But I am speaking mainly for 
+the poor and simple who have more good will and faith than 
+the common run of scholars. As they believe more simply 
+and more meritoriously, let me merely state the truth to 
+them quite plainly without bothering to quote Latin 
+passages which they would not understand. Nevertheless, I 
+shall quote some texts as they occur to my mind as I go 
+along. 
+
+Since grace enhances our human nature and glory adds a 
+still greater perfection to grace, it is certain that our Lord 
+remains in heaven just as much the Son of Mary as he was 
+on earth. Consequently he has retained the submissiveness 
+and obedience of the most perfect of all children towards the 
+best of all mothers. 
+
+We must take care, however, not to consider this 
+dependence as an abasement or imperfection in Jesus 
+Christ. For Mary, infinitely inferior to her Son, who is God, 
+does not command him in the same way as an earthly 
+mother would command her child who is beneath her. Since 
+she is completely transformed in God by that grace and 
+glory which transforms all the saints in him, she does not ask 
+or wish or do anything which is contrary to the eternal and 
+changeless will of God. When therefore we read in the 
+
+
+writings of Saint Bernard, Saint Bernardine, Saint 
+Bonaventure, and others that all in heaven and on earth, 
+even God himself, is subject to the Blessed Virgin, they 
+mean that the authority which God was pleased to give her 
+is so great that she seems to have the same power as God. 
+Her prayers and requests are so powerful with him that he 
+accepts them as commands in the sense that he never 
+resists his dear mother's prayer because it is always humble 
+and conformed to his will. 
+
+Moses by the power of his prayer curbed God's anger 
+against the Israelites so effectively that the infinitely great 
+and merciful Lord was unable to withstand him and asked 
+Moses to let him be angry and punish that rebellious people. 
+How much greater, then, will be the prayer of the humble 
+Virgin Mary, worthy Mother of God, which is more powerful 
+with the King of heaven than the prayers and intercession of 
+all the angels and saints in heaven and on earth. 
+
+Mary has authority over the angels and the blessed in 
+heaven. As a reward for her great humility, God gave her the 
+power and the mission of assigning to saints the thrones 
+made vacant by the apostate angels who fell away through 
+pride. 
+
+Such is the will of almighty God who exalts the humble, that 
+the powers of heaven, earth and hell, willingly or 
+unwillingly, must obey the commands of the humble Virgin 
+Mary. For God has made her queen of heaven and earth, 
+leader of his armies, keeper of his treasures, dispenser of his 
+graces, worker of his wonders, restorer of the human race, 
+mediatrix on behalf of men, destroyer of his enemies, and 
+faithful associate in his great works and triumphs. 
+
+
+God the Father wishes Mary to be the mother of his children 
+until the end of time and so he says to her, "Dwell in Jacob", 
+
+
+that is to say, take up your abode permanently in my 
+children, in my holy ones represented by Jacob, and not in 
+the children of the devil and sinners represented by Esau. 
+
+Just as in natural and bodily generation there is a father and 
+a mother, so in the supernatural and spiritual generation 
+there is a father who is God and a mother who is Mary. All 
+true children of God have God for their father and Mary for 
+their mother; anyone who does not have Mary for his 
+mother, does not have God for his father. This is why the 
+reprobate, such as heretics and schismatics, who hate, 
+despise or ignore the Blessed Virgin, do not have God for 
+their father though they arrogantly claim they have, 
+because they do not have Mary for their mother. Indeed if 
+they had her for their mother they would love and honor her 
+as good and true children naturally love and honor the 
+mother who gave them life. 
+
+An infallible and unmistakable sign by which we can 
+distinguish a heretic, a man of false doctrine, an enemy of 
+God, from one of God's true friends is that the heretic and 
+the hardened sinner show nothing but contempt and 
+indifference for our Lady. He endeavors by word and 
+example, openly or insidiously - sometimes under specious 
+pretexts - to belittle the love and veneration shown to her. 
+God the Father has not told Mary to dwell in them because 
+they are, alas, other Esaus. 
+
+God the Son wishes to form himself, and, in a manner of 
+speaking, become incarnate every day in his members 
+through his dear Mother. To her he said: "Take Israel for your 
+inheritance." It is as if he said, God the Father has given me 
+as heritage all the nations of the earth, all men good and 
+evil, predestinate and reprobate. To the good I shall be 
+father and advocate, to the bad a just avenger, but to all I 
+shall be a judge. But you, my dear Mother, will have for your 
+
+
+heritage and possession only the predestinate represented 
+by Israel. As their loving mother, you will give them birth, 
+feed them and rear them. As their queen, you will lead, 
+govern and defend them. 
+
+"This one and that one were born in her." According to the 
+explanation of some of the Fathers, the first man born of 
+Mary is the God-man, Jesus Christ. If Jesus Christ, the head of 
+mankind, is born of her, the predestinate, who are members 
+of this head, must also as a necessary consequence be born 
+of her. One and the same mother does not give birth to the 
+head without the members nor to the members without the 
+head, for these would be monsters in the order of nature. In 
+the order of grace likewise the head and the members are 
+born of the same mother. If a member of the mystical body 
+of Christ, that is, one of the predestinate, were born of a 
+mother other than Mary who gave birth to the head, he 
+would not be one of the predestinate, nor a member of Jesus 
+Christ, but a monster in the order of grace. 
+
+Moreover, Jesus is still as much as ever the fruit of Mary, as 
+heaven and earth repeat thousands of times a day: "Blessed 
+is the fruit of thy womb, Jesus." It is therefore certain that 
+Jesus is the fruit and gift of Mary for every single man who 
+possesses him, just as truly as he is for all mankind. 
+Consequently, if any of the faithful have Jesus formed in 
+their heart they can boldly say, "It is thanks to Mary that 
+what I possess is Jesus her fruit, and without her I would not 
+have him." We can attribute more truly to her what Saint 
+Paul said of himself, "I am in labor again with all the children 
+of God until Jesus Christ, my Son, is formed in them to the 
+fullness of his age." Saint Augustine, surpassing himself as 
+well as all that I have said so far, affirms that in order to be 
+conformed to the image of the Son of God all the 
+predestinate, while in the world, are hidden in the womb of 
+the Blessed Virgin where they are protected, nourished, 
+
+
+cared for and developed by this good Mother, until the day 
+she brings them forth to a life of glory after death, which the 
+Church calls the birthday of the just. This is indeed a 
+mystery of grace unknown to the reprobate and little known 
+even to the predestinate! 
+
+God the Holy Spirit wishes to fashion his chosen ones in and 
+through Mary. He tells her, "My well-beloved, my spouse, let 
+all your virtues take root in my chosen ones that they may 
+grow from strength to strength and from grace to grace. 
+When you were living on earth, practicing the most sublime 
+virtues, I was so pleased with you that I still desire to find 
+you on earth without your ceasing to be in heaven. 
+Reproduce yourself then in my chosen ones, so that I may 
+have the joy of seeing in them the roots of your invincible 
+faith, profound humility, total mortification, sublime prayer, 
+ardent charity, your firm hope and all your virtues. You are 
+always my spouse, as faithful, pure, and fruitful as ever. May 
+your faith give me believers; your purity, virgins; your 
+fruitfulness, elect and living temples." 
+
+When Mary has taken root in a soul she produces in it 
+wonders of grace which only she can produce; for she alone 
+is the fruitful virgin who never had and never will have her 
+equal in purity and fruitfulness. Together with the Holy Spirit 
+Mary produced the greatest thing that ever was or ever will 
+be: a God-man. She will consequently produce the marvels 
+which will be seen in the latter times. The formation and the 
+education of the great saints who will come at the end of the 
+world are reserved to her, for only this singular and 
+wondrous virgin can produce in union with the Holy Spirit 
+singular and wondrous things. 
+
+When the Holy Spirit, her spouse, finds Mary in a soul, he 
+hastens there and enters fully into it. He gives himself 
+generously to that soul according to the place it has given to 
+
+
+his spouse. One of the main reasons why the Holy Spirit does 
+not work striking wonders in souls is that he fails to find in 
+them a sufficiently close union with his faithful and 
+inseparable spouse. I say "inseparable spouse", for from the 
+moment the substantial love of the Father and the Son 
+espoused Mary to form Jesus, the head of the elect, and 
+Jesus in the elect, he has never disowned her, for she has 
+always been faithful and fruitful. 
+
+Consequences 
+
+We must obviously conclude from what I have just said: 
+
+First, that Mary received from God a far-reaching dominion 
+over the souls of the elect. Otherwise she could not make 
+her dwelling-place in them as God the Father has ordered 
+her to do, and she could not conceive them, nourish them, 
+and bring them forth to eternal life as their mother. She 
+could not have them for her inheritance and her possession 
+and form them in Jesus and Jesus in them. She could not 
+implant in their heart the roots of her virtues, nor be the 
+inseparable associate of the Holy Spirit in all these works of 
+grace. None of these things, I repeat, could she do unless 
+she had received from the Almighty rights and authority 
+over their souls. For God, having given her power over his 
+only-begotten and natural Son, also gave her power over his 
+adopted children - not only in what concerns their body - 
+which would be of little account - but also in what concerns 
+their soul. 
+
+Mary is the Queen of heaven and earth by grace as Jesus is 
+king by nature and by conquest. But as the kingdom of Jesus 
+Christ exists primarily in the heart or interior of man, 
+according to the words of the Gospel, "The kingdom of God 
+is within you", so the kingdom of the Blessed Virgin is 
+principally in the interior of man, that is, in his soul. It is 
+principally in souls that she is glorified with her Son more 
+
+
+than in any visible creature. So we may call her, as the 
+saints do, Queen of our hearts. 
+
+Secondly, we must conclude that, being necessary to God 
+by a necessity which is called "hypothetical", (that is, 
+because God so willed it), the Blessed Virgin is all the more 
+necessary for men to attain their final end. Consequently we 
+must not place devotion to her on the same level as 
+devotion to the other saints as if it were merely something 
+optional. 
+
+The pious and learned Jesuit, Suarez, Justus Lipsius, a 
+devout and erudite theologian of Louvain, and many others 
+have proved incontestably that devotion to our Blessed Lady 
+is necessary to attain salvation. This they show from the 
+teaching of the Fathers, notably Saint Augustine, Saint 
+Ephrem, deacon of Edessa, Saint Cyril of Jerusalem, Saint 
+Germanus of Constantinople, Saint John Demascene, Saint 
+Anselm, Saint Bernard, Saint Bernardine, Saint Thomas and 
+Saint Bonaventure. Even according to Oecolampadius and 
+other heretics, lack of esteem and love for the Virgin Mary is 
+an infallible sign of God's disapproval. On the other hand, to 
+be entirely and genuinely devoted to her is a sure sign of 
+God's approval. 
+
+The types and texts of the Old and New Testaments prove 
+the truth of this, the opinions and examples of the saints 
+confirm it, and reason and experience teach and 
+demonstrate it. Even the devil and his followers, forced by 
+the evidence of the truth, were frequently obliged against 
+their will to admit it. For brevity's sake, I shall quote one 
+only of the many passages which I have collected from the 
+Fathers and Doctors of the Church to support this truth. 
+"Devotion to you, 0 Blessed Virgin, is a means of salvation 
+which God gives to those whom he wishes to save" (St. John 
+Damascene). 
+
+
+I could tell many stories in evidence of what I have just said. 
+
+
+(1) One is recorded in the chronicles of Saint Francis. The 
+saint saw in ecstasy an immense ladder reaching to heaven, 
+at the top of which stood the Blessed Virgin. This is the 
+ladder, he was told, by which we must all go to heaven. 
+
+(2) There is another related in the Chronicles of Saint 
+Dominic. Near Carcassonne, where Saint Dominic was 
+preaching the Rosary, there was an unfortunate heretic who 
+was possessed by a multitude of devils. These evil spirits to 
+their confusion were compelled at the command of our Lady 
+to confess many great and consoling truths concerning 
+devotion to her. They did this so clearly and forcibly that, 
+however weak our devotion to our Lady may be, we cannot 
+read this authentic story containing such an unwilling 
+tribute paid by the devils to devotion to our Lady without 
+shedding tears of joy. 
+
+If devotion to the Blessed Virgin is necessary for all men 
+simply to work out their salvation, it is even more necessary 
+for those who are called to a special perfection. I do not 
+believe that anyone can acquire intimate union with our 
+Lord and perfect fidelity to the Holy Spirit without a very 
+close union with the most Blessed Virgin and an absolute 
+dependence on her support. 
+
+Mary alone found grace before God without the help of any 
+other creature. All those who have since found grace before 
+God have found it only through her. She was full of grace 
+when she was greeted by the Archangel Gabriel and was 
+filled with grace to overflowing by the Holy Spirit when he so 
+mysteriously overshadowed her. From day to day, from 
+moment to moment, she increased so much this twofold 
+plenitude that she attained an immense and inconceivable 
+degree of grace. So much so, that the Almighty made her 
+
+
+the sole custodian of his treasures and the sole dispenser of 
+his graces. She can now ennoble, exalt and enrich all she 
+chooses. She can lead them along the narrow path to 
+heaven and guide them through the narrow gate to life. She 
+can give a royal throne, scepter and crown to whom she 
+wishes. Jesus is always and everywhere the fruit and Son of 
+Mary and Mary is everywhere the genuine tree that bears 
+that Fruit of life, the true Mother who bears that Son. 
+
+To Mary alone God gave the keys of the cellars of divine love 
+and the ability to enter the most sublime and secret ways of 
+perfection, and lead others along them. Mary alone gives to 
+the unfortunate children of unfaithful Eve entry into that 
+earthly paradise where they may walk pleasantly with God 
+and be safely hidden from their enemies. There they can 
+feed without fear of death on the delicious fruit of the tree of 
+life and the tree of the knowledge of good and evil. They can 
+drink copiously the heavenly waters of that beauteous 
+fountain which gushes forth in such abundance. As she is 
+herself the earthly paradise, that virgin and blessed land 
+from which sinful Adam and Eve were expelled she lets only 
+those whom she chooses enter her domain in order to make 
+them saints. 
+
+All the rich among the people, to use an expression of the 
+Holy Spirit as explained by Saint Bernard, all the rich among 
+the people will look pleadingly upon her countenance 
+throughout all ages and particularly as the world draws to its 
+end. This means that the greatest saints, those richest in 
+grace and virtue will be the most assiduous in praying to the 
+most Blessed Virgin, looking up to her as the perfect model 
+to imitate and as a powerful helper to assist them. 
+
+I said that this will happen especially towards the end of the 
+world, and indeed soon, because Almighty God and his holy 
+Mother are to raise up great saints who will surpass in 
+
+
+holiness most other saints as much as the cedars of Lebanon 
+tower above little shrubs. This has been revealed to a holy 
+soul whose life has been written by M. de Renty. 
+
+These great souls filled with grace and zeal will be chosen to 
+oppose the enemies of God who are raging on all sides. They 
+will be exceptionally devoted to the Blessed Virgin. 
+
+Illumined by her light, strengthened by her food, guided by 
+her spirit, supported by her arm, sheltered under her 
+protection, they will fight with one hand and build with the 
+other. With one hand they will give battle, overthrowing and 
+crushing heretics and their heresies, schismatics and their 
+schisms, idolaters and their idolatries, sinners and their 
+wickedness. With the other hand they will build the temple 
+of the true Solomon and the mystical city of God, namely, 
+the Blessed Virgin, who is called by the Fathers of the 
+Church the Temple of Solomon and the City of God . By word 
+and example they will draw all men to a true devotion to her 
+and though this will make many enemies, it will also bring 
+about many victories and much glory to God alone. This is 
+what God revealed to Saint Vincent Ferrer, that outstanding 
+apostle of his day, as he has amply shown in one of his 
+works. 
+
+This seems to have been foretold by the Holy Spirit in Psalm 
+58: "The Lord will reign in Jacob and all the ends of the 
+earth. They will be converted towards evening and they will 
+be as hungry as dogs and they will go around the city to find 
+something to eat." This city around which men will roam at 
+the end of the world seeking conversion and the 
+appeasement of the hunger they have for justice is the most 
+Blessed Virgin, who is called by the Holy Spirit the City of 
+God . 
+
+
+Mary's part in the latter times 
+
+
+The salvation of the world began through Mary and through 
+her it must be accomplished. Mary scarcely appeared in the 
+first coming of Jesus Christ so that men, as yet insufficiently 
+instructed and enlightened concerning the person of her 
+Son, might not wander from the truth by becoming too 
+strongly attached to her. This would apparently have 
+happened if she had been known, on account of the 
+wondrous charms with which Almighty God had endowed 
+even her outward appearance. So true is this that Saint 
+Denis the Areopagite tells us in his writings that when he 
+saw her he would have taken her for a goddess, because of 
+her incomparable beauty, had not his well-grounded faith 
+taught him otherwise. But in the second coming of Jesus 
+Christ, Mary must be known and openly revealed by the Holy 
+Spirit so that Jesus may be known, loved and served through 
+her. The reasons which moved the Holy Spirit to hide his 
+spouse during her life and to reveal but very little of her 
+since the first preaching of the gospel exist no longer. 
+
+God wishes to make Mary better known in the latter 
+times 
+
+God wishes therefore to reveal Mary, his masterpiece, and 
+make her more known in these latter times: 
+
+(1) Because she kept herself hidden in this world and in her 
+great humility considered herself lower than dust, having 
+obtained from God, his apostles and evangelists the favor of 
+being made known. 
+
+(2) Because, as Mary is not only God's masterpiece of glory 
+in heaven, but also his masterpiece of grace on earth, he 
+wishes to be glorified and praised because of her by those 
+living upon earth. 
+
+
+(3) Since she is the dawn which precedes and discloses the 
+Sun of Justice Jesus Christ, she must be known and 
+acknowledged so that Jesus may be known and 
+acknowledged. 
+
+(4) As she was the way by which Jesus first came to us, she 
+will again be the way by which he will come to us the second 
+time though not in the same manner. 
+
+(5) Since she is the sure means, the direct and immaculate 
+way to Jesus and the perfect guide to him, it is through her 
+that souls who are to shine forth in sanctity must find him. 
+
+He who finds Mary finds life, that is, Jesus Christ who is the 
+way, the truth and the life. But no one can find Mary who 
+does not look for her. No one can look for her who does not 
+know her, for no one seeks or desires something unknown. 
+Mary then must be better known than ever for the deeper 
+understanding and the greater glory of the Blessed Trinity. 
+
+(6) In these latter times Mary must shine forth more than 
+ever in mercy, power and grace; in mercy, to bring back and 
+welcome lovingly the poor sinners and wanderers who are to 
+be converted and return to the Catholic Church; in power, to 
+combat the enemies of God who will rise up menacingly to 
+seduce and crush by promises and threats all those who 
+oppose them; finally, she must shine forth in grace to inspire 
+and support the valiant soldiers and loyal servants of Jesus 
+Christ who are fighting for his cause. 
+
+(7) Lastly, Mary must become as terrible as an army in battle 
+array to the devil and his followers, especially in these latter 
+times. For Satan, knowing that he has little time - even less 
+now than ever - to destroy souls, intensifies his efforts and 
+his onslaughts every day. He will not hesitate to stir up 
+savage persecutions and set treacherous snares for Mary's 
+
+
+faithful servants and children whom he finds more difficult 
+to overcome than others. 
+
+It is chiefly in reference to these last wicked persecutions of 
+the devil, daily increasing until the advent of the reign of 
+anti- Christ, that we should understand that first and well- 
+known prophecy and curse of God uttered against the 
+serpent in the garden of paradise. It is opportune to explain 
+it here for the glory of the Blessed Virgin, the salvation of 
+her children and the confusion of the devil. "I will place 
+enmities between you and the woman, between your race 
+and her race; she will crush your head and you will lie in 
+wait for her heel" (Genesis 3:15). 
+
+God has established only one enmity - but it is an 
+irreconcilable one - which will last and even go on increasing 
+to the end of time. That enmity is between Mary, his worthy 
+Mother, and the devil, between the children and the 
+servants of the Blessed Virgin and the children and followers 
+of Lucifer. 
+
+Thus the most fearful enemy that God has set up against the 
+devil is Mary, his holy Mother. From the time of the earthly 
+paradise, although she existed then only in his mind, he 
+gave her such a hatred for his accursed enemy, such 
+ingenuity in exposing the wickedness of the ancient serpent 
+and such power to defeat, overthrow and crush this proud 
+rebel, that Satan fears her not only more than angels and 
+men but in a certain sense more than God himself. This does 
+not mean that the anger, hatred and power of God are not 
+infinitely greater than the Blessed Virgin's, since her 
+attributes are limited. It simply means that Satan, being so 
+proud, suffers infinitely more in being vanquished and 
+punished by a lowly and humble servant of God, for her 
+humility humiliates him more than the power of God. 
+Moreover, God has given Mary such great power over the 
+
+
+evil spirits that, as they have often been forced unwillingly 
+to admit through the lips of possessed persons, they fear 
+one of her pleadings for a soul more than the prayers of all 
+the saints, and one of her threats more than all their other 
+torments. 
+
+What Lucifer lost by pride Mary won by humility. What Eve 
+ruined and lost by disobedience Mary saved by obedience. 
+By obeying the serpent, Eve ruined her children as well as 
+herself and delivered them up to him. Mary by her perfect 
+fidelity to God saved her children with herself and 
+consecrated them to his divine majesty. 
+
+God has established not just one enmity but "enmities", and 
+not only between Mary and Satan but between her race and 
+his race. That is, God has put enmities, antipathies and 
+hatreds between the true children and servants of the 
+Blessed Virgin and the children and slaves of the devil. They 
+have no love and no sympathy for each other. The children 
+of Belial, the slaves of Satan, the friends of the world, - for 
+they are all one and the same - have always persecuted and 
+will persecute more than ever in the future those who 
+belong to the Blessed Virgin, just as Cain of old persecuted 
+his brother Abel, and Esau his brother Jacob. These are the 
+types of the wicked and of the just. But the humble Mary will 
+always triumph over Satan, the proud one, and so great will 
+be her victory that she will crush his head, the very seat of 
+his pride. She will unmask his serpent's cunning and expose 
+his wicked plots. She will scatter to the winds his devilish 
+plans and to the end of time will keep her faithful servants 
+safe from his cruel claws. 
+
+But Mary's power over the evil spirits will especially shine 
+forth in the latter times, when Satan will lie in wait for her 
+heel, that is, for her humble servants and her poor children 
+whom she will rouse to fight against him. In the eyes of the 
+
+
+world they will be little and poor and, like the heel, lowly in 
+the eyes of all, down-trodden and crushed as is the heel by 
+the other parts of the body. But in compensation for this 
+they will be rich in God's graces, which will be abundantly 
+bestowed on them by Mary. They will be great and exalted 
+before God in holiness. They will be superior to all creatures 
+by their great zeal and so strongly will they be supported by 
+divine assistance that, in union with Mary, they will crush 
+the head of Satan with their heel, that is, their humility, and 
+bring victory to Jesus Christ. 
+
+Devotion to Mary is especially necessary in the 
+latter times 
+
+Finally, God in these times wishes his Blessed Mother to be 
+more known, loved and honored than she has ever been. 
+
+This will certainly come about if the elect, by the grace and 
+light of the Holy Spirit, adopt the interior and perfect 
+practice of the devotion which I shall later unfold. Then they 
+will clearly see that beautiful Star of the Sea, as much as 
+faith allows. Under her guidance they will perceive the 
+splendors of this Queen and will consecrate themselves 
+entirely to her service as subjects and slaves of love. They 
+will experience her motherly kindness and affection for her 
+children. They will love her tenderly and will appreciate how 
+full of compassion she is and how much they stand in need 
+of her help. In all circumstances they will have recourse to 
+her as their advocate and mediatrix with Jesus Christ. They 
+will see clearly that she is the safest, easiest, shortest and 
+most perfect way of approaching Jesus and will surrender 
+themselves to her, body and soul, without reserve in order to 
+belong entirely to Jesus. 
+
+
+But what will they be like, these servants, these slaves, 
+these children of Mary? 
+
+
+They will be ministers of the Lord who, like a flaming fire, will 
+enkindle everywhere the fires of divine love. They will 
+become, in Mary's powerful hands, like sharp arrows, with 
+which she will transfix her enemies. 
+
+They will be as the children of Levi, thoroughly purified by 
+the fire of great tribulations and closely joined to God. They 
+will carry the gold of love in their heart, the frankincense of 
+prayer in their mind and the myrrh of mortification in their 
+body. They will bring to the poor and lowly everywhere the 
+sweet fragrance of Jesus, but they will bring the odor of 
+death to the great, the rich and the proud of this world. 
+
+They will be like thunder-clouds flying through the air at the 
+slightest breath of the Holy Spirit. Attached to nothing, 
+surprised at nothing, troubled at nothing, they will shower 
+down the rain of God's word and of eternal life. They will 
+thunder against sin, they will storm against the world, they 
+will strike down the devil and his followers and for life and 
+for death, they will pierce through and through with the two- 
+edged sword of God's word all those against whom they are 
+sent by Almighty God. 
+
+They will be true apostles of the latter times to whom the 
+Lord of Hosts will give eloquence and strength to work 
+wonders and carry off glorious spoils from his enemies. They 
+will sleep without gold or silver and, more important still, 
+without concern in the midst of other priests, ecclesiastics 
+and clerics. Yet they will have the silver wings of the dove 
+enabling them to go wherever the Holy Spirit calls them, 
+filled as they are with the resolve to seek the glory of God 
+and the salvation of souls. Wherever they preach, they will 
+leave behind them nothing but the gold of love, which is the 
+fulfillment of the whole law. 
+
+
+Lastly, we know they will be true disciples of Jesus Christ, 
+imitating his poverty, his humility, his contempt of the world 
+and his love. They will point out the narrow way to God in 
+pure truth according to the holy Gospel, and not according 
+to the maxims of the world. Their hearts will not be troubled, 
+nor will they show favor to anyone; they will not spare or 
+heed or fear any man, however powerful he may be. They 
+will have the two-edged sword of the word of God in their 
+mouths and the blood-stained standard of the Cross on their 
+shoulders. They will carry the crucifix in their right hand and 
+the rosary in their left, and the holy names of Jesus and Mary 
+on their heart. The simplicity and self-sacrifice of Jesus will 
+be reflected in their whole behavior. 
+
+Such are the great men who are to come. By the will of God 
+Mary is to prepare them to extend his rule over the impious 
+and unbelievers. But when and how will this come about? 
+Only God knows. For our part we must yearn and wait for it 
+in silence and in prayer: "I have waited and waited." 
+
+
+## Chapter Two - In What Devotion to Mary Consists
+
+
+Basic principles of devotion to Mary 
+
+Having spoken briefly of the necessity of 
+devotion to the Blessed Virgin, I must now 
+explain what this devotion consists in. 
+
+This I will do with God's help after I have 
+laid down certain basic truths which throw 
+light on the remarkable and sound 
+devotion which I propose to unfold. 
+
+First principle: Christ must be the 
+ultimate end of all devotions 
+
+Jesus, our Savior, true God and true man must be the 
+ultimate end of all our other devotions; otherwise they 
+would be false and misleading. He is the Alpha and the 
+Omega, the beginning and end of everything. "We labor," 
+says Saint Paul, "only to make all men perfect in Jesus 
+Christ." 
+
+For in him alone dwells the entire fullness of the divinity and 
+the complete fullness of grace, virtue and perfection. In him 
+alone we have been blessed with every spiritual blessing; he 
+is the only teacher from whom we must learn; the only Lord 
+on whom we should depend; the only Head to whom we 
+should be united and the only model that we should imitate. 
+He is the only Physician that can heal us; the only Shepherd 
+that can feed us; the only Way that can lead us; the only 
+Truth that we can believe; the only Life that can animate us. 
+He alone is everything to us and he alone can satisfy all our 
+desires. 
+
+
+We are given no other name under heaven by which we can 
+be saved. God has laid no other foundation for our salvation, 
+perfection and glory than Jesus. Every edifice which is not 
+built on that firm rock, is founded upon shifting sands and 
+will certainly fall sooner or later. Every one of the faithful 
+who is not united to him is like a branch broken from the 
+stem of the vine. It falls and withers and is fit only to be 
+burnt. If we live in Jesus and Jesus lives in us, we need not 
+fear damnation. Neither angels in heaven nor men on earth, 
+nor devils in hell, no creature whatever can harm us, for no 
+creature can separate us from the love of God which is in 
+Christ Jesus. Through him, with him and in him, we can do all 
+things and render all honor and glory to the Father in the 
+unity of the Holy Spirit; we can make ourselves perfect and 
+be for our neighbor a fragrance of eternal life. 
+
+If then we are establishing sound devotion to our Blessed 
+Lady, it is only in order to establish devotion to our Lord 
+more perfectly, by providing a smooth but certain way of 
+reaching Jesus Christ. If devotion to our Lady distracted us 
+from our Lord, we would have to reject it as an illusion of the 
+devil. But this is far from being the case. As I have already 
+shown and will show again later on, this devotion is 
+necessary, simply and solely because it is a way of reaching 
+Jesus perfectly, loving him tenderly, and serving him 
+faithfully. 
+
+Here I turn to you for a moment, dear Jesus, to complain 
+lovingly to your divine Majesty that the majority of 
+Christians, and even some of the most learned among them, 
+do not recognize the necessary bond that unites you and 
+your Blessed Mother. Lord, you are always with Mary and 
+Mary is always with you. She can never be without you 
+because then she would cease to be what she is. She is so 
+completely transformed into you by grace that she no longer 
+lives, she no longer exists, because you alone, dear Jesus, 
+
+
+live and reign in her more perfectly than in all the angels 
+and saints. If we only knew the glory and the love given to 
+you by this wonderful creature, our feelings for you and for 
+her would be far different from those we have now. So 
+intimately is she united to you that it would be easier to 
+separate light from the sun, and heat from the fire. I go 
+further, it would even be easier to separate all the angels 
+and saints from you than Mary; for she loves you ardently, 
+and glorifies you more perfectly than all your other creatures 
+put together. 
+
+In view of this, my dear Master, is it not astonishing and 
+pitiful to see the ignorance and short-sightedness of men 
+with regard to your holy Mother? I am not speaking so much 
+of idolaters and pagans who do not know you and 
+consequently have no knowledge of her. I am not even 
+speaking of heretics and schismatics who have left you and 
+your holy Church and therefore are not interested in your 
+holy Mother. I am speaking of Catholics, and even of 
+educated Catholics, who profess to teach the faith to others 
+but do not know you or your Mother except speculatively, in 
+a dry, cold and sterile way. 
+
+These people seldom speak of your Mother or devotion to 
+her. They say they are afraid that devotion to her will be 
+abused and that you will be offended by excessive honor 
+paid to her. They protest loudly when they see or hear a 
+devout servant of Mary speak frequently with feeling, 
+conviction and vigor of devotion to her. When he speaks of 
+devotion to her as a sure means of finding and loving you 
+without fear or illusion, or when he says this devotion is a 
+short road free from danger, or an immaculate way free from 
+imperfection, or a wondrous secret of finding you, they put 
+before him a thousand specious reasons to show him how 
+wrong he is to speak so much of Mary. There are, they say, 
+great abuses in this devotion which we should try to stamp 
+
+
+out and we should refer people to you rather than exhort 
+them to have devotion to your Mother, whom they already 
+love adequately. 
+
+If they are sometimes heard speaking of devotion to your 
+Mother, it is not for the purpose of promoting it or 
+convincing people of it but only to destroy the abuses made 
+of it. Yet all the while these persons are devoid of piety or 
+genuine devotion to you, for they have no devotion to Mary. 
+They consider the Rosary and the Scapular as devotions 
+suitable only for simple women or ignorant people. After all, 
+they say, we do not need them to be saved. If they come 
+across one who loves our Lady, who says the rosary or shows 
+any devotion towards her, they soon move him to a change 
+of mind and heart. They advise him to say the seven 
+penitential psalms instead of the Rosary, and to show 
+devotion to Jesus instead of to Mary. 
+
+Dear Jesus, do these people possess your spirit? Do they 
+please you by acting in this way? Would it please you if we 
+were to make no effort to give pleasure to your Mother 
+because we are afraid of offending you? Does devotion to 
+your holy Mother hinder devotion to you? Does Mary keep 
+for herself any honor we pay her? Is she a rival of yours? Is 
+she a stranger having no kinship with you? Does pleasing 
+her imply displeasing you? Does the gift of oneself to her 
+constitute a deprivation for you? Is love for her a lessening 
+of our love for you? 
+
+Nevertheless, my dear Master, the majority of learned 
+scholars could not be further from devotion to your Mother, 
+or show more indifference to it even if all I have just said 
+were true. Keep me from their way of thinking and acting 
+and let me share your feelings of gratitude, esteem, respect 
+and love for your holy Mother. I can then love and glorify you 
+
+
+all the more, because I will be imitating and following you 
+more closely. 
+
+As though I had said nothing so far to further her honor, 
+grant me now the grace to praise her more worthily, in spite 
+of all her enemies who are also yours. I can then say to them 
+boldly with the saints, "Let no one presume to expect mercy 
+from God, who offends his holy Mother." 
+
+So that I may obtain from your mercy a genuine devotion to 
+your blessed Mother and spread it throughout the whole 
+world, help me to love you wholeheartedly, and for this 
+intention accept the earnest prayer I offer with Saint 
+Augustine and all who truly love you. 
+
+Prayer of Saint Augustine 
+
+0 Jesus Christ, you are my Father, my merciful God, my great 
+King, my good Shepherd, my only Master, my best helper, 
+my beloved friend of overwhelming beauty, my living Bread, 
+my eternal priest. You are my guide to my heavenly home, 
+my one true light, my holy joy, my true way, my shining 
+wisdom, my unfeigned simplicity, the peace and harmony of 
+my soul, my perfect safeguard, my bounteous inheritance, 
+my everlasting salvation. 
+
+My loving Lord, Jesus Christ, why have I ever loved or 
+desired anything else in my life but you, my God? Where 
+was I when I was not in communion with you? From now on, I 
+direct all my desires to be inspired by you and centered on 
+you. I direct them to press forward for they have tarried long 
+enough, to hasten towards their goal, to seek the one they 
+yearn for. 
+
+0 Jesus, let him who does not love you be accursed, and 
+filled with bitterness. 0 gentle Jesus, let every worthy feeling 
+of mine show you love, take delight in you and admire you. 
+
+
+0 God of my heart and my inheritance, Christ Jesus, may my 
+heart mellow before the influence of your spirit and may you 
+live in me. May the flame of your love burn in my soul. May it 
+burn incessantly on the altar of my heart. May it glow in my 
+innermost being. May it spread its heat into the hidden 
+recesses of my soul and on the day of my consummation 
+may I appear before you consumed in your love. Amen. 
+
+Second principle: We belong to Jesus and Mary as 
+their slaves 
+
+From what Jesus Christ is in regard to us we must conclude, 
+as Saint Paul says, that we belong not to ourselves but 
+entirely to him as his members and his slaves, for he bought 
+us at an infinite price - the shedding of his Precious Blood. 
+Before baptism, we belonged to the devil as slaves, but 
+baptism made us in very truth slaves of Jesus. 
+
+We must therefore live, work and die for the sole purpose of 
+bringing forth fruit for him, glorifying him in our body and 
+letting him reign in our soul. We are his conquest, the 
+people he has won, his heritage. 
+
+It is for this reason that the Holy Spirit compares us: 
+
+(1) to trees that are planted along the waters of grace in the 
+field of the Church and which must bear their fruit when the 
+time comes; 
+
+(2) to branches of the vine of which Jesus is the stem, which 
+must yield good grapes; 
+
+(3) to a flock of sheep of which Jesus is the Shepherd, which 
+must increase and give milk; 
+
+(4) to good soil cultivated by God, where the seed will 
+spread and produce crops up to thirty-fold, sixty-fold, or a 
+
+
+hundred-fold. Our Lord cursed the barren fig-tree and 
+condemned the slothful servant who wasted his talent. 
+
+
+All this proves that he wishes to receive some fruit from our 
+wretched selves, namely, our good works, which by right 
+belong to him alone, "created in Jesus Christ for good 
+works". These words of the Holy Spirit show that Jesus is the 
+sole source and must be the sole end of all our good works, 
+and that we must serve him not just as paid servants but as 
+slaves of love. Let me explain what I mean. 
+
+There are two ways of belonging to another person and 
+being subject to his authority. One is by ordinary service and 
+the other is by slavery. And so we must use the terms 
+"servant" and "slave". Ordinary service in Christian countries 
+is when a man is employed to serve another for a certain 
+length of time at a wage which is fixed or agreed upon. 
+
+When a man is totally dependent on another for life, and 
+must serve his master without expecting any wages or 
+recompense, when he is treated just like a beast of the field 
+over which the owner has the right of life and death, then it 
+is slavery. 
+
+Now there are three kinds of slavery; natural slavery, 
+enforced slavery, and voluntary slavery. All creatures are 
+slaves of God in the first sense, for "the earth and its fullness 
+belong to the Lord". The devils and the damned are slaves in 
+the second sense. The saints in heaven and the just on earth 
+are slaves in the third sense. Voluntary slavery is the most 
+perfect of all three states, for by it we give the greatest glory 
+to God, who looks into the heart and wants it to be given to 
+him. Is he not indeed called the God of the heart or of the 
+loving will? For by this slavery we freely choose God and his 
+service before all things, even if we were not by our very 
+nature obliged to do so. 
+
+
+There is a world of difference between a servant and a slave. 
+
+
+(1) A servant does not give his employer all he is, all he has, 
+and all he can acquire by himself or through others. A slave, 
+however, gives himself to his master completely and 
+exclusively with all he has and all he can acquire. 
+
+(2) A servant demands wages for the services rendered to 
+his employer. A slave, on the other hand, can expect 
+nothing, no matter what skill, attention or energy he may 
+have put into his work. 
+
+(3) A servant can leave his employer whenever he pleases, 
+or at least when the term of his service expires, whereas the 
+slave has no such right. 
+
+(4) An employer has no right of life and death over a 
+servant. Were he to kill him as he would a beast of burden, 
+he would commit murder. But the master of a slave has by 
+law the right of life and death over him, so that he can sell 
+him to anyone he chooses or - if you will pardon the 
+comparison - kill him as he would kill his horse. 
+
+(5) Finally, a servant is in his employer's service only for a 
+time; a slave for always. 
+
+No other human state involves belonging more completely 
+to another than slavery. Among Christian peoples, nothing 
+makes a person belong more completely to Jesus and his 
+holy Mother than voluntary slavery. Our Lord himself gave us 
+the example of this when out of love for us he "took the form 
+of a slave". Our Lady gave us the same example when she 
+called herself the handmaid or slave of the Lord. The Apostle 
+considered it an honor to be called "slave of Christ". Several 
+times in Holy Scripture, Christians are referred to as "slaves 
+of Christ". 
+
+
+The Latin word "servus" at one time signified only a slave 
+because servants as we know them did not exist. Masters 
+were served either by slaves or by freedmen. The Catechism 
+of the Council of Trent leaves no doubt about our being 
+slaves of Jesus Christ, using the unequivocal term "Mancipia 
+Christi", which plainly means: slaves of Christ. 
+
+Granting this, I say that we must belong to Jesus and serve 
+him not just as hired servants but as willing slaves who, 
+moved by generous love, commit themselves to his service 
+after the manner of slaves for the honor of belonging to him. 
+Before we were baptized we were the slaves of the devil, but 
+baptism made us the slaves of Jesus. Christians can only be 
+slaves of the devil or slaves of Christ. 
+
+What I say in an absolute sense of our Lord, I say in a 
+relative sense of our Blessed Lady. Jesus, in choosing her as 
+his inseparable associate in his life, glory and power in 
+heaven and on earth, has given her by grace in his kingdom 
+all the same rights and privileges that he possesses by 
+nature. "All that belongs to God by nature belongs to Mary 
+by grace", say the saints, and, according to them, just as 
+Jesus and Mary have the same will and the same power, they 
+have also the same subjects, servants and slaves. 
+
+Following therefore the teaching of the saints and of many 
+great men we can call ourselves, and become, the loving 
+slaves of our Blessed Lady in order to become more perfect 
+slaves of Jesus. Mary is the means our Lord chose to come to 
+us and she is also the means we should choose to go to him, 
+for she is not like other creatures who tend rather to lead us 
+away from God than towards him, if we are over-attached to 
+them. Mary's strongest inclination is to unite us to Jesus, her 
+Son, and her Son's strongest wish is that we come to him 
+through his Blessed Mother. He is pleased and honored just 
+as a king would be pleased and honored if a citizen, wanting 
+
+
+to become a better subject and slave of the king, made 
+himself the slave of the queen. That is why the Fathers of 
+the Church, and Saint Bonaventure after them, assert that 
+the Blessed Virgin is the way which leads to our Lord. 
+
+Moreover, if, as I have said, the Blessed Virgin is the Queen 
+and Sovereign of heaven and earth, does she not then have 
+as many subjects and slaves as there are creatures? "All 
+things, including Mary herself, are subject to the power of 
+God. All things, God included, are subject to the Virgin's 
+power", so we are told by Saint Anselm, Saint Bernard, Saint 
+Bernardine and Saint Bonaventure. Is it not reasonable to 
+find that among so many slaves there should be some slaves 
+of love, who freely choose Mary as their Queen? Should men 
+and demons have willing slaves, and Mary have none? A 
+king makes it a point of honor that the queen, his consort, 
+should have her own slaves, over whom she has right of life 
+and death, for honor and power given to the queen is honor 
+and power given to the king. Could we possibly believe that 
+Jesus, the best of all sons, who shared his power with his 
+Blessed Mother, would resent her having her own slaves? 
+
+Has he less esteem and love for his Mother than Ahasuerus 
+had for Esther, or Solomon for Bathsheba? Who could say or 
+even think such a thing? 
+
+But where is my pen leading me? Why am I wasting my time 
+proving something so obvious? If people are unwilling to call 
+themselves slaves of Mary, what does it matter? Let them 
+become and call themselves slaves of Jesus Christ, for this is 
+the same as being slaves of Mary, since Jesus is the fruit and 
+glory of Mary. This is what we do perfectly in the devotion we 
+shall discuss later. 
+
+Third principle: We must rid ourselves of what is evil 
+in us 
+
+
+Our best actions are usually tainted and spoiled by the evil 
+that is rooted in us. When pure, clear water is poured into a 
+foul-smelling jug, or wine into an unwashed cask that 
+previously contained another wine, the clear water and the 
+good wine are tainted and readily acquire an unpleasant 
+odor. In the same way when God pours into our soul, 
+infected by original and actual sin, the heavenly waters of 
+his grace or the delicious wines of his love, his gifts are 
+usually spoiled and tainted by the evil sediment left in us by 
+sin. Our actions, even those of the highest virtue, show the 
+effects of it. It is therefore of the utmost importance that, in 
+seeking the perfection that can be attained only by union 
+with Jesus, we rid ourselves of all that is evil in us. Otherwise 
+our infinitely pure Lord, who has an infinite hatred for the 
+slightest stain in our soul, will refuse to unite us to himself 
+and will drive us from his presence. 
+
+To rid ourselves of selfishness, we must first become 
+thoroughly aware, by the light of the Holy Spirit, of our 
+tainted nature. Of ourselves we are unable to do anything 
+conducive to our salvation. Our human weakness is evident 
+in everything we do and we are habitually unreliable. We do 
+not deserve any grace from God. Our tendency to sin is 
+always present. The sin of Adam has almost entirely spoiled 
+and soured us, filling us with pride and corrupting every one 
+of us, just as leaven sours, swells and corrupts the dough in 
+which it is placed. The actual sins we have committed, 
+whether mortal or venial, even though forgiven, have 
+intensified our base desires, our weakness, our inconstancy 
+and our evil tendencies, and have left a sediment of evil in 
+our soul. 
+
+Our bodies are so corrupt that they are referred to by the 
+Holy Spirit as bodies of sin, as conceived and nourished in 
+sin, and capable of any kind of sin. They are subject to a 
+
+
+thousand ills, deteriorating from day to day and harboring 
+only disease, vermin and corruption. 
+
+
+Our soul, being united to our body, has become so carnal 
+that it has been called flesh. "All flesh had corrupted its 
+way". Pride and blindness of spirit, hardness of heart, 
+weakness and inconstancy of soul, evil inclinations, 
+rebellious passions, ailments of the body, - these are all we 
+can call our own. By nature we are prouder than peacocks, 
+we cling to the earth more than toads, we are more base 
+than goats, more envious than serpents, greedier than pigs, 
+fiercer than tigers, lazier than tortoises, weaker than reeds, 
+and more changeable than weather-cocks. We have in us 
+nothing but sin, and deserve only the wrath of God and the 
+eternity of hell. 
+
+Is it any wonder then that our Lord laid down that anyone 
+who aspires to be his follower must deny himself and hate 
+his very life? He makes it clear that anyone who loves his life 
+shall lose it and anyone who hates his life shall save it. Now, 
+our Lord, who is infinite Wisdom, and does not give 
+commandments without a reason, bids us hate ourselves 
+only because we richly deserve to be hated. Nothing is more 
+worthy of love than God and nothing is more deserving of 
+hatred than self. 
+
+Secondly, in order to empty ourselves of self, we must die 
+daily to ourselves. This involves our renouncing what the 
+powers of the soul and the senses of the body incline us to 
+do. We must see as if we did not see, hear as if we did not 
+hear and use the things of this world as if we did not use 
+them. This is what Saint Paul calls "dying daily". Unless the 
+grain of wheat falls to the ground and dies, it remains only a 
+single grain and does not bear any good fruit. If we do not 
+die to self and if our holiest devotions do not lead us to this 
+necessary and fruitful death, we shall not bear fruit of any 
+
+
+worth and our devotions will cease to be profitable. All our 
+good works will be tainted by self-love and self-will so that 
+our greatest sacrifices and our best actions will be 
+unacceptable to God. Consequently when we come to die we 
+shall find ourselves devoid of virtue and merit and discover 
+that we do not possess even one spark of that pure love 
+which God shares only with those who have died to 
+themselves and whose life is hidden with Jesus Christ in him. 
+
+Thirdly, we must choose among all the devotions to the 
+Blessed Virgin the one which will lead us more surely to this 
+dying to self. This devotion will be the best and the most 
+sanctifying for us. For we must not believe that all that 
+glitters is gold, all that is sweet is honey, or all that is easy 
+to do and is done by the majority of people is the most 
+sanctifying. Just as in nature there are secrets enabling us to 
+do certain natural things quickly, easily and at little cost, so 
+in the spiritual life there are secrets which enable us to 
+perform works rapidly, smoothly and with facility. Such 
+works are, for example, emptying ourselves of self-love, 
+filling ourselves with God, and attaining perfection. 
+
+The devotion that I propose to explain is one of these secrets 
+of grace, for it is unknown to most Christians. Only a few 
+devout people know of it and it is practiced and appreciated 
+by fewer still. To begin the explanation of this devotion here 
+is a fourth truth which is a consequence of the third. 
+
+Fourth principle: It is more humble to have an 
+intermediary with Christ 
+
+It is more perfect because it supposes greater humility to 
+approach God through a mediator rather than directly by 
+ourselves. Our human nature, as I have just shown, is so 
+spoilt that if we rely on our own work, effort and 
+preparedness to reach God and please him, it is certain that 
+
+
+our good works will be tainted and carry little weight with 
+him. They will not induce him to unite himself to us or 
+answer our prayers. God had his reasons for giving us 
+mediators with him. He saw our unworthiness and 
+helplessness and had pity on us. To give us access to his 
+mercies he provided us with powerful advocates, so that to 
+neglect these mediators and to approach his infinite 
+holiness directly and without help from any one of them, is 
+to be lacking in humility and respect towards God who is so 
+great and holy. It would mean that we have less esteem for 
+the King of kings than for an earthly king or ruler, for we 
+would not dare approach an earthly king without a friend to 
+speak for us. 
+
+Our Lord is our Advocate and our Mediator of redemption 
+with God the Father. It is through him that we must pray 
+with the whole Church, triumphant and militant. It is 
+through him that we have access to God the Father. We 
+should never appear before God, our Father, unless we are 
+supported by the merits of his Son, and, so to speak, clothed 
+in them, as young Jacob was clothed in the skin of the young 
+goats when he appeared before his father Isaac to receive 
+his blessing. 
+
+But have we no need at all of a mediator with the Mediator 
+himself? Are we pure enough to be united directly to Christ 
+without any help? Is Jesus not God, equal in every way to 
+the Father? Therefore is he not the Holy of Holies, having a 
+right to the same respect as his Father? If in his infinite love 
+he became our security and our Mediator with his Father, 
+whom he wished to appease in order to redeem us from our 
+debts, should we on that account show him less respect and 
+have less regard for the majesty and holiness of his person? 
+
+Let us not be afraid to say with Saint Bernard that we need a 
+mediator with the Mediator himself and the divinely-honored 
+
+
+Mary is the one most able to fulfill this office of love. 
+
+Through her, Jesus came to us; through her we should go to 
+him. If we are afraid of going directly to Jesus, who is God, 
+because of his infinite greatness, or our lowliness, or our 
+sins, let us implore without fear the help and intercession of 
+Mary, our Mother. She is kind, she is tender, and there is 
+nothing harsh or forbidding about her, nothing too sublime 
+or too brilliant. When we see her, we see our own human 
+nature at its purest. She is not the sun, dazzling our weak 
+sight by the brightness of its rays. Rather, she is fair and 
+gentle as the moon, which receives its light from the sun 
+and softens it and adapts it to our limited perception. 
+
+She is so full of love that no one who asks for her 
+intercession is rejected, no matter how sinful he may be. The 
+saints say that it has never been known since the world 
+began that anyone had recourse to our Blessed Lady, with 
+trust and perseverance, and was rejected. Her power is so 
+great that her prayers are never refused. She has but to 
+appear in prayer before her Son and he at once welcomes 
+her and grants her requests. He is always lovingly 
+conquered by the prayers of the dear Mother who bore him 
+and nourished him. 
+
+All this is taken from Saint Bernard and Saint Bonaventure. 
+According to them, we have three steps to take in order to 
+reach God. The first, nearest to us and most suited to our 
+capacity, is Mary; the second is Jesus Christ; the third is God 
+the Father. To go to Jesus, we should go to Mary, our 
+mediatrix of intercession. To go to God the Father, we must 
+go to Jesus, our Mediator of redemption. This order is 
+perfectly observed in the devotion I shall speak about 
+further on. 
+
+Fifth principle: It is difficult to keep the graces 
+received from God 
+
+
+It is very difficult, considering our weakness and frailty, to 
+keep the graces and treasures we have received from God. 
+
+(1) We carry this treasure, which is worth more than heaven 
+and earth, in fragile vessels, that is, in a corruptible body 
+and in a weak and wavering soul which requires very little to 
+depress and disturb it. 
+
+(2) The evil spirits, cunning thieves that they are, can take 
+us by surprise and rob us of all we possess. They are 
+watching day and night for the right moment. They roam 
+incessantly seeking to devour us and to snatch from us in 
+one brief moment of sin all the grace and merit we have 
+taken years to acquire. Their malice and their experience, 
+their cunning and their numbers ought to make us ever 
+fearful of such a misfortune happening to us. People, richer 
+in grace and virtue, more experienced and advanced in 
+holiness than we are, have been caught off their guard and 
+robbed and stripped of everything. How many cedars of 
+Lebanon, how many stars of the firmament have we sadly 
+watched fall and lose in a short time their loftiness and their 
+brightness! 
+
+What has brought about this unexpected reverse? Not the 
+lack of grace, for this is denied no one. It was a lack of 
+humility; they considered themselves stronger and more 
+self-sufficient than they really were. They thought 
+themselves well able to hold on to their treasures. They 
+believed their house secure enough and their coffers strong 
+enough to safeguard their precious treasure of grace. It was 
+because of their unconscious reliance on self - although it 
+seemed to them that they were relying solely on the grace of 
+God - that the most just Lord left them to themselves and 
+allowed them to be despoiled. If they had only known of the 
+wonderful devotion that I shall later explain, they would 
+have entrusted their treasure to Mary, the powerful and 
+
+
+faithful Virgin. She would have kept it for them as if it were 
+her own possession and even have considered that trust an 
+obligation of justice. 
+
+(3) It is difficult to persevere in holiness because of the 
+excessively corrupting influence of the world. The world is so 
+corrupt that it seems almost inevitable that religious hearts 
+be soiled, if not by its mud, at least by its dust. It is 
+something of a miracle for anyone to stand firm in the midst 
+of this raging torrent and not be swept away; to weather this 
+stormy sea and not be drowned, or robbed by pirates; to 
+breathe this pestilential air and not be contaminated by it. It 
+is Mary, the singularly faithful Virgin over whom Satan had 
+never any power, who works this miracle for those who truly 
+love her. 
+
+Marks of false and authentic devotion to Mary 
+
+Now that we have established these five basic truths, it is all 
+the more necessary to make the right choice of the true 
+devotion to our Blessed Lady, for now more than ever there 
+are false devotions to her which can easily be mistaken for 
+true ones. The devil, like a counterfeiter and crafty, 
+experienced deceiver, has already misled and ruined many 
+Christians by means of fraudulent devotions to our Lady. Day 
+by day he uses his diabolical experience to lead many more 
+to their doom, fooling them, lulling them to sleep in sin and 
+assuring them that a few prayers, even badly said, and a few 
+exterior practices, inspired by himself, are authentic 
+devotions. A counterfeiter usually makes coins only of gold 
+and silver, rarely of other metals, because these latter would 
+not be worth the trouble. Similarly, the devil leaves other 
+devotions alone and counterfeits mostly those directed to 
+Jesus and Mary, for example, devotion to the Holy Eucharist 
+and to the Blessed Virgin, because these are to other 
+devotions what gold and silver are to other metals. 
+
+
+It is therefore very important, first, to recognize false 
+devotions to our Blessed Lady so as to avoid them, and to 
+recognize true devotion in order to practice it. Second, 
+among so many different forms of true devotion to our 
+Blessed Lady we should choose the one most perfect and 
+the most pleasing to her, the one that gives greater glory to 
+God and is most sanctifying for us. 
+
+False devotion to our Lady 
+
+There are, I find, seven kinds of false devotion to Mary, 
+namely, the devotion of (1) the critical, (2) the scrupulous, 
+(3) the superficial, (4) the presumptuous, (5) the inconstant, 
+(6) the hypocritical, (7) the self-interested. 
+
+Critical devotees 
+
+Critical devotees are for the most part proud scholars, 
+people of independent and self-satisfied minds, who deep 
+down in their hearts have a vague sort of devotion to Mary. 
+However, they criticize nearly all those forms of devotion to 
+her which simple and pious people use to honor their good 
+Mother just because such practices do not appeal to them. 
+They question all miracles and stories which testify to the 
+mercy and power of the Blessed Virgin, even those recorded 
+by trustworthy authors or taken from the chronicles of 
+religious orders. They cannot bear to see simple and humble 
+people on their knees before an altar or statue of our Lady, 
+or at prayer before some outdoor shrine. They even accuse 
+them of idolatry as if they were adoring the wood or the 
+stone. They say that as far as they are concerned they do 
+not care for such outward display of devotion and that they 
+are not so gullible as to believe all the fairy tales and stories 
+told of our Blessed Lady. When you tell them how admirably 
+the Fathers of the Church praised our Lady, they reply that 
+the Fathers were exaggerating as orators do, or that their 
+
+
+words are misrepresented. These false devotees, these proud 
+worldly people are greatly to be feared. They do untold harm 
+to devotion to our Lady. While pretending to correct abuses, 
+they succeed only too well in turning people away from this 
+devotion. 
+
+Scrupulous devotees 
+
+Scrupulous devotees are those who imagine they are 
+slighting the Son by honoring the Mother. They fear that by 
+exalting Mary they are belittling Jesus. They cannot bear to 
+see people giving to our Lady the praises due to her and 
+which the Fathers of the Church have lavished upon her. It 
+annoys them to see more people kneeling before Mary's 
+altar than before the Blessed Sacrament, as if these acts 
+were at variance with each other, or as if those who were 
+praying to our Lady were not praying through her to Jesus. 
+They do not want us to speak too often of her or to pray so 
+often to her. 
+
+Here are some of the things they say: "What is the good of 
+all these rosaries, confraternities and exterior devotions to 
+our Lady? There is a great deal of ignorance in all this. It is 
+making a mockery of religion. Tell us about those who are 
+devoted to Jesus (and they often pronounce his name 
+without uncovering their heads). We should go directly to 
+Jesus, since he is our sole Mediator. We must preach Jesus; 
+that is sound devotion." There is some truth in what they 
+say, but the inference they draw to prevent devotion to our 
+Lady is very insidious. It is a subtle snare of the evil one 
+under the pretext of promoting a greater good. For we never 
+give more honor to Jesus than when we honor his Mother, 
+and we honor her simply and solely to honor him all the 
+more perfectly. We go to her only as a way leading to the 
+goal we seek - Jesus, her Son. 
+
+
+The Church, with the Holy Spirit, blesses our Lady first, then 
+Jesus, "Blessed art thou among women and blessed is the 
+fruit of thy womb, Jesus." Not that Mary is greater than Jesus, 
+or even equal to him - that would be an intolerable heresy. 
+But in order to bless Jesus more perfectly we should first 
+bless Mary. Let us say with all those truly devoted to her, 
+despite these false and scrupulous devotees: "0 Mary, 
+blessed art thou among women and blessed is the fruit of 
+thy womb, Jesus." 
+
+Superficial devotees 
+
+Superficial devotees are people whose entire devotion to our 
+Lady consists in exterior practices. Only the externals of 
+devotion appeal to them because they have no interior 
+spirit. They say many rosaries with great haste and assist at 
+many Masses distractedly. They take part in processions of 
+our Lady without inner fervor. They join her confraternities 
+without reforming their lives or restraining their passions or 
+imitating Mary's virtues. All that appeals to them is the 
+emotional aspect of this devotion, but the substance of it 
+has no appeal at all. If they do not feel a warmth in their 
+devotions, they think they are doing nothing; they become 
+upset, and give up everything, or else do things only when 
+they feel like it. The world is full of these shallow devotees, 
+and there are none more critical of men of prayer who regard 
+the interior devotion as the essential aspect and strive to 
+acquire it without, however, neglecting a reasonable 
+external expression which always accompanies true 
+devotion. 
+
+Presumptuous devotees 
+
+Presumptuous devotees are sinners who give full rein to 
+their passions or their love of the world, and who, under the 
+fair name of Christian and servant of our Lady, conceal 
+
+
+pride, avarice, lust, drunkenness, anger, swearing, 
+slandering, injustice and other vices. They sleep peacefully 
+in their wicked habits, without making any great effort to 
+correct them, believing that their devotion to our Lady gives 
+them this sort of liberty. They convince themselves that God 
+will forgive them, that they will not die without confession, 
+that they will not be lost for all eternity. They take all this for 
+granted because they say the Rosary, fast on Saturdays, are 
+enrolled in the Confraternity of the Holy Rosary or the 
+Scapular, or a sodality of our Lady, wear the medal or the 
+little chain of our Lady. 
+
+When you tell them that such a devotion is only an illusion 
+of the devil and a dangerous presumption which may well 
+ruin them, they refuse to believe you. God is good and 
+merciful, they reply, and he has not made us to damn us. No 
+man is without sin. We will not die without confession, and a 
+good act of contrition at death is all that is needed. 
+Moreover, they say they have devotion to our Lady; that 
+they wear the scapular; that they recite faithfully and 
+humbly every day the seven Our Fathers and seven Hail 
+Marys in her honor; that sometimes they even say the 
+Rosary and the Office of our Lady, as well as fasting and 
+performing other good works. 
+
+Blinding themselves still more, they quote stories they have 
+heard or read - whether true or false does not bother them - 
+which relate how people who had died in mortal sin were 
+brought back to life again to go to confession, or how their 
+soul was miraculously retained in their bodies until 
+confession, because in their lifetime they said a few prayers 
+or performed a few pious acts, in honor of our Lady. Others 
+are supposed to have obtained from God at the moment of 
+death, through the merciful intercession of the Blessed 
+Virgin, sorrow and pardon for their sins, and so were saved. 
+
+
+Accordingly, these people expect the same thing to happen 
+to them. 
+
+Nothing in our Christian religion is so deserving of 
+condemnation as this diabolical presumption. How can we 
+truthfully claim to love and honor the Blessed Virgin when 
+by our sins we pitilessly wound, pierce, crucify and outrage 
+her Son? If Mary made it a rule to save by her mercy this sort 
+of person, she would be condoning wickedness and helping 
+to outrage and crucify her Son. Who would even dare to 
+think of such a thing? 
+
+I declare that such an abuse of devotion to her is a horrible 
+sacrilege and, next to an unworthy Communion, is the 
+greatest and the least pardonable sin, because devotion to 
+our Lady is the holiest and best after devotion to the Blessed 
+Sacrament. 
+
+I admit that to be truly devoted to our Lady, it is not 
+absolutely necessary to be so holy as to avoid all sin, 
+although this is desirable. But at least it is necessary (note 
+what I am going to say), (1) to be genuinely determined to 
+avoid at least all mortal sin, which outrages the Mother as 
+well as the Son; (2) to practice self-restraint in order to avoid 
+sin; (3) to join her confraternities, say the Rosary and other 
+prayers, fast on Saturdays, and so on. 
+
+Such means are surprisingly effective in converting even the 
+hardened sinner. Should you be such a sinner, with one foot 
+in the abyss, I advise you to do as I have said. But there is an 
+essential condition. You must perform these good works 
+solely to obtain from God, through the intercession of our 
+Lady, the grace to regret your sins, obtain pardon for them 
+and overcome your evil habits, and not to live complacently 
+in the state of sin, disregarding the warning voice of 
+
+
+conscience, the example of our Lord and the saints, and the 
+teaching of the holy gospel. 
+
+Inconstant devotees 
+
+Inconstant devotees are those whose devotion to our Lady is 
+practiced in fits and starts. Sometimes they are fervent and 
+sometimes they are lukewarm. Sometimes they appear 
+ready to do anything to please our Lady, and then shortly 
+afterwards they have completely changed. They start by 
+embracing every devotion to our Lady. They join her 
+confraternities, but they do not faithfully observe the rules. 
+They are as changeable as the moon, and like the moon 
+Mary puts them under her feet. Because of their fickleness 
+they are unworthy to be included among the servants of the 
+Virgin most faithful, because faithfulness and constancy are 
+the hallmarks of Mary's servants. It is better not to burden 
+ourselves with a multitude of prayers and pious practices 
+but rather adopt only a few and perform them with love and 
+perseverance in spite of opposition from the devil the world 
+and the flesh. 
+
+Hypocritical devotees 
+
+There is another category of false devotees of our Lady, - 
+hypocritical ones. These hide their sins and evil habits under 
+the mantle of the Blessed Virgin so as to appear to their 
+fellow-men different from what they are. 
+
+Self-interested devotees 
+
+Then there are the self-interested devotees who turn to her 
+only to win a court-case, to escape some danger, to be cured 
+of some ailment, or have some similar need satisfied. Except 
+when in need they never think of her. Such people are 
+acceptable neither to God not to his Mother. 
+
+
+We must, then, carefully avoid joining the critical devotees, 
+who believe nothing and find fault with everything; the 
+scrupulous ones who, out of respect for our Lord, are afraid 
+of having too much devotion to his Mother; the exterior 
+devotees whose devotion consists entirely in outward 
+practices; the presumptuous devotees who under cover of a 
+fictitious devotion to our Lady wallow in their sins; the 
+inconstant devotees who, being unstable, change their 
+devotional practices or abandon them altogether at the 
+slightest temptation; the hypocritical ones who join 
+confraternities and wear emblems of our Lady only to be 
+thought of as good people; finally, the self-interested 
+devotees who pray to our Lady only to be rid of bodily ills or 
+to obtain material benefits. 
+
+Marks of authentic devotion to our Lady 
+
+After having explained and condemned false devotions to 
+the Blessed Virgin we shall now briefly describe what true 
+devotion is. It is interior, trustful, holy, constant and 
+disinterested. 
+
+First, true devotion to our Lady is interior, that is, it comes 
+from within the mind and the heart and follows from the 
+esteem in which we hold her, the high regard we have for 
+her greatness, and the love we bear her. 
+
+Second, it is trustful, that is to say, it fills us with confidence 
+in the Blessed Virgin, the confidence that a child has for its 
+loving Mother. It prompts us to go to her in every need of 
+body and soul with great simplicity, trust and affection. We 
+implore our Mother's help always, everywhere, and for 
+everything. We pray to her to be enlightened in our doubts, 
+to be put back on the right path when we go astray, to be 
+protected when we are tempted, to be strengthened when 
+we are weakening, to be lifted up when we fall into sin, to be 
+
+
+encouraged when we are losing heart, to be rid of our 
+scruples, to be consoled in the trials, crosses and 
+disappointments of life. Finally, in all our afflictions of body 
+and soul, we naturally turn to Mary for help, with never a 
+fear of importuning her or displeasing our Lord. 
+
+Third, true devotion to our Lady is holy, that is, it leads us to 
+avoid sin and to imitate the virtues of Mary. Her ten principal 
+virtues are: deep humility, lively faith, blind obedience, 
+unceasing prayer, constant self-denial, surpassing purity, 
+ardent love, heroic patience, angelic kindness, and heavenly 
+wisdom. 
+
+Fourth, true devotion to our Lady is constant. It strengthens 
+us in our desire to do good and prevents us from giving up 
+our devotional practices too easily. It gives us the courage to 
+oppose the fashions and maxims of the world, the vexations 
+and unruly inclinations of the flesh and the temptations of 
+the devil. Thus a person truly devoted to our Blessed Lady is 
+not changeable, fretful, scrupulous or timid. We do not say 
+however that such a person never sins or that his sensible 
+feelings of devotion never change. When he has fallen, he 
+stretches out his hand to his Blessed Mother and rises again. 
+If he loses all taste and feeling for devotion, he is not at all 
+upset because a good and faithful servant of Mary is guided 
+in his life by faith in Jesus and Mary, and not by feelings. 
+
+Fifth, true devotion to Mary is disinterested. It inspires us to 
+seek God alone in his Blessed Mother and not ourselves. The 
+true subject of Mary does not serve his illustrious Queen for 
+selfish gain. He does not serve her for temporal or eternal 
+well-being but simply and solely because she has the right 
+to be served and God alone in her. He loves her not so much 
+because she is good to him or because he expects 
+something from her, but simply because she is lovable. That 
+is why he loves and serves her just as faithfully in weariness 
+
+
+and dryness of soul as in sweet and sensible fervor. He loves 
+her as much on Calvary as at Cana. How pleasing and 
+precious in the sight of God and his holy Mother must these 
+servants of Mary be, who serve her without any self-seeking. 
+How rare they are nowadays! It is to increase their number 
+that I have taken up my pen to write down what I have been 
+teaching with success both publicly and in private in my 
+missions for many years. 
+
+I have already said many things about the Blessed Virgin 
+and, as I am trying to fashion a true servant of Mary and a 
+true disciple of Jesus, I have still a great deal to say, 
+although through ignorance, inability, and lack of time, I 
+shall leave infinitely more unsaid. 
+
+But my labor will be well rewarded if this little book falls into 
+the hands of a noble soul, a child of God and of Mary, born 
+not of blood nor the will of the flesh nor of the will of man. 
+
+My time will be well spent if, by the grace of the Holy Spirit, 
+after having read this book he is convinced of the supreme 
+value of the solid devotion to Mary I am about to describe. If 
+I thought that my guilty blood could help the reader to 
+accept in his heart the truths that I set down in honor of my 
+dear Mother and Queen, I, her most unworthy child and 
+slave, would use it instead of ink to write these words. I 
+would hope to find faithful souls who, by their perseverance 
+in the devotion I teach, will repay her for the loss she has 
+suffered through my ingratitude and infidelity. 
+
+I feel more than ever inspired to believe and expect the 
+complete fulfillment of the desire that is deeply engraved on 
+my heart and what I have prayed to God for over many 
+years, namely, that in the near or distant future the Blessed 
+Virgin will have more children, servants and slaves of love 
+than ever before, and that through them Jesus, my dear 
+Lord, will reign more than ever in the hearts of men. 
+
+
+I clearly foresee that raging beasts will come in fury to tear 
+to pieces with their diabolical teeth this little book and the 
+one the Holy Spirit made use of to write it, or they will cause 
+it at least to lie hidden in the darkness and silence of a chest 
+and so prevent it from seeing the light of day. They will even 
+attack and persecute those who read it and put into practice 
+what it contains. But no matter! So much the better! It even 
+gives me encouragement to hope for great success at the 
+prospect of a mighty legion of brave and valiant soldiers of 
+Jesus and Mary, both men and women, who will fight the 
+devil, the world, and corrupt nature in the perilous times 
+that are sure to come. 
+
+"Let the reader understand. Let him accept this teaching 
+who can." 
+
+Principal practices of devotion to Mary 
+
+There are several interior practices of true devotion to the 
+Blessed Virgin. Here briefly are the main ones: 
+
+(1) Honoring her, as the worthy Mother of God, by the cult of 
+hyperdulia, that is, esteeming and honoring her more than 
+all the other saints as the masterpiece of grace and the 
+foremost in holiness afterjesus Christ, true God and true 
+man. 
+
+(2) Meditating on her virtues, her privileges and her actions. 
+
+(3) Contemplating her sublime dignity. 
+
+(4) Offering to her acts of love, praise and gratitude. 
+
+(5) Invoking her with a joyful heart. 
+
+(6) Offering ourselves to her and uniting ourselves to her. 
+
+
+(7) Doing everything to please her. 
+
+
+(8) Beginning, carrying out and completing our actions 
+through her, in her, with her, and for her in order to do them 
+through Jesus, in Jesus, with Jesus, and for Jesus, our last 
+end. We shall explain this last practice later. 
+
+True devotion to our Lady has also several exterior practices. 
+Here are the principal ones: 
+
+(1) Enrolling in her confraternities and joining her sodalities. 
+
+(2) Joining religious orders dedicated to her. 
+
+(3) Making her privileges known and appreciated. 
+
+(4) Giving alms, fasting, performing interior and exterior 
+acts of self-denial in her honor. 
+
+(5) Carrying such signs of devotion to her as the rosary, the 
+scapular, or a little chain. 
+
+(6) Reciting with attention, devotion and reverence the 
+fifteen decades of the Rosary in honor of the fifteen principal 
+mysteries of our Lord, or at least five decades in honor of the 
+Joyful mysteries - the Annunciation, the Visitation, the Birth 
+of our Lord, the Purification, the Finding of the Child Jesus in 
+the temple; or the Sorrowful mysteries: the Agony in the 
+Garden, the Scourging, the Crowning with thorns, the 
+Carrying of the Cross, and the Crucifixion; or the Glorious 
+mysteries: The Resurrection of our Lord, the Ascension, the 
+Descent of the Holy Spirit, the Assumption of our Lady, body 
+and soul, into heaven, the Crowning of Mary by the Blessed 
+Trinity. 
+
+One may also choose any of the following prayers: the 
+Rosary of six or seven decades in honor of the years our 
+
+
+Lady is believed to have spent on earth; the Little Crown of 
+the Blessed Virgin in honor of her crown of twelve stars or 
+privileges; the Little Office of our Lady so widely accepted 
+and recited in the Church; the Little Psalter of the Blessed 
+Virgin, composed in her honor by Saint Bonaventure, which 
+is so heart-warming, and so devotional that you cannot 
+recite it without being moved by it; the fourteen Our Fathers 
+and Hail Marys in honor of her fourteen joys. There are 
+various other prayers and hymns of the Church, such as, the 
+hymns of the liturgical seasons, the Ave Maris Stella, the 0 
+Gloriosa Domina; the Magnificat and other prayers which are 
+found in all prayer-books. 
+
+(7) Singing hymns to her or teaching others to sing them. 
+
+(8) Genuflecting or bowing to her each morning while saying 
+for example sixty or a hundred times, "Hail Mary, Virgin most 
+faithful", so that through her intercession with God we may 
+faithfully correspond with his graces throughout the day; 
+and in the evening saying "Hail Mary, Mother of Mercy", 
+asking her to obtain God's pardon for the sins we have 
+committed during the day. 
+
+(9) Taking charge of her confraternities, decorating her 
+altars, crowning and adorning her statues. 
+
+(10) Carrying her statues or having others carry them in 
+procession, or keeping a small one on one's person as an 
+effective protection against the evil one. 
+
+(11) Having statues made of her, or her name engraved and 
+placed on the walls of churches or houses and on the gates 
+and entrances of towns, churches and houses. 
+
+(12) Solemnly giving oneself to her by a special 
+consecration. 
+
+
+The Holy Spirit has inspired saintly souls with other practices 
+of true devotion to the Blessed Virgin, all of which are 
+conducive to holiness. You can read of them in detail in 
+"Paradise opened to Philagia", a collection of many 
+devotions practiced by holy people to honor the Blessed 
+Virgin, compiled by Father Paul Barry of the Society of Jesus. 
+These devotions are a wonderful help for souls seeking 
+holiness provided they are performed in a worthy manner, 
+that is: 
+
+(1) With the right intention of pleasing God alone, seeking 
+union with Jesus, our last end, and giving edification to our 
+neighbor. 
+
+(2) With attention, avoiding willful distractions. 
+
+(3) With devotion, avoiding haste and negligence. 
+
+(4) With decorum and respectful bodily posture. 
+
+The Perfect Practice 
+
+Having read nearly every book on devotion to the Blessed 
+Virgin and talked to the most saintly and learned people of 
+the day, I can now state with conviction that I have never 
+known or heard of any devotion to our Lady which is 
+comparable to the one I am going to speak of. No other 
+devotion calls for more sacrifices for God, none empties us 
+more completely of self and self-love, none keeps us more 
+firmly in the grace of God and the grace of God in us. No 
+other devotion unites us more perfectly and more easily to 
+Jesus. Finally no devotion gives more glory to God, is more 
+sanctifying for ourselves or more helpful to our neighbor. 
+
+As this devotion essentially consists in a state of soul, it will 
+not be understood in the same way by everyone. Some - the 
+great majority - will stop short at the threshold and go no 
+
+
+further. Others - not many - will take but one step into its 
+interior. Who will take a second step? Who will take a third? 
+Finally who will remain in it permanently? Only the one to 
+whom the Spirit of Jesus reveals the secret. The Holy Spirit 
+himself will lead this faithful soul from strength to strength, 
+from grace to grace, from light to light, until at length he 
+attains transformation into Jesus in the fullness of his age on 
+earth and of his glory in heaven. 
+
+
+# PART II: THE PERFECT DEVOTION TO OUR LADY
+
+
+## Chapter Three - The Perfect Consecration to Jesus Christ
+
+
+A complete consecration to Mary 
+
+
+As all perfection consists in our being 
+conformed, united and consecrated to 
+Jesus it naturally follows that the most 
+perfect of all devotions is that which 
+conforms, unites, and consecrates us most 
+completely to Jesus. Now of all God's 
+creatures Mary is the most conformed to 
+Jesus. It therefore follows that, of all 
+devotions, devotion to her makes for the 
+most effective consecration and conformity to him. The more 
+one is consecrated to Mary, the more one is consecrated to 
+Jesus. 
+
+
+That is why perfect consecration to Jesus is but a perfect and 
+complete consecration of oneself to the Blessed Virgin, 
+which is the devotion I teach; or in other words, it is the 
+perfect renewal of the vows and promises of holy baptism. 
+
+
+This devotion consists in giving oneself entirely to Mary in 
+order to belong entirely to Jesus through her. It requires us to 
+give: 
+
+
+(1) Our body with its senses and members; 
+
+(2) Our soul with its faculties; 
+
+
+(3) Our present material possessions and all we shall acquire 
+in the future; 
+
+(4) Our interior and spiritual possessions, that is, our merits, 
+virtues and good actions of the past, the present and the 
+future. 
+
+In other words, we give her all that we possess both in our 
+natural life and in our spiritual life as well as everything we 
+shall acquire in the future in the order of nature, of grace, 
+and of glory in heaven. This we do without any reservation, 
+not even of a penny, a hair, or the smallest good deed. And 
+we give for all eternity without claiming or expecting, in 
+return for our offering and our service, any other reward 
+than the honor of belonging to our Lord through Mary and in 
+Mary, even though our Mother were not - as in fact she 
+always is - the most generous and appreciative of all God's 
+creatures. 
+
+Note here that two things must be considered regarding our 
+good works, namely, satisfaction and merit or, in other 
+words, their satisfactory or prayer value and their 
+meritorious value. The satisfactory or prayer value of a good 
+work is the good action in so far as it makes condign 
+atonement for the punishment due to sin or obtains some 
+new grace. The meritorious value or merit is the good action 
+in so far as it merits grace and eternal glory. Now by this 
+consecration of ourselves to the Blessed Virgin we give her 
+all satisfactory and prayer value as well as the meritorious 
+value of our good works, in other words, all the satisfactions 
+and the merits. We give her our merits, graces and virtues, 
+not that she might give them to others, for they are, strictly 
+speaking, not transferable, because Jesus alone, in making 
+himself our surety with his Father, had the power to impart 
+his merits to us. But we give them to her that she may keep, 
+increase and embellish them for us, as we shall explain later, 
+
+
+and we give her our acts of atonement that she may apply 
+them where she pleases for God's greater glory. 
+
+(1) It follows then: that by this devotion we give to Jesus all 
+we can possibly give him, and in the most perfect manner, 
+that is, through Mary's hands. Indeed we give him far more 
+than we do by other devotions which require us to give only 
+part of our time, some of our good works or acts of 
+atonement and penances. In this devotion everything is 
+given and consecrated, even the right to dispose freely of 
+one's spiritual goods and the satisfactions earned by daily 
+good works. This is not done even in religious orders. 
+Members of religious orders give God their earthly goods by 
+the vow of poverty, the goods of the body by the vow of 
+chastity, their free will by the vow of obedience, and 
+sometimes their freedom of movement by the vow of 
+enclosure. But they do not give him by these vows the 
+liberty and right to dispose of the value of their good works. 
+They do not despoil themselves of what a Christian 
+considers most precious and most dear - his merits and 
+satisfactions. 
+
+(2) It follows then that anyone who in this way consecrates 
+and sacrifices himself voluntarily to Jesus through Mary may 
+no longer dispose of the value of any of his good actions. All 
+his sufferings, all his thoughts, words, and deeds belong to 
+Mary. She can then dispose of them in accordance with the 
+will of her Son and for his greater glory. This dependence, 
+however, is without detriment to the duties of a person's 
+present and future state of life. One such duty, for example, 
+would be that of a priest who, by virtue of his office or 
+otherwise, must apply the satisfactory or prayer value of the 
+Holy Mass to a particular person. For this consecration can 
+only be made in accordance with the order established by 
+God and in keeping with the duties of one's state of life. 
+
+
+(3) It follows that we consecrate ourselves at one and the 
+same time to Mary and to Jesus. We give ourselves to Mary 
+because Jesus chose her as the perfect means to unite 
+himself to us and unite us to him. We give ourselves to Jesus 
+because he is our last end. Since he is our Redeemer and our 
+God we are indebted to him for all that we are. 
+
+A perfect renewal of baptismal promises 
+
+I have said that this devotion could rightly be called a 
+perfect renewal of the vows and promises of holy baptism. 
+Before baptism every Christian was a slave of the devil 
+because he belonged to him. At baptism he has either 
+personally or through his sponsors solemnly renounced 
+Satan, his seductions and his works. He has chosen Jesus as 
+his Master and sovereign Lord and undertaken to depend 
+upon him as a slave of love. This is what is done in the 
+devotion I am presenting to you. We renounce the devil, the 
+world, sin and self, as expressed in the act of consecration, 
+and we give ourselves entirely to Jesus through Mary. We 
+even do something more than at baptism, when ordinarily 
+our god-parents speak for us and we are given to Jesus only 
+by proxy. In this devotion we give ourselves personally and 
+freely and we are fully aware of what we are doing. 
+
+In holy baptism we do not give ourselves to Jesus explicitly 
+through Mary, nor do we give him the value of our good 
+actions. After baptism we remain entirely free either to apply 
+that value to anyone we wish or keep it for ourselves. But by 
+this consecration we give ourselves explicitly to Jesus 
+through Mary's hands and we include in our consecration 
+the value of all our actions. 
+
+"Men" says Saint Thomas, "vow in baptism to renounce the 
+devil and all his seductions." "This vow," says Saint 
+Augustine, "is the greatest and the most indispensable of all 
+
+
+vows." Canon Law experts say the same thing: "The vow we 
+make at baptism is the most important of all vows." But does 
+anyone keep this great vow? Does anyone fulfill the 
+promises of baptism faithfully? Is it not true that nearly all 
+Christians prove unfaithful to the promises made to Jesus in 
+baptism? Where does this universal failure come from, if not 
+from man's habitual forgetfulness of the promises and 
+responsibilities of baptism and from the fact that scarcely 
+anyone makes a personal ratification of the contract made 
+with God through his sponsors? 
+
+This is so true that the Council of Sens, convened by order of 
+the Emperor Louis the Debonair to remedy the grave 
+disorders of Christendom, came to the conclusion that the 
+main cause of this moral breakdown was man's forgetfulness 
+of his baptismal obligations and his disregard for them. It 
+could suggest no better way of remedying this great evil 
+than to encourage all Christians to renew the promises and 
+vows of baptism. 
+
+The Catechism of the Council of Trent, faithful interpreter of 
+that holy Council, exhorts priests to do the same and to 
+encourage the faithful to remember and hold fast to the 
+belief that they are bound and consecrated as slaves to 
+Jesus, their Redeemer and Lord. "The parish priest shall 
+exhort the faithful never to lose sight of the fact that they 
+are bound in conscience to dedicate and consecrate 
+themselves for ever to their Lord and Redeemer as his 
+slaves." 
+
+Now the Councils, the Fathers of the Church and experience 
+itself, all indicate that the best remedy for the frequent 
+lapses of Christians is to remind them of the responsibilities 
+of their baptism and have them renew the vows they made 
+at that time. Is it not reasonable therefore to do this in our 
+day and in a perfect manner by adopting this devotion with 
+
+
+its consecration to our Lord through his Blessed Mother? I 
+say "in a perfect manner", for in making this consecration to 
+Jesus they are adopting the perfect means of giving 
+themselves to him, which is the most Blessed Virgin Mary. 
+
+No one can object that this devotion is novel or of no value. 
+
+It is not new, since the Councils, the Fathers of the Church, 
+and many authors both past and present, speak of 
+consecration to our Lord or renewal of baptismal vows as 
+something going back to ancient times and recommended to 
+all the faithful. Nor is it valueless, since the chief source of 
+moral disorders and the consequent eternal loss of 
+Christians spring from the forgetfulness of this practice and 
+indifference to it. 
+
+Some may object that this devotion makes us powerless to 
+help the souls of our relatives, friends and benefactors, since 
+it requires us to give our Lord, through Mary, the value of our 
+good works, prayers, penances, and alms-giving. 
+
+To them I reply: 
+
+(1) It is inconceivable that our friends, relatives and 
+benefactors should suffer any loss because we have 
+dedicated and consecrated ourselves unconditionally to the 
+service of Jesus and Mary; it would be an affront to the 
+power and goodness of Jesus and Mary who will surely come 
+to the aid of our relatives, friends and benefactors whether 
+from our meager spiritual assets or from other sources. 
+
+(2) This devotion does not prevent us from praying for 
+others, both the living and the dead, even though the 
+application of our good works depends on the will of our 
+Blessed Lady. On the contrary, it will make us pray with even 
+greater confidence. Imagine a rich man, who, wanting to 
+show his esteem for a great prince, gives his entire fortune 
+
+
+to him. Would not that man have greater confidence in 
+asking the prince to help one of his friends who needed 
+assistance? Indeed the prince would only be too happy to 
+have such an opportunity of proving his gratitude to one 
+who had sacrificed all that he possessed to enrich him, 
+thereby impoverishing himself to do him honor. The same 
+must be said of our Lord and our Lady. They will never allow 
+themselves to be outdone in gratitude. 
+
+Some may say, perhaps, if I give our Lady the full value of 
+my actions to apply it to whom she wills, I may have to 
+suffer a long time in purgatory. This objection, which arises 
+from self-love and from an unawareness of the generosity of 
+God and his holy Mother, refutes itself. 
+
+Take a fervent and generous soul who values God's interests 
+more than his own. He gives God all he has without reserve 
+till he can give no more. He desires only that the glory and 
+the kingdom of Jesus may come through his Mother, and he 
+does all he can to bring this about. Will this generous and 
+unselfish soul, I ask, be punished more in the next world for 
+having been more generous and unselfish than other 
+people? Far from it! For we shall see later that our Lord and 
+his Mother will prove most generous to such a soul with gifts 
+of nature, grace and glory in this life and in the next. 
+
+We must now consider as briefly as possible: (1) The motives 
+which commend this devotion to us, (2) the wonderful 
+effects it produces in faithful souls, and (3) the practices of 
+this devotion. 
+
+
+## Chapter Four - Motives Which Recommend This Devotion
+
+
+By it we give ourselves completely t 
+God 
+
+This first motive shows us the excellence 
+of the consecration of ourselves to Jesus 
+through Mary. 
+
+We can conceive of no higher calling thai 
+that of being in the service of God and w 
+believe that the least of God's servants is 
+richer, stronger, and nobler than any 
+earthly monarch who does not serve God 
+How rich and strong and noble then musl 
+the good and faithful servant be, who serves God as 
+unreservedly and as completely as he possibly can! Just 
+such a person is the faithful and loving slave of Jesus in 
+Mary. He has indeed surrendered himself entirely to the 
+service of the King of kings through Mary, his Mother, 
+keeping nothing for himself. All the gold of the world and the 
+beauties of the heavens could not recompense him for what 
+he has done. 
+
+Other congregations, associations, and confraternities set up 
+in honor of our Lord and our Blessed Lady, which do so much 
+good in the Church, do not require their members to give up 
+absolutely everything. They simply prescribe for them the 
+performance of certain acts and practices in fulfillment of 
+their obligations. They leave them free to dispose of the rest 
+of their actions as well as their time. But this devotion makes 
+us give Jesus and Mary all our thoughts, words, actions, and 
+sufferings and every moment of our lives without exception. 
+Thus, whatever we do, whether we are awake or asleep, 
+
+
+whether we eat or drink, whether we do important or 
+unimportant work, it will always be true to say that 
+everything is done for Jesus and Mary. Our offering always 
+holds good, whether we think of it or not, unless we 
+explicitly retract it. How consoling this is! 
+
+Moreover, as I have said before, no other act of devotion 
+enables us to rid ourselves so easily of the possessiveness 
+which slips unnoticed even into our best actions. This is a 
+remarkable grace which our dear Lord grants us in return for 
+the heroic and selfless surrender to him through Mary of the 
+entire value of our good works. If even in this life he gives a 
+hundredfold reward to those who renounce all material, 
+temporal and perishable things out of love for him, how 
+generously will he reward those who give up even interior 
+and spiritual goods for his sake! 
+
+Jesus, our dearest friend, gave himself to us without reserve, 
+body and soul, grace and merits. As Saint Bernard says, "He 
+won me over entirely by giving himself entirely to me." Does 
+not simple justice as well as gratitude require that we give 
+him all we possibly can? He was generous with us first, so let 
+us be generous to him in return and he will prove still more 
+generous during life, at the hour of death, and throughout 
+eternity. "He will be generous towards the generous." 
+
+It helps us to imitate Christ 
+
+Our good Master stooped to enclose himself in the womb of 
+the Blessed Virgin, a captive but loving slave, and to make 
+himself subject to her for thirty years. As I said earlier, the 
+human mind is bewildered when it reflects seriously upon 
+this conduct of Incarnate Wisdom. He did not choose to give 
+himself in a direct manner to the human race though he 
+could easily have done so. He chose to come through the 
+Virgin Mary. Thus he did not come into the world 
+
+
+independently of others in the flower of his manhood, but he 
+came as a frail little child dependent on the care and 
+attention of his Mother. Consumed with the desire to give 
+glory to God, his Father, and save the human race, he saw 
+no better or shorter way to do so than by submitting 
+completely to Mary. 
+
+He did this not just for the first eight, ten or fifteen years of 
+his life like other children, but for thirty years. He gave more 
+glory to God, his Father, during all those years of submission 
+and dependence than he would have given by spending 
+them working miracles, preaching far and wide, and 
+converting all mankind. Otherwise he would have done all 
+these things. 
+
+What immeasurable glory then do we give to God when, 
+following the example of Jesus, we submit to Mary! With 
+such a convincing and well- known example before us, can 
+we be so foolish as to believe that there is a better and 
+shorter way of giving God glory than by submitting 
+ourselves to Mary, as Jesus did? 
+
+Let me remind you again of the dependence shown by the 
+three divine Persons on our Blessed Lady. Theirs is the 
+example which fully justifies our dependence on her. The 
+Father gave and still gives his Son only through her. He 
+raises children for himself only through her. He dispenses his 
+graces to us only through her. God the Son was prepared for 
+mankind in general by her alone. Mary, in union with the 
+Holy Spirit, still conceives him and brings him forth daily. It 
+is through her alone that the Son distributes his merits and 
+virtues. The Holy Spirit formed Jesus only through her, and 
+he forms the members of the Mystical Body and dispenses 
+his gifts and his favors through her. 
+
+
+With such a compelling example of the three divine Persons 
+before us, we would be extremely perverse to ignore her and 
+not consecrate ourselves to her. Indeed we would be blind if 
+we did not see the need for Mary in approaching God and 
+making our total offering to him. 
+
+Here are a few passages from the Fathers of the Church 
+which I have chosen to prove what I have just said: "Mary 
+has two sons, the one a God-man, the other, mere man. She 
+is Mother of the first corporally and of the second spiritually" 
+(Saint Bonaventure and Origen). 
+
+"This is the will of God who willed that we should have all 
+things through Mary. If then, we possess any hope or grace 
+or gift of salvation, let us acknowledge that it comes to us 
+through her" (Saint Bernard). 
+
+"All the gifts, graces, virtues of the Holy Spirit are 
+distributed by the hands of Mary, to whom she wills, when 
+she wills, as she wills, and in the measure she wills" (Saint 
+Bernardine). 
+
+"As you were not worthy that anything divine should be 
+given to you, all graces were given to Mary so that you 
+might receive through her all graces you would not 
+otherwise receive" (Saint Bernard). 
+
+Saint Bernard tells us that God, seeing that we are unworthy 
+to receive his graces directly from him, gives them to Mary 
+so that we might receive from her all that he decides to give 
+us. His glory is achieved when he receives through Mary the 
+gratitude, respect and love we owe him in return for his gifts 
+to us. It is only right then that we should imitate his 
+conduct, "in order", as Saint Bernard again says, "that grace 
+might return to its author by the same channel through 
+which it came to us". 
+
+
+This is what we do by this devotion. We offer and consecrate 
+all we are and all we possess to the Blessed Virgin in order 
+that our Lord may receive through her as intermediary the 
+glory and gratitude that we owe to him. We deem ourselves 
+unworthy and unfit to approach his infinite majesty on our 
+own, and so we avail ourselves of Mary's intercession. 
+
+Moreover, this devotion is an expression of great humility, a 
+virtue which God loves above all others. A person who exalts 
+himself debases God, and a person who humbles himself 
+exalts God. "God opposes the proud, but gives his graces to 
+the humble." If you humble yourself, convinced that you are 
+unworthy to appear before him, or even to approach him, he 
+condescends to come down to you. He is pleased to be with 
+you and exalts you in spite of yourself. But, on the other 
+hand, if you venture to go towards God blindly without a 
+mediator, he vanishes and is nowhere to be found. How 
+dearly he loves the humble of heart! It is to such humility 
+that this devotion leads us, for it teaches us never to go 
+alone directly to our Lord, however gentle and merciful 
+though he may be, but always to use Mary's power of 
+intercession, whether we want to enter his presence, speak 
+to him, be near him, offer him something, seek union with 
+him or consecrate ourselves to him. 
+
+It obtains many blessings from our Lady 
+
+The Blessed Virgin, mother of gentleness and mercy, never 
+allows herself to be surpassed in love and generosity. When 
+she sees someone giving himself entirely to her in order to 
+honor and serve her, and depriving himself of what he prizes 
+most in order to adorn her, she gives herself completely in a 
+wondrous manner to him. She engulfs him in the ocean of 
+her graces, adorns him with her merits, supports him with 
+her power, enlightens him with her light, and fills him with 
+her love. She shares her virtues with him - her humility, 
+
+
+faith, purity, etc. She makes up for his failings and becomes 
+his representative with Jesus. Just as one who is consecrated 
+belongs entirely to Mary, so Mary belongs entirely to him. 
+
+We can truthfully say of this perfect servant and child of 
+Mary what Saint John in his gospel says of himself, "He took 
+her for his own." 
+
+This produces in his soul, if he is persevering, a great 
+distrust, contempt, and hatred of self, and a great 
+confidence in Mary with complete self-abandonment to her. 
+He no longer relies on his own dispositions, intentions, 
+merits, virtues and good works, since he has sacrificed them 
+completely to Jesus through his loving Mother. He has now 
+only one treasury, where all his wealth is stored. That 
+treasury is not within himself: it is Mary. That is why he can 
+now go to our Lord without any servile or scrupulous fear 
+and pray to him with great confidence. He can also share the 
+sentiments of the devout and learned Abbot Rupert, who, 
+referring to the victory which Jacob won over an angel, 
+addressed our Lady in these words, "0 Mary, my Queen, 
+Immaculate Mother of the God-man, Jesus Christ, I desire to 
+wrestle with this man, the Divine Word, armed with your 
+merits and not my own." 
+
+How much stronger and more powerful are we in 
+approaching our Lord when we are armed with the merits 
+and prayers of the worthy Mother of God, who, as Saint 
+Augustine says, has conquered the Almighty by her love! 
+
+Since by this devotion we give to our Lord, through the 
+hands of his holy Mother, all our good works, she purifies 
+them, making them beautiful and acceptable to her Son. 
+
+(1) She purifies them of every taint of self-love and of that 
+unconscious attachment to creatures which slips unnoticed 
+into our best actions. Her hands have never been known to 
+
+
+be idle or uncreative. They purify everything they touch. As 
+soon as the Blessed Virgin receives our good works, she 
+removes any blemish or imperfection she may find in them. 
+
+(2) She enriches our good works by adorning them with her 
+own merits and virtues. It is as if a poor peasant, wishing to 
+win the friendship and favor of the king, were to go the 
+queen and give her an apple - his only possession - for her to 
+offer it to the king. The queen, accepting the peasant's 
+humble gift, puts it on a beautiful golden dish and presents 
+it to the king on behalf of the peasant. The apple in itself 
+would not be a gift worthy of a king, but presented by the 
+queen in person on a dish of gold, it becomes fit for any 
+king. 
+
+(3) Mary presents our good works to Jesus. She does not 
+keep anything we offer for herself, as if she were our last 
+end, but unfailingly gives everything to Jesus. So by the 
+very fact we give anything to her, we are giving it to Jesus. 
+
+Whenever we praise and glorify her, she sings today as she 
+did on the day Elizabeth praised her, "My soul glorifies the 
+Lord." 
+
+At Mary's request, Jesus accepts the gift of our good works, 
+no matter how poor and insignificant they may be for one 
+who is the King of kings, the Holiest of the holy. When we 
+present anything to Jesus by ourselves, relying on our own 
+dispositions and efforts, he examines our gift and often 
+rejects it because it is stained with self-love, just as he once 
+rejected the sacrifices of the Jews because they were imbued 
+with selfish motives. 
+
+But when we present something to him by the pure, virginal 
+hands of his beloved Mother, we take him by his weak side, 
+in a manner of speaking. He does not consider so much the 
+
+
+present itself as the person who offers it. Thus Mary, who is 
+never slighted by her Son but is always well received, 
+prevails upon him to accept with pleasure everything she 
+offers him, regardless of its value. Mary has only to present 
+the gift for Jesus graciously to accept it. This is what Saint 
+Bernard strongly recommended to all those he was guiding 
+along the pathway to perfection. "When you want to offer 
+something to God, to be welcomed by him be sure to offer it 
+through the worthy Mother of God, if you do not wish to see 
+it rejected." 
+
+Does not human nature itself, as we have seen, suggest this 
+mode of procedure to the less important people of this world 
+with regard to the great? Why should grace not inspire us to 
+do likewise with regard to God? He is infinitely exalted 
+above us. We are less than atoms in his sight. But we have 
+an advocate so powerful that she is never refused anything. 
+She is so resourceful that she knows every secret way to win 
+the heart of God. She is so good and kind that she never 
+passes over anyone no matter how lonely and sinful. 
+
+Further on, I shall relate the story of Jacob and Rebecca 
+which exemplifies the truths I have been setting before you. 
+
+It is an excellent means of giving glory to God 
+
+This devotion, when faithfully undertaken, is a perfect 
+means of ensuring that the value of all our good works is 
+being used for the greater glory of God. Scarcely anyone 
+works for that noble end, in spite of the obligation to do so, 
+either because men do not know where God's greatest glory 
+is to be found or because they do not desire it. Now Mary, to 
+whom we surrender the value and merit of our good actions, 
+knows perfectly well where God's greatest glory lies and she 
+works only to promote that glory. The devout servant of our 
+Lady, having entirely consecrated himself to her as I have 
+
+
+described above, can boldly claim that the value of all his 
+actions, words and thoughts is used for the greatest glory of 
+God, unless he has explicitly retracted his offering. For one 
+who loves God with a pure and unselfish love and prizes 
+God's glory and interests far above his own, could anything 
+be more consoling? 
+
+It leads to union with our Lord 
+
+This devotion is a smooth, short, perfect and sure way of 
+attaining union with our Lord, in which Christian perfection 
+consists. 
+
+(a) This devotion is a smooth way. It is the path which Jesus 
+Christ opened up in coming to us and in which there is no 
+obstruction to prevent us reaching him. It is quite true that 
+we can attain to divine union by other roads, but these 
+involve many more crosses and exceptional setbacks and 
+many difficulties that we cannot easily overcome. We would 
+have to pass through spiritual darkness, engage in struggles 
+for which we are not prepared, endure bitter agonies, scale 
+precipitous mountains, tread upon painful thorns, and cross 
+frightful deserts. But when we take the path of Mary, we 
+walk smoothly and calmly. 
+
+It is true that on our way we have hard battles to fight and 
+serious obstacles to overcome, but Mary, our Mother and 
+Queen, stays close to her faithful servants. She is always at 
+hand to brighten their darkness, clear away their doubts, 
+strengthen them in their fears, sustain them in their 
+combats and trials. Truly, in comparison with other ways, 
+this virgin road to Jesus is a path of roses and sweet delights. 
+There have been some saints, not very many, such as Saint 
+Ephrem, Saintjohn Damascene, Saint Bernard, Saint 
+Bernardine, Saint Bonaventure, and Saint Francis de Sales, 
+who have taken this smooth path to Jesus Christ, because 
+
+
+the Holy Spirit, the faithful Spouse of Mary, made it known 
+to them by a special grace. The other saints, who are the 
+greater number, while having a devotion to Mary, either did 
+not enter or did not go very far along this path. That is why 
+they had to undergo harder and more dangerous trials. 
+
+Why is it then, a servant of Mary might ask, that devoted 
+servants of this good Mother are called upon to suffer much 
+more than those who serve her less generously? They are 
+opposed, persecuted, slandered, and treated with 
+intolerance. They may also have to walk in interior darkness 
+and through spiritual deserts without being given from 
+heaven a single drop of the dew of consolation. If this 
+devotion to the Blessed Virgin makes the path to Jesus 
+smoother, how can we explain why Mary's loyal servants are 
+so ill-treated? 
+
+I reply that it is quite true that the most faithful servants of 
+the Blessed Virgin, being her greatest favorites, receive from 
+her the best graces and favors from heaven, which are 
+crosses. But I maintain too that these servants of Mary bear 
+their crosses with greater ease and gain more merit and 
+glory. What could check another's progress a thousand times 
+over, or possibly bring about his downfall, does not balk 
+them at all, but even helps them on their way. For this good 
+Mother, filled with the grace and unction of the Holy Spirit, 
+dips all the crosses she prepares for them in the honey of her 
+maternal sweetness and the unction of pure love. They then 
+readily swallow them as they would sugared almonds, 
+though the crosses may be very bitter. I believe that anyone 
+who wishes to be devout and live piously in Jesus will suffer 
+persecution and will have a daily cross to carry. But he will 
+never manage to carry a heavy cross, or carry it joyfully and 
+perseveringly, without a trusting devotion to our Lady, who 
+is the very sweetness of the cross. It is obvious that a person 
+
+
+could not keep on eating without great effort unripe fruit 
+which has not been sweetened. 
+
+(b) This devotion is a short way to discover Jesus, either 
+because it is a road we do not wander from, or because, as 
+we have just said, we walk along this road with greater ease 
+and joy, and consequently with greater speed. We advance 
+more in a brief period of submission to Mary and 
+dependence on her than in whole years of self-will and self- 
+reliance. A man who is obedient and submissive to Mary will 
+sing of glorious victories over his enemies It is true, his 
+enemies will try to impede his progress, force him to retreat 
+or try to make him fall. But with Mary's help, support and 
+guidance, he will go forward towards our Lord. Without 
+falling, retreating and even without being delayed, he will 
+advance with giant strides towards Jesus along the same 
+road which, as it is written, Jesus took to come to us with 
+giant strides and in a short time. 
+
+Why do you think our Lord spent only a few years here on 
+earth and nearly all of them in submission and obedience to 
+his Mother? The reason is that "attaining perfection in a 
+short time, he lived a long time", even longer than Adam, 
+whose losses he had come to make good. Yet Adam lived 
+more than nine hundred years! 
+
+Jesus lived a long time, because he lived in complete 
+submission to his Mother and in union with her, which 
+obedience to his Father required. The Holy Spirit tells us that 
+the man who honors his mother is like a man who stores up 
+a treasure. In other words, the man who honors Mary, his 
+Mother, to the extent of subjecting himself to her and 
+obeying her in all things will soon become very rich, 
+because he is amassing riches every day through Mary who 
+has become his secret philosopher's stone. 
+
+
+There is another quotation from Holy Scripture, "My old age 
+will be found in the mercy of the bosom". According to the 
+mystical interpretation of these words it is in the bosom of 
+Mary that people who are young grow mature in 
+enlightenment, in holiness, in experience and in wisdom, 
+and in a short time reach the fullness of the age of Christ. 
+
+For it was Mary's womb which encompassed and produced a 
+perfect man. That same womb held the one whom the whole 
+universe can neither encompass nor contain. 
+
+(c) This devotion is a perfect way to reach our Lord and be 
+united to him, for Mary is the most perfect and the most holy 
+of all creatures, and Jesus, who came to us in a perfect 
+manner, chose no other road for his great and wonderful 
+journey. The Most High, the Incomprehensible One, the 
+Inaccessible One, He who is, deigned to come down to us 
+poor earthly creatures who are nothing at all. How was this 
+done? 
+
+The Most High God came down to us in a perfect way 
+through the humble Virgin Mary, without losing anything of 
+his divinity or holiness. It is likewise through Mary that we 
+poor creatures must ascend to almighty God in a perfect 
+manner without having anything to fear. 
+
+God the Incomprehensible, allowed himself to be perfectly 
+comprehended and contained by the humble Virgin Mary 
+without losing anything of his immensity. So we must let 
+ourselves be perfectly contained and led by the humble 
+Virgin without any reserve on our part. 
+
+God, the Inaccessible, drew near to us and united himself 
+closely, perfectly and even personally to our humanity 
+through Mary without losing anything of his majesty. So it is 
+also through Mary that we must draw near to God and unite 
+
+
+ourselves to him perfectly, intimately, and without fear of 
+being rejected. 
+
+Lastly, He who is deigned to come down to us who are not 
+and turned our nothingness into God, or He who is. He did 
+this perfectly by giving and submitting himself entirely to 
+the young Virgin Mary, without ceasing to be in time He who 
+is from all eternity. Likewise it is through Mary that we, who 
+are nothing, may become like God by grace and glory. We 
+accomplish this by giving ourselves to her so perfectly and 
+so completely as to remain nothing, as far as self is 
+concerned, and to be everything in her, without any fear of 
+illusion. 
+
+Show me a new road to our Lord, pave it with all the merits 
+of the saints, adorn it with their heroic virtues, illuminate 
+and enhance it with the splendor and beauty of the angels, 
+have all the angels and saints there to guide and protect 
+those who wish to follow it. Give me such a road and truly, 
+truly, I boldly say - and I am telling the truth - that instead of 
+this road, perfect though it be, I would still choose the 
+immaculate way of Mary. It is a way, a road without stain or 
+spot, without original sin or actual sin, without shadow or 
+darkness,. When our loving Jesus comes in glory once again 
+to reign upon earth - as he certainly will - he will choose no 
+other way than the Blessed Virgin, by whom he came so 
+surely and so perfectly the first time. The difference between 
+his first and his second coming is that the first was secret 
+and hidden, but the second will be glorious and resplendent. 
+Both are perfect because both are through Mary. Alas, this is 
+a mystery which we cannot understand, "Here let every 
+tongue be silent." 
+
+(d) This devotion to our Lady is a sure way to go to Jesus and 
+to acquire holiness through union with him. 
+
+
+(1) The devotion which I teach is not new. Its history goes 
+back so far that the time of its origin cannot be ascertained 
+with any precision, as Father Boudon, who died a holy death 
+a short time ago, states in a book which he wrote on this 
+devotion. It is however certain that for more than seven 
+hundred years we find traces of it in the Church. 
+
+Saint Odilo, abbot of Cluny, who lived about the year 1040, 
+was one of the first to practice it publicly in France as is told 
+in his life. 
+
+Cardinal Peter Damian relates that in the year 1076 his 
+brother, Blessed Marino, made himself the slave of the 
+Blessed Virgin in the presence of his spiritual director in a 
+most edifying manner. He placed a rope around his neck, 
+scourged himself and placed on the altar a sum of money as 
+a token of his devotion and consecration to our Lady. He 
+remained so faithful to this consecration all his life that me 
+merited to be visited and consoled on his death-bed by his 
+dear Queen and hear from her lips the promise of paradise in 
+reward for his service. 
+
+Caesarius Bollandus mentions a famous knight, Vautier de 
+Birback, a close relative of the Dukes of Louvain, who about 
+the year 1300 consecrated himself to the Blessed Virgin. 
+
+This devotion was also practiced privately by many people 
+up to the seventeenth century, when it became publicly 
+known. 
+
+Father Simon de Rojas of the Order of the Holy Trinity for the 
+Redemption of Captives, court preacher to Philip III, made 
+this devotion popular throughout Spain and Germany. 
+Through the intervention of Philip III, he obtained from 
+Gregory XV valuable indulgences for those who practiced it. 
+
+
+Father de los Rios, of the Order of Saint Augustine, together 
+with his intimate friend, Father de Roias, worked hard, 
+propagating it throughout Spain and Germany by preaching 
+and writing. Fie composed a large volume entitled 
+"Flierarchia Mariana", where he treats of the antiquity, the 
+excellence and the soundness of this devotion, with as much 
+devotion as learning. 
+
+The Theatine Fathers in the seventeenth century established 
+this devotion in Italy and Savoy. 
+
+Father Stanislaus Phalacius of the Society of Jesus spread 
+this devotion widely in Poland. 
+
+Father de los Rios in the book quoted above mentions the 
+names of princes and princesses, bishops and cardinals of 
+different countries who embraced this devotion. 
+
+Father Cornelius a Lapide, noted both for holiness and 
+profound learning, was commissioned by several bishops 
+and theologians to examine it. The praise he gave it after 
+mature examination, is a worthy tribute to his own holiness. 
+Many other eminent men followed his example. 
+
+The Jesuit Fathers, ever zealous in the service of our Blessed 
+Lady, presented on behalf of the sodalities of Cologne to 
+Duke Ferdinand of Bavaria, the then archbishop of Cologne, 
+a little treatise on the devotion, and he gave it his approval 
+and granted permission to have it printed. Fie exhorted all 
+priests and religious of his diocese to do their utmost to 
+spread this solid devotion. 
+
+Cardinal de Brulle, whose memory is venerated throughout 
+France, was outstandingly zealous in furthering the devotion 
+in France, despite the calumnies and persecutions he 
+suffered at the hands of critics and evil men. They accused 
+him of introducing novelty and superstition. They composed 
+
+
+and published a libelous tract against him and they - rather 
+the devil in them - used a thousand stratagems to prevent 
+him from spreading the devotion in France. But this eminent 
+and saintly man responded to their calumnies with calm 
+patience. He wrote a little book in reply and forcefully 
+refuted the objections contained in it. He pointed out that 
+this devotion is founded on the example given by Jesus 
+Christ, on the obligations we have towards him and on the 
+promises we made in holy baptism. It was mainly this last 
+reason which silenced his enemies. He made clear to them 
+that this consecration to the Blessed Virgin, and through her 
+to Jesus, is nothing less than a perfect renewal of the 
+promises and vows of baptism. He said many beautiful 
+things concerning this devotion which can be read in his 
+works. 
+
+In Father Boudon's book we read of different popes who 
+gave their approval to this devotion, the theologians who 
+examined it, the hostility it encountered and overcame, the 
+thousands who made it their own without censure from any 
+pope. Indeed it could not be condemned without 
+overthrowing the foundations of Christianity. It is obvious 
+then that this devotion is not new. If it is not commonly 
+practiced, the reason is that it is too sublime to be 
+appreciated and undertaken by everyone. 
+
+(2) This devotion is a safe means of going to Jesus Christ, 
+because it is Mary's role to lead us safely to her Son; just as 
+it is the role of our Lord to lead us to the eternal Father. 
+Those who are spiritually-minded should not fall into the 
+error of thinking that Mary hinders our union with God. How 
+could this possibly happen? How could Mary, who found 
+grace with God for everyone in general and each one in 
+particular, prevent a soul from obtaining the supreme grace 
+of union with him? Is it possible that she who was so 
+completely filled with grace to overflowing, so united to 
+
+
+Christ and transformed in God that it became necessary for 
+him to be made flesh in her, should prevent a soul from 
+being perfectly united to him? 
+
+It is quite true that the example of other people, no matter 
+how holy, can sometimes impair union with God, but not so 
+our Blessed Lady, as I have said and shall never weary of 
+repeating. One reason why so few souls come to the fullness 
+of the age of Jesus is that Mary who is still as much as ever 
+his Mother and the fruitful spouse of the Holy Spirit is not 
+formed well enough in their hearts. 
+
+If we desire a ripe and perfectly formed fruit, we must 
+possess the tree that bears it. If we desire the fruit of life, 
+Jesus Christ, we must possess the tree of life which is Mary. If 
+we desire to have the Holy Spirit working within us, we must 
+possess his faithful and inseparable spouse, Mary the 
+divinely- favored one whom, as I have said elsewhere, he 
+can make fruitful. 
+
+Rest assured that the more you turn to Mary in your prayers, 
+meditations, actions and sufferings, seeing her if not 
+perhaps clearly and distinctly, at least in a general and 
+indistinct way, the more surely you will discover Jesus. For 
+he is always greater, more powerful, more active, and more 
+mysterious when acting through Mary than he is in any 
+other creature in the universe, or even in heaven. Thus 
+Mary, so divinely-favored and so lost in God, is far from 
+being an obstacle to good people who are striving for union 
+with him. There has never been and there never will be a 
+creature so ready to help us in achieving that union more 
+effectively, for she will dispense to us all the graces to attain 
+that end. As a saint once remarked, "Only Mary knows how 
+to fill our minds with the thought of God." Moreover, Mary 
+will safeguard us against the deception and cunning of the 
+evil one. 
+
+
+Where Mary is present, the evil one is absent. One of the 
+unmistakable signs that a person is led by the Spirit of God 
+is the devotion he has to Mary, and his habit of thinking and 
+speaking of her. This is the opinion of a saint, who goes on to 
+say that just as breathing is a proof that the body is not 
+dead, so the habitual thought of Mary and loving converse 
+with her is a proof that the soul is not spiritually dead in sin. 
+
+Since Mary alone has crushed all heresies, as we are told by 
+the Church under the guidance of the Holy Spirit (Office of 
+B.V.M.), a devoted servant of hers will never fall into formal 
+heresy or error, though critics may contest this. He may very 
+well err materially, mistaking lies for truth or an evil spirit for 
+a good one, but he will be less likely to do this than others. 
+Sooner or later he will discover his error and will not go on 
+stubbornly believing and maintaining what he mistakenly 
+thought was the truth. 
+
+Whoever then wishes to advance along the road to holiness 
+and be sure of encountering the true Christ, without fear of 
+the illusions which afflict many devout people, should take 
+up with valiant heart and willing spirit this devotion to Mary 
+which perhaps he had not previously heard about. Even if it 
+is new to him, let him enter upon this excellent way which I 
+am now revealing to him. "I will show you a more excellent 
+way." 
+
+It was opened up by Jesus Christ, the Incarnate Wisdom. He 
+is our one and only Head, and we, his members, cannot go 
+wrong in following him. It is a smooth way made easy by the 
+fullness of grace, the unction of the Holy Spirit. In our 
+progress along this road, we do not weaken or turn back. It is 
+a quick way and leads us to Jesus in a short time. It is a 
+perfect way without mud or dust or any vileness of sin. 
+Finally, it is a reliable way, for it is direct and sure, having no 
+
+
+turnings to right or left but leading us straight to Jesus and 
+to life eternal. 
+
+
+Let us then take this road and travel along it night and day 
+until we arrive at the fullness of the age of Jesus Christ. 
+
+It gives great liberty of spirit 
+
+It gives great liberty of spirit - the freedom of the children of 
+God - to those who faithfully practice it. Through this 
+devotion we make ourselves slaves of Jesus by consecrating 
+ourselves entirely to him. To reward us for this enslavement 
+of love, our Lord frees us from every scruple and servile fear 
+which might restrict, imprison or confuse us; he opens our 
+hearts and fills them with holy confidence in God, helping us 
+to regard God as our Father; he inspires us with a generous 
+and filial love. 
+
+Without stopping to prove this truth, I shall simply relate an 
+incident which I read in the life of Mother Agnes of Jesus, a 
+Dominican nun of the convent of Langeac in Auvergne, who 
+died a holy death there in 1634. 
+
+When she was only seven years old and was suffering great 
+spiritual anguish, she heard a voice telling her that if she 
+wished to be delivered from her anguish and protected 
+against all her enemies, she should make herself the slave of 
+our Lord and his Blessed Mother as soon as possible. No 
+sooner had she returned home than she gave herself 
+completely to Jesus and Mary as their slave, although she 
+had never known anything about this devotion before. She 
+found an iron chain, put it round her waist and wore it till the 
+day she died. After this, all her sufferings and scruples 
+disappeared and she found great peace of soul. 
+
+This led her to teach this devotion to many others who made 
+rapid progress in it - among them, Father Olier, the founder 
+
+
+of the Seminary of Saint-Sulpice, and several other priests 
+and students from the same seminary. One day the Blessed 
+Virgin appeared to Mother Agnes and put a gold chain 
+around her neck to show her how happy she was that Mother 
+Agnes had become the slave of both her and her Son. And 
+Saint Cecilia, who accompanied our Lady, said to her, 
+
+"Happy are the faithful slaves of the Queen of heaven, for 
+they will enjoy true freedom." Tibi servire libertas. 
+
+It is of great benefit to our neighbor 
+
+It is of great benefit to our neighbor, for by it we show love 
+for our neighbor in an outstanding way since we give him 
+through Mary's hands all that we prize most highly - that is, 
+the satisfactory and prayer value of all our good works, 
+down to the least good thought and the least little suffering. 
+We give our consent that all we have already acquired or will 
+acquire until death should be used in accordance with our 
+Lady's will for the conversion of sinners or the deliverance of 
+souls from Purgatory. 
+
+Is this not perfect love of our neighbor? Is this not being a 
+true disciple of our Lord, one who should always be 
+recognized by his love? Is this not the way to convert sinners 
+without any danger of vainglory, and deliver souls from 
+Purgatory by doing hardly anything more than what we are 
+obliged to do by our state of life? 
+
+To appreciate the excellence of this motive we must 
+understand what a wonderful thing it is to convert a sinner 
+or to deliver a soul from Purgatory. It is an infinite good, 
+greater than the creation of heaven and earth, since it gives 
+a soul the possession of God. If by this devotion we secured 
+the release of only soul from Purgatory or converted only 
+one sinner in our whole lifetime, would that not be enough 
+
+
+to induce any person who really loves his neighbor to 
+practice this devotion? 
+
+It must be noted that our good works, passing through 
+Mary's hands, are progressively purified. Consequently, their 
+merit and their satisfactory and prayer value are also 
+increased. That is why they become much more effective in 
+relieving the souls in Purgatory and in converting sinners 
+than if they did not pass through the virginal and liberal 
+hands of Mary. Stripped of self-will and clothed with 
+disinterested love, the little that we give to the Blessed 
+Virgin is truly powerful enough to appease the anger of God 
+and draw down his mercy. It may well be that at the hour of 
+death a person who has been faithful to this devotion will 
+find that he has freed many souls from Purgatory and 
+converted many sinners, even though he performed only the 
+ordinary actions of his state of life. Great will be his joy at 
+the judgment. Great will be his glory throughout eternity. 
+
+It is a wonderful means of perseverance 
+
+Finally, what draws us in a sense more compellingly to take 
+up this devotion to the most Blessed Virgin is the fact that it 
+is a wonderful means of persevering in the practice of virtue 
+and of remaining steadfast. 
+
+Why is it that most conversions of sinners are not lasting? 
+Why do they relapse so easily into sin? Why is it that most of 
+the faithful, instead of making progress in one virtue after 
+another and so acquiring new graces, often lose the little 
+grace and virtue they have? This misfortune arises, as I have 
+already shown, from the fact that man, so prone to evil, so 
+weak and changeable, trusts himself too much, relies on his 
+own strength, and wrongly presumes he is able to safeguard 
+his precious graces, virtues and merits. 
+
+
+By this devotion we entrust all we possess to Mary, the 
+faithful Virgin. We choose her as the guardian of all our 
+possessions in the natural and supernatural sphere. We trust 
+her because she is faithful, we rely on her strength, we count 
+on her mercy and charity to preserve and increase our 
+virtues and merits in spite of the efforts of the devil, the 
+world, and the flesh to rob us of them. We say to her as a 
+good child would say to its mother or a faithful servant to 
+the mistress of the house, "My dear Mother and Mistress, I 
+realize that up to now I have received from God through 
+your intercession more graces than I deserve. But bitter 
+experience has taught me that I carry these riches in a very 
+fragile vessel and that I am too weak and sinful to guard 
+them by myself. Please accept in trust everything I possess, 
+and in your faithfulness and power keep it for me. If you 
+watch over me, I shall lose nothing. If you support me, I shall 
+not fail. If you protect me, I shall be safe from my enemies." 
+
+This is exactly what Saint Bernard clearly pointed out to 
+encourage us to take up this devotion, "When Mary supports 
+you, you will not fail. With her as your protector, you will 
+have nothing to fear. With her as your guide, you will not 
+grow weary. When you win her favor, you will reach the port 
+of heaven." Saint Bonaventure seems to say the same thing 
+in even more explicit terms, "The Blessed Virgin," he says, 
+"not only preserves the fullness enjoyed by the saints, but 
+she maintains the saints in their fullness so that it does not 
+diminish. She prevents their virtues from fading away, their 
+merits from being wasted and their graces from being lost. 
+She prevents the devils from doing them harm and she so 
+influences them that her divine Son has no need to punish 
+them when they sin." 
+
+Mary is the Virgin most faithful who by her fidelity to God 
+makes good the losses caused by Eve's unfaithfulness. She 
+obtains fidelity to God and final perseverance for those who 
+
+
+commit themselves to her. For this reason Saint John 
+Damascene compared her to a firm anchor which holds them 
+fast and saves them from shipwreck in the raging seas of the 
+world where so many people perish through lack of such a 
+firm anchor. "We fasten souls," he said, "to Mary, our hope, 
+as to a firm anchor." It was to Mary that the saints who 
+attained salvation most firmly anchored themselves as did 
+others who wanted to ensure their perseverance in holiness. 
+
+Blessed, indeed, are those Christians who bind themselves 
+faithfully and completely to her as to a secure anchor! The 
+violent storms of the world will not make them founder or 
+carry away their heavenly riches. Blessed are those who 
+enter into her as into another Noah's ark! The flood waters of 
+sin which engulf so many will not harm them because, as the 
+Church makes Mary say in the words of divine Wisdom, 
+"Those who work with my help - for their salvation - shall not 
+sin." Blessed are the unfaithful children of unhappy Eve who 
+commit themselves to Mary, the ever-faithful Virgin and 
+Mother who never wavers in her fidelity and never goes back 
+on her trust. She always loves those who love her, not only 
+with deep affection, but with a love that is active and 
+generous. By an abundant outpouring of grace she keeps 
+them from relaxing their effort in the practice of virtue or 
+falling by the wayside through loss of divine grace. 
+
+Moved by pure love, this good Mother always accepts 
+whatever is given her in trust, and, once she accepts 
+something, she binds herself in justice by a contract of 
+trusteeship to keep it safe. Is not someone to whom I entrust 
+the sum of a thousand francs obliged to keep it safe for me 
+so that if it were lost through his negligence he would be 
+responsible for it in strict justice? But nothing we entrust to 
+the faithful Virgin will ever be lost through her negligence. 
+Heaven and earth would pass away sooner than Mary would 
+neglect or betray those who trusted in her. 
+
+
+Poor children of Mary, you are extremely weak and 
+changeable. Your human nature is deeply impaired. It is 
+sadly true that you have been fashioned from the same 
+corrupted nature as the other children of Adam and Eve. But 
+do not let that discourage you. Rejoice and be glad! Here is 
+a secret which I am revealing to you, a secret unknown to 
+most Christians, even the most devout. 
+
+Do not leave your gold and silver in your own safes which 
+have already been broken into and rifled many times by the 
+evil one. They are too small, too flimsy and too old to contain 
+such great and priceless possessions. Do not put pure and 
+clear water from the spring into vessels fouled and infected 
+by sin. Even if sin is no longer there, its odor persists and the 
+water would be contaminated. You do not put choice wine 
+into old casks that have contained sour wine. You would 
+spoil the good wine and run the risk of losing it. 
+
+Chosen souls, although you may already understand me, I 
+shall express myself still more clearly. Do not commit the 
+gold of your charity, the silver of your purity to a threadbare 
+sack or a battered old chest, or the waters of heavenly grace 
+or the wines of your merits and virtues to a tainted and fetid 
+cask, such as you are. Otherwise you will be robbed by 
+thieving devils who are on the look-out day and night 
+waiting for a favorable opportunity to plunder. If you do so 
+all those pure gifts from God will be spoiled by the 
+unwholesome presence of self- love, inordinate self-reliance, 
+and self-will. 
+
+Pour into the bosom and heart of Mary all your precious 
+possessions, all your graces and virtues. She is a spiritual 
+vessel, a vessel of honor, a singular vessel of devotion. Ever 
+since God personally hid himself with all his perfections in 
+this vessel, it has become completely spiritual, and the 
+spiritual abode of all spiritual souls. It has become honorable 
+
+
+and has been the throne of honor for the greatest saints in 
+heaven. It has become outstanding in devotion and the 
+home of those renowned for gentleness, grace and virtue. 
+Moreover, it has become as rich as a house of gold, as strong 
+as a tower of David and as pure as a tower of ivory. 
+
+Blessed is the man who has given everything to Mary, who 
+at all times and in all things trusts in her, and loses himself 
+in her. He belongs to Mary and Mary belongs to him. With 
+David he can boldly say, "She was created for me", or with 
+the beloved disciple, "I have taken her for my own", or with 
+our Lord himself, "All that is mine is yours and all that is 
+yours is mine." 
+
+If any critic reading this should imagine that I am 
+exaggerating or speaking from an excess of devotion, he has 
+not, alas, understood what I have said. Either he is a carnal 
+man who has no taste for the spiritual; or he is a worldly 
+man who has cut himself off from the Holy Spirit; or he is a 
+proud and critical man who ridicules and condemns 
+anything he does not understand. But those who are born 
+not of blood, nor of flesh, nor of the will of man, but of God 
+and Mary, understand and appreciate what I have to say. It is 
+for them that I am writing. 
+
+Nevertheless, after this digression, I say to both the critics 
+and the devout that the Blessed Virgin, the most reliable 
+and generous of all God's creatures, never lets herself be 
+surpassed by anyone in love and generosity. For the little 
+that is given to her, she gives generously of what she has 
+received from God. Consequently, if a person gives himself 
+to her without reserve, she gives herself also without reserve 
+to that person provided his confidence in her is not 
+presumptuous and he does his best to practice virtue and 
+curb his passions. 
+
+
+So the faithful servants of the Blessed Virgin may 
+confidently say with Saint John Damascene, "If I confide in 
+you, Mother of God, I shall be saved. Under your protection I 
+shall fear nothing. With your help I shall rout all my enemies. 
+For devotion to you is a weapon of salvation which God 
+gives to those he wishes to save." 
+
+
+## Chapter Five - Biblical Figure of This Perfect Devotion: Rebecca and Jacob
+
+
+The Holy Spirit gives us in Sacred 
+Scripture, a striking allegorical figure of all 
+the truths I have been explaining 
+concerning the Blessed Virgin and her 
+children and servants. It is the story of 
+Jacob who received the blessing of his 
+father Isaac through the care and 
+ingenuity of his mother Rebecca. 
+
+Here is the story as the Holy Spirit tells it. 
+
+I shall expound it further later on. 
+
+The Story of Jacob 
+
+Several years after Esau had sold his 
+birthright to Jacob, Rebecca, their mother, 
+who loved Jacob tenderly, secured this 
+blessing for him by a holy stratagem full 
+of mystery for us. 
+
+Isaac, realizing that he was getting old, wished to bless his 
+children before he died. He summoned Esau, who was his 
+favorite son, and told him to go hunting and bring him 
+something to eat, in order that he might then give him his 
+blessing. Rebecca immediately told Jacob what was 
+happening and sent him to fetch two small goats from the 
+flock. When Jacob gave them to his mother, she cooked 
+them in the way Isaac liked them. Then she dressed Jacob in 
+Esau's clothes which she had in her keeping, and covered 
+his hands and neck with the goat-skin. The father, who was 
+blind, although hearing the voice of Jacob, would think that 
+it was Esau when he touched the skin on his hands. 
+
+
+Isaac was of course surprised at the voice which he thought 
+was Jacob's and told him to come closer. Isaac felt the hair 
+on the skin covering Jacob's hands and said that the voice 
+was really like Jacob's but the hands were Esau's. After he 
+had eaten, Isaac kissed Jacob and smelt the fragrance of his 
+scented clothes. He blessed him and called down on him the 
+dew of heaven and the fruitfulness of earth. He made him 
+master of all his brothers and concluded his blessing with 
+these words, "Cursed be those who curse you and blessed be 
+those who bless you." 
+
+Isaac had scarcely finished speaking when Esau came in, 
+bringing what he had caught while out hunting. He wanted 
+his father to bless him after he had eaten. The holy patriarch 
+was shocked when he realized what had happened. But far 
+from retracting what he had done, he confirmed it because 
+he clearly saw the finger of God in it all. Then, as Holy 
+Scripture relates, Esau began to protest loudly against the 
+treachery of his brother. He then asked his father if he had 
+only one blessing to give. In so doing, as the early Fathers 
+point out, Esau was the symbol of those who are too ready to 
+imagine that there is an alliance between God and the 
+world, because they themselves are eager to enjoy, at one 
+and the same time, the blessings of heaven and the 
+blessings of the earth. Isaac was touched by Esau's cries and 
+finally blessed him only with a blessing of the earth, and he 
+subjected him to his brother. Because of this, Esau 
+conceived such a venomous hatred forjacob that he could 
+hardly wait for his father's death to kill him. And Jacob would 
+not have escaped death if his dear mother Rebecca had not 
+saved him by her ingenuity and her good advice. 
+
+Interpretation of the story 
+
+Before explaining this beautiful story, let me remind you 
+that, according to the early Fathers and the interpreters of 
+
+
+Holy Scripture, Jacob is the type of our Lord and of souls who 
+are saved, and Esau is the type of souls who are condemned. 
+We have only to examine the actions and conduct of both in 
+order to judge each one. 
+
+(1) Esau, the elder brother, was strong and robust, clever, 
+and skillful with the bow and very successful at hunting. 
+
+(2) He seldom stayed at home and, relying only on his own 
+strength and skill, worked out of doors. 
+
+(3) He never went out of his way to please his mother 
+Rebecca, and did little or nothing for her. 
+
+(4) He was such a glutton and so fond of eating that he sold 
+his birthright for a dish of lentils. 
+
+(5) Like Cain, he was extremely jealous of his brother and 
+persecuted him relentlessly. 
+
+This is the usual conduct of sinners: 
+
+(1) They rely upon their own strength and skill in temporal 
+affairs. They are very energetic, clever and well-informed 
+about things of this world but very dull and ignorant about 
+things of heaven. 
+
+(2) And they are never or very seldom at home, in their own 
+house, that is, in their own interior, the inner, essential 
+abode that God has given to every man to dwell in, after his 
+own example, for God always abides within himself. Sinners 
+have no liking for solitude or the spiritual life or interior 
+devotion. They consider those who live an interior life, 
+secluded from the world, and who work more interiorly than 
+exteriorly, as narrow-minded, bigoted and uncivilized. 
+
+
+(3) Sinners care little or nothing about devotion to Mary, the 
+Mother of the elect. It is true that they do not really hate her. 
+Indeed they even speak well of her sometimes. They say 
+they love her and they practice some devotion in her honor. 
+Nevertheless, they cannot bear to see anyone love her 
+tenderly, for they do not have for her any of the affection of 
+Jacob; they find fault with the honor which her good children 
+and servants faithfully pay her to win her affection. They 
+think this kind of devotion is not necessary for salvation, 
+and as long as they do not go as far as hating her or openly 
+ridiculing devotion to her they believe they have done all 
+they need to win her good graces. Because they recite or 
+mumble a few prayers to her without any affection and 
+without even thinking of amending their lives, they consider 
+they are our Lady's servants. 
+
+(4) Sinners sell their birthright, that is, the joys of paradise, 
+for a dish of lentils, that is, the pleasures of this world. They 
+laugh, they drink, they eat, they have a good time, they 
+gamble, they dance and so forth, without taking any more 
+trouble than Esau to make themselves worthy of their 
+heavenly Father's blessing. Briefly, they think only of this 
+world, love only the world, speak and act only for the world 
+and its pleasures. For a passing moment of pleasure, for a 
+fleeting wisp of honor, for a piece of hard earth, yellow or 
+white, they barter away their baptismal grace, their robe of 
+innocence and their heavenly inheritance. 
+
+(5) Finally, sinners continually hate and persecute the elect, 
+openly and secretly. The elect are a burden to them. They 
+despise them, criticize them, ridicule them, insult them, rob 
+them, deceive them, impoverish them, hunt them down and 
+trample them into the dust; while they themselves are 
+making fortunes, enjoying themselves, getting good 
+positions for themselves, enriching themselves, rising to 
+power and living in comfort. 
+
+
+Jacob, the younger son, was of a frail constitution, gentle 
+and peaceable and usually stayed at home to please his 
+mother, whom he loved so much. If he did go out it was not 
+through any personal desire of his, nor from any confidence 
+in his own ability, but simply out of obedience to his mother. 
+
+He loved and honored his mother. That is why he remained 
+at home close to her. He was never happier than when he 
+was in her presence. He avoided everything that might 
+displease her, and did everything he thought would please 
+her. This made Rebecca love him all the more. 
+
+He was submissive to his mother in all things. He obeyed her 
+entirely in everything, promptly without delay and lovingly 
+without complaint. At the least indication of her will, young 
+Jacob hastened to comply with it. He accepted whatever she 
+told him without questioning. For instance, when she told 
+him to get two small goats and bring them to her so that she 
+might prepare something for his father Isaac to eat, Jacob 
+did not reply that one would be enough for one man, but 
+without arguing he did exactly what she told him to do. 
+
+He had the utmost confidence in his mother. He did not rely 
+on his own ability; he relied solely on his mother's care and 
+protection. He went to her in all his needs and consulted her 
+in all his doubts. For instance, when he asked her if his 
+father, instead of blessing him, would curse him, he believed 
+her and trusted her when she said she would take the curse 
+upon herself. 
+
+Finally, he adopted, as much as he could, the virtues he saw 
+in his mother. It seems that one of the reasons why he spent 
+so much time at home was to imitate his dear mother, who 
+was so virtuous, and to keep away from evil companions - 
+who might lead him into sin. In this way, he made himself 
+worthy to receive the double blessing of his beloved father. 
+
+
+It is in a similar manner that God's chosen ones usually act. 
+They stay at home with their mother - that is, they have an 
+esteem for quietness, love the interior life, and are assiduous 
+in prayer. They always remain in the company of the Blessed 
+Virgin, their Mother and Model, whose glory is wholly interior 
+and who during her whole life dearly loved seclusion and 
+prayer. It is true, at times they do venture out into the world, 
+but only to fulfill the duties of their state of life, in obedience 
+to the will of God and the will of their Mother. 
+
+No matter how great their accomplishments may appear to 
+others, they attach far more importance to what they do 
+within themselves in their interior life, in the company of the 
+Blessed Virgin. For there they work at the great task of 
+perfection, compared to which all other work is mere child's 
+play. At times their brothers and sisters are working outside 
+with great energy, skill and success, and win the praise and 
+approbation of the world. But they know by the light of the 
+Holy Spirit that there is far more good, more glory and more 
+joy in remaining hidden and recollected with our Lord, in 
+complete and perfect submission to Mary than there is in 
+performing by themselves marvelous works of nature and 
+grace in the world, like so many Esaus and sinners. Glory for 
+God and riches for men are in her house. 
+
+Lord Jesus, how lovely is your dwelling-place! The sparrow 
+has found a house to dwell in, and the turtle-dove a nest for 
+her little ones! How happy is the man who dwells in the 
+house of Mary, where you were the first to dwell! Here in this 
+home of the elect, he draws from you alone the help he 
+needs to climb the stairway of virtue he has built in his heart 
+to the highest possible points of perfection while in this vale 
+of tears. "How lovely is your dwelling-place, Lord, God of 
+hosts!" 
+
+
+The elect have a great love for our Lady and honor her truly 
+as their Mother and Queen. They love her mot merely in 
+word but in deed. They honor her not just outwardly, but 
+from the depths of their heart. Like Jacob, they avoid the 
+least thing that might displease her, and eagerly do 
+whatever they think might win her favor. Jacob brought 
+Rebecca two young goats. They bring Mary their body and 
+their soul, with all their faculties, symbolized by Jacob's two 
+young goats, 1) so that she may accept them as her own; 2) 
+that she may make them die to sin and self by divesting 
+them of self-love, in order to please Jesus her Son, who 
+wishes to have as friends and disciples only those who are 
+dead to sin and self; 3) that she may clothe them according 
+to their heavenly Father's taste and for his greater glory, 
+which she knows better than any other creature; 4) that 
+through her care and intercession, this body and soul of 
+theirs, thoroughly cleansed from every stain, thoroughly 
+dead to self, thoroughly stripped and well-prepared, may be 
+pleasing to the heavenly Father and deserving of his 
+blessing. 
+
+Is this not what those chosen souls do who, to prove to Jesus 
+and Mary how effective and courageous is their love, live 
+and esteem the perfect consecration to Jesus through Mary 
+which we are now teaching them? 
+
+Sinners may say that they love Jesus, that they love and 
+honor Mary, but they do not do so with their whole heart and 
+soul. Unlike the elect, they do not love Jesus and Mary 
+enough to consecrate them their body with its senses and 
+their soul with its passions. 
+
+They are subject and obedient to our Lady, their good 
+Mother, and here they are simply following the example set 
+by our Lord himself, who spent thirty of the thirty-three 
+years he lived on earth glorifying God his Father in perfect 
+
+
+and entire submission to his holy Mother. They obey her, 
+following her advice to the letter, just as Jacob followed that 
+of Rebecca, when she said to him, "My son, follow my 
+advice"; or like the stewards at the wedding in Cana, to 
+whom our Lady said, "Do whatever he tells you." 
+
+Through obedience to his mother, Jacob received the 
+blessing almost by a miracle, because in the natural course 
+of events he should not have received it. As a reward for 
+following the advice of our Lady, the stewards at the 
+wedding in Cana were honored with the first of our Lord's 
+miracles when, at her request he changed water into wine. 
+
+In the same way, until the end of time, all who are to receive 
+the blessing of our heavenly Father and who are to be 
+honored with his wondrous graces will receive them only as 
+a result of their perfect obedience to Mary. On the other 
+hand, the "Esaus" will lose their blessing because of their 
+lack of submission to the Blessed Virgin. 
+
+They have great confidence in the goodness and power of 
+the Blessed Virgin, their dear Mother, and incessantly 
+implore her help. They take her for their pole-star to lead 
+them safely into harbor. They open their hearts to her and 
+tell her their troubles and their needs. They rely on her 
+mercy and kindness to obtain forgiveness for their sins 
+through her intercession and to experience her motherly 
+comfort in their troubles and anxieties. They even cast 
+themselves into her virginal bosom, hide and lose 
+themselves there in a wonderful manner. There they are 
+filled with pure love, they are purified from the least stain of 
+sin, and they find Jesus in all his fullness. For he reigns in 
+Mary as if on the most glorious of thrones. What 
+incomparable happiness! Abbot Guerric says, "Do not 
+imagine there is more joy in dwelling in Abraham's bosom 
+than in Mary's, for it is in her that our Lord placed his 
+throne." 
+
+
+Sinners, on the other hand, put all their confidence in 
+themselves. Like the prodigal son, they eat with the swine. 
+Like toads they feed on earth. Like all worldlings, they love 
+only visible and external things. They do not know the 
+sweetness of Mary's bosom. They do not have that reliance 
+and confidence which the elect have for the Blessed Virgin, 
+their Mother. Deplorably they choose to satisfy their hunger 
+elsewhere, as Saint Gregory says, because they do not want 
+to taste the sweetness already prepared within themselves 
+and within Jesus and Mary. 
+
+Finally, chosen souls keep to the ways of the Blessed Virgin, 
+their loving Mother - that is, they imitate her and so are 
+sincerely happy and devout and bear the infallible sign of 
+God's chosen ones. This loving Mother says to them "Happy 
+are those who keep my ways", which means, happy are 
+those who practice my virtues and who, with the help of 
+God's grace, follow the path of my life. They are happy in 
+this world because of the abundance of grace and sweetness 
+I impart to them out of my fullness, and which they receive 
+more abundantly than others who do not imitate me so 
+closely. They are happy at the hour of death, which is sweet 
+and peaceful for I am usually there myself to lead them 
+home to everlasting joy. Finally, they will be happy for all 
+eternity, because no servant of mine who imitated my 
+virtues during life has ever been lost. 
+
+On the other hand, sinners are unhappy during their life, at 
+their death, and throughout eternity, because they do not 
+imitate the virtues of our Lady. They are satisfied with going 
+no further than joining her confraternities, reciting a few 
+prayers in her honor, or performing other exterior devotional 
+exercises. 
+
+0 Blessed Virgin, my dear Mother, how happy are those who 
+faithfully keep your ways, your counsels and your 
+
+
+commands; who never allow themselves to be led astray by 
+a false devotion to you! But how unhappy and accursed are 
+those who abuse devotion to you by not keeping the 
+commandments of your Son! "They are accursed who stray 
+from your commandments." 
+
+Services of our Lady to her faithful servants 
+
+Here now are the services which the Virgin Mary, as the best 
+of all mothers, lovingly renders to those loyal servants who 
+have given themselves entirely to her in the manner I have 
+described and following the figurative meaning of the story 
+of Jacob and Rebecca. 
+
+She loves them 
+
+"I love those who love me." She loves them: 
+
+a) Because she is truly their Mother. What mother does not 
+love her child, the fruit of her womb? 
+
+b) She loves them in gratitude for the active love they show 
+to her, their beloved Mother. 
+
+c) She loves them because they are loved by God and 
+destined for heaven. "Jacob I loved, but Esau I hated." 
+
+d) She loves them because they have consecrated 
+themselves entirely to her and belong to her portion, her 
+inheritance. "In Israel receive your inheritance." 
+
+She loves them tenderly, more tenderly than all the mothers 
+in the world together. Take the maternal love of all the 
+mothers of the world for their children. Pour all that love into 
+the heart of one mother for an only child. That mother's love 
+would certainly be immense. Yet Mary's love for each of her 
+
+
+children has more tenderness than the love of that mother 
+for her child. 
+
+
+She loves them not only affectively but effectively, that is, 
+her love is active and productive of good like Rebecca's love 
+for Jacob -and even more so, for Rebecca was, after all, only 
+a symbolic figure of Mary. Here is what this loving Mother 
+does for her children to obtain for them the blessings of their 
+heavenly Father: 
+
+1) Like Rebecca she looks out for favorable opportunities to 
+promote their interests, to ennoble and enrich them. She 
+sees clearly in God all that is good and all that is evil; 
+fortunate and unfortunate events; the blessings and 
+condemnations of God. She arranges things in advance so as 
+to divert evils from her servants and put them in the way of 
+abundant blessings. If there is any special benefit to be 
+gained in God's sight by the faithful discharge of an 
+important work, Mary will certainly obtain this opportunity 
+for a beloved child and servant and at the same time, give 
+him the grace to persevere in it to the end. "She personally 
+manages our affairs," says a saintly man. 
+
+2) She gives them excellent advice, as Rebecca did to Jacob. 
+"My son, follow my counsels." Among other things, she 
+persuades them to bring her the two young goats, that is, 
+their body and soul, and to confide them to her so that she 
+can prepare them as a dish pleasing to God. She inspires 
+them to observe whatever Jesus Christ, her Son, has taught 
+by word and example. When she does not give these 
+counsels herself in person, she gives them through the 
+ministry of angels who are always pleased and honored to 
+go at her request to assist one of her faithful servants on 
+earth. 
+
+
+3) What does this good Mother do when we have presented 
+and consecrated to her our soul and body and all that 
+pertains to them without excepting anything? Just what 
+Rebecca of old did to the little goats Jacob brought her. (a) 
+She kills them, that is, makes them die to the life of the old 
+Adam, (b) She strips them of their skin, that is, of their 
+natural inclinations, their self-love and self-will and their 
+every attachment to creatures, (c) She cleanses them from 
+all stain, impurity and sin. (d) She prepares them to God's 
+taste and to his greater glory. As she alone knows perfectly 
+what the divine taste is and where the greatest glory of God 
+is to be found, she alone without any fear of mistake can 
+prepare and garnish our body and soul to satisfy that 
+infinitely refined taste and promote that infinitely hidden 
+glory. 
+
+4) Once this good Mother has received our complete offering 
+with our merits and satisfactions through the devotion I 
+have been speaking about, and has stripped us of our own 
+garments, she cleanses us and makes us worthy to appear 
+without shame before our heavenly Father. 
+
+She clothes us in the clean, new, precious and fragrant 
+garments of Esau, the first born, namely, her Son Jesus 
+Christ. She keeps these garments in her house, that is to 
+say, she has them at her disposal. For she is the treasurer 
+and universal dispenser of the merits and virtues of Jesus 
+her Son. She gives and distributes them to whom she 
+pleases, when she pleases, as she pleases, and as much as 
+she pleases, as we have said above. 
+
+She covers the neck and hands of her servants with the 
+skins of the goats that have been killed and flayed, that is, 
+she adorns them with the merits and worth of their own 
+good actions. In truth, she destroys and nullifies all that is 
+impure and imperfect in them. She preserves and enhances 
+
+
+this good so that it adorns and strengthens their neck and 
+hands, that is, she gives them the strength to carry the yoke 
+of the Lord and the skill to do great things for the glory of 
+God and the salvation of their poor brothers. 
+
+She imparts new perfume and fresh grace to those garments 
+and adornments by adding to them the garments of her own 
+wardrobe of merits and virtues. She bequeathed these to 
+them before her departure for heaven, as was revealed by a 
+holy nun of the last century, who died a holy death. Thus all 
+her domestics, that is, all her servants and slaves, are 
+clothed with double garments, her own and those of her Son. 
+Now they have nothing to fear from that cold which sinners, 
+naked and stripped as they are of the merits of Jesus and 
+Mary, will be unable to endure. 
+
+5) Finally, Mary obtains for them the heavenly Father's 
+blessing. As they are the youngest born and adopted, they 
+are not really entitled to it. Clad in new, precious, and sweet¬ 
+smelling garments, with body and soul well-prepared and 
+dressed, they confidently approach their heavenly Father. He 
+hears their voice and recognizes it as the voice of a sinner. 
+
+He feels their hands covered with skins, inhales the aroma of 
+their garments. He partakes with joy of what Mary, their 
+Mother, has prepared for him, recognizing in it the merits 
+and good odor of his Son and his Blessed Mother. 
+
+a) He gives them a twofold blessing, the blessing of the dew 
+of heaven, namely, divine grace, which is the seed of glory. 
+"God has blessed us in Christ with every spiritual blessing," 
+and also the blessing of the fertility of the earth, for as a 
+provident Father, he gives them their daily bread and an 
+ample supply of the goods of the earth. 
+
+b) He makes them masters of their other brothers, the 
+reprobate sinners. This domination does not always show in 
+
+
+this fleeting world, where sinners often have the upper 
+hand. "How long shall the wicked glory, mouthing insolent 
+reproaches?" "I have seen the wicked triumphant and lifted 
+up like the cedars of Lebanon." But the supremacy of the 
+just is real and will be seen clearly for all eternity in the next 
+world, where the just, as the Holy Spirit tells us, will 
+dominate and command all peoples. 
+
+c) The God of all majesty is not satisfied with blessing them 
+in their persons and their possessions, he blesses all who 
+bless them and curses all who curse and persecute them. 
+
+She provides for all their needs 
+
+Our Lady's charity towards her faithful servants goes further. 
+She provides them with everything they need for body and 
+soul. We have just seen that she gives them double 
+garments. She also nourishes them with the most delicious 
+food from the banquet table of God. She gives them the Son 
+she has borne, the Bread of Life, to be their food. "Dear 
+children," she says in the words of divine Wisdom, "take your 
+fill of my fruits," that is to say, of the Fruit of Life, Jesus, 
+"whom I brought into the world for you." "Come," she 
+repeats in another passage, "eat the bread which is Jesus. 
+Drink the wine of his love which I have mixed" for you with 
+the milk of my breasts. 
+
+As Mary is the treasurer and dispenser of the gifts and 
+graces of the Most High God, she reserves a choice portion, 
+indeed the choicest portion, to nourish and sustain her 
+children and servants. They grow strong on the Bread of Life; 
+they are made joyful with the wine that brings forth virgins. 
+They are carried at her breast. They bear with ease the yoke 
+of Christ scarcely feeling its weight because of the oil of 
+devotion with which she has softened its wood. 
+
+
+She leads and guides them 
+
+
+A third service which our Lady renders her faithful servants 
+is to lead and direct them according to the will of her Son. 
+Rebecca guided her little son Jacob and gave him good 
+advice from time to time, which helped him obtain the 
+blessing of his father and saved him from the hatred and 
+persecution of his brother Esau. Mary, Star of the sea, guides 
+all her faithful servants into safe harbor. She shows them the 
+path to eternal life and helps them avoid dangerous pitfalls. 
+She leads them by the hand along the path of holiness, 
+steadies them when they are liable to fall and helps them 
+rise when they have fallen. She chides them like a loving 
+mother when they are remiss and sometimes she even 
+lovingly chastises them. How could a child that follows such 
+a mother and such an enlightened guide as Mary take the 
+wrong path to heaven? Follow her and you cannot go wrong, 
+says Saint Bernard. There is no danger of a true child of 
+Mary being led astray by the devil and falling into heresy. 
+Where Mary leads, Satan with his deceptions and heretics 
+with their subtleties are not encountered. "When she 
+upholds you, you will not fall." 
+
+She defends and protects them 
+
+The fourth good office our Lady performs for her children 
+and faithful servants is to defend and protect them against 
+their enemies. By her care and ingenuity Rebecca delivered 
+Jacob from all dangers that beset him and particularly from 
+dying at the hands of his brother, as he apparently would 
+have done, since Esau hated and envied him just as Cain 
+hated his brother Abel. 
+
+Mary, the beloved Mother of chosen souls, shelters them 
+under her protecting wings as a hen does her chicks. She 
+speaks to them, coming down to their level and 
+
+
+accommodating herself to all their weaknesses. To ensure 
+their safety from the hawk and vulture, she becomes their 
+escort, surrounding them as an army in battle array. Could 
+anyone surrounded by a well-ordered army of say a hundred 
+thousand men fear his enemies? No, and still less would a 
+faithful servant of Mary, protected on all sides by her 
+imperial forces, fear his enemy. This powerful Queen of 
+heaven would sooner dispatch millions of angels to help one 
+of her servants than have it said that a single faithful and 
+trusting servant of hers had fallen victim to the malice, 
+number and power of his enemies. 
+
+She intercedes for them 
+
+Finally, the fifth and greatest service which this loving 
+Mother renders her faithful followers is to intercede for them 
+with her Son. She appeases him with her prayers, brings her 
+servants into closer union with him and maintains that 
+union. 
+
+Rebecca made Jacob approach the bed of his father. His 
+father touched him, embraced him and even joyfully kissed 
+him after having satisfied his hunger with the well-prepared 
+dishes which Jacob had brought him. Then inhaling most 
+joyfully the exquisite perfume of his garments, he cried: 
+"Behold the fragrance of my son is as the fragrance of a field 
+of plenty which the Lord has blessed." The fragrance of this 
+rich field which so captivated the heart of the father, is none 
+other than the fragrance of the merits and virtues of Mary 
+who is the plentiful field of grace in which God the Father 
+has sown the grain of wheat of the elect, his only Son. 
+
+How welcome to Jesus Christ, the Father of the world to 
+come, is a child perfumed with the fragrance of Mary! How 
+readily and how intimately does he unite himself to that 
+child! But this we have already shown at length. 
+
+
+Furthermore, once Mary has heaped her favors upon her 
+children and her faithful servants and has secured for them 
+the blessing of the heavenly Father and union with Jesus 
+Christ, she keeps them in Jesus and keeps Jesus in them. She 
+guards them, watching over them unceasingly, lest they lose 
+the grace of God and fall into the snares of their enemies. 
+"She keeps the saints in their fullness" (Saint Bonaventure), 
+and inspires them to persevere to the end, as we have 
+already said. 
+
+Such is the explanation given to this ancient allegory which 
+typifies the mystery of predestination and reprobation. 
+
+
+## Chapter Six - Wonderful Effects of This Devotion
+
+
+My dear friend, be sure that if you remain 
+faithful to the interior and exterior 
+practices of this devotion which I will 
+point out, the following effects will be 
+produced in your soul: 
+
+Knowledge of our unworthiness 
+
+By the light which the Holy Spirit will give 
+you through Mary, his faithful spouse, you 
+will perceive the evil inclinations of your 
+fallen nature and how incapable you are of any good apart 
+from that which God produces in you as Author of nature 
+and of grace. As a consequence of this knowledge you will 
+despise yourself and think of yourself only as an object of 
+repugnance. You will consider yourself as a snail that soils 
+everything with its slime, as a toad that poisons everything 
+with its venom, as a malevolent serpent seeking only to 
+deceive. Finally, the humble Virgin Mary will share her 
+humility with you so that, although you regard yourself with 
+distaste and desire to be disregarded by others, you will not 
+look down slightingly upon anyone. 
+
+A share in Mary's faith 
+
+Mary will share her faith with you. Her faith on earth was 
+stronger than that of all the patriarchs, prophets, apostles 
+and saints. Now that she is reigning in heaven she no longer 
+has this faith, since she sees everything clearly in God by 
+the light of glory. However, with the consent of almighty God 
+she did not lose it when entering heaven. She has preserved 
+it for her faithful servants in the Church militant. Therefore 
+the more you gain the friendship of this noble Queen and 
+
+
+faithful Virgin the more you will be inspired by faith in your 
+daily life. It will cause you to depend less upon sensible and 
+extraordinary feelings. For it is a lively faith animated by 
+love enabling you to do everything from no other motive 
+than that of pure love. It is a firm faith, unshakable as a rock, 
+prompting you to remain firm and steadfast in the midst of 
+storms and tempests. It is an active and probing faith which 
+like some mysterious pass-key admits you into the mysteries 
+of Jesus Christ and of man's final destiny and into the very 
+heart of God himself. It is a courageous faith which inspires 
+you to undertake and carry out without hesitation great 
+things for God and the salvation of souls. Lastly, this faith 
+will be your flaming torch, your very life with God, your 
+secret fund of divine Wisdom, and an all-powerful weapon 
+for you to enlighten those who sit in darkness and the 
+shadow of death. It inflames those who are lukewarm and 
+need the gold of fervent love. It restores life to those who are 
+dead through sin. It moves and transforms hearts of marble 
+and cedars of Lebanon by gentle and convincing argument. 
+Finally, this faith will strengthen you to resist the devil and 
+the other enemies of salvation. 
+
+The gift of pure love 
+
+The Mother of fair love will rid your heart of all scruples and 
+inordinate servile fear. She will open and enlarge it to obey 
+the commandments of her Son with alacrity and with the 
+holy freedom of the children of God. She will fill your heart 
+with pure love of which she is the treasury. You will then 
+cease to act as you did before, out of fear of the God who is 
+love, but rather out of pure love. You will look upon him as a 
+loving Father and Endeavour to please him at all times. You 
+will speak trustfully to him as a child does to its father. If you 
+should have the misfortune to offend him you will abase 
+yourself before him and humbly beg his pardon. You will 
+offer your hand to him with simplicity and lovingly rise from 
+
+
+your sin. Then, peaceful and relaxed and buoyed up with 
+hope you will continue on your way to him. 
+
+Great confidence in God and in Mary 
+
+Our Blessed Lady will fill you with unbounded confidence in 
+God and in herself: 
+
+1) Because you will no longer approach Jesus by yourself but 
+always through Mary, your loving Mother. 
+
+2) Since you have given her all your merits, graces and 
+satisfactions to dispose of as she pleases, she imparts to you 
+her own virtues and clothes you in her own merits. So you 
+will be able to say confidently to God: "Behold Mary, your 
+handmaid, be it done unto me according to your word." 
+
+3) Since you have now given yourself completely to Mary, 
+body and soul, she, who is generous to the generous, and 
+more generous than even the kindest benefactor, will in 
+return give herself to you in a marvelous but real manner. 
+Indeed you may without hesitation say to her, "I am yours, 0 
+Blessed Virgin, obtain salvation for me," or with the beloved 
+disciple, Saint John, "I have taken you, Blessed Mother, for 
+my all." Or again you may say with Saint Bonaventure, "Dear 
+Mother of saving grace, I will do everything with confidence 
+and without fear because you are my strength and my boast 
+in the Lord," or in another place, "I am all yours and all that I 
+have is yours, 0 glorious Virgin, blessed above all created 
+things. Let me place you as a seal upon my heart, for your 
+love is as strong as death." Or adopting the sentiments of 
+the prophet, "Lord, my heart has no reason to be exalted nor 
+should my looks be proud; I have not sought things of great 
+moment nor wonders beyond my reach; nevertheless, I am 
+still not humble. But I have roused my soul and taken 
+courage. I am as a child, weaned from earthly pleasures and 
+
+
+resting on its mother's breast. It is upon this breast that all 
+good things come to me." 
+
+4) What will still further increase your confidence in her is 
+that, after having given her in trust all that you possess to 
+use or keep as she pleases, you will place less trust in 
+yourself and much more in her whom you have made your 
+treasury. How comforting and how consoling when a person 
+can say, "The treasury of God, where he has placed all that 
+he holds most precious, is also my treasury." "She is," says a 
+saintly man, "the treasury of the Lord." 
+
+Communication of the spirit of Mary 
+
+The soul of Mary will be communicated to you to glorify the 
+Lord. Her spirit will take the place of yours to rejoice in God, 
+her Savior, but only if you are faithful to the practices of this 
+devotion. As Saint Ambrose says, "May the soul of Mary be in 
+each one of us to glorify the Lord! May the spirit of Mary be 
+in each one of us to rejoice in God!" "When will that happy 
+day come," asks a saintly man of our own day whose life was 
+completely wrapped up in Mary, "when God's Mother is 
+enthroned in men's hearts as Queen, subjecting them to the 
+dominion of her great and princely Son? When will souls 
+breathe Mary as the body breathes air?" When that time 
+comes wonderful things will happen on earth. The Holy 
+Spirit, finding his dear Spouse present again in souls, will 
+come down into them with great power. He will fill them with 
+his gifts, especially wisdom, by which they will produce 
+wonders of grace. My dear friend, when will that happy time 
+come, that age of Mary, when many souls, chosen by Mary 
+and given her by the most High God, will hide themselves 
+completely in the depths of her soul, becoming living copies 
+of her, loving and glorifying Jesus? That day will dawn only 
+when the devotion I teach is understood and put into 
+practice. Ut adveniat regnum tuum, adveniat regnum 
+
+
+Mariae: "Lord, that your kingdom may come, may the reign 
+of Mary come!" 
+
+Transformation into the likeness of Jesus 
+
+If Mary, the Tree of Life, is well cultivated in our soul by 
+fidelity to this devotion, she will in due time bring forth her 
+fruit which is none other than Jesus. I have seen many 
+devout souls searching for Jesus in one way or another, and 
+so often when they have worked hard throughout the night, 
+all they can say is, "Despite our having worked all night, we 
+have caught nothing." To them we can say, "You have 
+worked hard and gained little; Jesus can only be recognized 
+faintly in you." But if we follow the immaculate path of Mary, 
+living the devotion that I teach, we will always work in 
+daylight, we will work in a holy place, and we will work but 
+little. There is no darkness in Mary, not even the slightest 
+shadow since there was never any sin in her. She is a holy 
+place, a holy of holies, in which saints are formed and 
+molded. 
+
+Please note that I say that saints are molded in Mary. There 
+is a vast difference between carving a statue by blows of 
+hammer and chisel and making a statue by using a mould. 
+Sculptors and statue-makers work hard and need plenty of 
+time to make statues by the first method. But the second 
+method does not involve much work and takes very little 
+time. Saint Augustine speaking to our Blessed Lady says, 
+"You are worthy to be called the mould of God." Mary is a 
+mould capable of forming people into the image of the God- 
+man. Anyone who is cast into this divine mould is quickly 
+shaped and molded into Jesus and Jesus into him. At little 
+cost and in a short time he will become Christ-like since he is 
+cast into the very same mould that fashioned a God-man. 
+
+
+I think I can very well compare some spiritual directors and 
+devout persons to sculptors who wish to produce Jesus in 
+themselves and in others by methods other than this. Many 
+of them rely on their own skill, ingenuity and art and chip 
+away endlessly with mallet and chisel at hard stone or 
+badly-prepared wood, in an effort to produce a likeness of 
+our Lord. At times, they do not manage to produce a 
+recognizable likeness either because they lack knowledge 
+and experience of the person of Jesus or because a clumsy 
+stroke has spoiled the whole work. But those who accept this 
+little-known secret of grace which I offer them can rightly be 
+compared to smelters and molders who have discovered the 
+beautiful mould of Mary where Jesus was so divinely and so 
+naturally formed. They do not rely on their own skill but on 
+the perfection of the mould. They cast and lose themselves 
+in Mary where they become true models of her Son. 
+
+You may think this a beautiful and convincing comparison. 
+But how many understand it? I would like you, my dear 
+friend, to understand it. But remember that only molten and 
+liquefied substances may be poured into a mould. That 
+means that you must crush and melt down the old Adam in 
+you if you wish to acquire the likeness of the new Adam in 
+Mary. 
+
+The greater glory of Christ 
+
+If you live this devotion sincerely, you will give more glory to 
+Jesus in a month than in many years of a more demanding 
+devotion. Here are my reasons for saying this: 
+
+(1) Since you do everything through the Blessed Virgin as 
+required by this devotion, you naturally lay aside your own 
+intentions no matter how good they appear to you. You 
+abandon yourself to our Lady's intentions even though you 
+do not know what they are. Thus you share in the high 
+
+
+quality of her intentions, which are so pure that she gave 
+more glory to God by the smallest of her actions, say, 
+twirling her distaff, or making a stitch, than did Saint 
+Laurence suffering his cruel martyrdom on the grid-iron, and 
+even more than all the saints together in all their most 
+heroic deeds! Mary amassed such a multitude of merits and 
+graces during her sojourn on earth that it would be easier to 
+count the stars in heaven, the drops of water in the ocean or 
+the sands of the sea-shore than count her merits and graces. 
+She thus gave more glory to God than all the angels and 
+saints have given or will ever give him. Mary, wonder of God, 
+when souls abandon themselves to you, you cannot but 
+work wonders in them! 
+
+(2) In this devotion we set no store on our own thoughts and 
+actions but are content to rely on Mary's dispositions when 
+approaching and even speaking to Jesus. We then act with 
+far greater humility than others who imperceptibly rely on 
+their own dispositions and are self- satisfied about them; and 
+consequently we give greater glory to God, for perfect glory 
+is given to him only by the lowly and humble of heart. 
+
+(3) Our Blessed Lady, in her immense love for us, is eager to 
+receive into her virginal hands the gift of our actions, 
+imparting to them a marvelous beauty and splendor, and 
+presenting them herself to Jesus most willingly. More glory is 
+given to our Lord in this way than when we make our 
+offering with our own guilty hands. 
+
+(4) Lastly, you never think of Mary without Mary thinking of 
+God for you. You never praise or honor Mary without Mary 
+joining you in praising and honoring God. Mary is entirely 
+relative to God. Indeed I would say that she was relative only 
+to God, because she exists uniquely in reference to him. 
+
+
+She is an echo of God, speaking and repeating only God. If 
+you say "Mary" she says "God". When Saint Elizabeth 
+praised Mary calling her blessed because she had believed, 
+Mary, the faithful echo of God, responded with her canticle, 
+"My soul glorifies the Lord." What Mary did on that day, she 
+does every day. When we praise her, when we love and 
+honor her, when we present anything to her, then God is 
+praised, honored and loved and receives our gift through 
+Mary and in Mary. 
+
+
+## Chapter Seven - Particular Practices of This Devotion
+
+
+Exterior Practices 
+
+Although this devotion is essentially an 
+interior one, this does not prevent it from 
+having exterior practices which should not 
+be neglected. "These must be done but 
+those not omitted." If properly performed, 
+exterior acts help to foster interior ones. 
+
+Man is always guided by his senses and 
+such practices remind him of what he has 
+done or should do. Let no worldling or critic intervene to 
+assert that true devotion is essentially in the heart and 
+therefore externals should be avoided as inspiring vanity, or 
+that real devotion should be hidden and private. I answer in 
+the words of our Lord, "Let men see your good works that 
+they may glorify your Father who is in heaven." As Saint 
+Gregory says, this does not mean that they should perform 
+external actions to please men or seek praise; that certainly 
+would be vanity. It simply means that we do these things 
+before men only to please and glorify God without worrying 
+about either the contempt or the approval of men. 
+
+I shall briefly mention some practices which I call exterior, 
+not because they are performed without inner attention but 
+because they have an exterior element as distinct from 
+those which are purely interior. 
+
+Preparation and Consecration 
+
+Those who desire to take up this special devotion, (which 
+has not been erected into a confraternity, although this 
+would be desirable), should spend at least twelve days in 
+emptying themselves of the spirit of the world, which is 
+
+
+opposed to the spirit of Jesus, as I have recommended in the 
+first part of this preparation for the reign of Jesus Christ. 
+
+They should then spend three weeks imbuing themselves 
+with the spirit of Jesus through the most Blessed Virgin. Here 
+is a program they might follow: 
+
+During the first week they should offer up all their prayers 
+and acts of devotion to acquire knowledge of themselves 
+and sorrow for their sins. 
+
+Let them perform all their actions in a spirit of humility. With 
+this end in view they may, if they wish, meditate on what I 
+have said concerning our corrupted nature, and consider 
+themselves during six days of the week as nothing but sails, 
+slugs, toads, swine, snakes and goats. Or else they may 
+meditate on the following three considerations of Saint 
+Bernard: "Remember what you were - corrupted seed; what 
+you are - a body destined for decay; what you will be -food 
+for worms." 
+
+They will ask our Lord and the Holy Spirit to enlighten them 
+saying, "Lord, that I may see," or "Lord, let me know myself," 
+or the "Come, Holy Spirit". Every day they should say the 
+Litany of the Holy Spirit, with the prayer that follows, as 
+indicated in the first part of this work. They will turn to our 
+Blessed Lady and beg her to obtain for them that great 
+grace which is the foundation of all others, the grace of self- 
+knowledge. For this intention they will say each day the Ave 
+Maris Stella and the Litany of the Blessed Virgin. 
+
+Each day of the second week they should Endeavour in all 
+their prayers and works to acquire an understanding of the 
+Blessed Virgin and ask the Holy Spirit for this grace. They 
+may read and meditate upon what we have already said 
+about her. They should recite daily the Litany of the Holy 
+Spirit and the Ave Maris Stella as during the first week. In 
+
+
+addition they will say at least five decades of the Rosary for 
+greater understanding of Mary. 
+
+During the third week they should seek to understand Jesus 
+Christ better. They may read and meditate on what we have 
+already said about him. They may say the prayer of Saint 
+Augustine which they will find at the beginning of the 
+second part of this book. Again with Saint Augustine, they 
+may pray repeatedly, "Lord, that I may know you," or "Lord, 
+that I may see." As during the previous week, they should 
+recite the Litany of the Holy Spirit and the Ave Maris Stella, 
+adding every day the Litany of the Holy Name of Jesus. 
+
+At the end of these three weeks they should go to confession 
+and Holy Communion with the intention of consecrating 
+themselves to Jesus through Mary as slaves of love. When 
+receiving Holy Communion they could follow the method 
+given later on. They then recite the act of consecration 
+which is given at the end of this book. If they do not have a 
+printed copy of the act, they should write it out or have it 
+copied and then sign it on the very day they make it. 
+
+It would be very becoming if on that day they offered some 
+tribute to Jesus and his Mother, either as a penance for past 
+unfaithfulness to the promises made in baptism or as a sign 
+of their submission to the sovereignty of Jesus and Mary. 
+
+Such a tribute would be in accordance with each one's 
+ability and fervor and may take the form of fasting, an act of 
+self-denial, the gift of an alms or the offering of a votive 
+candle. If they gave only a pin as a token of their homage, 
+provided it were given with a good heart, it would satisfy 
+Jesus who considers only the good intention. 
+
+Every year at least, on the same date, they should renew the 
+consecration following the same exercises for three weeks. 
+They might also renew it every month or even every day by 
+
+
+saying this short prayer: "I am all yours and all I have is 
+yours, 0 dear Jesus, through Mary, your holy Mother." 
+
+The Little Crown of the Blessed Virgin 
+
+If it is not too inconvenient, they should recite every day of 
+their lives the Little Crown of the Blessed Virgin, which is 
+composed of three Our Fathers and twelve Hail Marys in 
+honor of the twelve glorious privileges of Mary. This prayer is 
+very old and is based on Holy Scripture. Saint John saw in a 
+vision a woman crowned with twelve stars, clothed with the 
+sun and standing upon the moon. According to biblical 
+commentators, this woman is the Blessed Virgin. 
+
+There are several ways of saying the Little Crown but it 
+would take too long to explain them here. The Holy Spirit 
+will teach them to those who live this devotion 
+conscientiously. However, here is a simple way to recite it. As 
+an introduction say:" Virgin most holy, accept my praise; 
+give me strength to fight your foes", then say the Creed. 
+Next, say the following sequence of prayers three times: one 
+Our Father, four Hail Marys and one Glory be to the Father. In 
+conclusion say the prayer Sub tuum - "We fly to thy 
+patronage". 
+
+The Wearing of Little Chains 
+
+It is very praiseworthy and helpful for those who have 
+become slaves of Jesus in Mary to wear, in token of their 
+slavery of love, a little chain blessed with a special blessing. 
+
+It is perfectly true, these external tokens are not essential 
+and may very well be dispensed with by those who have 
+made this consecration. Nevertheless, I cannot help but give 
+the warmest approval to those who wear them. They show 
+they have shaken off the shameful chains of the slavery of 
+the devil, in which original sin and perhaps actual sin had 
+
+
+bound them, and have willingly taken upon themselves the 
+glorious slavery of Jesus Christ. Like Saint Paul, they glory in 
+the chains they wear for Christ. For though these chains are 
+made only of iron they are far more glorious and precious 
+than all the gold ornaments worn by monarchs. 
+
+At one time, nothing was considered more contemptible 
+than the Cross. Now this sacred wood has become the most 
+glorious symbol of the Christian faith. Similarly, nothing was 
+more ignoble in the sight of the ancients, and even today 
+nothing is more degrading among unbelievers than the 
+chains of Jesus Christ. But among Christians nothing is more 
+glorious than these chains, because by them Christians are 
+liberated and kept free from the ignoble shackles of sin and 
+the devil. Thus set free, we are bound to Jesus and Mary not 
+by compulsion and force like galley-slaves, but by charity 
+and love as children are to their parents. "I shall draw them 
+to me by chains of love" said God Most High speaking 
+through the prophet. Consequently, these chains are as 
+strong as death, and in a way stronger than death, for those 
+who wear them faithfully till the end of their life. For though 
+death destroys and corrupts their body, it will not destroy 
+the chains of their slavery, since these, being of metal, will 
+not easily corrupt. It may be that on the day of their 
+resurrection, that momentous day of final judgment, these 
+chains, still clinging to their bones, will contribute to their 
+glorification and be transformed into chains of light and 
+splendor. Happy then, a thousand times happy, are the 
+illustrious slaves of Jesus in Mary who bear their chains even 
+to the grave. 
+
+Here are the reasons for wearing these chains: 
+
+(a) They remind a Christian of the promises of his baptism 
+and the perfect renewal of these commitments made in his 
+consecration. They remind him of his strict obligation to 
+
+
+adhere faithfully to them. A man's actions are prompted 
+more frequently by his senses than by pure faith and so he 
+can easily forget his duties towards God if he has no external 
+reminder of them. These little chains are a wonderful aid in 
+recalling the bonds of sin and the slavery of the devil from 
+which baptism has freed him. At the same time, they remind 
+him of the dependence on Jesus promised at baptism and 
+ratified when by consecration he renewed these promises. 
+Why is it that so many Christians do not think of their 
+baptismal vows and behave with as much license as 
+unbelievers who have promised nothing to God? One 
+explanation is that they do not wear external sign to remind 
+them of these vows. 
+
+(b) These chains prove they are not ashamed of being the 
+servants and slaves of Jesus and that they reject the deadly 
+bondage of the world, of sin and of the devil. 
+
+(c) They are a guarantee and protection against 
+enslavement by sin and the devil. For we must of necessity 
+choose to wear either the chains of sin and damnation or the 
+chains of love and salvation. 
+
+Dear friend, break the chains of sin and of sinners, of the 
+world and the worldly, of the devil and his satellites. "Cast 
+their yoke of death far from us." To use the words of the Holy 
+Spirit, let us put our feet into his glorious shackles and our 
+neck into his chains. Let us bow down our shoulders in 
+submission to the yoke of Wisdom incarnate, Jesus Christ, 
+and let us not be upset by the burden of his chains. Notice 
+how before saying these words the Holy Spirit prepares us to 
+accept his serious advice, "Hearken, my son," he says, 
+"receive a counsel of understanding and do not spurn this 
+counsel of mine." 
+
+
+Allow me here, my dear friend, to join the Holy Spirit in 
+giving you the same counsel, "These chains are the chains of 
+salvation". As our Lord on the cross draws all men to himself, 
+whether they will it or not, he will draw sinners by the fetters 
+of their sins and submit them like galley-slaves and devils to 
+his eternal anger and avenging justice. But he will draw the 
+just, especially in these latter days, by the chains of love. 
+
+These loving slaves of Christ may wear their chains around 
+the neck, on their arms, round the waist or round the ankles. 
+Father Vincent Caraffa, seventh General of the Society of 
+Jesus, who died a holy death in 1643, carried an iron band 
+round his ankles as a symbol of his holy servitude and he 
+used to say that his greatest regret was that he could not 
+drag a chain around in public. Mother Agnes of Jesus, of 
+whom we have already spoken, wore a chain around her 
+waist. Others have worn it round the neck, in atonement for 
+the pearl necklaces they wore in the world. Others have 
+worn chains round their arms to remind them, as they 
+worked with their hands, that they are the slaves of Jesus. 
+
+Honoring the mystery of the Incarnation 
+
+Loving slaves of Jesus in Mary should hold in high esteem 
+devotion to Jesus, the Word of God, in the great mystery of 
+the Incarnation, March 25th, which is the mystery proper to 
+this devotion, because it was inspired by the Holy Spirit for 
+the following reasons: 
+
+(a) That we might honor and imitate the wondrous 
+dependence which God the Son chose to have on Mary, for 
+the glory of his Father and for the redemption of man. This 
+dependence is revealed especially in this mystery where 
+Jesus becomes a captive and slave in the womb of his 
+Blessed Mother, depending on her for everything. 
+
+
+(b) That we might thank God for the incomparable graces he 
+has conferred upon Mary and especially that of choosing her 
+to be his most worthy Mother. This choice was made in the 
+mystery of the Incarnation. These are the two principal ends 
+of the slavery of Jesus in Mary. 
+
+Please note that I usually say "slave of Jesus in Mary", 
+"slavery of Jesus in Mary". We might indeed say, as some 
+have already been saying, "slave of Mary", "slavery of Mary". 
+But I think it preferable to say, "slave of Jesus in Mary". This 
+is the opinion of Father Tronson, Superior General of the 
+Seminary of Saint-Sulpice, a man renowned for his 
+exceptional prudence and remarkable holiness. He gave this 
+advice when consulted upon this subject by a priest. 
+
+Here are the reasons for it: 
+
+(a) Since we live in an age of pride when a great number of 
+haughty scholars, with proud and critical minds, find fault 
+even with long-established and sound devotions, it is better 
+to speak of "slavery of Jesus in Mary" and to call oneself 
+"slave of Jesus" rather than "slave of Mary". We then avoid 
+giving any pretext for criticism. In this way, we name this 
+devotion after its ultimate end which is Jesus, rather than 
+after the way and the means to arrive there, which is Mary. 
+However, we can very well use either term without any 
+scruple, as I myself do. If a man goes from Orleans to Tours, 
+by way of Amboise, he can quite truthfully say that he is 
+going to Amboise and equally truthfully say that he is going 
+to Tours. The only difference is that Amboise is simply a 
+place on the direct road to Tours, and Tours alone is his final 
+destination. 
+
+(b) Since the principal mystery celebrated and honored in 
+this devotion is the mystery of the Incarnation where we find 
+Jesus only in Mary, having become incarnate in her womb, it 
+
+
+is appropriate for us to say, "slavery of Jesus in Mary", of 
+Jesus dwelling enthroned in Mary, according to the beautiful, 
+prayer, recited by so many great souls, "O Jesus living in 
+Mary". 
+
+(c) These expressions show more clearly the intimate union 
+existing between Jesus and Mary. So closely are they united 
+that one is wholly the other. Jesus is all in Mary and Mary is 
+all in Jesus. Or rather, it is no longer she who lives, but Jesus 
+alone who lives in her. It would be easier to separate light 
+from the sun than Mary from Jesus. So united are they that 
+our Lord may be called, "Jesus of Mary", and his Mother 
+"Mary of Jesus". 
+
+Time does not permit me to linger here and elaborate on the 
+perfections and wonders of the mystery of Jesus living and 
+reigning in Mary, or the Incarnation of the Word. I shall 
+confine myself to the following brief remarks. The 
+Incarnation is the first mystery of Jesus Christ; it is the most 
+hidden; and it is the most exalted and the least known. 
+
+It was in this mystery that Jesus, in the womb of Mary and 
+with her co- operation, chose all the elect. For this reason 
+the saints called her womb, the throne-room of God's 
+mysteries. 
+
+It was in this mystery that Jesus anticipated all subsequent 
+mysteries of his life by his willing acceptance of them. 
+Consequently, this mystery is a summary of all his mysteries 
+since it contains the intention and the grace of them all. 
+
+Lastly, this mystery is the seat of the mercy, the liberality, 
+and the glory of God. It is the seat of his mercy for us, since 
+we can approach and speak to Jesus through Mary. We need 
+her intervention to see or speak to him. Here, ever 
+responsive to the prayer of his Mother, Jesus unfailingly 
+
+
+grants grace and mercy to all poor sinners. "Let us come 
+boldly before the throne of grace." 
+
+It is the seat of liberality for Mary, because while the new 
+Adam dwelt in this truly earthly paradise God performed 
+there so many hidden marvels beyond the understanding of 
+men and angels. For this reason, the saints call Mary "the 
+magnificence of God", as if God showed his magnificence 
+only in Mary. 
+
+It is the seat of glory for his Father, because it was in Mary 
+that Jesus perfectly atoned to his Father on behalf of 
+mankind. It was here that he perfectly restored the glory 
+that sin had taken from his Father. It was here again that our 
+Lord, by the sacrifice of himself and of his will, gave more 
+glory to God than he would have given had he offered all the 
+sacrifices of the Old Law. Finally, in Mary he gave his Father 
+infinite glory, such as his Father had never received from 
+man. 
+
+Saying the Hail Mary and the Rosary 
+
+Those who accept this devotion should have a great love for 
+the Hail Mary, or, as it is called, the Angelic Salutation. 
+
+Few Christians, however enlightened, understand the value, 
+merit, excellence and necessity of the Hail Mary. Our Blessed 
+Lady herself had to appear on several occasions to men of 
+great holiness and insight, such as Saint Dominic, Saintjohn 
+Capistran and Blessed Alan de Rupe, to convince them of 
+the richness of this prayer. 
+
+They composed whole books on the wonders it had worked 
+and its efficacy in converting sinners. They earnestly 
+proclaimed and publicly preached that just as the salvation 
+of the world began with the Hail Mary, so the salvation of 
+each individual is bound up with it. This prayer, they said, 
+
+
+brought to a dry and barren world the Fruit of Life, and if 
+well said, will cause the Word of God to take root in the soul 
+and bring forth Jesus, the Fruit of Life. They also tell us that 
+the Hail Mary is a heavenly dew which waters the earth of 
+our soul and makes it bear fruit in due season. The soul 
+which is not watered by this heavenly dew bears no fruit but 
+only thorns and briars, and merits only God's condemnation. 
+
+Here is what our Blessed Lady revealed to Blessed Alan de 
+Rupe as recorded in his book, The Dignity of the Rosary, and 
+as told again by Cartagena: "Know, my son, and make it 
+known to all, that lukewarmness or negligence in saying the 
+Hail Mary, or a distaste for it, is a probable and proximate 
+sign of eternal damnation, for by this prayer the whole world 
+was restored." 
+
+These are terrible words but at the same time they are 
+consoling. We should find it hard to believe them, were we 
+not assured of their truth by Blessed Alan and by Saint 
+Dominic before him, and by so many great men since his 
+time. The experience of many centuries is there to prove it, 
+for it has always been common knowledge that those who 
+bear the sign of reprobation, as all formal heretics, evil¬ 
+doers, the proud and the worldly, hate and spurn the Hail 
+Mary and the Rosary. True, heretics learn to say the Our 
+Father but they will not countenance the Hail Mary and the 
+Rosary and they would rather carry a snake around with 
+them than a rosary. And there are even Catholics who, 
+sharing the proud tendencies of their father Lucifer, despise 
+the Hail Mary or look upon it with indifference. The Rosary, 
+they say, is a devotion suitable only for ignorant and 
+illiterate people. 
+
+On the other hand, we know from experience that those who 
+show positive signs of being among the elect, appreciate 
+and love the Hail Mary and are always glad to say it. The 
+
+
+closer they are to God, the more they love this prayer, as our 
+Blessed Lady went on to tell Blessed Alan. 
+
+I do not know how this should be, but it is perfectly true; and 
+I know no surer way of discovering whether a person belongs 
+to God than by finding out if he loves the Hail Mary and the 
+Rosary. I say, "if he loves", for it can happen that a person for 
+some reason may be unable to say the Rosary, but this does 
+not prevent him from loving it and inspiring others to say it. 
+
+Chosen souls, slaves of Jesus in Mary, understand that after 
+the Our Father, the Hail Mary is the most beautiful of all 
+prayers. It is the perfect compliment the most High God paid 
+to Mary through his archangel in order to win her heart. So 
+powerful was the effect of this greeting upon her, on account 
+of its hidden delights, that despite her great humility, she 
+gave her consent to the incarnation of the Word. If you say 
+the Hail Mary properly, this compliment will infallibly earn 
+you Mary's good will. 
+
+When the Hail Mary is well said, that is, with attention, 
+devotion and humility, it is, according to the saints, the 
+enemy of Satan, putting him to flight; it is the hammer that 
+crushes him, a source of holiness for souls, a joy to the 
+angels and a sweet melody for the devout. It is the Canticle 
+of the New Testament, a delight for Mary and glory for the 
+most Blessed Trinity. The Hail Mary is dew falling from 
+heaven to make the soul fruitful. It is a pure kiss of love we 
+give to Mary. It is a crimson rose, a precious pearl that we 
+offer to her. It is a cup of ambrosia, a divine nectar that we 
+offer her. These are comparisons made by the saints. 
+
+I earnestly beg of you, then, by the love I bear you in Jesus 
+and Mary, not to be content with saying the Little Crown of 
+the Blessed Virgin, but say the Rosary too, and if time 
+permits, all its fifteen decades, every day. Then when death 
+
+
+draws near, you will bless the day and hour when you took 
+to heart what I told you, for having sown the blessings of 
+Jesus and Mary, you will reap the eternal blessings in 
+heaven. 
+
+Praying the Magnificat 
+
+To thank God for the graces he has given to our Lady, her 
+consecrated ones will frequently say the Magnificat, 
+following the example of Blessed Marie d'Oignies and 
+several other saints. The Magnificat is the only prayer we 
+have which was composed by our Lady, or rather, composed 
+by Jesus in her, for it was he who spoke through her lips. It is 
+the greatest offering of praise that God ever received under 
+the law of grace. On the one hand, it is the most humble 
+hymn of thanksgiving and, on the other, it is the most 
+sublime and exalted. Contained in it are mysteries so great 
+and so hidden that even the angels do not understand them. 
+
+Gerson, a pious and learned scholar, spent the greater part 
+of his life writing tracts full of erudition and love on the most 
+profound subjects. Even so, it was with apprehension that he 
+undertook towards the end of his life to write a commentary 
+on the Magnificat which was the crowning point of all his 
+works. In a large volume on the subject he says many 
+wonderful things about this beautiful and divine canticle. 
+Among other things he tells us that Mary herself frequently 
+recited it, especially at thanksgiving after Holy Communion. 
+The learned Benzonius, in his commentary on the 
+Magnificat, cites several miracles worked through the power 
+of this prayer. The devils, he declare, take to flight when 
+they hear these words, "He puts forth his arm in strength 
+and scatters the proud-hearted". 
+
+
+Contempt of the world 
+
+
+Mary's faithful servants despise this corrupted world. They 
+should hate and shun its allurements, and follow the 
+exercises of the contempt of the world which we have given 
+in the first part of this treatise. 
+
+Special interior practices for those who wish to be 
+perfect 
+
+The exterior practices of this devotion which I have just 
+dealt with should be observed as far as one's circumstances 
+and state of life permit. They should not be omitted through 
+negligence or deliberate disregard. In addition to them, here 
+are some very sanctifying interior practices for those souls 
+who feel called by the Holy Spirit to a high degree of 
+perfection. They may be expressed in four words, doing 
+everything through Mary, with Mary, in Mary, and for Mary, 
+in order to do it more perfectly through Jesus, with Jesus, in 
+Jesus, and for Jesus. 
+
+Through Mary 
+
+We must do everything through Mary, that is, we must obey 
+her always and be led in all things by her spirit, which is the 
+Holy Spirit of God. "Those who are led by the Spirit of God 
+are children of God," says Saint Paul. Those who are led by 
+the spirit of Mary are children of Mary, and, consequently 
+children of God, as we have already shown. Among the 
+many servants of Mary only those who are truly and 
+faithfully devoted to her are led by her spirit. 
+
+I have said that the spirit of Mary is the spirit of God because 
+she was never led by her own spirit,, but always by the spirit 
+of God, who made himself master of her to such an extent 
+that he became her very spirit. That is why Saint Ambrose 
+says, "May the soul of Mary be in each one of us to glorify 
+the Lord. May the spirit of Mary be in each one of us to 
+
+
+rejoice in God." Happy is the man who follows the example 
+of the good Jesuit Brother Rodriguez, who died a holy death, 
+because he will be completely possessed and governed by 
+the spirit of Mary, a spirit which is gentle yet strong, zealous 
+yet prudent, humble yet courageous, pure yet fruitful. 
+
+The person who wishes to be led by this spirit of Mary: 
+
+(1) Should renounce his own spirit, his own views and his 
+own will before doing anything, for example, before making 
+meditation, celebrating or attending Mass, before 
+Communion. For the darkness of our own spirit and the evil 
+tendencies of our own will and actions, good as they may 
+seem to us, would hinder the holy spirit of Mary were we to 
+follow them. 
+
+(2) We should give ourselves up to the spirit of Mary to be 
+moved and directed as she wishes. We should place and 
+leave ourselves in her virginal hands, like a tool in the hands 
+of a craftsman or a lute in the hands of a good musician. We 
+should cast ourselves into her like a stone thrown into the 
+sea. This is done easily and quickly by a mere thought, a 
+slight movement of the will or just a few words as, "I 
+renounce myself and give myself to you, my dear Mother." 
+And even if we do not experience any emotional fervor in 
+this spiritual encounter it is none the less real. It is just as if 
+a person with equal sincerity were to say - which God forbid! 
+- "I give myself to the devil." Even though this were said 
+without feeling any emotion, he would no less really belong 
+to the devil. 
+
+(3) From time to time during an action and after it, we 
+should renew this same act of offering and of union. The 
+more we do so, the quicker we shall grow in holiness and the 
+sooner we shall reach union with Christ, which necessarily 
+
+
+follows upon union with Mary, since the spirit of Mary is the 
+spirit of Jesus. 
+
+With Mary 
+
+We must do everything with Mary, that is to say, in all our 
+actions we must look upon Mary, although a simple human 
+being, as the perfect model of every virtue and perfection, 
+fashioned by the Holy Spirit for us to imitate, as far as our 
+limited capacity allows. In every action then we should 
+consider how Mary performed it or how she would perform it 
+if she were in our place. For this reason, we must examine 
+and meditate on the great virtues she practiced during her 
+life, especially: 
+
+(1) Her lively faith, by which she believed the angel's word 
+without the least hesitation, and believed faithfully and 
+constantly even to the foot of the Cross on Calvary. 
+
+(2) Her deep humility, which made her prefer seclusion, 
+maintain silence, submit to every eventuality and put 
+herself in the last place. 
+
+(3) Her truly divine purity, which never had and never will 
+have its equal on this side of heaven. 
+
+And so on for her other virtues. 
+
+Remember what I told you before, that Mary is the great, 
+unique mould of God, designed to make living images of 
+God at little expense and in a short time. 
+
+Anyone who finds this mould and casts himself into it, is 
+soon transformed into our Lord because it is the true 
+likeness of him. 
+
+
+In Mary 
+
+
+We must do everything in Mary. To understand this we must 
+realize that the Blessed Virgin is the true earthly paradise of 
+the new Adam and that the ancient paradise was only a 
+symbol of her. There are in this earthly paradise untold 
+riches, beauties, rarities and delights, which the new Adam, 
+Jesus Christ, has left there. It is in this paradise that he "took 
+his delights" for nine months, worked his wonders and 
+displayed his riches with the magnificence of God himself. 
+This most holy place consists of only virgin and immaculate 
+soil from which the new Adam was formed with neither spot 
+nor stain by the operation of the Holy Spirit who dwells 
+there. In this earthly paradise grows the real Tree of Life 
+which bore our Lord, the fruit of Life, the tree of knowledge 
+of good and evil, which bore the Light of the world. 
+
+In this divine place there are trees planted by the hand of 
+God and watered by his divine unction which have borne 
+and continue to bear fruit that is pleasing to him. There are 
+flower-beds studded with a variety of beautiful flowers of 
+virtue, diffusing a fragrance which delights even the angels. 
+Here there are meadows verdant with hope, impregnable 
+towers of fortitude, enchanting mansions of confidence and 
+many other delights. 
+
+Only the Holy Spirit can teach us the truths that these 
+material objects symbolize. In this place the air is perfectly 
+pure. There is no night but only the brilliant day of the 
+sacred humanity, the resplendent, spotless sun of the 
+Divinity, the blazing furnace of love, melting all the base 
+metal thrown into it and changing it into gold. There the 
+river of humility gushes forth from the soil, divides into four 
+branches and irrigates the whole of this enchanted place. 
+These branches are the four cardinal virtues. 
+
+The Holy Spirit speaking through the Fathers of the Church, 
+also calls our Lady the Eastern Gate, through which the High 
+
+
+Priest, Jesus Christ, enters and goes out into the world. 
+Through this gate he entered the world the first time and 
+through this same gate he will come the second time. 
+
+The Holy Spirit also calls her the Sanctuary of the Divinity, 
+the Resting-Place of the Holy Spirit, the Throne of God, the 
+City of God, the Altar of God, the Temple of God, the World of 
+God. All these titles and expressions of praise are very real 
+when related to the different wonders the Almighty worked 
+in her and the graces which he bestowed on her. What 
+wealth and what glory! What a joy and a privilege for us to 
+enter and dwell in Mary, in whom almighty God has set up 
+the throne of his supreme glory! 
+
+But how difficult it is for us to have the freedom, the ability 
+and the light to enter such an exalted and holy place. This 
+place is guarded not by a cherub, like the first earthly 
+paradise, but by the Holy Spirit himself who has become its 
+absolute Master. Referring to her, he says: "You are an 
+enclosed garden, my sister, my bride, an enclosed garden 
+and a sealed fountain." Mary is enclosed. Mary is sealed. The 
+unfortunate children of Adam and Eve driven from the 
+earthly paradise, can enter this new paradise only by a 
+special grace of the Holy Spirit which they have to merit. 
+
+When we have obtained this remarkable grace by our 
+fidelity, we should be delighted to remain in Mary. We should 
+rest there peacefully, rely on her confidently, hide ourselves 
+there with safety, and abandon ourselves unconditionally to 
+her, so that within her virginal bosom: 
+
+(1) We may be nourished with the milk of her grace and her 
+motherly compassion. 
+
+
+(2) We may be delivered from all anxiety, fear and scruples. 
+
+
+(3) We may be safeguarded from all our enemies, the devil, 
+the world and sin which have never gained admittance 
+there. That is why our Lady says that those who work in her 
+will not sin, that is, those who dwell spiritually in our Lady 
+will never commit serious sin. 
+
+(4) We may be formed in our Lord and our Lord formed in us, 
+because her womb is, as the early Fathers call it, the house 
+of the divine secrets where Jesus and all the elect have been 
+conceived. "This one and that one were born in her." 
+
+For Mary 
+
+Finally, we must do everything for Mary. Since we have given 
+ourselves completely to her service, it is only right that we 
+should do everything for her as if we were her personal 
+servant and slave. This does not mean that we take her for 
+the ultimate end of our service for Jesus alone is our ultimate 
+end. But we take Mary for our proximate end, our mysterious 
+intermediary and the easiest way of reaching him. 
+
+Like every good servant and slave we must not remain idle, 
+but, relying on her protection, we should undertake and 
+carry out great things for our noble Queen. We must defend 
+her privileges when they are questioned and uphold her 
+good name when it is under attack. We must attract 
+everyone, if possible, to her service and to this true and 
+sound devotion. We must speak up and denounce those who 
+distort devotion to her by outraging her Son, and at the 
+same time we must apply ourselves to spreading this true 
+devotion. As a reward for these little services, we should 
+expect nothing in return save the honor of belonging to such 
+a lovable Queen and the joy of being united through her to 
+Jesus, her Son, by a bond that is indissoluble in time and in 
+eternity. Glory to Jesus in Mary! Glory to Mary in Jesus! Glory 
+to God alone! 
+
+
+Supplement - This Devotion at Holy 
+Communion 
+
+Before Holy Communion 
+
+(1) Place yourself humbly in the presence 
+of God. 
+
+(2) Renounce your corrupt nature and 
+dispositions, no matter how good self-love 
+makes them appear to you. 
+
+(3) Renew your consecration saying, "I 
+belong entirely to you, dear Mother, and 
+all that I have is yours." 
+
+(4) Implore Mary to lend you her heart so that you may 
+receive her Son with her dispositions. Remind her that her 
+Son's glory requires that he should not come into a heart so 
+sullied and fickle as your own, which could not fail to 
+diminish his glory and might cause him to leave. Tell her 
+that if she will take up her abode in you to receive her Son - 
+which she can do because of the sovereignty she has over 
+all hearts - he will be received by her in a perfect manner 
+without danger of being affronted or being forced to depart. 
+"God is in the midst of her. She shall not be moved." 
+
+Tell her with confidence that all you have given her of your 
+possessions is little enough to honor her, but that in Holy 
+Communion you wish to give her the same gifts as the 
+eternal Father gave her. Thus she will feel more honored 
+than if you gave her all the wealth in the world. Tell her, 
+finally, that Jesus, whose love for her is unique, still wishes 
+to take his delight and his repose in her even in your soul, 
+even though it is poorer and less clean than the stable which 
+
+
+he readily entered because she was there. Beg her to lend 
+you her heart, saying, "O Mary, I take you for my all; give me 
+your heart." 
+
+During Holy Communion 
+
+After the Our Father, when you are about to receive our Lord, 
+say to him three times the prayer, "Lord, I am not worthy." 
+Say it the first time as if you were telling the eternal Father 
+that because of your evil thoughts and your ingratitude to 
+such a good Father, you are unworthy to receive his only- 
+begotten Son, but that here is Mary, his handmaid, who acts 
+for you and whose presence gives you a special confidence 
+and hope in him. 
+
+Say to God the Son, "Lord, I am not worthy", meaning that 
+you are not worthy to receive him because of your useless 
+and evil words and your carelessness in his service, but 
+nevertheless you ask him to have pity on you because you 
+are going to usher him into the house of his Mother and 
+yours, and you will not let him go until he has made it his 
+home. Implore him to rise and come to the place of his 
+repose and the ark of his sanctification. Tell him that you 
+have no faith in your own merits, strength and 
+preparedness, like Esau, but only in Mary, your Mother, just 
+as Jacob had trust in Rebecca his mother. Tell him that 
+although you are a great sinner you still presume to 
+approach him, supported by his holy Mother and adorned 
+with her merits and virtues. 
+
+Say to the Holy Spirit, "Lord, I am not worthy". Tell him that 
+you are not worthy to receive the masterpiece of his love 
+because of your luke-warmness, wickedness and resistance 
+to his inspirations. But, nonetheless, you put all your 
+confidence in Mary, his faithful Spouse, and say with Saint 
+Bernard, "She is my greatest safeguard, the whole 
+
+
+foundation of my hope." Beg him to overshadow Mary, his 
+inseparable Spouse, once again. Her womb is as pure and 
+her heart as ardent as ever. Tell him that if he does not enter 
+your soul neither Jesus nor Mary will be formed there nor will 
+it be a worthy dwelling for them. 
+
+After Holy Communion 
+
+After Holy Communion, close your eyes and recollect 
+yourself. Then usher Jesus into the heart of Mary: you are 
+giving him to his Mother who will receive him with great love 
+and give him the place of honor, adore him profoundly, show 
+him perfect love, embrace him intimately in spirit and in 
+truth, and perform many offices for him of which we, in our 
+ignorance, would know nothing. 
+
+Or, maintain a profoundly humble heart in the presence of 
+Jesus dwelling in Mary. Or be in attendance like a slave at 
+the gate of the royal palace, where the King is speaking with 
+the Queen. While they are talking to each other, with no 
+need of you, go in spirit to heaven and to the whole world, 
+and call upon all creatures to thank, adore and love Jesus 
+and Mary for you. "Come, let us adore." 
+
+Or, askjesus living in Mary that his kingdom may come 
+upon earth through his holy Mother. Ask for divine Wisdom, 
+divine love, the forgiveness of your sins, or any other grace, 
+but always through Mary and in Mary. Cast a look of 
+reproach upon yourself and say, "Lord, do not look at my 
+sins, let your eyes see nothing in me but the virtues and 
+merits of Mary. "Remembering your sins, you may add, "I am 
+my own worst enemy and I am guilty of all these sins." Or, 
+"Deliver me from the unjust and deceitful man." Or again, 
+"Dearjesus, you must increase in my soul and I must 
+decrease." "Mary, you must increase in me and I must 
+
+
+always go on decreasing." "O Jesus and Mary, increase in me 
+and increase in others around me." 
+
+There are innumerable other thoughts with which the Holy 
+Spirit will inspire you, which he will make yours if you are 
+thoroughly recollected and mortified, and constantly faithful 
+to the great and sublime devotion which I have been 
+teaching you. But remember, the more you let Mary act in 
+your Communion the more Jesus will be glorified. The more 
+you humble yourself and listen to Jesus and Mary in peace 
+and silence - with no desire to see, taste or feel - then the 
+more freedom you will give to Mary to act in Jesus' name and 
+the more Jesus will act in Mary. For the just man lives 
+everywhere by faith, but especially in Holy Communion, 
+which is an action of faith. 
+
+
+About This EBook 
+
+
+The text of this work is taken from the public domain version 
+produced by the Dominican Catholic Primer series, and a pdf 
+is available here - 
+
+http://www.catholicprimer.org/montfort/true_devotion.pdf. 
+
+The images are taken from Wikimedia Commons categories 
+for the Virgin Mary and Saint Louis de Montfort. 
+
+For more information by and about the saints, come see us 
+at 
+
+
+CatholicSaints.Info 
+
+CatholicSaints.Mobi

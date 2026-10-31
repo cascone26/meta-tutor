@@ -1,0 +1,12 @@
+import { NextRequest } from "next/server";
+import { streamChat } from "@/lib/tutor-core/chat-router";
+import { SYSTEM_PROMPT } from "@/lib/veritas/constants";
+
+export const maxDuration = 30;
+
+export async function POST(req: NextRequest) {
+  return streamChat(req, {
+    systemPrompt: SYSTEM_PROMPT,
+    buildGrounding: () => "",
+  });
+}
