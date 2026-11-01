@@ -1,5 +1,33 @@
 # Meta Tutor — Status
 
+## (Jacob) Fixed AI bot down app-wide: token sync was still only targeting paused Vercel (2026-11-01)
+Jacob: "fix the metatutor ai bot now that everything has shifted." Root cause: since the 10/30-31
+Vercel pause, the real serving origin is `tutor.lessondraft.com` -> Cloudflare Worker -> Tailscale
+Funnel -> `meta-tutor.service` on Olympus (see memory `vercel-fair-use-block-2026-09.md`). But
+`~/tools/sync-meta-tutor-token.sh` (the 15-min LaunchAgent that keeps `ANTHROPIC_AUTH_TOKEN` fresh
+from Jacob's Max-subscription Keychain OAuth session) only ever pushed the token to Vercel env vars +
+redeploy. Vercel's been paused the whole time, so that leg has been silently failing on every run,
+and nobody was updating Olympus's `.env.local` — it still had the one-time manual copy from the
+10/30 emergency bridge build, ~41 hours stale by the time this was caught (OAuth access tokens expire
+in ~8-12h), so every AI route (`rca-chat`, `ethics-chat`, `latin-lab`, `veritas-*`, etc. — the SDK
+client `new Anthropic({timeout:25000})` just reads whatever's in env at process boot, no refresh
+logic of its own) was 401ing.
+
+**Fixed**: rewrote the script with two independent legs — Olympus (primary: SSH in, rewrite
+`ANTHROPIC_AUTH_TOKEN` in `/home/cobo/repos/meta-tutor/.env.local`, `sudo systemctl restart
+meta-tutor.service`, confirm `active`) and Vercel (best-effort/legacy, kept so it self-heals once
+either account unpauses, never fatal). Ran it live: Olympus token updated, service restarted clean,
+Vercel leg failed as expected (`fair use limits... blocked`) and didn't block the Olympus leg.
+**Verified with a real API round-trip**, not just "service restarted" — ran `messages.create()`
+directly on Olympus using the freshly-written token, got back a real completion (`"OK"`). Same
+15-min LaunchAgent (`com.cobo.meta-tutor-token-sync`) now keeps this current automatically going
+forward — no more manual copies needed.
+
+**Swept for anything else broken**: `tsc --noEmit` clean on current `main`; Mac/Olympus repos both
+at `fc657e0`, auto-deploy cron (`*/15 * * * *` on Olympus) healthy, last run built+deployed clean;
+`tutor.lessondraft.com/login`, `/veritas`, `/ethics` all reachable (302 to login as expected,
+unauthenticated). Nothing else found broken.
+
 ## (Jacob) Added Veritas as a new station (2026-10-31)
 Ported the standalone Veritas app (`~/projects/veritas`, Catholic theology/apologetics built on
 Aquinas's complete works — originally a separate Next.js project, ~31K lines, dead in production:
