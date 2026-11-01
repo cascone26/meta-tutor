@@ -2,6 +2,11 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   serverExternalPackages: ['@anthropic-ai/sdk'],
+  experimental: {
+    serverActions: {
+      allowedOrigins: ['tutor.lessondraft.com'],
+    },
+  },
   async headers() {
     return [
       {
