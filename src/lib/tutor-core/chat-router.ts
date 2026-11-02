@@ -59,6 +59,7 @@ export async function streamChat(
           safeClose();
         });
         stream.on("error", (err) => {
+          console.error("Anthropic stream error:", err instanceof Error ? err.message : err);
           notifyIfAuthError(err);
           safeEnqueue(encoder.encode(`data: ${JSON.stringify({ error: err.message })}\n\n`));
           safeClose();
