@@ -90,7 +90,13 @@ export const rcaEvents: RcaEvent[] = [
   { date: "2026-09-03", label: "Lead Tutor Staff Meeting", detail: "Monthly KSC staff meeting in the St. Rose classroom. Lead tutors attend; assistants wait in the lunchroom. Notes sent afterward.", time: "After Angelus" },
   { date: "2026-10-08", label: "Lead Tutor Staff Meeting", detail: "Monthly KSC staff meeting in the St. Rose classroom. Lead tutors attend; assistants wait in the lunchroom. Notes sent afterward.", time: "After Angelus" },
   { date: "2026-11-05", label: "Lead Tutor Staff Meeting", detail: "Monthly KSC staff meeting in the St. Rose classroom. Lead tutors attend; assistants wait in the lunchroom. Notes sent afterward.", time: "After Angelus" },
+  // Confirmed from KSC's official Weekly Announcements doc (Dr. Jennings, Week 11,
+  // 2026-11-02 email — doc 15woplLE6mPmWVp27YLGP9Rd4mb261tkli0uSo4KRjY4). Both land on
+  // real Thursday teaching days and materially reshape the day; modeled non-fullDay,
+  // same as the staff-meeting entries (morning classes still run before the event).
+  { date: "2026-11-19", label: "Thanksgiving Feast", detail: "Potluck + student presentations (music, poetry, and drama productions) for families, 11:30 AM–1:30 PM. RSVP / sign up to bring food, or volunteer, via Mrs. Wessel.", time: "11:30 AM – 1:30 PM" },
   { date: "2026-12-03", label: "Lead Tutor Staff Meeting", detail: "Monthly KSC staff meeting in the St. Rose classroom. Lead tutors attend; assistants wait in the lunchroom. Notes sent afterward.", time: "After Angelus" },
+  { date: "2026-12-17", label: "Advent Program", detail: "Advent program for parents (~1 hr) on the last center day — also End of Fall Semester (optional parent grade due). Music instructors coordinate the music; traditionally Nativity Drama (grades 1-4) + O'Antiphons (grades 5-6) per Dr. Jennings' 2026-11-04 planning email, final program TBD.", time: "2:00 PM" },
   { date: "2027-01-14", label: "Lead Tutor Staff Meeting", detail: "Monthly KSC staff meeting in the St. Rose classroom. Lead tutors attend; assistants wait in the lunchroom. Notes sent afterward.", time: "After Angelus" },
   { date: "2027-02-04", label: "Lead Tutor Staff Meeting", detail: "Monthly KSC staff meeting in the St. Rose classroom. Lead tutors attend; assistants wait in the lunchroom. Notes sent afterward.", time: "After Angelus" },
   { date: "2027-03-04", label: "Lead Tutor Staff Meeting", detail: "Monthly KSC staff meeting in the St. Rose classroom. Lead tutors attend; assistants wait in the lunchroom. Notes sent afterward.", time: "After Angelus" },
