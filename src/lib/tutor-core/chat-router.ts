@@ -4,6 +4,7 @@
 // routes did inline. Only the system prompt and grounding/context differ per subject,
 // so that's all a route provides now.
 import Anthropic from "@anthropic-ai/sdk";
+import { MessageStream } from "@anthropic-ai/sdk/lib/MessageStream";
 import { NextRequest } from "next/server";
 import { checkRateLimit, rateLimitResponse } from "@/lib/rate-limit";
 import { sessionEmail } from "@/lib/dev-auth";
@@ -12,6 +13,16 @@ import { notifyIfAuthError } from "@/lib/alert";
 export const anthropic = new Anthropic({ timeout: 25000 });
 
 export type ChatRequestBody = { messages: { role: string; content: string }[]; [key: string]: unknown };
+
+// 429 (shared Max-subscription usage ceiling) and 5xx are often gone a couple seconds later.
+// The SDK reports a failed request via the async 'error' event on the stream, not a throw from
+// messages.stream() itself (that call returns synchronously and the request runs in the
+// background) -- so the retry has to live inside the error handler, re-issuing the request and
+// re-wiring the same listeners, not around the call that creates the stream.
+function isRetryable(err: unknown): boolean {
+  const status = (err as { status?: number })?.status;
+  return status === 429 || (typeof status === "number" && status >= 500);
+}
 
 export async function streamChat(
   req: NextRequest,
@@ -31,7 +42,7 @@ export async function streamChat(
     const body = (await req.json()) as ChatRequestBody;
     const grounding = opts.buildGrounding(body);
 
-    const stream = anthropic.messages.stream({
+    const streamParams = {
       model: process.env.CLAUDE_MODEL || "claude-haiku-4-5-20251001",
       max_tokens: opts.maxTokens ?? 2048,
       system: [
@@ -42,28 +53,43 @@ export async function streamChat(
         role: m.role as "user" | "assistant",
         content: m.content,
       })),
-    });
+    };
 
     const encoder = new TextEncoder();
     const readable = new ReadableStream({
       async start(controller) {
         let closed = false;
+        let retried = false;
+        let gotAnyText = false;
         const safeEnqueue = (data: Uint8Array) => { if (!closed) controller.enqueue(data); };
         const safeClose = () => { if (!closed) { closed = true; controller.close(); } };
 
-        stream.on("text", (text) => {
-          safeEnqueue(encoder.encode(`data: ${JSON.stringify({ text })}\n\n`));
-        });
-        stream.on("end", () => {
-          safeEnqueue(encoder.encode("data: [DONE]\n\n"));
-          safeClose();
-        });
-        stream.on("error", (err) => {
-          console.error("Anthropic stream error:", err instanceof Error ? err.message : err);
-          notifyIfAuthError(err);
-          safeEnqueue(encoder.encode(`data: ${JSON.stringify({ error: err.message })}\n\n`));
-          safeClose();
-        });
+        const attach = (s: MessageStream) => {
+          s.on("text", (text) => {
+            gotAnyText = true;
+            safeEnqueue(encoder.encode(`data: ${JSON.stringify({ text })}\n\n`));
+          });
+          s.on("end", () => {
+            safeEnqueue(encoder.encode("data: [DONE]\n\n"));
+            safeClose();
+          });
+          s.on("error", (err) => {
+            // Only retry a request that never streamed anything back yet -- once tokens have
+            // reached the client, re-issuing the whole request would duplicate/garble output.
+            if (!retried && !gotAnyText && isRetryable(err)) {
+              retried = true;
+              console.error("Anthropic stream error, retrying once:", err instanceof Error ? err.message : err);
+              setTimeout(() => attach(anthropic.messages.stream(streamParams)), 2000);
+              return;
+            }
+            console.error("Anthropic stream error:", err instanceof Error ? err.message : err);
+            notifyIfAuthError(err);
+            safeEnqueue(encoder.encode(`data: ${JSON.stringify({ error: err.message })}\n\n`));
+            safeClose();
+          });
+        };
+
+        attach(anthropic.messages.stream(streamParams));
       },
     });
 
