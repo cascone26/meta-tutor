@@ -1,5 +1,38 @@
 # Meta Tutor — Status
 
+## (Jacob) Lesson assistant outage: fixed + hardened against recurrence (2026-11-12)
+Jacob hit "Something went wrong — try again" on the RCA lesson assistant. Root cause: Keychain
+OAuth token rotated at 12:24pm, `~/tools/sync-meta-tutor-token.sh`'s push to Olympus (the real
+serving origin for `tutor.lessondraft.com` since the Vercel pause) hit a transient SSH timeout
+and gave up after one attempt — the next retry only comes on the next 15-min LaunchAgent firing,
+and the laptop was also asleep for part of the gap, so Olympus served a revoked token for ~2.5h
+before anyone noticed.
+
+**Fixed live**: re-ran the sync manually, confirmed via a real `messages.create()` round-trip
+against the fresh token (401 -> gone), deployed via `auto-deploy-meta-tutor.sh`.
+
+**Hardened so it stops recurring** (three independent layers, since any one alone has a gap):
+1. `sync-meta-tutor-token.sh`'s Olympus leg now retries 3x (20s apart) within the same run before
+   giving up, instead of a single attempt — absorbs the exact transient blip that caused this.
+2. LaunchAgent interval tightened 900s -> 300s (`com.estate.meta-tutor-token-sync.plist`).
+3. New independent watchdog **on Olympus itself**, cron `*/5 * * * *` ->
+   `~/tools/meta-tutor-auth-watchdog.sh`: does a real live Anthropic API call against whatever
+   token is currently in `.env.local` and pages via ntfy immediately on a genuine auth failure —
+   same "always-on, independent of the Mac's sleep state" pattern as LessonDraft's
+   `lessondraft-watchdog/health-check.mjs` (that one exists for the identical reason: "the Mac
+   original goes blind whenever the laptop sleeps"). Distinguishes real auth failures from plain
+   429 rate-limiting so it doesn't false-page on shared-quota throttling.
+4. App-level resilience (PR #20, merged to main): `chat-router.ts`'s `streamChat` now retries a
+   transient 429/5xx once (2s delay) before surfacing an error to the client — only if no text has
+   streamed back yet, so a mid-stream failure never duplicates/garbles output. 401s are never
+   retried (need a fresh token sync, not a retry). The SDK reports request failures via the async
+   `'error'` event on the stream, not a throw from `messages.stream()` itself, so the retry lives
+   inside that event handler, re-issuing the request and re-attaching listeners.
+
+Verified: `tsc`/`npm run build` clean, live local-dev smoke test against the real freshly-synced
+token (normal streaming unaffected: `data:{"text":"OK"}` / `[DONE]`), stale-token request still
+surfaces as an error rather than retrying forever. CI green, merged via PR #20.
+
 ## (Jacob) First Form Latin: grammar reference, conjugation drill filters, Latin Lab grammar tab (2026-11-11)
 Jacob: "conjugation sections and practice... more customizability... so i dont have to ask an ai
 for specifics... also input any rca latin stuff into the normal latin mt section." Built on top
