@@ -3,17 +3,28 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import Link from "next/link";
 import { LeafIcon } from "@/components/rca/NatureIcons";
+import { FAMILY_LABELS, type ChartFamily } from "@/lib/rca-content/latin-grammar-charts";
 
 type Item = { key: string; lesson: number; itemType: string; prompt: string; direction?: string };
 type Stats = { tracked: number; due: number; mastered: number; learning: number };
 type Mode = "adaptive" | "jit" | "quiz";
 
+const ITEM_TYPE_LABELS: Record<string, string> = {
+  vocab: "Vocab", saying: "Sayings", conjugate: "Conjugations", decline: "Declensions",
+  "principal-parts": "Principal parts", parse: "Parsing", translate: "Translation",
+};
+
 export default function LatinDrillPage() {
   const [mode, setMode] = useState<Mode>("adaptive");
   const [lesson, setLesson] = useState<number | null>(null);
   const [lessons, setLessons] = useState<number[]>([]);
+  const [itemType, setItemType] = useState<string>("");
+  const [family, setFamily] = useState<string>("");
+  const [itemTypes, setItemTypes] = useState<string[]>([]);
+  const [families, setFamilies] = useState<string[]>([]);
   const [stats, setStats] = useState<Stats | null>(null);
   const [total, setTotal] = useState(0);
+  const [poolTotal, setPoolTotal] = useState(0);
   const [queue, setQueue] = useState<Item[]>([]);
   const [idx, setIdx] = useState(0);
   const [answer, setAnswer] = useState("");
@@ -24,17 +35,22 @@ export default function LatinDrillPage() {
 
   const current = queue[idx];
 
-  const loadBatch = useCallback(async (m: Mode, l: number | null) => {
+  const loadBatch = useCallback(async (m: Mode, l: number | null, t: string, f: string) => {
     setLoading(true);
     setResult(null);
     setAnswer("");
     const qs = new URLSearchParams({ mode: m, limit: "15" });
     if (l != null) qs.set("lesson", String(l));
+    if (t) qs.set("itemType", t);
+    if (f) qs.set("family", f);
     const r = await fetch(`/api/ff-latin-drill?${qs}`);
     const d = await r.json();
     setStats(d.stats);
     setTotal(d.total);
+    setPoolTotal(d.poolTotal ?? d.total);
     setLessons(d.lessons || []);
+    setItemTypes(d.itemTypes || []);
+    setFamilies(d.families || []);
     setQueue(d.items || []);
     setIdx(0);
     setTally({ right: 0, done: 0 });
@@ -42,7 +58,7 @@ export default function LatinDrillPage() {
   }, []);
 
   useEffect(() => {
-    loadBatch("adaptive", null);
+    loadBatch("adaptive", null, "", "");
   }, [loadBatch]);
 
   useEffect(() => {
@@ -67,10 +83,16 @@ export default function LatinDrillPage() {
     setIdx((i) => i + 1);
   }
 
-  function pick(m: Mode, l: number | null) {
+  function pick(m: Mode, l: number | null, t = itemType, f = family) {
     setMode(m);
     setLesson(l);
-    loadBatch(m, l);
+    setItemType(t);
+    setFamily(f);
+    loadBatch(m, l, t, f);
+  }
+
+  function pickFilter(t: string, f: string) {
+    pick(mode, lesson, t, f);
   }
 
   const sessionDone = !loading && queue.length > 0 && idx >= queue.length;
@@ -99,7 +121,7 @@ export default function LatinDrillPage() {
         )}
 
         {/* Mode picker */}
-        <div className="flex flex-wrap gap-2 mb-6">
+        <div className="flex flex-wrap gap-2 mb-3">
           <ModeBtn active={mode === "adaptive"} onClick={() => pick("adaptive", null)}>Adaptive mix</ModeBtn>
           <ModeBtn active={mode === "jit"} onClick={() => pick("jit", lesson ?? lessons[0] ?? 1)}>Prep next class</ModeBtn>
           <div className="flex items-center gap-1">
@@ -115,6 +137,51 @@ export default function LatinDrillPage() {
               </select>
             )}
           </div>
+        </div>
+
+        {/* Quick presets — straight to "just conjugations" / "just declensions" without
+            touching the dropdowns, since that's the exact ask: practice one skill without
+            having to go describe it to the AI assistant first. */}
+        <div className="flex flex-wrap gap-2 mb-3">
+          <PresetBtn active={itemType === "" && family === ""} onClick={() => pickFilter("", "")}>Everything</PresetBtn>
+          <PresetBtn active={itemType === "conjugate" && family === ""} onClick={() => pickFilter("conjugate", "")}>Conjugations only</PresetBtn>
+          <PresetBtn active={itemType === "decline" && family === ""} onClick={() => pickFilter("decline", "")}>Declensions only</PresetBtn>
+          <PresetBtn active={itemType === "principal-parts" && family === ""} onClick={() => pickFilter("principal-parts", "")}>Principal parts only</PresetBtn>
+        </div>
+
+        {/* Fine-grained type + word-family filters */}
+        <div className="flex flex-wrap gap-2 mb-6">
+          <select
+            value={itemType}
+            onChange={(e) => pickFilter(e.target.value, family)}
+            className="rounded-lg px-2 py-1.5 text-xs"
+            style={{ border: "1px solid #cdd8c4", background: "#fff", color: "#33402c" }}
+          >
+            <option value="">Any type</option>
+            {itemTypes.map((t) => <option key={t} value={t}>{ITEM_TYPE_LABELS[t] ?? t}</option>)}
+          </select>
+          <select
+            value={family}
+            onChange={(e) => pickFilter(itemType, e.target.value)}
+            className="rounded-lg px-2 py-1.5 text-xs"
+            style={{ border: "1px solid #cdd8c4", background: "#fff", color: "#33402c" }}
+          >
+            <option value="">Any word</option>
+            {families.map((f) => (
+              <option key={f} value={f}>
+                {(FAMILY_LABELS[f as ChartFamily] ?? f).split("—")[0].trim()}
+              </option>
+            ))}
+          </select>
+          {(itemType || family) && (
+            <span className="text-xs self-center" style={{ color: "#8a9a7c" }}>{poolTotal} item{poolTotal === 1 ? "" : "s"} match</span>
+          )}
+        </div>
+
+        <div className="mb-3">
+          <Link href="/rca/first-form-latin-6/charts" className="text-xs underline" style={{ color: "#3f7ea6" }}>
+            Look up a chart instead →
+          </Link>
         </div>
 
         {loading ? (
@@ -204,6 +271,22 @@ function Chip({ label, tone }: { label: string; tone?: "good" | "warn" }) {
     : tone === "warn" ? { bg: "#fdf6ee", fg: "#a97b3a" }
     : { bg: "rgba(63,126,166,0.1)", fg: "#2f5e7a" };
   return <span className="rounded-full px-2.5 py-1 font-semibold" style={{ background: c.bg, color: c.fg }}>{label}</span>;
+}
+
+function PresetBtn({ active, onClick, children }: { active: boolean; onClick: () => void; children: React.ReactNode }) {
+  return (
+    <button
+      onClick={onClick}
+      className="rounded-full px-2.5 py-1 text-xs font-medium transition"
+      style={{
+        background: active ? "#3f7ea6" : "#f4f7ee",
+        color: active ? "#fff" : "#5c6b52",
+        border: active ? "1px solid #3f7ea6" : "1px solid #e6e0d0",
+      }}
+    >
+      {children}
+    </button>
+  );
 }
 
 function ModeBtn({ active, onClick, children }: { active: boolean; onClick: () => void; children: React.ReactNode }) {

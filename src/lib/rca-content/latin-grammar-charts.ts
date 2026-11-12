@@ -372,3 +372,58 @@ const LESSON_CHARTS: Record<number, GrammarChart[]> = {
 export function chartsForLesson(n: number): GrammarChart[] {
   return LESSON_CHARTS[n] ?? [];
 }
+
+// ---- Lesson-independent full reference, for a standalone browsable chart page ----
+// (Jacob, 2026-11-11: wants a place to look up any paradigm directly instead of asking
+// the AI assistant for specifics every time.) Flat, deduped, in a sensible study order —
+// NOT derived from LESSON_CHARTS, which repeats charts across review weeks on purpose.
+export const ALL_CHARTS: GrammarChart[] = [
+  AMO_PRESENT, AMO_IMPERFECT, AMO_FUTURE, AMO_PERFECT, AMO_PLUPERFECT, AMO_FUTUREPERFECT, AMO_PRINCIPAL_PARTS,
+  SUM_PRESENT, SUM_IMPERFECT, SUM_FUTURE, SUM_PERFECT, SUM_PLUPERFECT, SUM_FUTUREPERFECT,
+  MONEO_PRESENT, MONEO_IMPERFECT, MONEO_FUTURE, MONEO_PERFECT, MONEO_PLUPERFECT, MONEO_FUTUREPERFECT, MONEO_PRINCIPAL_PARTS,
+  MENSA_DECLENSION, SERVUS_DECLENSION, BELLUM_DECLENSION, PATER_DECLENSION, NOMEN_DECLENSION, PORTUS_DECLENSION, RES_DECLENSION,
+  BONUS_ADJECTIVE,
+  NUMBERS_1_10,
+];
+
+export type ChartFamily =
+  | "amo" | "sum" | "moneo"
+  | "mensa" | "servus" | "bellum" | "pater" | "nomen" | "portus" | "res"
+  | "bonus" | "numbers";
+
+/** Fine-grained grouping (one per model word/number set) — finer than `kind`, used to let
+ * Jacob filter a chart browser or drill down to "just moneō" or "just 3rd declension." */
+export function familyOf(chart: GrammarChart): ChartFamily {
+  const id = chart.id;
+  if (id.startsWith("amo-")) return "amo";
+  if (id.startsWith("sum-")) return "sum";
+  if (id.startsWith("moneo-")) return "moneo";
+  if (id === "mensa-declension") return "mensa";
+  if (id === "servus-declension") return "servus";
+  if (id === "bellum-declension") return "bellum";
+  if (id === "pater-declension") return "pater";
+  if (id === "nomen-declension") return "nomen";
+  if (id === "portus-declension") return "portus";
+  if (id === "res-declension") return "res";
+  if (id === "bonus-adjective") return "bonus";
+  return "numbers";
+}
+
+export const FAMILY_LABELS: Record<ChartFamily, string> = {
+  amo: "amō, amāre — 1st Conjugation",
+  sum: "sum, esse — Irregular",
+  moneo: "moneō, monēre — 2nd Conjugation",
+  mensa: "mensa — 1st Declension",
+  servus: "servus — 2nd Declension (M)",
+  bellum: "bellum — 2nd Declension (N)",
+  pater: "pater — 3rd Declension (M/F)",
+  nomen: "nōmen — 3rd Declension (N)",
+  portus: "portus — 4th Declension",
+  res: "rēs — 5th Declension",
+  bonus: "bonus, bona, bonum — Adjective",
+  numbers: "Cardinal Numbers 1–10",
+};
+
+export const FAMILY_ORDER: ChartFamily[] = [
+  "amo", "sum", "moneo", "mensa", "servus", "bellum", "pater", "nomen", "portus", "res", "bonus", "numbers",
+];
