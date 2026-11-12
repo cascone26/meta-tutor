@@ -1,5 +1,33 @@
 # Meta Tutor — Status
 
+## (Jacob) First Form Latin: grammar reference, conjugation drill filters, Latin Lab grammar tab (2026-11-11)
+Jacob: "conjugation sections and practice... more customizability... so i dont have to ask an ai
+for specifics... also input any rca latin stuff into the normal latin mt section." Built on top
+of the existing verified `latin-grammar-charts.ts` data (amō/moneō/sum conjugations, 5
+declensions, bonus adjective, numbers) and the FSRS drill (`ff-latin/`) — both were already real,
+just only reachable per-current-lesson or in one mixed queue.
+
+- **New standalone chart browser** `/rca/first-form-latin-6/charts`: every paradigm, filterable
+  by category (verb/noun/adjective/principal-parts/numbers) and word family (amō, moneō, sum,
+  mensa, servus...), independent of whatever lesson the pacing engine thinks is current. Reuses
+  the existing `GrammarChart` Study/Memorize component as-is. Linked from the class page and the
+  drill page.
+- **Drill customization**: every conjugate/decline/principal-parts item in `buildAllItems()` now
+  carries a `family` tag (`familyOf()` in `latin-grammar-charts.ts`). `/api/ff-latin-drill` and
+  the drill UI gained `itemType`/`family` filters on top of the existing adaptive/JIT/quiz modes,
+  plus one-tap presets ("Conjugations only" / "Declensions only" / "Principal parts only") so he
+  can target exactly what he wants to practice without describing it to the AI assistant first.
+- **Latin Lab**: new "RCA grammar" tab surfaces the same First Form Latin charts (new dark-themed
+  `RcaGrammarChart`/`RcaGrammarReference` components, reskinned rather than importing RCA's
+  light-theme ones) with the same filters, clearly labeled as RCA's separate ecclesiastical-
+  pronunciation course (not merged into Latin Lab's own classical-pronunciation units), with a
+  CTA back to the FF Latin drill for actual practice.
+
+Verified: clean `tsc`/`npm run build`; real headless Viewer screenshots of all three surfaces
+(chart browser with filters applied, drill with "Conjugations only" preset showing a moneō item
+and "108 items match," Latin Lab's RCA grammar tab filtered to Verbs → moneō) read with own eyes.
+Shipped via PR #19 (CI green), merged to main.
+
 ## (Jacob) Fixed AI bot down app-wide: token sync was still only targeting paused Vercel (2026-11-01)
 Jacob: "fix the metatutor ai bot now that everything has shifted." Root cause: since the 10/30-31
 Vercel pause, the real serving origin is `tutor.lessondraft.com` -> Cloudflare Worker -> Tailscale
