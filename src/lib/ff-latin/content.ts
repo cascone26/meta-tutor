@@ -5,7 +5,7 @@
 //      NOT from the messy quiz tables, so the forms he's drilled on are guaranteed correct.
 import type { DrillItem } from "./items";
 import { FF_QUIZ_VOCAB } from "./vocab-data";
-import { chartsForLesson } from "@/lib/rca-content/latin-grammar-charts";
+import { chartsForLesson, familyOf } from "@/lib/rca-content/latin-grammar-charts";
 
 const PERSON_NUMBER: [string, string][] = [
   ["1st", "singular"], ["2nd", "singular"], ["3rd", "singular"],
@@ -48,25 +48,26 @@ export function buildAllItems(): DrillItem[] {
   // ── Paradigms from the verified grammar charts ──
   for (let n = 1; n <= MAX_LESSON; n++) {
     for (const chart of chartsForLesson(n)) {
+      const family = familyOf(chart);
       if (chart.kind === "verb") {
         const tense = tenseFromId(chart.id);
         chart.rows.forEach((cell, i) => {
           const [person, number] = PERSON_NUMBER[i];
-          add({ key: `conj:${chart.id}:${i}`, lesson: n, itemType: "conjugate",
+          add({ key: `conj:${chart.id}:${i}`, lesson: n, itemType: "conjugate", family,
                 prompt: `${chart.modelWord.split("—")[0].trim()} — ${tense}: ${person} person ${number}`,
                 direction: "Give the Latin form", answer: cell.latin });
         });
       } else if (chart.kind === "noun") {
         chart.cases.forEach((cse, i) => {
           for (const [num, forms] of [["singular", chart.singular], ["plural", chart.plural]] as const) {
-            add({ key: `decl:${chart.id}:${cse}:${num}`, lesson: n, itemType: "decline",
+            add({ key: `decl:${chart.id}:${cse}:${num}`, lesson: n, itemType: "decline", family,
                   prompt: `${chart.modelWord.split("—")[0].trim()} — ${cse} ${num}`,
                   direction: "Give the Latin form", answer: forms[i] });
           }
         });
       } else if (chart.kind === "numbers") {
         for (const num of chart.numbers) {
-          add({ key: `num:${num.value}`, lesson: n, itemType: "vocab",
+          add({ key: `num:${num.value}`, lesson: n, itemType: "vocab", family,
                 prompt: `${num.english} (${num.value})`, direction: "English → Latin", answer: num.latin });
         }
       } else if (chart.kind === "adjective") {
@@ -77,7 +78,7 @@ export function buildAllItems(): DrillItem[] {
         for (const g of chart.genders) {
           CASES.forEach((cse, i) => {
             for (const [num, forms] of [["singular", g.singular], ["plural", g.plural]] as const) {
-              add({ key: `decl:${chart.id}:${g.gender}:${cse}:${num}`, lesson: n, itemType: "decline",
+              add({ key: `decl:${chart.id}:${g.gender}:${cse}:${num}`, lesson: n, itemType: "decline", family,
                     prompt: `${model} — ${g.gender} ${cse} ${num}`,
                     direction: "Give the Latin form", answer: forms[i] });
             }
@@ -91,7 +92,7 @@ export function buildAllItems(): DrillItem[] {
         for (const v of chart.irregulars) {
           v.parts.forEach((part, i) => {
             if (i === 0 || part === "—") return;
-            add({ key: `pp:${chart.id}:${v.latin}:${i}`, lesson: n, itemType: "principal-parts",
+            add({ key: `pp:${chart.id}:${v.latin}:${i}`, lesson: n, itemType: "principal-parts", family,
                   prompt: `${v.latin} (${v.english}) — give the ${PP_LABEL[i]} principal part`,
                   direction: "Give the Latin form", answer: part });
           });

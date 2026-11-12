@@ -11,6 +11,10 @@ export type DrillItem = {
   direction?: string;        // e.g. "English → Latin"
   answer: string;            // the canonical correct answer
   acceptable?: string[];     // extra accepted variants
+  family?: string;           // e.g. "amo" | "moneo" | "sum" | "mensa" ... — which model word/chart
+                              // this came from (see familyOf() in latin-grammar-charts.ts),
+                              // only set for conjugate/decline/principal-parts items. Lets the
+                              // drill be filtered to "just moneō" instead of mixed-everything.
 };
 
 // ── Grading ──────────────────────────────────────────────────────────────────

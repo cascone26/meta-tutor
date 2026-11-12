@@ -17,6 +17,11 @@ const BY_KEY = new Map(ALL_ITEMS.map((i) => [i.key, i]));
 
 // Lessons that actually have drillable items, for the client's quiz/JIT lesson picker.
 const LESSONS_WITH_ITEMS = [...new Set(ALL_ITEMS.map((i) => i.lesson))].sort((a, b) => a - b);
+// Item types + word families present, for the client's "practice just this" filters —
+// Jacob, 2026-11-11: wants real customization here instead of only mixed/by-lesson, so he
+// doesn't have to ask the AI assistant for e.g. "just moneō" or "just conjugations."
+const ITEM_TYPES_WITH_ITEMS = [...new Set(ALL_ITEMS.map((i) => i.itemType))];
+const FAMILIES_WITH_ITEMS = [...new Set(ALL_ITEMS.map((i) => i.family).filter((f): f is string => !!f))];
 
 function stripAnswer(i: DrillItem) {
   return { key: i.key, lesson: i.lesson, itemType: i.itemType, prompt: i.prompt, direction: i.direction };
@@ -31,23 +36,31 @@ export async function GET(req: NextRequest) {
   const lessonParam = url.searchParams.get("lesson");
   const lesson = lessonParam ? parseInt(lessonParam, 10) : undefined;
   const limit = Math.min(parseInt(url.searchParams.get("limit") ?? "12", 10) || 12, 40);
+  const itemType = url.searchParams.get("itemType"); // e.g. "conjugate" — "" / missing = any
+  const family = url.searchParams.get("family"); // e.g. "moneo" — "" / missing = any
 
   const cards = await getMastery(userEmail);
   const stats = computeStats(cards);
 
+  const pool = ALL_ITEMS.filter(
+    (i) => (!itemType || i.itemType === itemType) && (!family || i.family === family)
+  );
+  const poolKeys = new Set(pool.map((i) => i.key));
+
   let batch: DrillItem[];
   if (mode === "quiz") {
     // Every item of the specified quiz, in order — the real-quiz mastery gate.
-    batch = ALL_ITEMS.filter((i) => i.lesson === lesson);
+    batch = pool.filter((i) => i.lesson === lesson);
   } else {
     // Adaptive / JIT: due tracked items first (weak spots resurfacing), then unseen items
     // (never drilled) to grow coverage, capped to lesson ≤ `lesson` in JIT mode.
     const now = new Date();
     const due = dueCards(cards, mode === "jit" ? lesson : undefined, now)
+      .filter((c) => poolKeys.has(c.key))
       .map((c) => BY_KEY.get(c.key))
       .filter((i): i is DrillItem => !!i);
     const seen = new Set(cards.map((c) => c.key));
-    const fresh = ALL_ITEMS.filter(
+    const fresh = pool.filter(
       (i) => !seen.has(i.key) && (mode !== "jit" || lesson === undefined || i.lesson <= lesson)
     );
     batch = [...due, ...fresh].slice(0, limit);
@@ -56,9 +69,14 @@ export async function GET(req: NextRequest) {
   return NextResponse.json({
     mode,
     lesson: lesson ?? null,
+    itemType: itemType ?? null,
+    family: family ?? null,
     stats,
     total: ALL_ITEMS.length,
+    poolTotal: pool.length,
     lessons: LESSONS_WITH_ITEMS,
+    itemTypes: ITEM_TYPES_WITH_ITEMS,
+    families: FAMILIES_WITH_ITEMS,
     items: batch.map(stripAnswer),
     quizItemCount: mode === "quiz" ? batch.length : undefined,
   });

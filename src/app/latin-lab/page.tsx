@@ -7,8 +7,9 @@ import ComprehensionCheck from "@/components/latin-lab/ComprehensionCheck";
 import VocabReview from "@/components/latin-lab/VocabReview";
 import ProgressPanel from "@/components/latin-lab/ProgressPanel";
 import ProficiencyTimeline from "@/components/latin-lab/ProficiencyTimeline";
+import RcaGrammarReference from "@/components/latin-lab/RcaGrammarReference";
 
-type View = "read" | "check" | "review" | "progress" | "timeline";
+type View = "read" | "check" | "review" | "progress" | "timeline" | "grammar";
 
 export default function LatinLabPage() {
   const [unitId, setUnitId] = useState(latinUnits[0].id);
@@ -45,15 +46,15 @@ export default function LatinLabPage() {
       </div>
 
       {/* View tabs */}
-      <div className="flex gap-1 mb-5 rounded-lg p-1" style={{ background: "#241b14" }}>
-        {(["read", "check", "review", "progress", "timeline"] as View[]).map((v) => (
+      <div className="flex gap-1 mb-5 rounded-lg p-1 flex-wrap" style={{ background: "#241b14" }}>
+        {(["read", "check", "review", "progress", "timeline", "grammar"] as View[]).map((v) => (
           <button
             key={v}
             onClick={() => setView(v)}
             className="flex-1 py-1.5 rounded-md text-xs font-medium capitalize"
             style={{ background: view === v ? "#3a2d1f" : "transparent", color: view === v ? "#f0e6d8" : "#7a6852" }}
           >
-            {v === "check" ? "Comprehension" : v === "review" ? "Vocab review" : v}
+            {v === "check" ? "Comprehension" : v === "review" ? "Vocab review" : v === "grammar" ? "RCA grammar" : v}
           </button>
         ))}
       </div>
@@ -63,6 +64,7 @@ export default function LatinLabPage() {
       {view === "review" && <VocabReview onDone={() => setView("progress")} />}
       {view === "progress" && <ProgressPanel />}
       {view === "timeline" && <ProficiencyTimeline />}
+      {view === "grammar" && <RcaGrammarReference />}
 
       <div className="mt-8 rounded-xl p-4" style={{ background: "#1f1712", border: "1px dashed #3a2d1f" }}>
         <p className="text-xs font-semibold mb-2" style={{ color: "#7a6852" }}>Roadmap — not built yet</p>
