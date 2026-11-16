@@ -1,5 +1,60 @@
 # Meta-Tutor Process Log
 
+## Production deploy topology mapped for real — 2026-11-16
+
+### Problem statement
+After merging PR #21 (the big Veritas port + redesign), `tutor.lessondraft.com/veritas` kept showing
+the old pre-merge page — old 9-card hub, no sidebar, old gold-less amber — for over 15 minutes across
+several hard refreshes and fresh tab navigations. Needed to find out whether the deploy genuinely
+failed or whether something else was going on, without guessing.
+
+### What's actually true about how this app reaches production (write this down, it's not written
+anywhere else and is easy to get wrong)
+- **Vercel is NOT serving this app right now.** The Vercel account (`cascone26s-projects`) is
+  fair-use-blocked (`vercel ls` returns `402 Your Team exceeded our fair use limits and has been
+  blocked`). This has been true since at least September 2026 (see earlier STATUS.md entries).
+- **The real origin is Olympus**, via `meta-tutor.service`, a systemd unit whose own description is
+  literally "Meta Tutor (bridge host while Vercel account is paused)". It runs
+  `npm run start -p 3200 -H 127.0.0.1` out of `/home/cobo/repos/meta-tutor` (the real git clone,
+  tracking `origin/main`).
+- **Auto-deploy**: cron `*/15 * * * * /home/cobo/tools/auto-deploy-meta-tutor.sh` on Olympus. The
+  script `git fetch`es `origin/main`, does nothing if already up to date, otherwise fast-forward
+  merges, `npm install`, `npm run build`, and only then `systemctl restart meta-tutor.service` — if
+  the build fails it reverts the git HEAD and leaves the old (working) build serving, so a bad push
+  can't take prod down. Logs to `/home/cobo/tools/meta-tutor-deploy.log`. To force an immediate deploy
+  instead of waiting up to 15 minutes: `ssh olympus "bash /home/cobo/tools/auto-deploy-meta-tutor.sh"`,
+  then check the log tail for `"deploy OK, meta-tutor.service active"`.
+- **Routing**: a Cloudflare Tunnel (`cloudflared.service`, remotely managed — config lives in the
+  Cloudflare dashboard/API via a token file at `/etc/cloudflared/token`, there is no local ingress
+  YAML to read) routes `tutor.lessondraft.com` to `127.0.0.1:3200`. Confirmed correct by curling
+  `127.0.0.1:3200` locally on Olympus with `-H "Host: tutor.lessondraft.com"` and getting the expected
+  `302 → /login` auth redirect.
+
+### The trap — do not repeat this
+Olympus also runs **Caddy**, and Caddy's config (`/etc/caddy/Caddyfile`) routes the bare apex
+`lessondraft.com` / `www.lessondraft.com` to **`127.0.0.1:3000`**, which is a totally different
+process running out of `/home/cobo/repos-lessondraft` — not even a git repo, has no `/veritas` route
+at all (404s), and is a completely separate product from Meta Tutor despite the extremely similar
+directory/domain naming. A generic `ps aux | grep next` on Olympus turns up BOTH a `next-server` on
+port 3000 and one on port 3200 at the same time, and it is very easy to assume the wrong one is "the
+real site." **Never conclude which process is actually serving a given hostname from process list
+alone — always confirm with a `-H "Host: <the real hostname>"` curl against each candidate port and
+match the response to what you expect.**
+
+### What the actual fix was
+The redeploy itself was fine on the first try — confirmed by grepping the real content markers
+directly out of the prerendered build artifact on disk (`.next/server/app/veritas.html` contains
+"VERITAS", "Enter Veritas", "Ad Maiorem", etc. right after the rebuild, before any further
+investigation). Cloudflare wasn't caching it either (no `cf-cache-status` header at all — Cloudflare
+doesn't cache responses that set cookies, and this route sets auth cookies). The actual remaining
+culprit was client-side: Jacob's browser tab had been open and soft-navigating around Meta Tutor
+(Hub → Veritas → Hub → Veritas) since before the merge, and Next.js App Router's client-side Router
+Cache can keep serving an already-rendered static route from memory across soft navigations —
+and even across a same-tab hard reload in some cases — for the life of that tab. The fix was closing
+the tab entirely and opening a brand new one. See `~/.claude-cobo/projects/-Users-scones/memory/
+feedback_verify_deployments.md` (updated the same day) for the generalized version of this lesson.
+
+
 ## Audit & Fixes — 2026-07-17
 
 ### Problem Statement
