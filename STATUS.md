@@ -1,5 +1,53 @@
 # Meta Tutor — Status
 
+## (Jacob) Veritas: Catholic vs. Lutheran deep-dive + Church Teaching: Homosexuality catalog (2026-11-16)
+Two new static (no-AI, no-DB) Veritas stations, requested as deep, "fully drawn out" content areas
+distinct from the existing AI tools:
+
+- `/veritas/catholic-vs-lutheran` — 11-topic comparative theology page (authority/sola scriptura,
+  justification, free will and grace, the seven vs. two sacraments, the Eucharist, church governance
+  and the papacy, purgatory/indulgences, Mary and the saints) plus a 1517->2017 historical timeline.
+  Each topic carries: Catholic position + CCC citations, Lutheran position + confessional citations
+  (Augsburg Confession, Formula of Concord, Luther's own works), Aquinas's relevant view with exact
+  `ST` references, key verses both sides cite, an explicit "common ground" section (the 1999/2017
+  Joint Declaration on Justification is used honestly — narrows the gap, doesn't resolve everything),
+  and a "how to engage" apologetics note per topic. Data: `src/data/veritas/catholic-vs-lutheran.ts`.
+  Page: `src/app/veritas/catholic-vs-lutheran/page.tsx`.
+- `/veritas/church-teaching/homosexuality` — full catalog: CCC §§2357-2359 and §2396 quoted verbatim
+  (cross-checked against the actual Catechism text already present at
+  `~/projects/veritas/public/ccc/part3.md`, not reconstructed from memory), Aquinas's natural-law
+  root (ST II-II q.154 a.11) with an explicit note that it's the historical source, not the Church's
+  current pastoral language, 6 magisterial documents 1975-2023 (Persona Humana, the 1986 CDF letter,
+  the 2003 CDF note on legal recognition of unions, USCCB's 2006 pastoral guidelines, Amoris Laetitia
+  §250-251, Fiducia Supplicans 2023 — the last one flagged as contested even among bishops, not
+  presented as settled), a terminology section (inclination vs. act, "intrinsically" vs. "objectively"
+  disordered, the live "gay Catholic" vs. "same-sex attracted" pastoral-language debate, "unjust
+  discrimination"), pastoral care (Courage apostolate, the call to chastity, an honest treatment of
+  the development-of-doctrine question), and 4 objections with direct responses — including the
+  "harsh language" objection, answered honestly rather than dismissed. Data:
+  `src/data/veritas/church-teaching-homosexuality.ts`. Page:
+  `src/app/veritas/church-teaching/homosexuality/page.tsx`.
+
+Both are automatically covered by the existing `/veritas` prefix in `JACOB_ONLY_PREFIXES`
+(`access.ts`) and `HUB_SHELL_PREFIXES` (`subjects.ts`) — no wiring changes needed. Added as two new
+station cards on the `/veritas` hub (`src/app/veritas/page.tsx`).
+
+**Verified**: `npx tsc --noEmit` clean, `npm run build` clean (both routes compile as static pages).
+Drove the real local dev server (`x-dev-preview` bypass) with a real headless-Chromium walkthrough
+(`scripts/mt-veritas-additions-audit.mjs`) — hub, both pages, the timeline toggle, an accordion
+expand, and all 6 tabs on the homosexuality page — and read every screenshot with my own eyes (own
+Claude vision, not a third-party describer). No console or page errors. Screenshots in
+`scripts/.shots/` (gitignored, local-only proof artifacts).
+
+**Not done this round** (Jacob also asked for a full audit/port of everything the standalone
+`~/projects/veritas` app had — Summa/SCG/Bible/CCC full-text readers, Saints, Heresies, Typology,
+Councils, Encyclicals, the full comparative-religion `denominations.ts` catalog beyond Lutheran, the
+Natural Law catalog, Critics catalog, Debate Playbook, Virtues, Sacraments, Timeline, Weakness
+Tracker, Debate Simulator — all still sitting, already written, in the standalone repo's `src/data/`
+and `public/{summa,scg,ccc,catena}/`). That's a second, separate porting pass — the two pieces above
+were the two explicitly-described new content areas; the broader "everything it had before" audit is
+next.
+
 ## (Jacob) Lesson assistant outage: fixed + hardened against recurrence (2026-11-12)
 Jacob hit "Something went wrong — try again" on the RCA lesson assistant. Root cause: Keychain
 OAuth token rotated at 12:24pm, `~/tools/sync-meta-tutor-token.sh`'s push to Olympus (the real

@@ -8,6 +8,8 @@ const STATIONS = [
   { href: "/veritas/objection", title: "Objection Handler", desc: "Paste any anti-Catholic argument, get a structured Thomistic response", icon: "🛡️" },
   { href: "/veritas/debate", title: "Debate Prep", desc: "A full briefing on any topic against any opponent type", icon: "🎯" },
   { href: "/veritas/glossary", title: "Glossary", desc: "Theological and philosophical terms, plain English with progressive depth", icon: "📚" },
+  { href: "/veritas/catholic-vs-lutheran", title: "Catholic vs. Lutheran", desc: "Authority, justification, sacraments, the Eucharist — both sides' arguments, Aquinas, and the Catechism", icon: "⚔️" },
+  { href: "/veritas/church-teaching/homosexuality", title: "Church Teaching: Homosexuality", desc: "CCC 2357-2359, Aquinas, magisterial documents, pastoral care, terminology, and honest objections", icon: "✝️" },
 ];
 
 export default function VeritasHub() {
