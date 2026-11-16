@@ -2,100 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-
-interface Station {
-  href: string;
-  title: string;
-  desc: string;
-  icon: string;
-}
-
-interface Section {
-  id: string;
-  label: string;
-  icon: string;
-  stations: Station[];
-}
-
-const SECTIONS: Section[] = [
-  {
-    id: "ai-tools",
-    label: "AI Tools",
-    icon: "💬",
-    stations: [
-      { href: "/veritas/ask", title: "Ask Aquinas", desc: "AI chat grounded in the complete works of Aquinas, with live citations", icon: "💬" },
-      { href: "/veritas/daily", title: "Daily Question", desc: "A new theology question every day to sharpen your mind", icon: "📆" },
-      { href: "/veritas/flashcards", title: "Flashcards", desc: "Generate and review with spaced repetition", icon: "🃏" },
-      { href: "/veritas/objection", title: "Objection Handler", desc: "Paste any anti-Catholic argument, get a structured Thomistic response", icon: "🛡️" },
-      { href: "/veritas/debate", title: "Debate Prep", desc: "A full briefing on any topic against any opponent type", icon: "🎯" },
-      { href: "/veritas/simulator", title: "Debate Simulator", desc: "Live back-and-forth chat with an AI opponent — atheist, Protestant, Muslim, Orthodox, or secular — who actually pushes back", icon: "⚔️" },
-    ],
-  },
-  {
-    id: "library",
-    label: "Library & Full Texts",
-    icon: "📖",
-    stations: [
-      { href: "/veritas/library", title: "Library", desc: "210+ full texts on site — the complete Douay-Rheims Bible, Aquinas, Augustine, Aristotle, Summa Contra Gentiles, Catena Aurea, the Catechism, encyclicals, and the classical canon", icon: "📖" },
-      { href: "/veritas/summa", title: "Summa Theologiae", desc: "The complete Summa — 5 parts, 611 questions, 3,115 articles — browsable by Objection, Contrary, Answer, and Reply", icon: "🏛️" },
-      { href: "/veritas/reading-guide", title: "Reading Guide", desc: "Where should I start? Three curated paths — beginner, intermediate, advanced — through the library", icon: "🧭" },
-    ],
-  },
-  {
-    id: "deep-dives",
-    label: "Deep Dives",
-    icon: "🔬",
-    stations: [
-      { href: "/veritas/catholic-vs-lutheran", title: "Catholic vs. Lutheran", desc: "Authority, justification, sacraments, the Eucharist — both sides' arguments, Aquinas, and the Catechism", icon: "⚔️" },
-      { href: "/veritas/church-teaching/homosexuality", title: "Church Teaching: Homosexuality", desc: "CCC 2357-2359, Aquinas, magisterial documents, pastoral care, terminology, and honest objections", icon: "✝️" },
-      { href: "/veritas/denominations", title: "Denominations", desc: "12 Christian traditions — beliefs, history, and how to engage each one", icon: "🌐" },
-    ],
-  },
-  {
-    id: "doctrine",
-    label: "Doctrine & History",
-    icon: "📜",
-    stations: [
-      { href: "/veritas/glossary", title: "Glossary", desc: "343 theological and philosophical terms, plain English with progressive depth", icon: "📚" },
-      { href: "/veritas/natural-law", title: "Natural Law", desc: "12 topics — from the existence of natural law to double effect — with Aquinas and modern application", icon: "⚖️" },
-      { href: "/veritas/virtues", title: "Virtues", desc: "The cardinal and theological virtues, and the vices opposed to them", icon: "👼" },
-      { href: "/veritas/sacraments", title: "Sacraments", desc: "All seven sacraments — matter, form, minister, and effects", icon: "✨" },
-      { href: "/veritas/councils", title: "Ecumenical Councils", desc: "All 21 councils from Nicaea to Vatican II — what each one defined and why", icon: "📜" },
-      { href: "/veritas/heresies", title: "Heresies", desc: "20 heresies, their core claims, and how the Church refuted each one", icon: "⚠️" },
-      { href: "/veritas/saints", title: "Doctors of the Church", desc: "36 Doctors — their lives, works, and theological contributions", icon: "⛪" },
-      { href: "/veritas/timeline", title: "Timeline", desc: "349 events across Church history — philosophy, councils, heresies, and the papacy, chronologically", icon: "📅" },
-      { href: "/veritas/typology", title: "Typology", desc: "Old Testament types and their New Testament fulfillments", icon: "🔗" },
-      { href: "/veritas/prophecy", title: "Prophecy", desc: "Messianic prophecies — Old Testament source, New Testament fulfillment", icon: "📯" },
-      { href: "/veritas/scripture-index", title: "Scripture Index", desc: "Disputed verses — the Protestant claim and the Catholic response, verse by verse", icon: "📑" },
-      { href: "/veritas/aquinas-life", title: "Aquinas: Life & Works", desc: "A chronological life of St. Thomas plus his complete literary corpus", icon: "🪶" },
-    ],
-  },
-  {
-    id: "apologetics",
-    label: "Apologetics Toolkit",
-    icon: "🛡️",
-    stations: [
-      { href: "/veritas/debate-playbook", title: "Debate Playbook", desc: "Method, strategy, and tone for live apologetics — the Socratic method in practice", icon: "📘" },
-      { href: "/veritas/critics", title: "Critics & Responses", desc: "15 famous critics of the faith — from New Atheism to biblical scholarship — with Thomistic responses", icon: "🗣️" },
-      { href: "/veritas/myths", title: "Myths Debunked", desc: "Common historical and doctrinal myths, corrected with sources", icon: "🔍" },
-      { href: "/veritas/analogies", title: "Analogies", desc: "Teaching analogies for hard doctrines — with their limits and heresy warnings", icon: "🪞" },
-      { href: "/veritas/oneliners", title: "One-Liners", desc: "Quick, quotable lines organized by topic", icon: "⚡" },
-      { href: "/veritas/grounding-arguments", title: "Grounding Arguments", desc: "22 arguments — the case you stand on when the feelings are gone", icon: "⚓" },
-      { href: "/veritas/quickdraw", title: "Quickdraw", desc: "Rapid-fire drill: objection in, short + full response out, with verses and Aquinas references", icon: "🏹" },
-    ],
-  },
-  {
-    id: "growth",
-    label: "Growth & Practice",
-    icon: "🌱",
-    stations: [
-      { href: "/veritas/courses", title: "Courses", desc: "Structured learning paths, beginner through advanced, with lessons and study questions", icon: "🎓" },
-      { href: "/veritas/doubt", title: "When You Doubt", desc: "Pastoral guidance for ten struggles — intellectual doubt, spiritual dryness, scandal, the problem of evil, and more", icon: "🙏" },
-      { href: "/veritas/saved", title: "Saved Arguments", desc: "Your personal library of saved apologetics arguments", icon: "💾" },
-      { href: "/veritas/plans", title: "Reading Plans", desc: "Structured day-by-day study paths, from a week to ninety days", icon: "🗓️" },
-    ],
-  },
-];
+import { SECTIONS } from "@/data/veritas/stations";
 
 const STATS = [
   { value: "35", label: "Stations" },
@@ -119,72 +26,88 @@ export default function VeritasHub() {
 
   return (
     <div>
-      <section className="flex flex-col items-center px-6 pt-16 pb-12 text-center">
-        <div className="mb-5 text-xs font-medium uppercase tracking-[0.3em] text-amber-600">
+      <section className="flex flex-col items-center px-6 pt-32 pb-20 text-center">
+        <div className="mb-6 text-sm font-medium uppercase tracking-[0.3em] text-amber-600">
           Catholic Theology &amp; Apologetics
         </div>
-        <h1 className="mb-5 text-5xl font-bold tracking-tight text-stone-100 sm:text-6xl">
+        <h1 className="mb-6 text-6xl font-bold tracking-tight text-stone-100 sm:text-7xl">
           VERITAS
         </h1>
-        <p className="mb-3 max-w-lg text-sm leading-relaxed text-stone-400">
+        <p className="mb-4 max-w-lg text-lg leading-relaxed text-stone-400">
           Grounded in the complete works of St. Thomas Aquinas and everything he drew from —
           Scripture, the Fathers, Aristotle, and the whole classical canon.
         </p>
-        <p className="max-w-md text-xs italic text-stone-500">
+        <p className="mb-10 max-w-md text-sm italic text-stone-500">
           &ldquo;All that I have written seems like straw compared to what has now been revealed to me.&rdquo;
           <span className="mt-1 block not-italic text-amber-600">— St. Thomas Aquinas, 1273</span>
         </p>
+        <a
+          href="#stations"
+          className="rounded-full border border-amber-600/30 bg-amber-600/10 px-6 py-3 text-sm font-medium text-amber-500 transition-colors hover:bg-amber-600/20"
+        >
+          Enter Veritas
+        </a>
       </section>
 
-      <section className="border-y border-stone-800 bg-stone-900/30 py-8">
-        <div className="mx-auto grid max-w-3xl grid-cols-2 gap-6 px-6 sm:grid-cols-4">
+      <section className="border-y border-stone-800 bg-stone-900/50 py-12">
+        <div className="mx-auto grid max-w-4xl grid-cols-2 gap-8 px-6 sm:grid-cols-4">
           {STATS.map((s) => (
             <div key={s.label} className="text-center">
-              <div className="text-2xl font-bold text-amber-500">{s.value}</div>
-              <div className="mt-1 text-xs text-stone-500">{s.label}</div>
+              <div className="text-3xl font-bold text-amber-500">{s.value}</div>
+              <div className="mt-1 text-sm text-stone-500">{s.label}</div>
             </div>
           ))}
         </div>
       </section>
 
-      <div className="max-w-4xl mx-auto px-5 py-8">
-      <input
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        placeholder="Search all of Veritas..."
-        className="mb-6 w-full rounded-lg border border-stone-800 bg-stone-900 px-3 py-2.5 text-sm text-stone-200 placeholder-stone-600 outline-none focus:border-amber-700"
-      />
+      <div id="stations" className="mx-auto max-w-5xl px-6 py-20">
+        <h2 className="mb-2 text-center text-sm font-medium uppercase tracking-[0.3em] text-amber-600">
+          All Stations
+        </h2>
+        <p className="mb-10 text-center text-stone-500">
+          35 stations. Everything from AI chat to the full Summa to a 2,000-year history of the
+          Church.
+        </p>
 
-      <div className="space-y-8">
-        {filteredSections.map((section) => (
-          <div key={section.id}>
-            <div className="mb-3 flex items-center gap-2">
-              <span className="text-sm">{section.icon}</span>
-              <h2 className="text-xs font-semibold uppercase tracking-wider text-amber-600">{section.label}</h2>
-              <span className="text-[10px] text-stone-700">{section.stations.length}</span>
+        <input
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Search all of Veritas..."
+          className="mb-10 w-full rounded-lg border border-stone-800 bg-stone-900 px-3 py-2.5 text-sm text-stone-200 placeholder-stone-600 outline-none focus:border-amber-700"
+        />
+
+        <div className="space-y-12">
+          {filteredSections.map((section) => (
+            <div key={section.id}>
+              <div className="mb-4 flex items-center gap-2">
+                <span className="text-sm">{section.icon}</span>
+                <h3 className="text-xs font-semibold uppercase tracking-wider text-amber-600">{section.label}</h3>
+                <span className="text-[10px] text-stone-700">{section.stations.length}</span>
+              </div>
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {section.stations.map((s) => (
+                  <Link
+                    key={s.href}
+                    href={s.href}
+                    className="rounded-xl border border-stone-800 bg-stone-900 p-5 transition-colors hover:border-amber-600/30"
+                  >
+                    <div className="mb-2 text-xl">{s.icon}</div>
+                    <h4 className="mb-1.5 font-semibold text-stone-100">{s.title}</h4>
+                    <p className="text-sm leading-relaxed text-stone-400">{s.desc}</p>
+                  </Link>
+                ))}
+              </div>
             </div>
-            <div className="grid gap-3 sm:grid-cols-2">
-              {section.stations.map((s) => (
-                <Link
-                  key={s.href}
-                  href={s.href}
-                  className="rounded-xl border border-stone-800 bg-stone-900/40 p-4 transition-colors hover:border-amber-700/60 hover:bg-stone-900"
-                >
-                  <div className="flex items-center gap-2 mb-1.5">
-                    <span className="text-lg">{s.icon}</span>
-                    <span className="font-semibold text-sm text-stone-100">{s.title}</span>
-                  </div>
-                  <p className="text-xs text-stone-500 leading-relaxed">{s.desc}</p>
-                </Link>
-              ))}
-            </div>
-          </div>
-        ))}
-        {filteredSections.length === 0 && (
-          <p className="text-sm text-stone-600">No stations match &ldquo;{search}&rdquo;.</p>
-        )}
+          ))}
+          {filteredSections.length === 0 && (
+            <p className="text-center text-sm text-stone-600">No stations match &ldquo;{search}&rdquo;.</p>
+          )}
+        </div>
       </div>
-      </div>
+
+      <footer className="border-t border-stone-800 py-10 text-center">
+        <p className="text-xs text-stone-600">Ad Maiorem Dei Gloriam</p>
+      </footer>
     </div>
   );
 }
