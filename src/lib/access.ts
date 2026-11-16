@@ -63,6 +63,11 @@ export const JACOB_ONLY_PREFIXES = [
   "/api/veritas-debate",
   "/api/veritas-flashcard",
   "/api/veritas-objection",
+  "/api/veritas-simulator-atheist",
+  "/api/veritas-simulator-protestant",
+  "/api/veritas-simulator-muslim",
+  "/api/veritas-simulator-orthodox",
+  "/api/veritas-simulator-secular",
   // NOTE: /api/subject-progress is deliberately NOT here even though RCA (Jacob-only)
   // uses it — as of 2026-08-30 Cristian's Metaphysics quiz-history/wrong-answers (see
   // src/lib/study-history.ts, src/lib/wrong-answers.ts) were migrated onto this same

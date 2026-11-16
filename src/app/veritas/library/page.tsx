@@ -4,11 +4,15 @@ import { useState } from "react";
 import Link from "next/link";
 import PageHeader from "@/components/veritas/PageHeader";
 import { SPIRITUAL_BOOKS, type SpiritualBook, type BookCategory } from "@/data/veritas/spiritual-reading";
+import { CORPORA_BOOKS } from "@/data/veritas/corpora-books";
 
 type Difficulty = SpiritualBook["difficulty"];
 
+const ALL_BOOKS: SpiritualBook[] = [...SPIRITUAL_BOOKS, ...CORPORA_BOOKS];
+
 const CATEGORIES: { id: string; label: string }[] = [
   { id: "all", label: "All" },
+  { id: "scripture", label: "Sacred Scripture" },
   { id: "spiritual", label: "Spiritual" },
   { id: "theology", label: "Theology" },
   { id: "philosophy", label: "Philosophy" },
@@ -36,6 +40,7 @@ const categoryColor = (c: BookCategory) => {
     case "science": return "text-cyan-400 border-cyan-800 bg-cyan-900/30";
     case "political": return "text-emerald-400 border-emerald-800 bg-emerald-900/30";
     case "encyclical": return "text-yellow-400 border-yellow-800 bg-yellow-900/30";
+    case "scripture": return "text-sky-400 border-sky-800 bg-sky-900/30";
   }
 };
 
@@ -46,7 +51,7 @@ export default function VeritasLibraryPage() {
   const [expanded, setExpanded] = useState<string | null>(null);
   const [onSiteOnly, setOnSiteOnly] = useState(false);
 
-  const filtered = SPIRITUAL_BOOKS.filter((b) => {
+  const filtered = ALL_BOOKS.filter((b) => {
     if (category !== "all" && b.category !== category) return false;
     if (difficulty !== "all" && b.difficulty !== difficulty) return false;
     if (onSiteOnly && !b.availableOnSite) return false;
@@ -61,7 +66,7 @@ export default function VeritasLibraryPage() {
     return true;
   });
 
-  const onSiteCount = SPIRITUAL_BOOKS.filter((b) => b.availableOnSite).length;
+  const onSiteCount = ALL_BOOKS.filter((b) => b.availableOnSite).length;
 
   const difficultyColor = (d: Difficulty) => {
     switch (d) {
@@ -75,7 +80,7 @@ export default function VeritasLibraryPage() {
     <div className="flex h-full flex-col">
       <PageHeader
         title="Library"
-        subtitle={`${SPIRITUAL_BOOKS.length} books — ${onSiteCount} readable on site`}
+        subtitle={`${ALL_BOOKS.length} books — ${onSiteCount} readable on site`}
         icon="📖"
       />
       <div className="flex-1 overflow-y-auto">

@@ -1,5 +1,120 @@
 # Meta Tutor — Status
 
+## (Jacob) Veritas: full port of the standalone app + hub redesign (2026-11-16)
+Second pass on the same day as the Catholic-vs-Lutheran/homosexuality-teaching work below: "make the
+Veritas stuff all updated, full catalogs, AI powers, everything it had before on its own site but
+more — and make it look better organized." This finishes Phase 2 that the 10/31 port log called "not
+started" — the standalone `~/projects/veritas` app is now functionally retired; everything of value
+in it lives here.
+
+**26 new stations** ported/built, verified with `npx tsc --noEmit`, `npm run build` (all compile as
+static pages / the 5 new API routes as dynamic), and a real headless-Chromium sweep of every new
+route (`scripts/mt-veritas-full-sweep.mjs` — 26/26 returned 200, zero console/page errors) plus
+targeted screenshots read directly (own vision, not a third-party describer):
+
+- **Full-text corpora** (`scripts/veritas-port-corpora.mjs`, auto-generates
+  `src/data/veritas/corpora-books.ts` + copies into `public/veritas-books/`): the complete 73-book
+  Douay-Rheims Bible (Genesis through Apocalypse, deuterocanon included), Summa Contra Gentiles (4
+  books), Catena Aurea on all 4 Gospels, and the full Catechism (4 parts — CCC source text was flat
+  `####`-only; wrote a chapter-promotion pass so `CHAPTER ONE/TWO/...` markers become real `##`
+  chapter breaks with their titles folded in, verified against the actual CCC 2357 paragraph landing
+  in a normal-sized chapter, not a 2,700-line blob). All 85 entries added to the *existing* Library
+  reader (`/veritas/library/[slug]`) via a new `scripture` book category — zero new reader code
+  needed, just data + assets. Fixed a real pre-existing bug in that shared reader while in there: a
+  phantom empty "Introduction" chapter appeared on every book whose source starts `# Title\n\n## Chapter 1`
+  (basically all of them) — now suppressed project-wide, not just for the new entries.
+- **Summa Theologiae** — new dedicated 3-level browser (`/veritas/summa` → `/veritas/summa/[part]` →
+  `/veritas/summa/[part]/[q]`), built from `summa-structure.ts` (5 parts, 611 questions, 3,115
+  articles) + the actual question markdown copied into `public/summa/`. Parses each question's
+  Objection / On the Contrary / I Answer That / Reply to Objection structure into distinctly
+  color-coded sections (verified visually — this was the highest-engineering-risk new piece, hand-built
+  and screenshot-checked).
+- **Doctrine & history catalogs**: Natural Law (12), Virtues (41), Sacraments (7, full
+  matter/form/minister/effects encyclopedia — distinct from the single comparison entry already in
+  `catholic-vs-lutheran.ts`), Saints/Doctors of the Church (36), Heresies (20), Ecumenical Councils
+  (21), Timeline (349 events), Typology (41), Prophecy (37), Scripture Index (29 disputed verses),
+  Denominations/comparative religion (12 traditions — Lutheran entry kept for completeness, cross-links
+  to the existing deep-dive page).
+- **Apologetics toolkit**: Critics & Responses (15), Debate Playbook, One-Liners (100), Grounding
+  Arguments (21), Myths Debunked (22), Analogies (20), Quickdraw rapid-drill (26).
+- **AI feature**: Debate Simulator (`/veritas/simulator`) — 5 opponent personas (atheist, Protestant,
+  Muslim, Orthodox, secular), each a real live chat (not a one-shot briefing like the existing Debate
+  Prep tool) reusing the same `ChatInterface`/`streamChat` pattern as Ask Aquinas, each with its own
+  system prompt instructed to genuinely push back in character. 5 new API routes added to
+  `access.ts`'s `JACOB_ONLY_PREFIXES` (the page itself was already covered by the `/veritas` prefix,
+  the API routes were not).
+- **Growth/practice**: Courses (8, beginner→advanced with lessons+questions), Aquinas Life & Works (26
+  life events + 21 works), When You Doubt (10 pastoral tracks), Reading Guide (built as a curated
+  "where to start" path linking into the existing Library rather than duplicating it — real overlap
+  existed with the already-ported 141-book catalog), Saved Arguments + Reading Plans (both
+  localStorage-only, no backend, matching the originals).
+
+**Hub redesign** (`src/app/veritas/page.tsx`): replaced the flat 9-card grid with 6 labeled sections
+(AI Tools, Library & Full Texts, Deep Dives, Doctrine & History, Apologetics Toolkit, Growth &
+Practice) covering all 35 stations, plus a search box that filters across every section at once.
+
+**Process note**: ran this as 9 parallel background agents, each briefed with exact source/target
+paths and the house style to copy. ~6 of 9 hit a transient "Connection closed mid-response" API error
+at least once and needed a resume; one lane (debate-playbook/oneliners/grounding-arguments/myths/
+analogies) failed 4 times in a row and was taken over and finished directly by hand rather than kept
+retrying — all 5 of its source files were read and ported faithfully, same as the rest. One
+unrelated side effect: a generic `pkill -f "next dev"` run while clearing a port also killed a
+pre-existing, unrelated dev-server process that was already running before this session touched
+anything (flagged to Jacob at the time).
+
+**Not done**: the "Debate Simulator" idea quietly collides in name with nothing else, but note
+`/veritas/debate` (Debate Prep, a one-shot AI briefing) and `/veritas/simulator` (Debate Simulator,
+live chat) are intentionally two different tools, not a duplicate. No further standalone-app content
+is known to be unported — this was the full remaining catalog.
+
+## (Jacob) Veritas: Catholic vs. Lutheran deep-dive + Church Teaching: Homosexuality catalog (2026-11-16)
+Two new static (no-AI, no-DB) Veritas stations, requested as deep, "fully drawn out" content areas
+distinct from the existing AI tools:
+
+- `/veritas/catholic-vs-lutheran` — 11-topic comparative theology page (authority/sola scriptura,
+  justification, free will and grace, the seven vs. two sacraments, the Eucharist, church governance
+  and the papacy, purgatory/indulgences, Mary and the saints) plus a 1517->2017 historical timeline.
+  Each topic carries: Catholic position + CCC citations, Lutheran position + confessional citations
+  (Augsburg Confession, Formula of Concord, Luther's own works), Aquinas's relevant view with exact
+  `ST` references, key verses both sides cite, an explicit "common ground" section (the 1999/2017
+  Joint Declaration on Justification is used honestly — narrows the gap, doesn't resolve everything),
+  and a "how to engage" apologetics note per topic. Data: `src/data/veritas/catholic-vs-lutheran.ts`.
+  Page: `src/app/veritas/catholic-vs-lutheran/page.tsx`.
+- `/veritas/church-teaching/homosexuality` — full catalog: CCC §§2357-2359 and §2396 quoted verbatim
+  (cross-checked against the actual Catechism text already present at
+  `~/projects/veritas/public/ccc/part3.md`, not reconstructed from memory), Aquinas's natural-law
+  root (ST II-II q.154 a.11) with an explicit note that it's the historical source, not the Church's
+  current pastoral language, 6 magisterial documents 1975-2023 (Persona Humana, the 1986 CDF letter,
+  the 2003 CDF note on legal recognition of unions, USCCB's 2006 pastoral guidelines, Amoris Laetitia
+  §250-251, Fiducia Supplicans 2023 — the last one flagged as contested even among bishops, not
+  presented as settled), a terminology section (inclination vs. act, "intrinsically" vs. "objectively"
+  disordered, the live "gay Catholic" vs. "same-sex attracted" pastoral-language debate, "unjust
+  discrimination"), pastoral care (Courage apostolate, the call to chastity, an honest treatment of
+  the development-of-doctrine question), and 4 objections with direct responses — including the
+  "harsh language" objection, answered honestly rather than dismissed. Data:
+  `src/data/veritas/church-teaching-homosexuality.ts`. Page:
+  `src/app/veritas/church-teaching/homosexuality/page.tsx`.
+
+Both are automatically covered by the existing `/veritas` prefix in `JACOB_ONLY_PREFIXES`
+(`access.ts`) and `HUB_SHELL_PREFIXES` (`subjects.ts`) — no wiring changes needed. Added as two new
+station cards on the `/veritas` hub (`src/app/veritas/page.tsx`).
+
+**Verified**: `npx tsc --noEmit` clean, `npm run build` clean (both routes compile as static pages).
+Drove the real local dev server (`x-dev-preview` bypass) with a real headless-Chromium walkthrough
+(`scripts/mt-veritas-additions-audit.mjs`) — hub, both pages, the timeline toggle, an accordion
+expand, and all 6 tabs on the homosexuality page — and read every screenshot with my own eyes (own
+Claude vision, not a third-party describer). No console or page errors. Screenshots in
+`scripts/.shots/` (gitignored, local-only proof artifacts).
+
+**Not done this round** (Jacob also asked for a full audit/port of everything the standalone
+`~/projects/veritas` app had — Summa/SCG/Bible/CCC full-text readers, Saints, Heresies, Typology,
+Councils, Encyclicals, the full comparative-religion `denominations.ts` catalog beyond Lutheran, the
+Natural Law catalog, Critics catalog, Debate Playbook, Virtues, Sacraments, Timeline, Weakness
+Tracker, Debate Simulator — all still sitting, already written, in the standalone repo's `src/data/`
+and `public/{summa,scg,ccc,catena}/`). That's a second, separate porting pass — the two pieces above
+were the two explicitly-described new content areas; the broader "everything it had before" audit is
+next.
+
 ## (Jacob) Lesson assistant outage: fixed + hardened against recurrence (2026-11-12)
 Jacob hit "Something went wrong — try again" on the RCA lesson assistant. Root cause: Keychain
 OAuth token rotated at 12:24pm, `~/tools/sync-meta-tutor-token.sh`'s push to Olympus (the real

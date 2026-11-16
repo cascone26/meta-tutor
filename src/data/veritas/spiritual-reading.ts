@@ -6,7 +6,8 @@ export type BookCategory =
   | "history"
   | "science"
   | "political"
-  | "encyclical";
+  | "encyclical"
+  | "scripture";
 
 export interface SpiritualBook {
   slug: string;

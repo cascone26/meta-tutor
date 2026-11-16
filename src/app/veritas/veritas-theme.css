@@ -1,0 +1,22 @@
+/*
+ * Scoped re-theme of the Veritas subtree to match the standalone veritas app's
+ * actual gold/parchment palette (~/projects/veritas: --gold:#d4a853, --gold-dim:#b8943f),
+ * instead of Tailwind's stock orange-leaning amber. Every Veritas page already uses
+ * amber-* utilities for its accent color — Tailwind v4 compiles those from the
+ * --color-amber-* custom properties (including opacity-modified variants like
+ * bg-amber-600/20 via color-mix()), so overriding the properties here re-colors every
+ * existing amber-* class across all Veritas pages without touching any of them.
+ */
+.veritas-gold {
+  --color-amber-50: #fbf6ec;
+  --color-amber-100: #f5ecd6;
+  --color-amber-200: #ecdcb0;
+  --color-amber-300: #e3c988;
+  --color-amber-400: #dbb866;
+  --color-amber-500: #d4a853;
+  --color-amber-600: #b8943f;
+  --color-amber-700: #96783a;
+  --color-amber-800: #785f32;
+  --color-amber-900: #5c492a;
+  --color-amber-950: #3b2f1e;
+}
