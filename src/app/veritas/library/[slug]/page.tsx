@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import { SPIRITUAL_BOOKS } from "@/data/veritas/spiritual-reading";
+import { CORPORA_BOOKS } from "@/data/veritas/corpora-books";
 import ReaderSettings, { useReaderSettings, themeClasses } from "@/components/veritas/ReaderSettings";
 import HighlightManager from "@/components/veritas/HighlightManager";
 
@@ -21,8 +22,8 @@ function parseChapters(markdown: string): Chapter[] {
   let currentLines: string[] = [];
 
   const pushChapter = () => {
-    if (currentTitle || currentLines.length > 0) {
-      const content = currentLines.join("\n").trim();
+    const content = currentLines.join("\n").trim();
+    if (currentTitle || content.length > 0) {
       const words = content.split(/\s+/).filter(Boolean).length;
       chapters.push({
         title: currentTitle || "Introduction",
@@ -63,7 +64,7 @@ function renderMarkdown(text: string): string {
 export default function BookReaderPage() {
   const params = useParams();
   const slug = params.slug as string;
-  const book = SPIRITUAL_BOOKS.find((b) => b.slug === slug);
+  const book = [...SPIRITUAL_BOOKS, ...CORPORA_BOOKS].find((b) => b.slug === slug);
 
   const [chapters, setChapters] = useState<Chapter[]>([]);
   const [currentChapter, setCurrentChapter] = useState(0);
