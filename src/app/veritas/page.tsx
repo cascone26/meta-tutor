@@ -97,6 +97,13 @@ const SECTIONS: Section[] = [
   },
 ];
 
+const STATS = [
+  { value: "35", label: "Stations" },
+  { value: "3,115", label: "Summa Articles" },
+  { value: "227", label: "Library Texts" },
+  { value: "343", label: "Glossary Terms" },
+];
+
 export default function VeritasHub() {
   const [search, setSearch] = useState("");
 
@@ -110,15 +117,37 @@ export default function VeritasHub() {
       })).filter((s) => s.stations.length > 0)
     : SECTIONS;
 
-  const totalStations = SECTIONS.reduce((n, s) => n + s.stations.length, 0);
-
   return (
-    <div className="max-w-4xl mx-auto px-5 py-8">
-      <h1 className="text-2xl font-bold text-stone-100 mb-1">Veritas</h1>
-      <p className="text-sm text-stone-500 mb-5">
-        Catholic theology &amp; apologetics, grounded in the complete works of St. Thomas Aquinas — {totalStations} stations across AI tools, full texts, and reference catalogs.
-      </p>
+    <div>
+      <section className="flex flex-col items-center px-6 pt-16 pb-12 text-center">
+        <div className="mb-5 text-xs font-medium uppercase tracking-[0.3em] text-amber-600">
+          Catholic Theology &amp; Apologetics
+        </div>
+        <h1 className="mb-5 text-5xl font-bold tracking-tight text-stone-100 sm:text-6xl">
+          VERITAS
+        </h1>
+        <p className="mb-3 max-w-lg text-sm leading-relaxed text-stone-400">
+          Grounded in the complete works of St. Thomas Aquinas and everything he drew from —
+          Scripture, the Fathers, Aristotle, and the whole classical canon.
+        </p>
+        <p className="max-w-md text-xs italic text-stone-500">
+          &ldquo;All that I have written seems like straw compared to what has now been revealed to me.&rdquo;
+          <span className="mt-1 block not-italic text-amber-600">— St. Thomas Aquinas, 1273</span>
+        </p>
+      </section>
 
+      <section className="border-y border-stone-800 bg-stone-900/30 py-8">
+        <div className="mx-auto grid max-w-3xl grid-cols-2 gap-6 px-6 sm:grid-cols-4">
+          {STATS.map((s) => (
+            <div key={s.label} className="text-center">
+              <div className="text-2xl font-bold text-amber-500">{s.value}</div>
+              <div className="mt-1 text-xs text-stone-500">{s.label}</div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <div className="max-w-4xl mx-auto px-5 py-8">
       <input
         value={search}
         onChange={(e) => setSearch(e.target.value)}
@@ -154,6 +183,7 @@ export default function VeritasHub() {
         {filteredSections.length === 0 && (
           <p className="text-sm text-stone-600">No stations match &ldquo;{search}&rdquo;.</p>
         )}
+      </div>
       </div>
     </div>
   );
