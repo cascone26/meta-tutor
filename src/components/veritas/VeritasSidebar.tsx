@@ -13,8 +13,8 @@ export default function VeritasSidebar({ onNavigate }: { onNavigate?: () => void
   return (
     <nav className="flex h-full w-64 shrink-0 flex-col overflow-y-auto border-r border-stone-800 bg-stone-950/80 px-3 py-4 backdrop-blur-xl">
       <Link href="/veritas" onClick={onNavigate} className="mb-5 flex items-center gap-2 px-2">
-        <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-amber-500 vg-dot-pulse" />
-        <span className="vg-mono text-lg font-bold tracking-wider text-amber-500">VERITAS</span>
+        <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-amber-500/70" />
+        <span className="vg-serif text-xl font-semibold tracking-wide text-amber-500">Veritas</span>
       </Link>
 
       <div className="space-y-4">
@@ -26,7 +26,7 @@ export default function VeritasSidebar({ onNavigate }: { onNavigate?: () => void
                 onClick={() => setCollapsed((c) => ({ ...c, [section.id]: !c[section.id] }))}
                 className="flex w-full items-center justify-between px-2 py-1 text-left"
               >
-                <span className="vg-mono text-[10px] font-semibold uppercase tracking-wider text-stone-600">{section.label}</span>
+                <span className="text-[10px] font-semibold uppercase tracking-wider text-stone-600">{section.label}</span>
                 <span className="text-[9px] text-stone-700">{isCollapsed ? "▸" : "▾"}</span>
               </button>
               {!isCollapsed && (

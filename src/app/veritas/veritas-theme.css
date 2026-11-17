@@ -20,106 +20,45 @@
   --color-amber-900: #5c492a;
   --color-amber-950: #3b2f1e;
 
-  /* HUD/instrument-panel layer, ported from ~/tools/billing/dashboard (the established
-     "Tony Stark JARVIS" bar for Jacob's own personal tools — see feedback_personal_project_design_bar
-     memory): animated grid background, glass+corner-bracket cards, glow-underline tabs, monospace
-     readouts, abstract geometric glyphs instead of emoji. Gold instead of that reference's cyan to
-     match Veritas's own established parchment/gold branding. */
+  /* 2026-11-17: pulled back from the earlier "HUD/instrument-panel" pass (grid lines,
+     monospace readouts, corner brackets, tick-mark gauges) — Jacob wanted "less techy...
+     more soft and monastery or monk type looking" instead. What's left: a warm serif,
+     a soft candlelight glow instead of a grid, gentle rounded cards instead of bracketed
+     ones, and a quieter glow-underline on tabs. */
   --vg-accent: #d4a853;
-  --vg-accent-glow: rgba(212, 168, 83, 0.45);
-  --vg-accent-soft: rgba(212, 168, 83, 0.12);
-  --vg-grid-line: rgba(212, 168, 83, 0.05);
-  --vg-panel-border: rgba(255, 255, 255, 0.09);
-  --vg-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --vg-accent-glow: rgba(212, 168, 83, 0.35);
+  --vg-accent-soft: rgba(212, 168, 83, 0.1);
+  --vg-serif: "EB Garamond", Georgia, "Iowan Old Style", "Palatino Linotype", serif;
 
   position: relative;
 }
 
-/* Animated background grid, masked toward the edges — ambient, not distracting */
+/* A single soft warm glow, like a candle somewhere above the page — static, not animated,
+   no grid lines. */
 .veritas-gold::before {
   content: "";
   position: fixed;
   inset: 0;
   z-index: 0;
   pointer-events: none;
-  background-image:
-    linear-gradient(var(--vg-grid-line) 1px, transparent 1px),
-    linear-gradient(90deg, var(--vg-grid-line) 1px, transparent 1px);
-  background-size: 42px 42px;
-  mask-image: radial-gradient(ellipse 70% 50% at 50% 0%, #000 30%, transparent 75%);
-  -webkit-mask-image: radial-gradient(ellipse 70% 50% at 50% 0%, #000 30%, transparent 75%);
-  animation: veritas-gridshift 40s linear infinite;
-}
-@keyframes veritas-gridshift {
-  from { background-position: 0 0, 0 0; }
-  to { background-position: 84px 0, 0 84px; }
+  background: radial-gradient(ellipse 60% 40% at 50% 0%, rgba(212, 168, 83, 0.06), transparent 70%);
 }
 .veritas-gold > * {
   position: relative;
   z-index: 1;
 }
 
-.vg-mono {
-  font-family: var(--vg-mono);
-  font-variant-numeric: tabular-nums;
+.vg-serif {
+  font-family: var(--vg-serif);
 }
 
-.vg-dot-pulse {
-  box-shadow: 0 0 12px 3px var(--vg-accent-glow);
-  animation: veritas-pulse 2.4s ease-in-out infinite;
-}
-@keyframes veritas-pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.35; }
-}
-
-.vg-scan {
-  position: absolute;
-  left: 0; right: 0;
-  height: 60px;
-  pointer-events: none;
-  background: linear-gradient(180deg, transparent, var(--vg-accent-soft), transparent);
-  animation: veritas-scan 6s ease-in-out infinite;
-  opacity: 0.6;
-}
-@keyframes veritas-scan {
-  0% { top: -60px; }
-  50% { top: 100%; }
-  100% { top: -60px; }
-}
-
-/* Retrofit: every existing rounded-xl + border-stone-800 card (used across every catalog page
-   already built) gets glass blur + corner brackets automatically, no per-file edits. */
+/* Gentle, quiet cards — soft border and a faint warm shadow, no corner brackets, no glass blur. */
 .veritas-gold [class*="rounded-xl"][class*="border-stone-800"] {
-  position: relative;
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-}
-.veritas-gold [class*="rounded-xl"][class*="border-stone-800"]::before,
-.veritas-gold [class*="rounded-xl"][class*="border-stone-800"]::after {
-  content: "";
-  position: absolute;
-  width: 14px;
-  height: 14px;
-  pointer-events: none;
-  border-color: var(--vg-accent);
-  opacity: 0.45;
-}
-.veritas-gold [class*="rounded-xl"][class*="border-stone-800"]::before {
-  top: -1px; left: -1px;
-  border-top: 1.5px solid; border-left: 1.5px solid;
-  border-radius: 12px 0 0 0;
-}
-.veritas-gold [class*="rounded-xl"][class*="border-stone-800"]::after {
-  bottom: -1px; right: -1px;
-  border-bottom: 1.5px solid; border-right: 1.5px solid;
-  border-radius: 0 0 12px 0;
+  box-shadow: 0 1px 24px -8px rgba(0, 0, 0, 0.5);
 }
 
-/* Retrofit: every existing filter-chip / category-tab button (the rounded-md pill pattern used
-   across glossary, critics, myths, scripture-index, and every other catalog page) becomes an
-   underline-glow HUD tab instead of a filled pill — active state loses its fill, gains a glowing
-   underline instead. */
+/* Filter-chip / category-tab buttons: a soft underline instead of a filled pill, quieter
+   glow than before. */
 .veritas-gold button[class*="rounded-md"] {
   position: relative;
   transition: color 0.2s, background-color 0.2s;
@@ -128,10 +67,10 @@
   content: "";
   position: absolute;
   left: 15%; right: 15%; bottom: 1px;
-  height: 2px;
+  height: 1.5px;
   background: var(--vg-accent);
   border-radius: 2px;
-  box-shadow: 0 0 10px var(--vg-accent-glow);
+  box-shadow: 0 0 6px var(--vg-accent-soft);
   transform: scaleX(0);
   transition: transform 0.25s ease;
 }
@@ -140,15 +79,6 @@
 }
 .veritas-gold button[class*="bg-amber-600/20"]::after {
   transform: scaleX(1);
-}
-
-/* Retrofit: small uppercase tracked labels (the "section header" convention already used
-   everywhere — PageHeader-adjacent tags, category labels, stat labels) read as instrument
-   readouts in monospace instead of the body sans. */
-.veritas-gold [class*="tracking-wide"],
-.veritas-gold [class*="tracking-wider"],
-.veritas-gold [class*="tracking-\["] {
-  font-family: var(--vg-mono);
 }
 
 /* Smooth, flowy motion defaults — every interactive surface gets a slightly longer, eased
