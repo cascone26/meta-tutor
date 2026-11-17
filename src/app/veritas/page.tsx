@@ -3,12 +3,14 @@
 import { useState } from "react";
 import Link from "next/link";
 import { SECTIONS } from "@/data/veritas/stations";
+import IconGlyph from "@/components/veritas/IconGlyph";
+import RingGauge from "@/components/veritas/RingGauge";
+import CountUp from "@/components/veritas/CountUp";
 
-const STATS = [
-  { value: "35", label: "Stations" },
-  { value: "3,115", label: "Summa Articles" },
-  { value: "227", label: "Library Texts" },
-  { value: "343", label: "Glossary Terms" },
+const SIDE_STATS = [
+  { value: 3115, label: "Summa Articles" },
+  { value: 227, label: "Library Texts" },
+  { value: 343, label: "Glossary Terms" },
 ];
 
 export default function VeritasHub() {
@@ -26,8 +28,9 @@ export default function VeritasHub() {
 
   return (
     <div>
-      <section className="flex flex-col items-center px-6 pt-32 pb-20 text-center">
-        <div className="mb-6 text-sm font-medium uppercase tracking-[0.3em] text-amber-600">
+      <section className="relative overflow-hidden flex flex-col items-center px-6 pt-32 pb-20 text-center">
+        <div className="vg-scan" />
+        <div className="vg-mono mb-6 text-sm font-medium uppercase tracking-[0.3em] text-amber-600">
           Catholic Theology &amp; Apologetics
         </div>
         <h1 className="mb-6 text-6xl font-bold tracking-tight text-stone-100 sm:text-7xl">
@@ -43,25 +46,30 @@ export default function VeritasHub() {
         </p>
         <a
           href="#stations"
-          className="rounded-full border border-amber-600/30 bg-amber-600/10 px-6 py-3 text-sm font-medium text-amber-500 transition-colors hover:bg-amber-600/20"
+          className="rounded-full border border-amber-600/30 bg-amber-600/10 px-6 py-3 text-sm font-medium text-amber-500 transition-all hover:bg-amber-600/20 hover:shadow-[0_0_20px_-4px_var(--vg-accent-glow)]"
         >
           Enter Veritas
         </a>
       </section>
 
-      <section className="border-y border-stone-800 bg-stone-900/50 py-12">
-        <div className="mx-auto grid max-w-4xl grid-cols-2 gap-8 px-6 sm:grid-cols-4">
-          {STATS.map((s) => (
-            <div key={s.label} className="text-center">
-              <div className="text-3xl font-bold text-amber-500">{s.value}</div>
-              <div className="mt-1 text-sm text-stone-500">{s.label}</div>
-            </div>
-          ))}
+      <section className="border-y border-stone-800 bg-stone-900/30 py-12 backdrop-blur-xl">
+        <div className="mx-auto flex max-w-4xl flex-wrap items-center justify-center gap-10 px-6 sm:gap-16">
+          <RingGauge value={35} label="Stations" />
+          <div className="flex flex-wrap justify-center gap-10 sm:gap-16">
+            {SIDE_STATS.map((s) => (
+              <div key={s.label} className="text-center">
+                <div className="text-3xl font-bold text-amber-500">
+                  <CountUp value={s.value} />
+                </div>
+                <div className="vg-mono mt-1 text-[10px] uppercase tracking-wider text-stone-500">{s.label}</div>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
       <div id="stations" className="mx-auto max-w-5xl px-6 py-20">
-        <h2 className="mb-2 text-center text-sm font-medium uppercase tracking-[0.3em] text-amber-600">
+        <h2 className="vg-mono mb-2 text-center text-sm font-medium uppercase tracking-[0.3em] text-amber-600">
           All Stations
         </h2>
         <p className="mb-10 text-center text-stone-500">
@@ -73,25 +81,27 @@ export default function VeritasHub() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search all of Veritas..."
-          className="mb-10 w-full rounded-lg border border-stone-800 bg-stone-900 px-3 py-2.5 text-sm text-stone-200 placeholder-stone-600 outline-none focus:border-amber-700"
+          className="mb-10 w-full rounded-lg border border-stone-800 bg-stone-900 px-3 py-2.5 text-sm text-stone-200 placeholder-stone-600 outline-none transition-all focus:border-amber-700 focus:shadow-[0_0_0_3px_var(--vg-accent-soft)]"
         />
 
         <div className="space-y-12">
           {filteredSections.map((section) => (
             <div key={section.id}>
               <div className="mb-4 flex items-center gap-2">
-                <span className="text-sm">{section.icon}</span>
-                <h3 className="text-xs font-semibold uppercase tracking-wider text-amber-600">{section.label}</h3>
-                <span className="text-[10px] text-stone-700">{section.stations.length}</span>
+                <IconGlyph name={section.glyph} className="h-3.5 w-3.5 text-amber-600" />
+                <h3 className="vg-mono text-xs font-semibold uppercase tracking-wider text-amber-600">{section.label}</h3>
+                <span className="vg-mono text-[10px] text-stone-700">{section.stations.length}</span>
               </div>
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {section.stations.map((s) => (
                   <Link
                     key={s.href}
                     href={s.href}
-                    className="rounded-xl border border-stone-800 bg-stone-900 p-5 transition-colors hover:border-amber-600/30"
+                    className="group rounded-xl border border-stone-800 bg-stone-900 p-5 transition-all hover:border-amber-600/40 hover:shadow-[0_0_24px_-8px_var(--vg-accent-glow)]"
                   >
-                    <div className="mb-2 text-xl">{s.icon}</div>
+                    <div className="mb-2 flex h-7 w-7 items-center justify-center rounded-md border border-stone-800 text-amber-600 transition-colors group-hover:border-amber-600/40 group-hover:text-amber-500">
+                      <IconGlyph name={s.glyph} className="h-4 w-4" />
+                    </div>
                     <h4 className="mb-1.5 font-semibold text-stone-100">{s.title}</h4>
                     <p className="text-sm leading-relaxed text-stone-400">{s.desc}</p>
                   </Link>
@@ -106,7 +116,7 @@ export default function VeritasHub() {
       </div>
 
       <footer className="border-t border-stone-800 py-10 text-center">
-        <p className="text-xs text-stone-600">Ad Maiorem Dei Gloriam</p>
+        <p className="vg-mono text-xs tracking-wide text-stone-600">Ad Maiorem Dei Gloriam</p>
       </footer>
     </div>
   );
