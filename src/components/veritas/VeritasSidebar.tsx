@@ -4,15 +4,17 @@ import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { SECTIONS } from "@/data/veritas/stations";
+import IconGlyph from "./IconGlyph";
 
 export default function VeritasSidebar({ onNavigate }: { onNavigate?: () => void }) {
   const pathname = usePathname();
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
 
   return (
-    <nav className="flex h-full w-64 shrink-0 flex-col overflow-y-auto border-r border-stone-800 bg-stone-950 px-3 py-4">
-      <Link href="/veritas" onClick={onNavigate} className="mb-5 px-2 text-xl font-bold tracking-tight text-amber-500">
-        VERITAS
+    <nav className="flex h-full w-64 shrink-0 flex-col overflow-y-auto border-r border-stone-800 bg-stone-950/80 px-3 py-4 backdrop-blur-xl">
+      <Link href="/veritas" onClick={onNavigate} className="mb-5 flex items-center gap-2 px-2">
+        <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-amber-500 vg-dot-pulse" />
+        <span className="vg-mono text-lg font-bold tracking-wider text-amber-500">VERITAS</span>
       </Link>
 
       <div className="space-y-4">
@@ -24,7 +26,7 @@ export default function VeritasSidebar({ onNavigate }: { onNavigate?: () => void
                 onClick={() => setCollapsed((c) => ({ ...c, [section.id]: !c[section.id] }))}
                 className="flex w-full items-center justify-between px-2 py-1 text-left"
               >
-                <span className="text-[10px] font-semibold uppercase tracking-wider text-stone-600">{section.label}</span>
+                <span className="vg-mono text-[10px] font-semibold uppercase tracking-wider text-stone-600">{section.label}</span>
                 <span className="text-[9px] text-stone-700">{isCollapsed ? "▸" : "▾"}</span>
               </button>
               {!isCollapsed && (
@@ -36,11 +38,13 @@ export default function VeritasSidebar({ onNavigate }: { onNavigate?: () => void
                         key={s.href}
                         href={s.href}
                         onClick={onNavigate}
-                        className={`flex items-center gap-2 rounded-md px-2 py-1.5 text-sm transition-colors ${
-                          active ? "bg-amber-900/30 text-amber-400" : "text-stone-400 hover:bg-stone-900 hover:text-stone-200"
+                        className={`flex items-center gap-2 rounded-md px-2 py-1.5 text-sm transition-all ${
+                          active
+                            ? "bg-amber-900/20 text-amber-400 shadow-[0_0_12px_-2px_var(--vg-accent-glow)]"
+                            : "text-stone-400 hover:bg-stone-900 hover:text-stone-200"
                         }`}
                       >
-                        <span className="text-xs">{s.icon}</span>
+                        <IconGlyph name={s.glyph} className={`h-3.5 w-3.5 shrink-0 ${active ? "text-amber-500" : "text-stone-600"}`} />
                         <span className="truncate">{s.title}</span>
                       </Link>
                     );
