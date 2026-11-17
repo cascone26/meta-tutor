@@ -2,12 +2,12 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Inter } from "next/font/google";
+import { EB_Garamond } from "next/font/google";
 import { usePathname } from "next/navigation";
 import VeritasSidebar from "@/components/veritas/VeritasSidebar";
 import "./veritas-theme.css";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-veritas" });
+const garamond = EB_Garamond({ subsets: ["latin"], weight: ["400", "500", "600", "700"], variable: "--font-veritas" });
 
 export default function VeritasLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -16,7 +16,7 @@ export default function VeritasLayout({ children }: { children: React.ReactNode 
 
   if (isHome) {
     return (
-      <div className={`${inter.variable} veritas-gold h-full overflow-y-auto bg-stone-950 text-stone-200`} style={{ fontFamily: "var(--font-veritas)" }}>
+      <div className={`${garamond.variable} veritas-gold h-full overflow-y-auto bg-stone-950 text-stone-200`} style={{ fontFamily: "var(--font-veritas)" }}>
         <Link href="/" className="fixed left-4 top-4 z-20 text-xs text-stone-600 hover:text-stone-400 transition-colors">
           ← Hub
         </Link>
@@ -26,7 +26,7 @@ export default function VeritasLayout({ children }: { children: React.ReactNode 
   }
 
   return (
-    <div className={`${inter.variable} veritas-gold flex h-full bg-stone-950 text-stone-200`} style={{ fontFamily: "var(--font-veritas)" }}>
+    <div className={`${garamond.variable} veritas-gold flex h-full bg-stone-950 text-stone-200`} style={{ fontFamily: "var(--font-veritas)" }}>
       <div className="hidden lg:block">
         <VeritasSidebar />
       </div>
@@ -36,7 +36,7 @@ export default function VeritasLayout({ children }: { children: React.ReactNode 
           <button onClick={() => setMobileNavOpen(true)} className="text-sm text-stone-400 hover:text-stone-200 transition-colors">
             ☰ Menu
           </button>
-          <span className="text-sm font-semibold tracking-wide text-amber-500">VERITAS</span>
+          <span className="vg-serif text-base font-semibold tracking-wide text-amber-500">Veritas</span>
           <Link href="/" className="text-xs text-stone-600 hover:text-stone-400 transition-colors">
             Hub
           </Link>
