@@ -47,7 +47,7 @@ export async function streamChat(
       max_tokens: opts.maxTokens ?? 2048,
       system: [
         { type: "text" as const, text: opts.systemPrompt, cache_control: { type: "ephemeral" as const } },
-        { type: "text" as const, text: grounding },
+        ...(grounding ? [{ type: "text" as const, text: grounding }] : []),
       ],
       messages: body.messages.map((m) => ({
         role: m.role as "user" | "assistant",
