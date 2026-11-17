@@ -1,6 +1,105 @@
 # Meta-Tutor Process Log
 
+## Found the REAL root cause of the 2026-11-16 staleness: an orphaned Cloudflare Workers Route — 2026-11-17
+
+**Corrects the entry directly below this one.** That entry's conclusion ("client-side Next.js Router
+Cache, fix is a new tab") was wrong — Jacob tried a fresh Incognito window (zero possible browser-side
+state) and `tutor.lessondraft.com/veritas` was still stale. That ruled out every theory in the entry
+below and sent this further.
+
+**The actual answer**: `tutor.lessondraft.com` was never served by Olympus, Caddy, or Vercel at all.
+Cloudflare has a **Workers Route** (zone-level, `Websites → lessondraft.com → Workers Routes` in the
+dashboard, or `GET /zones/{zone}/workers/routes` via API) binding `tutor.lessondraft.com/*` to a Worker
+script called **`meta-tutor-workers`**. That script was deployed exactly once — `2026-11-02`, via a raw
+API call (`"source": "api"`, not a normal `wrangler deploy`) — as a one-off experimental Cloudflare
+migration pilot (see `open-next.config.ts`'s own comment in LessonDraft's repo: "no R2 incremental cache
+wired yet... see meta-tutor pilot notes"). Unlike LessonDraft's own parallel migration (which WAS
+adopted — see `LessonDraft/PROCESS.md`, "Jacob pasted + deployed origin-proxy.js..." entry, describing
+the *exact same class of mistake* happening to that product first), the meta-tutor pilot was abandoned:
+nothing in this repo references wrangler/OpenNext as of today, and every bit of real development
+(including the entire Olympus "bridge host" auto-deploy pipeline documented below) has been happening
+against a target that was never actually receiving public traffic. Workers Routes intercept at
+Cloudflare's edge before DNS-based origin routing is even consulted, so none of Olympus, Caddy, or
+Vercel's states had any bearing on what `tutor.lessondraft.com` visitors actually saw — the Route had
+been silently serving two-week-frozen content the entire time, immune to every fix applied anywhere
+else.
+
+**Found via**: `npx wrangler whoami` (already OAuth-authenticated on this Mac from the LessonDraft
+migration work) → `curl .../accounts/{acct}/workers/scripts` listed a suspicious `meta-tutor-workers`
+entry → `curl .../zones/{zone}/workers/routes` confirmed the binding → that script's
+`/deployments` endpoint showed exactly one deployment, dated 2026-11-02.
+
+**A costly mistake made while confirming this**: deleted the stale Route to test whether traffic would
+fall through to Olympus. There was no working DNS-level fallback configured for the hostname at all —
+the site went fully down (`525: SSL handshake failed`) instead of just showing stale content, for about
+a minute until the Route was recreated with the original script binding. **Lesson: a Workers Route has
+no implied fallback — removing one can take a live hostname to zero, not back to some lower-priority
+origin. Never remove a Route experimentally on a live domain without confirming what's actually
+configured to catch traffic once it's gone** (e.g., check for a DNS record / tunnel ingress rule for
+that exact hostname FIRST, and have the exact recreate-route payload ready before deleting anything).
+
+**The real fix**: gave meta-tutor the same OpenNext-for-Cloudflare treatment LessonDraft's Worker
+already uses, built to replace that frozen script's content WITHOUT touching the Route at all (same
+script name `meta-tutor-workers`, so the existing binding and all its existing secrets —
+`ANTHROPIC_AUTH_TOKEN`, `AUTH_GOOGLE_ID`/`SECRET`, `AUTH_SECRET`, `AUTH_TRUST_HOST`, `JACOB_EMAIL`,
+`CRISTIAN_EMAIL`, `NEXT_PUBLIC_SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` — carried over untouched,
+zero secret management needed):
+- `wrangler.jsonc` — `name: "meta-tutor-workers"` (must match exactly), `nodejs_compat` +
+  `global_fetch_strictly_public` flags, static assets bound from `.open-next/assets`. No KV/crons
+  needed (unlike LessonDraft, nothing here is big enough to need an oversized-route exclusion).
+- `open-next.config.ts` — `queue: "direct"`, same fix LessonDraft needed for the exact same reason
+  (the default MemoryQueue's unconfigured self-fetch for ISR revalidation piling up under load).
+- `worker-entry.js` — deliberately simple (no fallback-origin/edge-cache logic needed), but keeps
+  LessonDraft's `fetchWithModuleRaceRetry` wrapper around the OpenNext handler — a real,
+  previously-found OpenNext-on-Workers flakiness class (occasional spurious 500s from a module-loading
+  race), not something specific to LessonDraft's own app.
+- Added `@opennextjs/cloudflare` as a devDependency; `.open-next/` and `.wrangler/` gitignored (build
+  output, matches LessonDraft's convention).
+
+**Verified, in order, before and after the real deploy**:
+1. `npx opennextjs-cloudflare build` succeeded locally (zero production risk).
+2. `npx wrangler deploy --dry-run` reported a 3.88MB gzip bundle — comfortably within limits, no size
+   warnings.
+3. `npx wrangler dev --port 8787` served the build locally: unauthenticated `/veritas` → `302`,
+   `/login` → `200` with a real "Sign in" / "Google" button and correct `<title>`, static assets
+   (`/veritas-books/bible-genesis.md`, `/summa/I/q2.md`) → `200`. All zero-risk, pre-deploy.
+4. Real `npx wrangler deploy` (same script name, Route untouched) — `Worker Startup Time: 56ms`.
+5. Checked the isolated `meta-tutor-workers.meta-tutor.workers.dev` preview URL first (same build,
+   different hostname, zero blast radius) — clean.
+6. Only then checked the real domain: `/veritas` 5/5 clean `302`s, `/login` 200 with correct content,
+   and — the conclusive proof, since these files did not exist in the 2026-11-02 build at all —
+   `/veritas-books/bible-genesis.md` and `/summa/I/q2.md` both `200` on the live production domain.
+7. Swept every other subject (`/`, `/chess`, `/latin-lab`, `/trivia`, `/riemann`, `/ethics`,
+   `/metaphysics`, `/cris`) and a few API routes (`/api/veritas-chat`, `/api/rca-chat`,
+   `/api/chess-coach`) — all a clean `302` (auth-gated, not crashing), no regressions from the
+   full-app redeploy.
+
+**Still open / not yet done**: this is a one-time manual `wrangler deploy`, not wired into any
+auto-deploy pipeline — the Olympus cron (`auto-deploy-meta-tutor.sh`) only updates the Olympus bridge
+host, which is still correct to keep (belt-and-suspenders, and it IS what a Tunnel ingress would hit
+if the Workers Route were ever properly retired instead), but does NOT touch this Worker. **The next
+merge to `main` will NOT automatically reach `meta-tutor-workers`** — it will need another manual
+`npx opennextjs-cloudflare build && npx wrangler deploy` from this Mac (OAuth credential lives at
+`~/Library/Preferences/.wrangler/config/default.toml`), or a real CI/cron hook needs to be built for
+it, the same way LessonDraft's deploy scripts already handle its own Worker. Until that exists, **this
+exact incident can recur** — any future "why doesn't my merge show up live" investigation on this repo
+should check `npx wrangler deployments list --name meta-tutor-workers` for the current deployed
+version's age FIRST, before any Olympus/Caddy/DNS investigation.
+
+**Lesson for next time any session touches Cloudflare Workers on this account, for ANY product**:
+check the zone's own **Workers Routes** page (`Websites → <domain> → Workers Routes`) first, not just
+whichever script a doc, memory, or systemd service description names as "the real one" — this exact
+failure mode (an abandoned pilot Worker silently owning a live Route while everyone's attention and
+tooling point somewhere else) has now happened to both LessonDraft (`lessondraft-origin-proxy`, see the
+entry on this same lesson in `LessonDraft/PROCESS.md`) and Meta Tutor on this account. Two independent
+occurrences of the identical infrastructure trap is a pattern, not a fluke.
+
 ## Production deploy topology mapped for real — 2026-11-16
+
+**NOTE (2026-11-17): the diagnosis in this entry's "What the actual fix was" section turned out to be
+wrong — see the corrective entry above. The topology facts here (Vercel blocked, Olympus bridge host,
+the Caddy port-3000 decoy) are all still true and still useful; they just weren't the actual cause of
+the staleness that triggered this entry.**
 
 ### Problem statement
 After merging PR #21 (the big Veritas port + redesign), `tutor.lessondraft.com/veritas` kept showing

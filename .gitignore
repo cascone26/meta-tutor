@@ -37,6 +37,10 @@ yarn-error.log*
 # vercel
 .vercel
 
+# cloudflare workers build output
+.open-next/
+.wrangler/
+
 # scratch screenshots from scripts/mt-shot.mjs
 /scripts/.shots/
 
