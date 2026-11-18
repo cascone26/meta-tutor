@@ -3,7 +3,12 @@
 import { useState } from "react";
 import Link from "next/link";
 import PageHeader from "@/components/veritas/PageHeader";
+import SectionStar from "@/components/veritas/SectionStar";
+import GoDeeper from "@/components/veritas/GoDeeper";
 import { DENOMINATIONS } from "@/data/veritas/denominations";
+
+const PAGE_LABEL = "Christian Denominations";
+const PAGE_HREF = "/veritas/denominations";
 
 export default function DenominationsPage() {
   const [search, setSearch] = useState("");
@@ -42,21 +47,36 @@ export default function DenominationsPage() {
             const isOpen = expanded === denom.name;
             return (
               <div key={denom.name} className="rounded-xl border border-stone-800/60 bg-stone-900/30">
-                <button
+                <div
+                  role="button"
+                  tabIndex={0}
                   onClick={() => setExpanded(isOpen ? null : denom.name)}
-                  className="w-full px-4 py-3 text-left"
+                  onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && setExpanded(isOpen ? null : denom.name)}
+                  className="w-full cursor-pointer px-4 py-3 text-left"
                 >
                   <div className="flex items-baseline justify-between gap-2">
                     <span className="font-semibold text-sm text-stone-100">{denom.name}</span>
-                    <span className="shrink-0 text-stone-600 text-xs">{isOpen ? "▾" : "▸"}</span>
+                    <div className="flex shrink-0 items-center gap-2">
+                      <SectionStar
+                        page={PAGE_LABEL}
+                        href={`${PAGE_HREF}#${denom.name}`}
+                        sectionId={denom.name}
+                        title={denom.name}
+                        summary={`Founded ${denom.founded} by ${denom.founder}`}
+                      />
+                      <span className="text-stone-600 text-xs">{isOpen ? "▾" : "▸"}</span>
+                    </div>
                   </div>
                   <p className="mt-1 text-xs text-stone-500 line-clamp-1">
                     Founded {denom.founded} by {denom.founder}
                   </p>
-                </button>
+                </div>
 
                 {isOpen && (
                   <div className="space-y-4 border-t border-stone-800 px-4 py-4">
+                    <GoDeeper
+                      question={`Go deeper on ${denom.name} (founded ${denom.founded} by ${denom.founder}) and how it compares to Catholic teaching. Key beliefs: ${denom.keyBeliefs.join("; ")}`}
+                    />
                     <div>
                       <p className="mb-2 text-[10px] font-semibold uppercase tracking-wide text-amber-500">Key Beliefs</p>
                       <ul className="space-y-1">

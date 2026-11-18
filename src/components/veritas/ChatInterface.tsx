@@ -4,6 +4,7 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { linkCitations, escapeHtml } from "@/lib/veritas/citations";
 import { renderMarkdown } from "@/lib/veritas/markdown";
 import { saveNote } from "@/lib/veritas/notes";
+import { takePendingQuestion } from "@/lib/veritas/ask-handoff";
 import GlossaryTooltip from "@/components/veritas/GlossaryTooltip";
 
 interface Message {
@@ -48,6 +49,17 @@ export default function ChatInterface({
   }, [messages]);
 
   useEffect(() => {
+    const pending = takePendingQuestion();
+    if (pending) {
+      setInput(pending);
+      requestAnimationFrame(() => {
+        const el = inputRef.current;
+        if (el) {
+          el.style.height = "auto";
+          el.style.height = Math.min(el.scrollHeight, 150) + "px";
+        }
+      });
+    }
     inputRef.current?.focus();
   }, []);
 

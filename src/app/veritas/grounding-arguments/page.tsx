@@ -2,7 +2,12 @@
 
 import { useState } from "react";
 import PageHeader from "@/components/veritas/PageHeader";
+import SectionStar from "@/components/veritas/SectionStar";
+import GoDeeper from "@/components/veritas/GoDeeper";
 import { GROUNDING_ARGUMENTS } from "@/data/veritas/grounding-arguments";
+
+const PAGE_LABEL = "Grounding Arguments";
+const PAGE_HREF = "/veritas/grounding-arguments";
 
 export default function GroundingArgumentsPage() {
   const [tag, setTag] = useState("all");
@@ -38,16 +43,26 @@ export default function GroundingArgumentsPage() {
             const isOpen = expanded === a.slug;
             return (
               <div key={a.slug} className="rounded-xl border border-stone-800/60 bg-stone-900/30">
-                <button onClick={() => setExpanded(isOpen ? null : a.slug)} className="w-full px-4 py-3 text-left">
+                <div
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => setExpanded(isOpen ? null : a.slug)}
+                  onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && setExpanded(isOpen ? null : a.slug)}
+                  className="w-full cursor-pointer px-4 py-3 text-left"
+                >
                   <div className="flex items-baseline justify-between gap-2">
                     <span className="font-semibold text-sm text-stone-100">{a.title}</span>
-                    <span className="shrink-0 text-xs text-stone-600">{isOpen ? "▾" : "▸"}</span>
+                    <div className="flex shrink-0 items-center gap-2">
+                      <SectionStar page={PAGE_LABEL} href={`${PAGE_HREF}#${a.slug}`} sectionId={a.slug} title={a.title} summary={a.oneLine} />
+                      <span className="text-xs text-stone-600">{isOpen ? "▾" : "▸"}</span>
+                    </div>
                   </div>
                   <p className="mt-1 text-xs text-stone-500 leading-relaxed">{a.oneLine}</p>
-                </button>
+                </div>
 
                 {isOpen && (
                   <div className="space-y-4 border-t border-stone-800 px-4 py-4">
+                    <GoDeeper question={`Go deeper on the grounding argument "${a.title}". ${a.oneLine}`} />
                     <div className="rounded-lg border border-amber-900/30 bg-amber-950/10 p-3">
                       <p className="mb-1 text-[10px] font-semibold uppercase tracking-wide text-amber-500">Why It Matters</p>
                       <p className="text-xs text-stone-300 leading-relaxed">{a.whyItMatters}</p>

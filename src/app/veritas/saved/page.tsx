@@ -1,8 +1,12 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import PageHeader from "@/components/veritas/PageHeader";
 import { getNotes, deleteNote, type VeritasNote } from "@/lib/veritas/notes";
+import { getStars, removeStar, type StarredSection } from "@/lib/veritas/stars";
+import { setPendingQuestion } from "@/lib/veritas/ask-handoff";
 import { renderMarkdown } from "@/lib/veritas/markdown";
 import { escapeHtml } from "@/lib/veritas/citations";
 
@@ -16,7 +20,8 @@ interface SavedArgument {
 }
 
 export default function SavedPage() {
-  const [tab, setTab] = useState<"arguments" | "notes">("arguments");
+  const router = useRouter();
+  const [tab, setTab] = useState<"arguments" | "notes" | "starred">("starred");
   const [arguments_, setArguments] = useState<SavedArgument[]>([]);
   const [search, setSearch] = useState("");
   const [showForm, setShowForm] = useState(false);
@@ -26,6 +31,7 @@ export default function SavedPage() {
   const [newArgument, setNewArgument] = useState("");
   const [newSources, setNewSources] = useState("");
   const [notes, setNotes] = useState<VeritasNote[]>([]);
+  const [stars, setStars] = useState<StarredSection[]>([]);
 
   useEffect(() => {
     const stored = localStorage.getItem("veritas-saved-arguments");
@@ -35,6 +41,7 @@ export default function SavedPage() {
       } catch {}
     }
     setNotes(getNotes());
+    setStars(getStars());
   }, []);
 
   const removeNote = (id: string) => {
@@ -42,10 +49,26 @@ export default function SavedPage() {
     setNotes(getNotes());
   };
 
+  const removeStarred = (key: string) => {
+    removeStar(key);
+    setStars(getStars());
+  };
+
+  const goDeeperOnStar = (s: StarredSection) => {
+    setPendingQuestion(`I starred "${s.title}" (from ${s.page}) — go deeper on this: ${s.summary}`);
+    router.push("/veritas/ask");
+  };
+
   const filteredNotes = notes.filter((n) => {
     if (!search) return true;
     const s = search.toLowerCase();
     return n.text.toLowerCase().includes(s) || n.source.toLowerCase().includes(s);
+  });
+
+  const filteredStars = stars.filter((s) => {
+    if (!search) return true;
+    const q = search.toLowerCase();
+    return s.title.toLowerCase().includes(q) || s.page.toLowerCase().includes(q) || s.summary.toLowerCase().includes(q);
   });
 
   const save = (updated: SavedArgument[]) => {
@@ -89,19 +112,19 @@ export default function SavedPage() {
     <div className="flex h-app flex-col">
       <PageHeader
         title="Saved"
-        subtitle="Your personal library of saved arguments and chat notes"
+        subtitle="Starred sections, chat notes, and saved arguments — everything you've marked to come back to"
         icon="💾"
       />
       <div className="flex-1 overflow-y-auto">
         <div className="sticky top-0 z-10 border-b border-stone-800 bg-stone-950 px-6 pt-3">
           <div className="mb-3 flex gap-1 border-b border-stone-800">
             <button
-              onClick={() => setTab("arguments")}
+              onClick={() => setTab("starred")}
               className={`px-3 pb-2 text-sm font-medium transition-colors ${
-                tab === "arguments" ? "border-b-2 border-amber-500 text-amber-400" : "text-stone-500 hover:text-stone-300"
+                tab === "starred" ? "border-b-2 border-amber-500 text-amber-400" : "text-stone-500 hover:text-stone-300"
               }`}
             >
-              Arguments
+              ★ Starred {stars.length > 0 && `(${stars.length})`}
             </button>
             <button
               onClick={() => setTab("notes")}
@@ -111,6 +134,14 @@ export default function SavedPage() {
             >
               Chat Notes {notes.length > 0 && `(${notes.length})`}
             </button>
+            <button
+              onClick={() => setTab("arguments")}
+              className={`px-3 pb-2 text-sm font-medium transition-colors ${
+                tab === "arguments" ? "border-b-2 border-amber-500 text-amber-400" : "text-stone-500 hover:text-stone-300"
+              }`}
+            >
+              Arguments
+            </button>
           </div>
         </div>
         <div className="sticky top-[45px] z-10 border-b border-stone-800 bg-stone-950 px-6 py-3 space-y-2">
@@ -118,7 +149,7 @@ export default function SavedPage() {
             <input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder={tab === "arguments" ? "Search arguments..." : "Search chat notes..."}
+              placeholder={tab === "arguments" ? "Search arguments..." : tab === "notes" ? "Search chat notes..." : "Search starred sections..."}
               className="flex-1 rounded-lg border border-stone-800 bg-stone-900 px-3 py-2 text-sm text-stone-200 placeholder-stone-600 outline-none focus:border-amber-700"
             />
             {tab === "arguments" && (
@@ -131,11 +162,53 @@ export default function SavedPage() {
             )}
           </div>
           <p className="text-[10px] text-stone-600">
-            {tab === "arguments" ? `${filtered.length} saved arguments` : `${filteredNotes.length} chat notes`}
+            {tab === "arguments"
+              ? `${filtered.length} saved arguments`
+              : tab === "notes"
+              ? `${filteredNotes.length} chat notes`
+              : `${filteredStars.length} starred sections`}
           </p>
         </div>
 
-        {tab === "notes" ? (
+        {tab === "starred" ? (
+          <div className="px-6 py-4">
+            {filteredStars.length === 0 ? (
+              <div className="py-12 text-center">
+                <p className="text-sm text-stone-500">No starred sections yet.</p>
+                <p className="mt-1 text-xs text-stone-600">
+                  Click the ☆ next to any topic — on Catholic vs. Lutheran, Denominations, Heresies, and
+                  similar deep-dive pages — to mark it important and keep it here.
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-2">
+                {filteredStars.map((s) => (
+                  <div key={s.key} className="rounded-xl border border-stone-800 p-4">
+                    <div className="mb-1 flex items-center justify-between">
+                      <Link href={s.href} className="text-sm font-semibold text-stone-200 hover:text-amber-400">
+                        {s.title}
+                      </Link>
+                      <span className="text-[10px] text-stone-600">{new Date(s.createdAt).toLocaleDateString()}</span>
+                    </div>
+                    <p className="mb-2 text-xs text-amber-600">{s.page}</p>
+                    <p className="text-sm leading-relaxed text-stone-400">{s.summary}</p>
+                    <div className="mt-2 flex items-center gap-4">
+                      <Link href={s.href} className="text-[10px] text-stone-500 hover:text-stone-300">
+                        View section →
+                      </Link>
+                      <button onClick={() => goDeeperOnStar(s)} className="text-[10px] text-amber-600 hover:text-amber-400">
+                        Go deeper in Ask Aquinas →
+                      </button>
+                      <button onClick={() => removeStarred(s.key)} className="text-[10px] text-red-600 hover:text-red-400">
+                        Remove star
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        ) : tab === "notes" ? (
           <div className="px-6 py-4">
             {filteredNotes.length === 0 ? (
               <div className="py-12 text-center">

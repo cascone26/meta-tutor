@@ -2,7 +2,12 @@
 
 import { useState } from "react";
 import PageHeader from "@/components/veritas/PageHeader";
+import SectionStar from "@/components/veritas/SectionStar";
+import GoDeeper from "@/components/veritas/GoDeeper";
 import { VIRTUES } from "@/data/veritas/virtues";
+
+const PAGE_LABEL = "Virtues";
+const PAGE_HREF = "/veritas/virtues";
 
 const TYPES = ["all", "theological", "cardinal", "capital-sin", "gift", "fruit", "beatitude"];
 
@@ -59,19 +64,31 @@ export default function VirtuesPage() {
           {filtered.map((virtue) => {
             const isOpen = expanded === virtue.name;
             return (
-              <button
+              <div
                 key={virtue.name}
+                role="button"
+                tabIndex={0}
                 onClick={() => setExpanded(isOpen ? null : virtue.name)}
-                className="w-full rounded-lg border border-stone-800/50 px-4 py-2.5 text-left transition-colors hover:border-stone-700 hover:bg-stone-900/50"
+                onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && setExpanded(isOpen ? null : virtue.name)}
+                className="w-full cursor-pointer rounded-lg border border-stone-800/50 px-4 py-2.5 text-left transition-colors hover:border-stone-700 hover:bg-stone-900/50"
               >
                 <div className="flex items-baseline gap-2">
                   <span className="font-semibold text-sm text-stone-200">{virtue.name}</span>
                   <span className="ml-auto text-[10px] uppercase text-stone-700">{virtue.type}</span>
+                  <SectionStar
+                    page={PAGE_LABEL}
+                    href={`${PAGE_HREF}#${virtue.name}`}
+                    sectionId={virtue.name}
+                    title={virtue.name}
+                    summary={virtue.description}
+                  />
                 </div>
 
                 {isOpen ? (
                   <div className="mt-2 space-y-2 border-t border-stone-800 pt-2">
                     <p className="text-sm text-stone-400 leading-relaxed">{virtue.description}</p>
+
+                    <GoDeeper question={`Go deeper on the virtue of ${virtue.name} (${virtue.type}). ${virtue.description}`} />
 
                     <div className="rounded-lg border border-stone-800/50 bg-stone-900/40 p-2">
                       <p className="mb-1 text-[10px] font-semibold uppercase tracking-wide text-amber-600">
@@ -90,7 +107,7 @@ export default function VirtuesPage() {
                 ) : (
                   <p className="mt-1 text-xs text-stone-500 line-clamp-1">{virtue.description}</p>
                 )}
-              </button>
+              </div>
             );
           })}
         </div>

@@ -2,7 +2,12 @@
 
 import { useState } from "react";
 import PageHeader from "@/components/veritas/PageHeader";
+import SectionStar from "@/components/veritas/SectionStar";
+import GoDeeper from "@/components/veritas/GoDeeper";
 import { HERESIES } from "@/data/veritas/heresies";
+
+const PAGE_LABEL = "Heresies Condemned by the Church";
+const PAGE_HREF = "/veritas/heresies";
 
 export default function HeresiesPage() {
   const [search, setSearch] = useState("");
@@ -39,15 +44,25 @@ export default function HeresiesPage() {
         </div>
         <div className="px-6 py-4 space-y-1">
           {filtered.map((heresy) => (
-            <button
+            <div
               key={heresy.name}
+              role="button"
+              tabIndex={0}
               onClick={() => setExpanded(expanded === heresy.name ? null : heresy.name)}
-              className="w-full rounded-lg border border-stone-800/50 px-4 py-2.5 text-left transition-colors hover:border-stone-700 hover:bg-stone-900/50"
+              onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && setExpanded(expanded === heresy.name ? null : heresy.name)}
+              className="w-full cursor-pointer rounded-lg border border-stone-800/50 px-4 py-2.5 text-left transition-colors hover:border-stone-700 hover:bg-stone-900/50"
             >
               <div className="flex flex-col gap-1">
                 <div className="flex items-baseline gap-2">
                   <span className="font-semibold text-sm text-stone-200">{heresy.name}</span>
                   <span className="ml-auto text-[10px] text-stone-700">{heresy.period}</span>
+                  <SectionStar
+                    page={PAGE_LABEL}
+                    href={`${PAGE_HREF}#${heresy.name}`}
+                    sectionId={heresy.name}
+                    title={heresy.name}
+                    summary={heresy.coreClaim}
+                  />
                 </div>
                 {expanded === heresy.name ? null : (
                   <p className="text-xs text-stone-500 line-clamp-1">{heresy.founder}</p>
@@ -56,6 +71,9 @@ export default function HeresiesPage() {
               {expanded === heresy.name && (
                 <div className="mt-2 space-y-2 border-t border-stone-800 pt-2">
                   <p className="text-[11px] text-stone-600">{heresy.founder}</p>
+                  <GoDeeper
+                    question={`Go deeper on the heresy of ${heresy.name} (${heresy.period}, founded by ${heresy.founder}). Core claim: ${heresy.coreClaim} The Church's refutation: ${heresy.refutation}`}
+                  />
                   <div className="rounded-lg border border-rose-900/50 bg-rose-950/20 p-2.5">
                     <p className="text-[10px] uppercase text-rose-700">The Error</p>
                     <p className="mt-1 text-xs text-stone-400 leading-relaxed">{heresy.coreClaim}</p>
@@ -82,7 +100,7 @@ export default function HeresiesPage() {
                   )}
                 </div>
               )}
-            </button>
+            </div>
           ))}
         </div>
       </div>

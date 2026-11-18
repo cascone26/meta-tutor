@@ -2,7 +2,12 @@
 
 import { useState } from "react";
 import PageHeader from "@/components/veritas/PageHeader";
+import SectionStar from "@/components/veritas/SectionStar";
+import GoDeeper from "@/components/veritas/GoDeeper";
 import { NATURAL_LAW_TOPICS } from "@/data/veritas/natural-law";
+
+const PAGE_LABEL = "Natural Law";
+const PAGE_HREF = "/veritas/natural-law";
 
 export default function NaturalLawPage() {
   const [search, setSearch] = useState("");
@@ -46,21 +51,34 @@ export default function NaturalLawPage() {
                 key={topic.topic}
                 className="rounded-lg border border-stone-800/60 bg-stone-900/30 overflow-hidden"
               >
-                <button
+                <div
+                  role="button"
+                  tabIndex={0}
                   onClick={() => setExpanded(isOpen ? null : topic.topic)}
-                  className="w-full px-4 py-3 text-left"
+                  onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && setExpanded(isOpen ? null : topic.topic)}
+                  className="w-full cursor-pointer px-4 py-3 text-left"
                 >
                   <div className="flex items-baseline justify-between gap-2">
                     <span className="font-semibold text-sm text-stone-100">{topic.topic}</span>
-                    <span className="shrink-0 text-stone-600 text-xs">{isOpen ? "▾" : "▸"}</span>
+                    <div className="flex shrink-0 items-center gap-2">
+                      <SectionStar
+                        page={PAGE_LABEL}
+                        href={`${PAGE_HREF}#${topic.topic}`}
+                        sectionId={topic.topic}
+                        title={topic.topic}
+                        summary={topic.naturalLawArgument}
+                      />
+                      <span className="text-stone-600 text-xs">{isOpen ? "▾" : "▸"}</span>
+                    </div>
                   </div>
                   <p className="mt-1 text-xs text-stone-500 line-clamp-2 leading-relaxed">
                     {topic.naturalLawArgument}
                   </p>
-                </button>
+                </div>
 
                 {isOpen && (
                   <div className="space-y-3 border-t border-stone-800 px-4 py-4">
+                    <GoDeeper question={`Go deeper on the natural law topic of ${topic.topic}. ${topic.naturalLawArgument}`} />
                     <div>
                       <p className="mb-1 text-[10px] font-semibold uppercase tracking-wide text-amber-500">
                         Natural Law Argument

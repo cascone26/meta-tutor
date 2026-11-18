@@ -2,7 +2,12 @@
 
 import { useState } from "react";
 import PageHeader from "@/components/veritas/PageHeader";
+import SectionStar from "@/components/veritas/SectionStar";
+import GoDeeper from "@/components/veritas/GoDeeper";
 import { CATHOLIC_VS_LUTHERAN, CVL_TIMELINE } from "@/data/veritas/catholic-vs-lutheran";
+
+const PAGE_LABEL = "Catholic vs. Lutheran";
+const PAGE_HREF = "/veritas/catholic-vs-lutheran";
 
 export default function CatholicVsLutheranPage() {
   const [expanded, setExpanded] = useState<string | null>(CATHOLIC_VS_LUTHERAN[0]?.id ?? null);
@@ -40,19 +45,34 @@ export default function CatholicVsLutheranPage() {
             const isOpen = expanded === topic.id;
             return (
               <div key={topic.id} className="rounded-xl border border-stone-800/60 bg-stone-900/30">
-                <button
+                <div
+                  role="button"
+                  tabIndex={0}
                   onClick={() => setExpanded(isOpen ? null : topic.id)}
-                  className="w-full px-4 py-3 text-left"
+                  onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && setExpanded(isOpen ? null : topic.id)}
+                  className="w-full cursor-pointer px-4 py-3 text-left"
                 >
                   <div className="flex items-baseline justify-between gap-2">
                     <span className="font-semibold text-sm text-stone-100">{topic.topic}</span>
-                    <span className="shrink-0 text-stone-600 text-xs">{isOpen ? "▾" : "▸"}</span>
+                    <div className="flex shrink-0 items-center gap-2">
+                      <SectionStar
+                        page={PAGE_LABEL}
+                        href={`${PAGE_HREF}#${topic.id}`}
+                        sectionId={topic.id}
+                        title={topic.topic}
+                        summary={topic.oneLiner}
+                      />
+                      <span className="text-stone-600 text-xs">{isOpen ? "▾" : "▸"}</span>
+                    </div>
                   </div>
                   <p className="mt-1 text-xs text-stone-500 leading-relaxed">{topic.oneLiner}</p>
-                </button>
+                </div>
 
                 {isOpen && (
                   <div className="space-y-4 border-t border-stone-800 px-4 py-4">
+                    <GoDeeper
+                      question={`Go deeper on "${topic.topic}" in the Catholic vs. Lutheran debate. Catholic position: ${topic.catholicPosition} Lutheran position: ${topic.lutheranPosition}`}
+                    />
                     <div className="grid gap-3 sm:grid-cols-2">
                       <div className="rounded-lg border border-amber-900/30 bg-amber-950/10 p-3">
                         <p className="mb-1 text-[10px] font-semibold uppercase tracking-wide text-amber-500">Catholic Position</p>

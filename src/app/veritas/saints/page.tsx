@@ -2,7 +2,12 @@
 
 import { useState } from "react";
 import PageHeader from "@/components/veritas/PageHeader";
+import SectionStar from "@/components/veritas/SectionStar";
+import GoDeeper from "@/components/veritas/GoDeeper";
 import { SAINTS } from "@/data/veritas/saints";
+
+const PAGE_LABEL = "Saints & Doctors of the Church";
+const PAGE_HREF = "/veritas/saints";
 
 export default function SaintsPage() {
   const [search, setSearch] = useState("");
@@ -39,15 +44,19 @@ export default function SaintsPage() {
         </div>
         <div className="px-6 py-4 space-y-1">
           {filtered.map((saint) => (
-            <button
+            <div
               key={saint.name}
+              role="button"
+              tabIndex={0}
               onClick={() => setExpanded(expanded === saint.name ? null : saint.name)}
-              className="w-full rounded-lg border border-stone-800/50 px-4 py-2.5 text-left transition-colors hover:border-stone-700 hover:bg-stone-900/50"
+              onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && setExpanded(expanded === saint.name ? null : saint.name)}
+              className="w-full cursor-pointer rounded-lg border border-stone-800/50 px-4 py-2.5 text-left transition-colors hover:border-stone-700 hover:bg-stone-900/50"
             >
               <div className="flex flex-col gap-1">
                 <div className="flex items-baseline gap-2">
                   <span className="font-semibold text-sm text-stone-200">{saint.name}</span>
                   <span className="ml-auto text-[10px] text-stone-700">{saint.lived}</span>
+                  <SectionStar page={PAGE_LABEL} href={`${PAGE_HREF}#${saint.name}`} sectionId={saint.name} title={saint.name} summary={saint.theologicalContribution} />
                 </div>
                 {expanded === saint.name ? null : (
                   <p className="text-xs text-stone-500 line-clamp-1">{saint.title}</p>
@@ -56,6 +65,7 @@ export default function SaintsPage() {
               {expanded === saint.name && (
                 <div className="mt-2 space-y-2 border-t border-stone-800 pt-2">
                   <p className="text-[11px] text-amber-600">{saint.title}</p>
+                  <GoDeeper question={`Go deeper on ${saint.name} (${saint.lived}), ${saint.title}. Theological contribution: ${saint.theologicalContribution}`} />
                   <div>
                     <p className="text-[10px] uppercase text-stone-700">Major Works</p>
                     <ul className="mt-1 ml-3 space-y-0.5">
@@ -74,7 +84,7 @@ export default function SaintsPage() {
                   </div>
                 </div>
               )}
-            </button>
+            </div>
           ))}
         </div>
       </div>

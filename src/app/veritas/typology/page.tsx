@@ -2,7 +2,12 @@
 
 import { useState } from "react";
 import PageHeader from "@/components/veritas/PageHeader";
+import SectionStar from "@/components/veritas/SectionStar";
+import GoDeeper from "@/components/veritas/GoDeeper";
 import { TYPOLOGIES } from "@/data/veritas/typology";
+
+const PAGE_LABEL = "Typology";
+const PAGE_HREF = "/veritas/typology";
 
 const CATEGORIES = [
   "all",
@@ -72,10 +77,13 @@ export default function TypologyPage() {
         </div>
         <div className="px-6 py-4 space-y-2">
           {filtered.map((entry) => (
-            <button
+            <div
               key={entry.id}
+              role="button"
+              tabIndex={0}
               onClick={() => setExpanded(expanded === entry.id ? null : entry.id)}
-              className="w-full rounded-lg border border-stone-800/50 px-4 py-3 text-left transition-colors hover:border-stone-700 hover:bg-stone-900/50"
+              onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && setExpanded(expanded === entry.id ? null : entry.id)}
+              className="w-full cursor-pointer rounded-lg border border-stone-800/50 px-4 py-3 text-left transition-colors hover:border-stone-700 hover:bg-stone-900/50"
             >
               <div className="flex items-start gap-2 mb-1">
                 <span className="shrink-0 text-xs text-stone-600">
@@ -90,6 +98,13 @@ export default function TypologyPage() {
                     <span className="text-amber-400 text-sm">{entry.ntAntitype}</span>
                   </div>
                 </div>
+                <SectionStar
+                  page={PAGE_LABEL}
+                  href={`${PAGE_HREF}#${entry.id}`}
+                  sectionId={entry.id}
+                  title={`${entry.otType} → ${entry.ntAntitype}`}
+                  summary={entry.explanation}
+                />
                 <span className="ml-auto shrink-0 text-[10px] uppercase text-stone-700">
                   {entry.category}
                 </span>
@@ -101,6 +116,7 @@ export default function TypologyPage() {
               )}
               {expanded === entry.id && (
                 <div className="mt-3 ml-5 space-y-2 border-t border-stone-800 pt-3">
+                  <GoDeeper question={`Go deeper on the typology of ${entry.otType} → ${entry.ntAntitype}. ${entry.explanation}`} />
                   <div>
                     <p className="text-[11px] font-semibold text-stone-400 uppercase mb-1">
                       OT Passages
@@ -188,7 +204,7 @@ export default function TypologyPage() {
                   </p>
                 </div>
               )}
-            </button>
+            </div>
           ))}
         </div>
       </div>
