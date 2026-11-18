@@ -30,8 +30,24 @@
   --vg-accent-soft: rgba(212, 168, 83, 0.1);
   --vg-serif: "EB Garamond", Georgia, "Iowan Old Style", "Palatino Linotype", serif;
 
+  /* 2026-11-18: Jacob — "make sure everything isnt tiny basic text everywhere." A lot of
+     real content across Veritas (not just meta-labels) sits at Tailwind's xs/sm scale, which
+     these two variables drive on every text-xs/text-sm element in the subtree — same lever as
+     the amber-palette override above, just for size instead of color. */
+  --text-xs: 0.8125rem;
+  --text-xs--line-height: calc(1.35 / 0.8125);
+  --text-sm: 0.9375rem;
+  --text-sm--line-height: calc(1.5 / 0.9375);
+
   position: relative;
 }
+
+/* The scale variables above don't reach raw text-[Npx] arbitrary values (they bypass the
+   scale entirely), so bump those directly. Covers the ~10-11px citation chips, timestamps,
+   and uppercase-tracking-wide eyebrow labels used throughout the data-driven catalog pages. */
+.veritas-gold [class*="text-[9px]"] { font-size: 10px !important; }
+.veritas-gold [class*="text-[10px]"] { font-size: 11.5px !important; }
+.veritas-gold [class*="text-[11px]"] { font-size: 12.5px !important; }
 
 /* A single soft warm glow, like a candle somewhere above the page — static, not animated,
    no grid lines. */
