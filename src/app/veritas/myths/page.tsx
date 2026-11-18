@@ -2,7 +2,12 @@
 
 import { useState } from "react";
 import PageHeader from "@/components/veritas/PageHeader";
+import SectionStar from "@/components/veritas/SectionStar";
+import GoDeeper from "@/components/veritas/GoDeeper";
 import { MYTHS, type Myth } from "@/data/veritas/myths";
+
+const PAGE_LABEL = "Myths Debunked";
+const PAGE_HREF = "/veritas/myths";
 
 const CATEGORIES: { id: "all" | Myth["category"]; label: string }[] = [
   { id: "all", label: "All" },
@@ -45,17 +50,27 @@ export default function MythsPage() {
             const isOpen = expanded === m.myth;
             return (
               <div key={m.myth} className="rounded-xl border border-stone-800/60 bg-stone-900/30">
-                <button onClick={() => setExpanded(isOpen ? null : m.myth)} className="w-full px-4 py-3 text-left">
+                <div
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => setExpanded(isOpen ? null : m.myth)}
+                  onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && setExpanded(isOpen ? null : m.myth)}
+                  className="w-full cursor-pointer px-4 py-3 text-left"
+                >
                   <div className="flex items-start justify-between gap-2">
                     <div>
                       <span className="mr-2 rounded bg-rose-900/30 border border-rose-800/50 px-1.5 py-0.5 text-[10px] font-semibold uppercase text-rose-400">Myth</span>
                       <span className="text-sm text-stone-200">{m.myth}</span>
                     </div>
-                    <span className="shrink-0 text-xs text-stone-600">{isOpen ? "▾" : "▸"}</span>
+                    <div className="flex shrink-0 items-center gap-2">
+                      <SectionStar page={PAGE_LABEL} href={`${PAGE_HREF}#${m.myth}`} sectionId={m.myth} title={m.myth} summary={m.correction} />
+                      <span className="text-xs text-stone-600">{isOpen ? "▾" : "▸"}</span>
+                    </div>
                   </div>
-                </button>
+                </div>
                 {isOpen && (
                   <div className="space-y-3 border-t border-stone-800 px-4 py-4">
+                    <GoDeeper question={`Go deeper on the myth "${m.myth}". Correction: ${m.correction}`} />
                     <div className="rounded-lg border border-emerald-900/30 bg-emerald-950/10 p-3">
                       <p className="mb-1 text-[10px] font-semibold uppercase tracking-wide text-emerald-500">Correction</p>
                       <p className="text-sm leading-relaxed text-stone-300">{m.correction}</p>

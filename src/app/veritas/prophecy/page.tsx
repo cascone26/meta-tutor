@@ -2,7 +2,12 @@
 
 import { useState } from "react";
 import PageHeader from "@/components/veritas/PageHeader";
+import SectionStar from "@/components/veritas/SectionStar";
+import GoDeeper from "@/components/veritas/GoDeeper";
 import { prophecyDatabase } from "@/data/veritas/prophecy";
+
+const PAGE_LABEL = "Prophecy";
+const PAGE_HREF = "/veritas/prophecy";
 
 const CATEGORIES = [
   "all",
@@ -83,15 +88,19 @@ export default function ProphecyPage() {
         </div>
         <div className="px-6 py-4 space-y-2">
           {filtered.map((entry) => (
-            <button
+            <div
               key={entry.id}
+              role="button"
+              tabIndex={0}
               onClick={() => setExpanded(expanded === entry.id ? null : entry.id)}
-              className="w-full rounded-lg border border-stone-800/50 px-4 py-3 text-left transition-colors hover:border-stone-700 hover:bg-stone-900/50"
+              onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && setExpanded(expanded === entry.id ? null : entry.id)}
+              className="w-full cursor-pointer rounded-lg border border-stone-800/50 px-4 py-3 text-left transition-colors hover:border-stone-700 hover:bg-stone-900/50"
             >
               <div className="flex items-baseline gap-2 justify-between">
                 <span className="font-semibold text-sm text-stone-200 flex-1">
                   {entry.title}
                 </span>
+                <SectionStar page={PAGE_LABEL} href={`${PAGE_HREF}#${entry.id}`} sectionId={entry.id} title={entry.title} summary={entry.apologeticSignificance} />
                 <span className="shrink-0 text-[10px] uppercase text-stone-700">
                   {entry.category}
                 </span>
@@ -103,6 +112,7 @@ export default function ProphecyPage() {
               )}
               {expanded === entry.id && (
                 <div className="mt-3 space-y-3 border-t border-stone-800 pt-3">
+                  <GoDeeper question={`Go deeper on the prophecy "${entry.title}" (${entry.otSource.reference} → ${entry.ntFulfillment.reference}). ${entry.apologeticSignificance}`} />
                   <div className="grid grid-cols-1 gap-3">
                     <div className="rounded-lg border border-stone-800/60 bg-stone-900/30 p-3">
                       <p className="text-[11px] font-semibold text-stone-500 uppercase mb-2">
@@ -154,7 +164,7 @@ export default function ProphecyPage() {
                   )}
                 </div>
               )}
-            </button>
+            </div>
           ))}
         </div>
       </div>

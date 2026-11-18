@@ -2,7 +2,12 @@
 
 import { useState } from "react";
 import PageHeader from "@/components/veritas/PageHeader";
+import SectionStar from "@/components/veritas/SectionStar";
+import GoDeeper from "@/components/veritas/GoDeeper";
 import { SACRAMENTS } from "@/data/veritas/sacraments";
+
+const PAGE_LABEL = "Sacraments";
+const PAGE_HREF = "/veritas/sacraments";
 
 export default function SacramentsPage() {
   const [expanded, setExpanded] = useState<string | null>(SACRAMENTS[0]?.name ?? null);
@@ -23,18 +28,31 @@ export default function SacramentsPage() {
                 key={sacrament.name}
                 className="rounded-xl border border-stone-800/60 bg-stone-900/30 overflow-hidden"
               >
-                <button
+                <div
+                  role="button"
+                  tabIndex={0}
                   onClick={() => setExpanded(isOpen ? null : sacrament.name)}
-                  className="w-full px-4 py-3 text-left"
+                  onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && setExpanded(isOpen ? null : sacrament.name)}
+                  className="w-full cursor-pointer px-4 py-3 text-left"
                 >
                   <div className="flex items-baseline justify-between gap-2">
                     <span className="font-semibold text-sm text-stone-100">{sacrament.name}</span>
-                    <span className="shrink-0 text-stone-600 text-xs">{isOpen ? "▾" : "▸"}</span>
+                    <div className="flex shrink-0 items-center gap-2">
+                      <SectionStar
+                        page={PAGE_LABEL}
+                        href={`${PAGE_HREF}#${sacrament.name}`}
+                        sectionId={sacrament.name}
+                        title={sacrament.name}
+                        summary={sacrament.institution}
+                      />
+                      <span className="text-stone-600 text-xs">{isOpen ? "▾" : "▸"}</span>
+                    </div>
                   </div>
-                </button>
+                </div>
 
                 {isOpen && (
                   <div className="space-y-3 border-t border-stone-800 px-4 py-4">
+                    <GoDeeper question={`Go deeper on the sacrament of ${sacrament.name}. ${sacrament.institution}`} />
                     <div className="grid gap-2 sm:grid-cols-2">
                       <div className="rounded-lg border border-amber-900/30 bg-amber-950/10 p-3">
                         <p className="mb-1 text-[10px] font-semibold uppercase tracking-wide text-amber-500">

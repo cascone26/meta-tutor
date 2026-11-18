@@ -2,7 +2,12 @@
 
 import { useState } from "react";
 import PageHeader from "@/components/veritas/PageHeader";
+import SectionStar from "@/components/veritas/SectionStar";
+import GoDeeper from "@/components/veritas/GoDeeper";
 import { CRITICS } from "@/data/veritas/critics";
+
+const PAGE_LABEL = "Famous Critics";
+const PAGE_HREF = "/veritas/critics";
 
 const FIELDS = [
   "all",
@@ -65,24 +70,29 @@ export default function VeritasCritics() {
         </div>
         <div className="px-6 py-4 space-y-2">
           {filtered.map((critic) => (
-            <button
+            <div
               key={critic.name}
+              role="button"
+              tabIndex={0}
               onClick={() =>
                 setExpanded(expanded === critic.name ? null : critic.name)
               }
-              className="w-full rounded-lg border border-stone-800/50 px-4 py-3 text-left transition-colors hover:border-stone-700 hover:bg-stone-900/50"
+              onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && setExpanded(expanded === critic.name ? null : critic.name)}
+              className="w-full cursor-pointer rounded-lg border border-stone-800/50 px-4 py-3 text-left transition-colors hover:border-stone-700 hover:bg-stone-900/50"
             >
               <div className="flex items-baseline gap-2">
                 <span className="font-semibold text-sm text-stone-200">
                   {critic.name}
                 </span>
                 <span className="text-[11px] text-stone-600">{critic.dates}</span>
+                <SectionStar page={PAGE_LABEL} href={`${PAGE_HREF}#${critic.name}`} sectionId={critic.name} title={critic.name} summary={critic.coreArguments[0]} />
                 <span className="ml-auto text-[10px] uppercase text-stone-700">
                   {critic.field}
                 </span>
               </div>
               {expanded === critic.name ? (
                 <div className="mt-3 space-y-3 border-t border-stone-800 pt-3">
+                  <GoDeeper question={`Go deeper on ${critic.name}'s critique of the Church (${critic.field}). Core argument: ${critic.coreArguments[0]}`} />
                   <div>
                     <p className="text-[10px] uppercase text-stone-600 mb-1">
                       Key Works
@@ -143,7 +153,7 @@ export default function VeritasCritics() {
                   {critic.coreArguments[0]}
                 </p>
               )}
-            </button>
+            </div>
           ))}
         </div>
       </div>

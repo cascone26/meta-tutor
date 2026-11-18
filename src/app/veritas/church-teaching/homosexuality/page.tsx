@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import PageHeader from "@/components/veritas/PageHeader";
+import SectionStar from "@/components/veritas/SectionStar";
+import GoDeeper from "@/components/veritas/GoDeeper";
 import {
   CCC_TEXTS,
   AQUINAS_NATURAL_LAW,
@@ -11,6 +13,9 @@ import {
   OBJECTIONS,
   RELATED_GLOSSARY_TERMS,
 } from "@/data/veritas/church-teaching-homosexuality";
+
+const PAGE_LABEL = "Church Teaching: Homosexuality";
+const PAGE_HREF = "/veritas/church-teaching/homosexuality";
 
 const SECTIONS = [
   { id: "ccc", label: "Catechism" },
@@ -59,7 +64,10 @@ export default function HomosexualityTeachingPage() {
               </p>
               {CCC_TEXTS.map((c) => (
                 <div key={c.num} className="rounded-lg border border-stone-800/60 bg-stone-900/30 p-4">
-                  <p className="mb-1 text-[11px] font-mono font-semibold text-amber-500">CCC {c.num}</p>
+                  <div className="mb-1 flex items-center justify-between">
+                    <p className="text-[11px] font-mono font-semibold text-amber-500">CCC {c.num}</p>
+                    <SectionStar page={PAGE_LABEL} href={`${PAGE_HREF}#ccc-${c.num}`} sectionId={`ccc-${c.num}`} title={`CCC ${c.num}`} summary={c.text} />
+                  </div>
                   <p className="text-sm text-stone-300 leading-relaxed">{c.text}</p>
                 </div>
               ))}
@@ -68,8 +76,12 @@ export default function HomosexualityTeachingPage() {
 
           {tab === "aquinas" && (
             <div className="rounded-lg border border-stone-800/60 bg-stone-900/30 p-4">
-              <p className="mb-1 text-[11px] font-mono font-semibold text-amber-500">{AQUINAS_NATURAL_LAW.reference}</p>
+              <div className="mb-1 flex items-center justify-between">
+                <p className="text-[11px] font-mono font-semibold text-amber-500">{AQUINAS_NATURAL_LAW.reference}</p>
+                <SectionStar page={PAGE_LABEL} href={`${PAGE_HREF}#aquinas`} sectionId="aquinas" title={AQUINAS_NATURAL_LAW.reference} summary={AQUINAS_NATURAL_LAW.summary} />
+              </div>
               <p className="text-sm text-stone-300 leading-relaxed mb-3">{AQUINAS_NATURAL_LAW.summary}</p>
+              <GoDeeper question={`Go deeper on Aquinas's natural law argument here (${AQUINAS_NATURAL_LAW.reference}). ${AQUINAS_NATURAL_LAW.summary}`} />
               <div className="rounded-md border border-stone-700/50 bg-stone-800/30 p-3">
                 <p className="mb-1 text-[10px] font-semibold uppercase tracking-wide text-stone-500">Modern Context</p>
                 <p className="text-xs text-stone-400 leading-relaxed">{AQUINAS_NATURAL_LAW.modernNote}</p>
@@ -82,22 +94,27 @@ export default function HomosexualityTeachingPage() {
               {MAGISTERIAL_DOCUMENTS.map((d) => {
                 const isOpen = openDoc === d.title;
                 return (
-                  <button
+                  <div
                     key={d.title}
+                    role="button"
+                    tabIndex={0}
                     onClick={() => setOpenDoc(isOpen ? null : d.title)}
-                    className="w-full rounded-lg border border-stone-800/50 px-4 py-3 text-left transition-colors hover:border-stone-700 hover:bg-stone-900/50"
+                    onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && setOpenDoc(isOpen ? null : d.title)}
+                    className="w-full cursor-pointer rounded-lg border border-stone-800/50 px-4 py-3 text-left transition-colors hover:border-stone-700 hover:bg-stone-900/50"
                   >
                     <div className="flex items-baseline gap-2">
                       <span className="font-semibold text-sm text-stone-200">{d.title}</span>
+                      <SectionStar page={PAGE_LABEL} href={`${PAGE_HREF}#${d.title}`} sectionId={d.title} title={d.title} summary={d.summary} />
                       <span className="ml-auto shrink-0 text-[10px] text-stone-600">{d.year}</span>
                     </div>
                     <p className="mt-0.5 text-[11px] text-stone-600">{d.issuedBy}</p>
                     {isOpen && (
-                      <p className="mt-2 border-t border-stone-800 pt-2 text-xs text-stone-400 leading-relaxed">
-                        {d.summary}
-                      </p>
+                      <div className="mt-2 space-y-2 border-t border-stone-800 pt-2">
+                        <p className="text-xs text-stone-400 leading-relaxed">{d.summary}</p>
+                        <GoDeeper question={`Go deeper on ${d.title} (${d.year}, ${d.issuedBy}). ${d.summary}`} />
+                      </div>
                     )}
-                  </button>
+                  </div>
                 );
               })}
             </div>
@@ -107,7 +124,10 @@ export default function HomosexualityTeachingPage() {
             <div className="space-y-2">
               {TERMINOLOGY.map((t) => (
                 <div key={t.term} className="rounded-lg border border-stone-800/50 bg-stone-900/30 p-4">
-                  <p className="mb-1 text-sm font-semibold text-stone-200">{t.term}</p>
+                  <div className="mb-1 flex items-center justify-between">
+                    <p className="text-sm font-semibold text-stone-200">{t.term}</p>
+                    <SectionStar page={PAGE_LABEL} href={`${PAGE_HREF}#${t.term}`} sectionId={t.term} title={t.term} summary={t.explanation} />
+                  </div>
                   <p className="text-xs text-stone-400 leading-relaxed">{t.explanation}</p>
                 </div>
               ))}
@@ -136,21 +156,26 @@ export default function HomosexualityTeachingPage() {
               {OBJECTIONS.map((o, i) => {
                 const isOpen = openObjection === i;
                 return (
-                  <button
+                  <div
                     key={o.objection}
+                    role="button"
+                    tabIndex={0}
                     onClick={() => setOpenObjection(isOpen ? null : i)}
-                    className="w-full rounded-lg border border-stone-800/50 px-4 py-3 text-left transition-colors hover:border-stone-700 hover:bg-stone-900/50"
+                    onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && setOpenObjection(isOpen ? null : i)}
+                    className="w-full cursor-pointer rounded-lg border border-stone-800/50 px-4 py-3 text-left transition-colors hover:border-stone-700 hover:bg-stone-900/50"
                   >
                     <div className="flex items-baseline gap-2">
                       <span className="text-stone-600 text-xs shrink-0">{isOpen ? "▾" : "▸"}</span>
                       <span className="font-semibold text-sm text-stone-200">{o.objection}</span>
+                      <SectionStar page={PAGE_LABEL} href={`${PAGE_HREF}#${o.objection}`} sectionId={o.objection} title={o.objection} summary={o.response} />
                     </div>
                     {isOpen && (
-                      <p className="mt-2 border-t border-stone-800 pt-2 text-xs text-stone-400 leading-relaxed">
-                        {o.response}
-                      </p>
+                      <div className="mt-2 space-y-2 border-t border-stone-800 pt-2">
+                        <p className="text-xs text-stone-400 leading-relaxed">{o.response}</p>
+                        <GoDeeper question={`Go deeper on this objection: "${o.objection}" ${o.response}`} />
+                      </div>
                     )}
-                  </button>
+                  </div>
                 );
               })}
             </div>

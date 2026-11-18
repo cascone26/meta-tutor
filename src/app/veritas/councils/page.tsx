@@ -2,7 +2,12 @@
 
 import { useState } from "react";
 import PageHeader from "@/components/veritas/PageHeader";
+import SectionStar from "@/components/veritas/SectionStar";
+import GoDeeper from "@/components/veritas/GoDeeper";
 import { COUNCILS } from "@/data/veritas/councils";
+
+const PAGE_LABEL = "Ecumenical Councils";
+const PAGE_HREF = "/veritas/councils";
 
 export default function CouncilsPage() {
   const [search, setSearch] = useState("");
@@ -39,15 +44,19 @@ export default function CouncilsPage() {
         </div>
         <div className="px-6 py-4 space-y-1">
           {filtered.map((council) => (
-            <button
+            <div
               key={council.name}
+              role="button"
+              tabIndex={0}
               onClick={() => setExpanded(expanded === council.name ? null : council.name)}
-              className="w-full rounded-lg border border-stone-800/50 px-4 py-2.5 text-left transition-colors hover:border-stone-700 hover:bg-stone-900/50"
+              onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && setExpanded(expanded === council.name ? null : council.name)}
+              className="w-full cursor-pointer rounded-lg border border-stone-800/50 px-4 py-2.5 text-left transition-colors hover:border-stone-700 hover:bg-stone-900/50"
             >
               <div className="flex flex-col gap-1">
                 <div className="flex items-baseline gap-2">
                   <span className="font-semibold text-sm text-stone-200">{council.name}</span>
                   <span className="ml-auto text-[10px] text-stone-700">{council.year}</span>
+                  <SectionStar page={PAGE_LABEL} href={`${PAGE_HREF}#${council.name}`} sectionId={council.name} title={council.name} summary={council.issue} />
                 </div>
                 {expanded === council.name ? null : (
                   <p className="text-xs text-stone-500 line-clamp-1">
@@ -57,6 +66,7 @@ export default function CouncilsPage() {
               </div>
               {expanded === council.name && (
                 <div className="mt-2 space-y-2 border-t border-stone-800 pt-2">
+                  <GoDeeper question={`Go deeper on the ${council.name} (${council.year}). Issue addressed: ${council.issue}`} />
                   <div>
                     <p className="text-[11px] text-stone-600">{council.location}</p>
                     {council.pope && <p className="text-[11px] text-amber-600">{council.pope}</p>}
@@ -79,7 +89,7 @@ export default function CouncilsPage() {
                   </div>
                 </div>
               )}
-            </button>
+            </div>
           ))}
         </div>
       </div>
