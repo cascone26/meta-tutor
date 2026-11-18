@@ -2,6 +2,9 @@
 
 import { useState, useEffect } from "react";
 import PageHeader from "@/components/veritas/PageHeader";
+import { getNotes, deleteNote, type VeritasNote } from "@/lib/veritas/notes";
+import { renderMarkdown } from "@/lib/veritas/markdown";
+import { escapeHtml } from "@/lib/veritas/citations";
 
 interface SavedArgument {
   id: string;
@@ -13,6 +16,7 @@ interface SavedArgument {
 }
 
 export default function SavedPage() {
+  const [tab, setTab] = useState<"arguments" | "notes">("arguments");
   const [arguments_, setArguments] = useState<SavedArgument[]>([]);
   const [search, setSearch] = useState("");
   const [showForm, setShowForm] = useState(false);
@@ -21,6 +25,7 @@ export default function SavedPage() {
   const [newOpponent, setNewOpponent] = useState("");
   const [newArgument, setNewArgument] = useState("");
   const [newSources, setNewSources] = useState("");
+  const [notes, setNotes] = useState<VeritasNote[]>([]);
 
   useEffect(() => {
     const stored = localStorage.getItem("veritas-saved-arguments");
@@ -29,7 +34,19 @@ export default function SavedPage() {
         setArguments(JSON.parse(stored));
       } catch {}
     }
+    setNotes(getNotes());
   }, []);
+
+  const removeNote = (id: string) => {
+    deleteNote(id);
+    setNotes(getNotes());
+  };
+
+  const filteredNotes = notes.filter((n) => {
+    if (!search) return true;
+    const s = search.toLowerCase();
+    return n.text.toLowerCase().includes(s) || n.source.toLowerCase().includes(s);
+  });
 
   const save = (updated: SavedArgument[]) => {
     setArguments(updated);
@@ -71,31 +88,89 @@ export default function SavedPage() {
   return (
     <div className="flex h-app flex-col">
       <PageHeader
-        title="Saved Arguments"
-        subtitle="Your personal library of apologetics arguments"
+        title="Saved"
+        subtitle="Your personal library of saved arguments and chat notes"
         icon="💾"
       />
       <div className="flex-1 overflow-y-auto">
-        <div className="sticky top-0 z-10 border-b border-stone-800 bg-stone-950 px-6 py-3 space-y-2">
+        <div className="sticky top-0 z-10 border-b border-stone-800 bg-stone-950 px-6 pt-3">
+          <div className="mb-3 flex gap-1 border-b border-stone-800">
+            <button
+              onClick={() => setTab("arguments")}
+              className={`px-3 pb-2 text-sm font-medium transition-colors ${
+                tab === "arguments" ? "border-b-2 border-amber-500 text-amber-400" : "text-stone-500 hover:text-stone-300"
+              }`}
+            >
+              Arguments
+            </button>
+            <button
+              onClick={() => setTab("notes")}
+              className={`px-3 pb-2 text-sm font-medium transition-colors ${
+                tab === "notes" ? "border-b-2 border-amber-500 text-amber-400" : "text-stone-500 hover:text-stone-300"
+              }`}
+            >
+              Chat Notes {notes.length > 0 && `(${notes.length})`}
+            </button>
+          </div>
+        </div>
+        <div className="sticky top-[45px] z-10 border-b border-stone-800 bg-stone-950 px-6 py-3 space-y-2">
           <div className="flex gap-2">
             <input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search arguments..."
+              placeholder={tab === "arguments" ? "Search arguments..." : "Search chat notes..."}
               className="flex-1 rounded-lg border border-stone-800 bg-stone-900 px-3 py-2 text-sm text-stone-200 placeholder-stone-600 outline-none focus:border-amber-700"
             />
+            {tab === "arguments" && (
             <button
               onClick={() => setShowForm(!showForm)}
               className="rounded-lg bg-amber-700 px-4 py-2 text-sm font-medium text-stone-100 hover:bg-amber-600 transition-colors whitespace-nowrap"
             >
               {showForm ? "Cancel" : "+ New"}
             </button>
+            )}
           </div>
           <p className="text-[10px] text-stone-600">
-            {filtered.length} saved arguments
+            {tab === "arguments" ? `${filtered.length} saved arguments` : `${filteredNotes.length} chat notes`}
           </p>
         </div>
 
+        {tab === "notes" ? (
+          <div className="px-6 py-4">
+            {filteredNotes.length === 0 ? (
+              <div className="py-12 text-center">
+                <p className="text-sm text-stone-500">No saved chat notes yet.</p>
+                <p className="mt-1 text-xs text-stone-600">
+                  Highlight any text in Ask Aquinas, a debate, or a response, or click ✎ Save on an
+                  answer, to keep it here.
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-2">
+                {filteredNotes.map((n) => (
+                  <div key={n.id} className="rounded-xl border border-stone-800 p-4">
+                    <div className="mb-2 flex items-center justify-between">
+                      <span className="text-xs font-medium text-amber-600">{n.source}</span>
+                      <span className="text-[10px] text-stone-600">
+                        {new Date(n.createdAt).toLocaleDateString()}
+                      </span>
+                    </div>
+                    <div
+                      className="text-sm leading-relaxed text-stone-300 [&_a]:text-amber-500 [&_a:hover]:underline"
+                      dangerouslySetInnerHTML={{ __html: renderMarkdown(escapeHtml(n.text)) }}
+                    />
+                    <button
+                      onClick={() => removeNote(n.id)}
+                      className="mt-2 text-[10px] text-red-600 hover:text-red-400"
+                    >
+                      Delete Note
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        ) : (
         <div className="px-6 py-4 space-y-4">
           {showForm && (
             <div className="rounded-xl border border-amber-900/50 bg-amber-950/10 p-4 space-y-3">
@@ -202,6 +277,7 @@ export default function SavedPage() {
             </div>
           )}
         </div>
+        )}
       </div>
     </div>
   );

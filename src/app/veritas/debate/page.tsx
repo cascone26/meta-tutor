@@ -3,6 +3,8 @@
 import { useState } from "react";
 import PageHeader from "@/components/veritas/PageHeader";
 import { linkCitations, escapeHtml } from "@/lib/veritas/citations";
+import { renderMarkdown } from "@/lib/veritas/markdown";
+import { saveNote } from "@/lib/veritas/notes";
 
 const OPPONENT_TYPES = [
   { id: "atheist", label: "Atheist / Agnostic", icon: "🧪" },
@@ -37,11 +39,13 @@ export default function DebatePrep() {
   const [opponent, setOpponent] = useState("");
   const [response, setResponse] = useState("");
   const [loading, setLoading] = useState(false);
+  const [saved, setSaved] = useState(false);
 
   const handleSubmit = async () => {
     if (!topic.trim() || !opponent || loading) return;
     setLoading(true);
     setResponse("");
+    setSaved(false);
 
     try {
       const opponentLabel = OPPONENT_TYPES.find((o) => o.id === opponent)?.label ?? opponent;
@@ -143,12 +147,21 @@ export default function DebatePrep() {
 
           {response && (
             <div className="rounded-xl border border-stone-800 bg-stone-900/50 p-6">
-              <div className="mb-2 text-[10px] font-semibold uppercase tracking-wider text-amber-600">
+              <div className="mb-2 flex items-center justify-between text-[10px] font-semibold uppercase tracking-wider text-amber-600">
                 Debate Briefing
+                <button
+                  onClick={() => {
+                    saveNote(response, `Debate Prep: ${topic} vs ${OPPONENT_TYPES.find((o) => o.id === opponent)?.label ?? opponent}`);
+                    setSaved(true);
+                  }}
+                  className="normal-case tracking-normal text-stone-600 hover:text-amber-500"
+                >
+                  {saved ? "✓ Saved" : "✎ Save"}
+                </button>
               </div>
               <div
-                className="whitespace-pre-wrap text-sm leading-relaxed text-stone-300 [&_a]:text-amber-500 [&_a:hover]:underline"
-                dangerouslySetInnerHTML={{ __html: linkCitations(escapeHtml(response)) }}
+                className="text-sm leading-relaxed text-stone-300 [&_a]:text-amber-500 [&_a:hover]:underline"
+                dangerouslySetInnerHTML={{ __html: renderMarkdown(linkCitations(escapeHtml(response))) }}
               />
             </div>
           )}
