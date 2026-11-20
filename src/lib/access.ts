@@ -57,6 +57,7 @@ export const JACOB_ONLY_PREFIXES = [
   "/api/latin-lab",
   "/api/latin-progress",
   "/api/rca-custom-vocab",
+  "/guitar",
   "/veritas",
   "/api/veritas-chat",
   "/api/veritas-daily",
