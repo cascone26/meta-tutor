@@ -1,5 +1,60 @@
 # Meta Tutor — Status
 
+## (Jacob) Guitar: new subject — live mic tuner, chord trainer, curriculum, play-along (2026-11-20)
+Built the whole thing in one session per Jacob's "get it all built" — a guitar-learning module
+combining the useful parts of JustinGuitar (structured curriculum + play-along), Yousician
+(real-time mic feedback), Fender Play (short focused lessons), and GuitarTricks/TrueFire (depth) —
+personal use only, phone-reachable via the existing deployed site (no new infra needed).
+
+**New subject at `/guitar`** (`src/lib/guitar/`, `src/components/guitar/`, `src/app/guitar/`),
+registered in `subjects.ts` (hub card + `HUB_SHELL_PREFIXES`) and `access.ts`
+(`JACOB_ONLY_PREFIXES`) same as every other Jacob-only module:
+- **Pitch detection** (`lib/guitar/pitch-detection.ts`) — YIN algorithm on raw mic samples, no
+  external DSP library. Drives the live Tuner (`/guitar/tuner`).
+- **Chord detection** (`lib/guitar/chord-detection.ts`) — 12-bin chroma (pitch-class) matching
+  via cosine similarity against each chord's real fretted pitch classes (derived from tuning +
+  frets in `chords-data.ts`, never hand-duplicated). Drives the Chord Trainer and Play-Along's
+  live-feedback meter.
+- **Curriculum** (`lib/guitar/curriculum.ts`) — 27 lessons across 6 modules (Fundamentals → Open
+  Chords → Seventh Chords → Strumming/Rhythm → Barre/Power → Play-Along Songs), one linear unlock
+  chain, XP per lesson. **Songs** (`lib/guitar/songs.ts`) — 3 generic chord-progression skeletons
+  (12-bar blues, the "four chord song" loop, a 3/4 waltz) for the metronome-driven play-along mode.
+- **Progress** (`lib/guitar/progress.ts`) — reuses the EXISTING `mt_wrong_answers`/`mt_quiz_history`
+  Supabase tables and `/api/subject-progress` route with `subject="guitar"` — **no new schema**,
+  same backend every other subject already uses. Lesson completion/XP/streak are localStorage-only
+  (own keys, doesn't touch Cris's shared `meta-tutor-streaks` key).
+- **Components**: `useGuitarAudio` (mic + two AnalyserNodes — see bug below), `Tuner`,
+  `ChordDiagram` (SVG), `ChordTrainer`, `useMetronome` (Web Audio lookahead scheduler, not
+  setInterval), `Metronome`, `PlayAlong`, `CurriculumTree`, `GuitarProgressPanel`.
+
+**Real bug caught by verification, not by eye**: first pass used one AnalyserNode (fftSize 4096,
+~10.8Hz/bin) for both pitch and chroma. Wrote `scripts/mt-guitar-dsp-test.ts` — a direct unit test
+feeding synthetic sine waves/spectra into the real algorithms (not the UI) — and it caught real
+chord misidentification: B7 matched as D, E5 (power chord) matched as C7. Root cause: below ~230Hz
+a 10.8Hz-wide FFT bin is wider than a semitone (one semitone at open low E, 82Hz, is ~4.8Hz), so low
+guitar notes were landing in the wrong pitch-class bin. Fixed by splitting into two AnalyserNodes
+off one source — a small fast one (2048) for YIN pitch tracking, a separate 32768-point one
+(~1.35Hz/bin) purely for chroma. Also fixed the chord-template weighting itself: it was a flat
+on/off set per pitch class, which systematically mismatched any shape that doubles its root across
+strings (most open chords) — now weighted by how many strings actually sound each pitch class
+(`chordPitchClassCounts`). Re-ran the test after both fixes: all 18 chords score a perfect 1.000
+against themselves with zero cross-chord confusion (`scripts/mt-guitar-dsp-test.ts`, `ALL PASS`).
+
+**Verified**: `npx tsc --noEmit` clean, `npm run build` clean (6 static + 1 dynamic `/guitar/*`
+routes), `npx eslint` clean except the same pre-existing `set-state-in-effect` pattern already
+present in `HubContent.tsx`/`dashboard/page.tsx` (not CI-enforced, not new to this work). Headless
+Chromium sweep of all 8 routes × 2 viewports (desktop 1280×1000, mobile 390×844) — 16/16 return 200,
+zero console/page errors (`scripts/mt-guitar-sweep.mjs`) — plus a live-mic run using Chromium's fake
+audio device + granted mic permission to drive the real `getUserMedia → AudioContext → Analyser`
+pipeline end-to-end without crashing (`scripts/mt-guitar-audio-check.mjs`). Screenshots read
+directly (own vision) at mobile viewport: hub, chord library (diagrams render correctly with
+fingers/open/muted markers), curriculum tree (lock/unlock states correct), tuner, play-along.
+
+**Not yet Handle-tier**: nobody has actually played a real guitar into a real phone mic against
+this yet — that needs Jacob on his own phone. Everything above is proven at the DSP-correctness and
+structural-render level; the real-world "does it recognize MY chords through MY phone mic in MY
+room" check is the next step, on his end.
+
 ## (Jacob) Veritas: full port of the standalone app + hub redesign (2026-11-16)
 Second pass on the same day as the Catholic-vs-Lutheran/homosexuality-teaching work below: "make the
 Veritas stuff all updated, full catalogs, AI powers, everything it had before on its own site but
