@@ -11,6 +11,7 @@ export const HELP_CONTENT: Record<string, HelpEntry[]> = {
   "/guitar/tuner": [
     { q: "What's \"Guided\" vs \"Chromatic\"?", a: "Guided walks you through all 6 strings one at a time and tells you exactly what to do — start here if you're new. Chromatic just shows whatever note it hears, for anyone who already knows note names and wants to check any string or fret." },
     { q: "What does \"cents\" mean?", a: "A cent is 1/100th of the distance between two notes. 0 cents = perfectly in tune. ±5 cents or less is close enough to call it in tune." },
+    { q: "What's the speaker icon for?", a: "Tap it to hear the correct pitch for that string played out loud — compare it to what your string actually sounds like. Before starting, you can tap any string's name to practice hearing all 6 without the mic running." },
     { q: "It says I'm hearing the wrong string — what do I do?", a: "Check the diagram on screen — it highlights exactly which string to pluck. If it says it heard a different one, you're probably plucking a neighboring string by accident." },
     { q: "Which way do I turn the tuning peg?", a: "\"Tighten\" raises the pitch (makes it higher/sharper). \"Loosen\" lowers it (makes it lower/flatter). Turn a little at a time and re-pluck — a little turn changes the pitch a lot." },
     { q: "Why isn't it hearing anything?", a: "Make sure you allowed microphone access, that you're in a reasonably quiet room, and that you're plucking one string firmly and letting it ring (not muting it right away)." },

@@ -1,5 +1,17 @@
 # Meta Tutor — Status
 
+## (Jacob) Guitar: reference-tone ear practice in the tuner (2026-11-21)
+Small follow-up: "add that so I can practice and hear it too as an option." Added
+`reference-tone.ts` — plays a clean sine-wave pitch through the speaker via a short-lived
+AudioContext (pure audio output, no mic/permission needed). Wired into `GuidedTuner.tsx` two ways:
+a "Practice by ear" section on the idle screen (6 tappable string buttons, works before the mic
+flow even starts) and a speaker-icon button next to whichever string you're currently tuning (to
+A/B against what your string actually sounds like). Added a matching help-sheet entry.
+
+**Verified**: `npx tsc --noEmit` / `npm run build` / `npx eslint` clean. Headless check drove the
+actual tone buttons (clicked Low E and A) with zero console/page errors. Screenshot reviewed
+directly (own vision).
+
 ## (Jacob) Guitar: simple static help system (2026-11-21)
 Jacob asked for help/explanations on everything ("chord library and I don't know what anything
 means") but explicitly **not** an AI chatbot — "AGAIN SIMPLE STUFF... little mini hover question
