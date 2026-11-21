@@ -1,4 +1,5 @@
 import GuitarNav from "@/components/guitar/GuitarNav";
+import HelpSheet from "@/components/guitar/HelpSheet";
 
 // Scoped warm "wood & strings" theme for the whole Guitar subject — deliberately distinct
 // from the generic --surface/--accent tokens used elsewhere, so this feels like a dedicated
@@ -99,6 +100,7 @@ export default function GuitarLayout({ children }: { children: React.ReactNode }
       <div aria-hidden className="pointer-events-none fixed rounded-full" style={{ width: 300, height: 300, bottom: "-4%", right: "6%", background: "radial-gradient(circle, var(--g-accent-wash) 0%, transparent 70%)", filter: "blur(55px)", animation: "floatSlower 20s ease-in-out infinite" }} />
 
       <GuitarNav />
+      <HelpSheet />
       <div className="relative z-10">{children}</div>
     </div>
   );

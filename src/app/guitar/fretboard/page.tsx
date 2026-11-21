@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { fretboardGrid, FRET_COUNT, FRET_MARKERS } from "@/lib/guitar/fretboard";
 import { NOTE_NAMES } from "@/lib/guitar/notes";
+import HelpTip from "@/components/guitar/HelpTip";
 
 export default function FretboardPage() {
   const [highlightPc, setHighlightPc] = useState<number | null>(null);
@@ -10,7 +11,10 @@ export default function FretboardPage() {
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-6">
-      <h1 className="text-xl font-semibold mb-1 text-center" style={{ color: "var(--g-text)" }}>Fretboard Note Map</h1>
+      <h1 className="text-xl font-semibold mb-1 text-center flex items-center justify-center" style={{ color: "var(--g-text)" }}>
+        Fretboard Note Map
+        <HelpTip text="This shows the name of every note across every string, frets 0-12 (0 = open string, no finger pressing). It's a reference for learning where notes live on the neck." />
+      </h1>
       <p className="text-sm mb-5 text-center" style={{ color: "var(--g-muted)" }}>Every note, frets 0–12. Tap a note name to highlight it across the whole neck.</p>
 
       <div className="flex flex-wrap justify-center gap-1.5 mb-6">
