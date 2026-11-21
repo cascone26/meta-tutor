@@ -1,5 +1,15 @@
 # Meta-Tutor Process Log
 
+## Guided-tuner + song-library merge — third manual `wrangler deploy` — 2026-11-21
+PR #34 (GuidedTuner, ChromaticTuner split, 18-song library, ChordSheet) merged to `main`, deployed
+the same proven way: build → dry-run (3.94MB gzip) → local `wrangler dev` check → real deploy
+(Worker Startup Time 25ms) → isolated preview check → real-domain check. `tutor.lessondraft.com`
+now serves `/guitar/tuner` (new Guided/Chromatic toggle) and `/guitar/play-along` (18-song
+difficulty-filtered browser) as clean 302s, plus every other `/guitar/*` route and every other
+subject (`/`, `/veritas`, `/chess`, `/latin-lab`, `/trivia`, `/riemann`, `/ethics`, `/metaphysics`,
+`/cris`) — all clean, no regressions. Same standing gap as before: this Worker still needs a manual
+deploy per guitar change until a CI/cron hook exists for it.
+
 ## Guitar redesign/expansion merge — second manual `wrangler deploy` — 2026-11-21
 PR #32 (warm theme, GuitarNav, Metronome/Fretboard/Note-Trainer/badges, tuner-precision work)
 merged to `main`, then deployed by hand the same way as the 2026-11-20 entry below: build → dry-run
