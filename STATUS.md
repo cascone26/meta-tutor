@@ -50,6 +50,12 @@ pipeline end-to-end without crashing (`scripts/mt-guitar-audio-check.mjs`). Scre
 directly (own vision) at mobile viewport: hub, chord library (diagrams render correctly with
 fingers/open/muted markers), curriculum tree (lock/unlock states correct), tuner, play-along.
 
+**Deployed to the real live domain** (`tutor.lessondraft.com`, via the `meta-tutor-workers`
+Cloudflare Worker — NOT `meta-tutor.vercel.app`, which is dead/fair-use-blocked; see PROCESS.md
+2026-11-20 entry for the full manual-deploy sequence and why a plain `main` merge doesn't reach it
+by itself). Confirmed live: `/guitar` returns the same auth-gated `302` as every other subject,
+`/login` 200, full sweep of every other subject clean — no regressions.
+
 **Not yet Handle-tier**: nobody has actually played a real guitar into a real phone mic against
 this yet — that needs Jacob on his own phone. Everything above is proven at the DSP-correctness and
 structural-render level; the real-world "does it recognize MY chords through MY phone mic in MY
