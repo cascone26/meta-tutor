@@ -6,6 +6,7 @@ import { detectPitchYin, rms, MIN_GUITAR_HZ, MAX_GUITAR_HZ, SILENCE_RMS } from "
 import { describeFrequency, NOTE_NAMES } from "@/lib/guitar/notes";
 import { createPitchStabilizer } from "@/lib/guitar/pitch-stabilizer";
 import { logPracticeResult } from "@/lib/guitar/progress";
+import HelpTip from "./HelpTip";
 
 const NATURAL_PCS = [0, 2, 4, 5, 7, 9, 11];
 const HOLD_MS_TO_PASS = 400;
@@ -84,7 +85,7 @@ export default function NoteTrainer() {
     <div className="max-w-sm mx-auto px-5 py-6 text-center">
       {audio.status === "idle" && (
         <>
-          <div className="flex justify-center gap-2 mb-4">
+          <div className="flex justify-center items-center gap-2 mb-4">
             <button
               onClick={() => setNaturalsOnly(true)}
               className="text-xs px-3 py-1.5 rounded-full font-medium"
@@ -99,6 +100,7 @@ export default function NoteTrainer() {
             >
               All 12 notes
             </button>
+            <HelpTip text="Naturals only = just the 7 notes with no sharps (C D E F G A B) — easier, good for starting out. All 12 notes adds the sharps in between, for a harder version." />
           </div>
           <button onClick={audio.start} className="g-btn">Start Note Trainer (allow microphone)</button>
         </>

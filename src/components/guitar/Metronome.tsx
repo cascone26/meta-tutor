@@ -2,6 +2,7 @@
 
 import { useRef, useState } from "react";
 import { useMetronome } from "./useMetronome";
+import HelpTip from "./HelpTip";
 
 const TIME_SIGNATURES = [2, 3, 4, 6];
 const TAP_RESET_MS = 2200;
@@ -45,7 +46,10 @@ export default function Metronome({ initialBpm = 80, initialBeatsPerMeasure = 4,
       </div>
 
       <div className="text-4xl font-bold mb-1" style={{ color: "var(--g-text)" }}>{bpm}</div>
-      <div className="text-xs mb-3" style={{ color: "var(--g-muted)" }}>BPM</div>
+      <div className="text-xs mb-3 flex items-center justify-center" style={{ color: "var(--g-muted)" }}>
+        BPM
+        <HelpTip text="Beats Per Minute — how fast the metronome clicks. Lower = slower. Start slow and work up." />
+      </div>
       <input
         type="range"
         min={40}

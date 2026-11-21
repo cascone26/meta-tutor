@@ -1,6 +1,30 @@
 # Meta Tutor — Status
 
-## (Jacob) Guitar: guided beginner tuner + 18-song library with chord sheets (2026-11-21)
+## (Jacob) Guitar: simple static help system (2026-11-21)
+Jacob asked for help/explanations on everything ("chord library and I don't know what anything
+means") but explicitly **not** an AI chatbot — "AGAIN SIMPLE STUFF... little mini hover question
+marks." Built accordingly: zero AI/API calls, just written-once static content, so it's instant,
+free, and can't ever go down or hallucinate.
+
+- **`help-content.ts`** — a plain-English Q&A glossary keyed by route (Hub, Tuner, Chord Library,
+  Lessons, Play-Along, Metronome, Fretboard Map, Note Trainer, Progress), with a fallback for
+  every `/guitar/lessons/<slug>` page.
+- **`HelpSheet.tsx`** — a "?" button fixed at the bottom-right of every Guitar page (mounted once
+  in `guitar/layout.tsx`). Tapping it slides up a bottom sheet with an accordion of Q&A for
+  *whatever page you're currently on* — re-reads the pathname on navigation, so it's always
+  context-correct, not a generic FAQ dump.
+- **`HelpTip.tsx`** — a tiny inline "?" next to specific confusing terms (what the dots/×/o mean
+  on a chord diagram, what "barre"/"seventh"/"power chord" mean on the Chord Library, what BPM
+  means on the Metronome, naturals-vs-all-12 on Note Trainer, what frets 0-12 mean on the
+  Fretboard Map). Tap to expand right there, inline — deliberately not a floating tooltip, so it
+  can never clip off-screen or fight z-index on mobile.
+
+**Verified**: `npx tsc --noEmit` / `npm run build` / `npx eslint` clean (same pre-existing
+non-CI pattern, one more instance proportional to the new component). Headless sweep clean.
+Drove the actual interactions in a real browser: inline tip expands correctly, Help button opens
+the sheet, and — the one that actually proves it's context-aware, not just present — the sheet's
+content genuinely changes between `/guitar/chords` and `/guitar/tuner`. Screenshots reviewed
+directly (own vision).
 Direct follow-up to "the tuner needs to be perfect... for a beginner who doesn't know notes,
 step by step, string by string" + "plenty of songs to practice, notes, sheet."
 
