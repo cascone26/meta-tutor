@@ -1,5 +1,51 @@
 # Meta Tutor — Status
 
+## (Jacob) Guitar: guided beginner tuner + 18-song library with chord sheets (2026-11-21)
+Direct follow-up to "the tuner needs to be perfect... for a beginner who doesn't know notes,
+step by step, string by string" + "plenty of songs to practice, notes, sheet."
+
+**Guided Tuner** — the old single chromatic tuner is now one of two modes (`Tuner.tsx` is a thin
+switcher), defaulting to the new one:
+- `GuidedTuner.tsx` walks all 6 strings in order, thickest to thinnest (low E → A → D → G → B →
+  high e), one at a time. Each step shows a `StringDiagram` (visual taper, active string
+  highlighted — no note-reading required to know which string to pluck) and the shared
+  `TunerGauge` (extracted from the old Tuner so chromatic + guided never duplicate the gauge math).
+- **Wrong-string detection**: compares the detected pitch against ALL 6 known open-string
+  frequencies (`closestString`), not just the expected one — if someone plucks the wrong string it
+  says so by name ("That sounds like string 4 (D). Try string 5 (A) instead") instead of showing
+  nonsense cents against the wrong target.
+- **Known-target cents** (`centsFromTarget`, new in `notes.ts`) computes the offset directly
+  against the exact expected pitch rather than "nearest semitone," which matters once you already
+  know which note you want.
+- Auto-advances after holding in-tune for 700ms (with a visible "Nailed it!" moment first), plus
+  manual Previous/Skip and tap-any-string-to-jump nav so nobody gets stuck. Ends on a real
+  completion screen. Wired into the "Tune Up" lesson's `onAllDone`.
+- `ChromaticTuner.tsx` (any note, any fret — unchanged capability) is kept as the explicit
+  "advanced" toggle for anyone who already reads notes.
+
+**Song library**: 3 → 18 songs (`songs.ts`), each now with `difficulty` (beginner/easy/
+intermediate), `key`, and labeled `sections` (Verse/Chorus/12-bar/etc.) instead of one flat
+progression — `progression` (what Play-Along's metronome actually loops) is derived from
+`sections`, never hand-duplicated. Covers 2-chord vamps up through 12-bar blues/minor-blues,
+barre-chord drills, and a jazz 7th-chord turnaround. `/guitar/play-along` redesigned with a
+difficulty filter + song list (was a 3-button row, now scales to 18).
+
+**New: Chord Sheet view** (`ChordSheet.tsx`) — a readable lead-sheet per song: chord symbols
+grouped by section, plus a reference strip of every chord diagram used in it (reuses
+`ChordDiagram`, not a second implementation). Toggle between "Play" (live metronome) and "Chord
+Sheet" (read it first) per song on `/guitar/play-along`.
+
+**Verified**: expanded `scripts/mt-guitar-dsp-test.ts` with direct tests for the guided tuner's
+actual trust surface — `centsFromTarget` exact/±10-cent cases for all 6 open strings, and
+`closestString` correctly identifying each string (including the specific "D string shouldn't
+register as A string" case) — plus a song-library integrity check (every chord id in every song's
+progression resolves against the real chord library; `progression` matches its flattened
+`sections`; no duplicate ids) — this is a real typo-catcher a `string[]` type alone can't provide.
+`npx tsc --noEmit` / `npm run build` / `npx eslint` all clean (same pattern as before). Full
+headless sweep clean. Live-mic Chromium check: guided flow reaches "listening," string-jump nav
+works, string diagram + gauge render correctly at every string; chromatic mode and the new chord
+sheet view both verified live. Screenshots reviewed directly (own vision).
+
 ## (Jacob) Guitar: visual redesign + feature expansion (2026-11-21)
 Follow-up to the initial build below, per "make everything look good... more features... back
 buttons and menus." Two parts:

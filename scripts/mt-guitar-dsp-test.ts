@@ -5,7 +5,8 @@ import { detectPitchYin } from "../src/lib/guitar/pitch-detection";
 import { createPitchStabilizer } from "../src/lib/guitar/pitch-stabilizer";
 import { chromaFromSpectrum, scoreAgainstChord, CHORD_MATCH_PASS_THRESHOLD } from "../src/lib/guitar/chord-detection";
 import { chordById, CHORDS } from "../src/lib/guitar/chords-data";
-import { describeFrequency } from "../src/lib/guitar/notes";
+import { SONGS } from "../src/lib/guitar/songs";
+import { describeFrequency, centsFromTarget, closestString, STANDARD_TUNING, midiToFrequency } from "../src/lib/guitar/notes";
 
 const SAMPLE_RATE = 44100;
 
@@ -181,6 +182,21 @@ console.log("\n=== Pitch stabilizer ===");
   check("one silent frame doesn't wipe the display instantly", afterOneSilentFrame !== null && Math.abs(afterOneSilentFrame - 110) < 1, `${afterOneSilentFrame}`);
 }
 
+// === Guided tuner's core primitives — this is what a total beginner is trusting ===
+console.log("\n=== Guided tuner: cents-from-known-target + string identification ===");
+for (const s of STANDARD_TUNING) {
+  const exact = midiToFrequency(s.midi);
+  check(`${s.name} (string ${s.string}) at exact pitch reads 0 cents`, centsFromTarget(exact, s.midi) === 0, `${centsFromTarget(exact, s.midi)}`);
+  const tenCentsSharp = exact * Math.pow(2, 10 / 1200);
+  check(`${s.name} 10 cents sharp reads +10`, centsFromTarget(tenCentsSharp, s.midi) === 10, `${centsFromTarget(tenCentsSharp, s.midi)}`);
+  const tenCentsFlat = exact * Math.pow(2, -10 / 1200);
+  check(`${s.name} 10 cents flat reads -10`, centsFromTarget(tenCentsFlat, s.midi) === -10, `${centsFromTarget(tenCentsFlat, s.midi)}`);
+  check(`${s.name} at its own pitch identifies as string ${s.string}, not a neighbor`, closestString(exact).string === s.string, `matched string ${closestString(exact).string}`);
+}
+// Realistic "wrong string" case: played the D string while the guided flow wants A.
+const dStringFreq = midiToFrequency(STANDARD_TUNING.find((s) => s.string === 4)!.midi);
+check("D string correctly identified as string 4, not string 5 (A)", closestString(dStringFreq).string === 4, `matched ${closestString(dStringFreq).string}`);
+
 console.log("\n=== Note naming ===");
 const a440 = describeFrequency(440);
 check("440Hz = A4, 0 cents", a440.name === "A" && a440.octave === 4 && Math.abs(a440.cents) <= 1, JSON.stringify(a440));
@@ -218,6 +234,19 @@ for (const target of CHORDS) {
     }
   }
 }
+
+// === Song library: every referenced chord id must actually exist — a `string[]` chord list
+// won't catch a typo at compile time, only a real lookup against the chord library will. ===
+console.log("\n=== Song library integrity ===");
+check(`${SONGS.length} songs loaded`, SONGS.length >= 15, `${SONGS.length}`);
+for (const s of SONGS) {
+  const allChordsValid = s.progression.every((id) => chordById(id) !== undefined);
+  const badIds = s.progression.filter((id) => chordById(id) === undefined);
+  check(`${s.id}: every chord id resolves`, allChordsValid, badIds.length ? `bad ids: ${badIds.join(", ")}` : "ok");
+  check(`${s.id}: progression matches flattened sections`, s.progression.length === s.sections.flatMap((sec) => sec.chords).length, "");
+}
+const ids = SONGS.map((s) => s.id);
+check("no duplicate song ids", new Set(ids).size === ids.length, `${ids.length} ids, ${new Set(ids).size} unique`);
 
 console.log(`\n${failures === 0 ? "ALL PASS" : `${failures} FAILURE(S)`}`);
 process.exit(failures === 0 ? 0 : 1);

@@ -75,9 +75,9 @@ export default function LessonPage() {
 
           {lesson.practiceType === "tuning" && (
             <div>
-              <Tuner />
+              <Tuner onAllDone={complete} />
               <div className="px-5 text-center">
-                <button onClick={complete} className="g-btn">All 6 strings in tune — mark complete</button>
+                <button onClick={complete} className="g-btn-ghost">Already in tune — mark complete</button>
               </div>
             </div>
           )}

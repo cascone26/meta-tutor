@@ -46,6 +46,12 @@ export const STANDARD_TUNING = [
   { string: 1, name: "E4", midi: 64 },
 ] as const;
 
+/** Cents offset of a frequency from a KNOWN target midi — not rounded to "nearest semitone"
+ *  like describeFrequency, since a guided tuner already knows exactly which note it wants. */
+export function centsFromTarget(freq: number, targetMidi: number): number {
+  return Math.round(1200 * Math.log2(freq / midiToFrequency(targetMidi)));
+}
+
 export function closestString(freq: number) {
   const midi = frequencyToMidi(freq);
   let best: (typeof STANDARD_TUNING)[number] = STANDARD_TUNING[0];
