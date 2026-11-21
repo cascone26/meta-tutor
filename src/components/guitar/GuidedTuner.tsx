@@ -4,10 +4,11 @@ import { useEffect, useRef, useState } from "react";
 import { useGuitarAudio } from "./useGuitarAudio";
 import { detectPitchYin, rms, MIN_GUITAR_HZ, MAX_GUITAR_HZ, SILENCE_RMS } from "@/lib/guitar/pitch-detection";
 import { createPitchStabilizer } from "@/lib/guitar/pitch-stabilizer";
-import { STANDARD_TUNING, centsFromTarget, closestString } from "@/lib/guitar/notes";
+import { STANDARD_TUNING, centsFromTarget, closestString, midiToFrequency } from "@/lib/guitar/notes";
+import { playReferenceTone } from "@/lib/guitar/reference-tone";
 import TunerGauge from "./TunerGauge";
 import StringDiagram from "./StringDiagram";
-import { CheckIcon } from "./GuitarIcons";
+import { CheckIcon, SpeakerIcon } from "./GuitarIcons";
 
 // Low to high — the order every beginner tuning guide uses: start with the thick string.
 const SEQUENCE = STANDARD_TUNING;
@@ -128,7 +129,26 @@ export default function GuidedTuner({ onAllDone }: { onAllDone?: () => void }) {
             We&apos;ll go one string at a time, thickest to thinnest. Pluck one string, let it ring,
             and don&apos;t touch the others — we&apos;ll tell you exactly what to do.
           </p>
-          <button onClick={audio.start} className="g-btn">Start Guided Tuning (allow microphone)</button>
+          <button onClick={audio.start} className="g-btn mb-6">Start Guided Tuning (allow microphone)</button>
+
+          <div className="g-card p-4">
+            <p className="text-xs font-semibold mb-3 flex items-center justify-center gap-1.5" style={{ color: "var(--g-muted)" }}>
+              <SpeakerIcon size={14} /> Practice by ear — tap a string to hear its correct pitch
+            </p>
+            <div className="flex justify-center gap-2 flex-wrap">
+              {SEQUENCE.map((s) => (
+                <button
+                  key={s.string}
+                  onClick={() => playReferenceTone(midiToFrequency(s.midi))}
+                  className="g-btn-ghost"
+                  style={{ padding: "0.5rem 0.9rem", flexDirection: "column", gap: "0.1rem" }}
+                >
+                  <span className="text-sm font-bold">{FRIENDLY[s.string]}</span>
+                  <span className="text-[10px] opacity-70">string {s.string}</span>
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
       )}
       {audio.status === "requesting" && <p style={{ color: "var(--g-muted)" }}>Requesting microphone access…</p>}
@@ -164,8 +184,18 @@ export default function GuidedTuner({ onAllDone }: { onAllDone?: () => void }) {
                 <StringDiagram activeString={target.string} />
               </div>
 
-              <div className="text-5xl font-bold mb-3" style={{ color: inTune ? "var(--g-success)" : "var(--g-accent)" }}>
-                {FRIENDLY[target.string]}
+              <div className="flex items-center justify-center gap-2 mb-3">
+                <div className="text-5xl font-bold" style={{ color: inTune ? "var(--g-success)" : "var(--g-accent)" }}>
+                  {FRIENDLY[target.string]}
+                </div>
+                <button
+                  onClick={() => playReferenceTone(midiToFrequency(target.midi))}
+                  aria-label="Hear this note"
+                  className="g-icon-btn"
+                  style={{ width: 36, height: 36 }}
+                >
+                  <SpeakerIcon size={18} />
+                </button>
               </div>
 
               <TunerGauge cents={cents} inTune={inTune} />
