@@ -1,5 +1,11 @@
 # Meta-Tutor Process Log
 
+## Reference-tone merge — fifth manual `wrangler deploy` — 2026-11-21
+PR #38 (tuner reference-tone ear practice) merged to `main`, deployed the same proven way: build
+→ dry-run (3.95MB gzip) → local `wrangler dev` check → real deploy (Worker Startup Time 31ms) →
+isolated preview check → real-domain check — every `/guitar/*` route plus every other subject
+clean, no regressions.
+
 ## Help-system merge — fourth manual `wrangler deploy` — 2026-11-21
 PR #36 (static help sheet + inline tips, no AI) merged to `main`, deployed the same proven way:
 build → dry-run (3.95MB gzip) → local `wrangler dev` check → real deploy (Worker Startup Time
