@@ -1,5 +1,16 @@
 # Meta-Tutor Process Log
 
+## Guitar redesign/expansion merge — second manual `wrangler deploy` — 2026-11-21
+PR #32 (warm theme, GuitarNav, Metronome/Fretboard/Note-Trainer/badges, tuner-precision work)
+merged to `main`, then deployed by hand the same way as the 2026-11-20 entry below: build → dry-run
+(3.94MB gzip) → local `wrangler dev` check (`/veritas` 302, `/login` 200, all 3 new routes 302) →
+real deploy (Worker Startup Time 27ms) → isolated `workers.dev` preview check → real domain check —
+`tutor.lessondraft.com` now serves `/guitar`, `/guitar/metronome`, `/guitar/fretboard`,
+`/guitar/note-trainer` all as clean 302s, plus a full regression sweep of every other subject
+(`/`, `/veritas`, `/chess`, `/latin-lab`, `/trivia`, `/riemann`, `/ethics`, `/metaphysics`, `/cris`)
+— all clean, no regressions. Confirms the standing gap is still real: every future guitar change
+needs this same manual step until a CI/cron hook exists for this Worker.
+
 ## Guitar subject merge — manual `wrangler deploy` to reach the real live domain — 2026-11-20
 PR #30 (the new `/guitar` subject) merged to `main`, but per the 2026-11-17 entry below, a merge to
 `main` does NOT by itself reach `meta-tutor-workers` (the Cloudflare Worker actually bound to
