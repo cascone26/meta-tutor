@@ -98,13 +98,11 @@ export default function ChordTrainer({
   return (
     <div className="max-w-md mx-auto px-5 py-6 text-center">
       {audio.status === "idle" && (
-        <button onClick={audio.start} className="rounded-full px-6 py-3 font-medium text-white" style={{ background: "var(--accent)" }}>
-          Start Practicing (allow microphone)
-        </button>
+        <button onClick={audio.start} className="g-btn">Start Practicing (allow microphone)</button>
       )}
-      {audio.status === "requesting" && <p style={{ color: "var(--muted)" }}>Requesting microphone access…</p>}
+      {audio.status === "requesting" && <p style={{ color: "var(--g-muted)" }}>Requesting microphone access…</p>}
       {(audio.status === "error" || audio.status === "unsupported") && (
-        <p className="text-sm" style={{ color: "#d88a8a" }}>{audio.error}</p>
+        <p className="text-sm" style={{ color: "var(--g-danger)" }}>{audio.error}</p>
       )}
 
       {audio.status === "listening" && target && (
@@ -114,40 +112,42 @@ export default function ChordTrainer({
               <span
                 key={id}
                 className="w-6 h-1.5 rounded-full"
-                style={{ background: passed[i] ? "var(--success)" : i === index ? "var(--accent)" : "var(--border)" }}
+                style={{ background: passed[i] ? "var(--g-success)" : i === index ? "var(--g-accent)" : "var(--g-border)" }}
               />
             ))}
           </div>
 
-          <h3 className="text-lg font-semibold mb-3" style={{ color: "var(--foreground)" }}>
+          <h3 className="text-lg font-semibold mb-3" style={{ color: "var(--g-text)" }}>
             {done ? "All chords nailed" : `Play: ${target.display}`}
           </h3>
 
           {!done && (
-            <>
-              <div className="flex justify-center mb-4">
+            <div className="g-card p-5 mb-4 inline-block">
+              <div className="flex justify-center mb-3">
                 <ChordDiagram chord={target} size={1.3} />
               </div>
 
-              <div className="relative h-2 rounded-full mb-2 overflow-hidden" style={{ background: "var(--border)" }}>
+              <div className="relative h-2 rounded-full mb-2 overflow-hidden" style={{ background: "var(--g-border)" }}>
                 <div
                   className="h-full transition-all duration-75"
-                  style={{ width: `${Math.round(score * 100)}%`, background: score >= CHORD_MATCH_PASS_THRESHOLD ? "var(--success)" : "var(--accent)" }}
+                  style={{ width: `${Math.round(score * 100)}%`, background: score >= CHORD_MATCH_PASS_THRESHOLD ? "var(--g-success)" : "var(--g-accent)" }}
                 />
               </div>
-              <p className="text-xs" style={{ color: "var(--muted)" }}>
+              <p className="text-xs" style={{ color: "var(--g-muted)" }}>
                 {score >= CHORD_MATCH_PASS_THRESHOLD ? "Hold it steady…" : "Strum and hold — matching live"}
               </p>
-            </>
+            </div>
           )}
 
           {done && (
-            <p className="text-sm" style={{ color: "var(--success)" }}>
+            <p className="text-sm mb-3" style={{ color: "var(--g-success)" }}>
               Nice work. {missed.length > 0 ? `${missed.length} chord(s) took a few tries — they'll show up in Progress.` : "Clean run."}
             </p>
           )}
 
-          <button onClick={audio.stop} className="text-xs underline mt-4" style={{ color: "var(--muted)" }}>Stop</button>
+          <div>
+            <button onClick={audio.stop} className="g-btn-ghost">Stop</button>
+          </div>
         </div>
       )}
     </div>

@@ -28,8 +28,8 @@ export default function LessonPage() {
   if (!lesson) {
     return (
       <div className="max-w-md mx-auto px-5 py-10 text-center">
-        <p style={{ color: "var(--muted)" }}>Lesson not found.</p>
-        <Link href="/guitar/lessons" className="text-sm underline" style={{ color: "var(--accent)" }}>Back to lessons</Link>
+        <p style={{ color: "var(--g-muted)" }}>Lesson not found.</p>
+        <Link href="/guitar/lessons" className="g-btn-ghost inline-flex mt-3">Back to lessons</Link>
       </div>
     );
   }
@@ -43,36 +43,33 @@ export default function LessonPage() {
 
   return (
     <div className="max-w-md mx-auto px-5 py-6">
-      <Link href="/guitar/lessons" className="text-xs underline" style={{ color: "var(--muted)" }}>← all lessons</Link>
-      <h1 className="text-xl font-semibold mt-2 mb-1" style={{ color: "var(--foreground)" }}>{lesson.title}</h1>
-      <p className="text-sm mb-3" style={{ color: "var(--muted)" }}>{lesson.summary}</p>
+      <h1 className="text-xl font-semibold mb-1" style={{ color: "var(--g-text)" }}>{lesson.title}</h1>
+      <p className="text-sm mb-3" style={{ color: "var(--g-muted)" }}>{lesson.summary}</p>
 
       {lesson.objectives.length > 0 && (
-        <ul className="text-sm mb-5 list-disc pl-5" style={{ color: "var(--foreground)" }}>
+        <ul className="text-sm mb-5 list-disc pl-5" style={{ color: "var(--g-text)" }}>
           {lesson.objectives.map((o) => <li key={o}>{o}</li>)}
         </ul>
       )}
 
       {lesson.resource && (
-        <p className="text-xs mb-5" style={{ color: "var(--muted)" }}>
+        <p className="text-xs mb-5" style={{ color: "var(--g-muted)" }}>
           For a deeper video walkthrough, see{" "}
-          <a href={lesson.resource.url} target="_blank" rel="noreferrer" className="underline" style={{ color: "var(--accent)" }}>
+          <a href={lesson.resource.url} target="_blank" rel="noreferrer" className="underline" style={{ color: "var(--g-accent-dark)" }}>
             {lesson.resource.label}
           </a>.
         </p>
       )}
 
       {mounted && !unlocked && (
-        <p className="text-sm" style={{ color: "#d88a8a" }}>Complete the previous lesson first.</p>
+        <p className="text-sm" style={{ color: "var(--g-danger)" }}>Complete the previous lesson first.</p>
       )}
 
       {mounted && unlocked && !done && (
         <div className="-mx-5">
           {lesson.practiceType === "read" && (
             <div className="px-5">
-              <button onClick={complete} className="rounded-full px-5 py-2.5 font-medium text-white text-sm" style={{ background: "var(--accent)" }}>
-                Got it — mark complete
-              </button>
+              <button onClick={complete} className="g-btn">Got it — mark complete</button>
             </div>
           )}
 
@@ -80,9 +77,7 @@ export default function LessonPage() {
             <div>
               <Tuner />
               <div className="px-5 text-center">
-                <button onClick={complete} className="rounded-full px-5 py-2.5 font-medium text-white text-sm" style={{ background: "var(--accent)" }}>
-                  All 6 strings in tune — mark complete
-                </button>
+                <button onClick={complete} className="g-btn">All 6 strings in tune — mark complete</button>
               </div>
             </div>
           )}
@@ -93,15 +88,14 @@ export default function LessonPage() {
 
           {lesson.practiceType === "strum" && (
             <div>
-              <Metronome initialBpm={80} />
+              <Metronome initialBpm={80} showTimeSignature={false} />
               <div className="px-5 text-center">
                 <button
                   onClick={() => {
                     logPracticeResult("strum", 1, 1);
                     complete();
                   }}
-                  className="rounded-full px-5 py-2.5 font-medium text-white text-sm"
-                  style={{ background: "var(--accent)" }}
+                  className="g-btn"
                 >
                   Practiced it — mark complete
                 </button>
@@ -117,13 +111,11 @@ export default function LessonPage() {
 
       {done && (
         <div className="text-center">
-          <p className="text-sm mb-3" style={{ color: "var(--success)" }}>✓ Lesson complete (+{lesson.xp} XP)</p>
+          <p className="text-sm mb-3" style={{ color: "var(--g-success)" }}>✓ Lesson complete (+{lesson.xp} XP)</p>
           {upNext ? (
-            <Link href={`/guitar/lessons/${upNext.id}`} className="rounded-full px-5 py-2.5 font-medium text-white text-sm inline-block" style={{ background: "var(--accent)" }}>
-              Next: {upNext.title} →
-            </Link>
+            <Link href={`/guitar/lessons/${upNext.id}`} className="g-btn inline-flex">Next: {upNext.title} →</Link>
           ) : (
-            <p className="text-sm" style={{ color: "var(--muted)" }}>That&apos;s the whole curriculum — nice work.</p>
+            <p className="text-sm" style={{ color: "var(--g-muted)" }}>That&apos;s the whole curriculum — nice work.</p>
           )}
         </div>
       )}
