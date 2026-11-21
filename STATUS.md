@@ -1,5 +1,54 @@
 # Meta Tutor — Status
 
+## (Jacob) Guitar: visual redesign + feature expansion (2026-11-21)
+Follow-up to the initial build below, per "make everything look good... more features... back
+buttons and menus." Two parts:
+
+**Design**: a dedicated warm "wood & strings" theme, scoped entirely to `src/app/guitar/layout.tsx`
+(CSS variables `--g-*`, light+dark aware via the existing `html.dark` mechanism — never touches
+globals.css or any other subject). Every guitar component/page migrated off the generic
+`--accent`/`--surface`/etc. tokens onto this palette. New `GuitarNav` persistent header (back
+button, page title, theme toggle, slide-out menu to all 9 pages) replaces the old per-page manual
+"← back" links. Redesigned: Tuner (real polar/radial gauge with tick marks + in-tune arc, not a
+linear bar), ChordDiagram (wood-tone fretboard gradient, warm finger-dot gradients), CurriculumTree
+(a connected vertical timeline with lock/done/current node states, not flat rows), hub (icon tiles,
+staggered fade-in entrance, streak/XP stat cards, a daily-chord card). Found and fixed a real bug via
+screenshot review: the metronome's BPM slider rendered in default browser blue — added full
+cross-browser `input[type=range]` styling to the scoped theme.
+
+**New features** (`src/lib/guitar/`, `src/components/guitar/`, `src/app/guitar/`): standalone
+Metronome page with tap-tempo and selectable time signature (2/3/4/6-4); Fretboard Note Map
+(`fretboard.ts` + `/guitar/fretboard`) — every note across every string/fret 0–12, tap-to-highlight
+by pitch class; Note Trainer (`NoteTrainer.tsx` + `/guitar/note-trainer`) — reuses the YIN pipeline
+to drill finding a named note anywhere on the neck; Badges + 30-day practice-streak heatmap
+(`getBadges`/`getPracticeDates` in `progress.ts`, derived entirely from completed-lesson state so
+they can't drift out of sync); Chord Library shuffle/quiz mode (practice all-or-by-category in
+random order) and a deterministic daily-chord card on the hub (`daily.ts`, pure date math, same
+pattern as Trivia's own daily challenge).
+
+**Tuner precision — explicitly re-verified, not just re-styled**, per Jacob's "needs to be perfect,
+tested against others" ask. Expanded `scripts/mt-guitar-dsp-test.ts` well past clean sine waves:
+synthetic plucked-string signals (fundamental + decaying harmonic series), realistic mic
+self-noise, within-window amplitude decay, light vibrato, and a deliberate weak-fundamental
+stress case (the classic YIN octave-error failure mode). Result: sub-1-cent error on every
+realistic case, including at the *actual* production buffer size (2048 samples) — not just a
+generous test buffer. Also built `pitch-stabilizer.ts` (median-smoothed rolling window + clean-
+octave auto-correction + 2-frame-confirm debounce before adopting any jump) and wired it into both
+Tuner and Note Trainer, so a single glitchy mic frame can no longer flicker the display — this
+itself was caught failing on the first implementation attempt by its own unit test (a single
+1.9x-frequency glitch frame was being adopted immediately) and fixed by adding the debounce.
+
+**Verified**: `npx tsc --noEmit` clean, `npm run build` clean (10 `/guitar/*` routes, one more than
+before), `npx eslint` clean (same pre-existing `set-state-in-effect` pattern, unchanged count
+proportional to new files, not CI-enforced), `npx tsx scripts/mt-guitar-dsp-test.ts` — ALL PASS
+across every stress case including the new stabilizer tests. Headless sweep of all 10 routes ×
+2 viewports × 2 themes (light/dark) = 40 combinations, all 200, zero console/page errors
+(`scripts/mt-guitar-sweep.mjs`). Screenshots reviewed directly (own vision): hub, chord library,
+curriculum timeline, metronome (slider fix confirmed), fretboard map, and the slide-out menu, in
+both themes. Live-mic pipeline re-confirmed end-to-end post-stabilizer via Chromium's fake audio
+device (`scripts/mt-guitar-audio-check.mjs`) — no crash, chord trainer reaches "listening" and
+renders its live-match UI.
+
 ## (Jacob) Guitar: new subject — live mic tuner, chord trainer, curriculum, play-along (2026-11-20)
 Built the whole thing in one session per Jacob's "get it all built" — a guitar-learning module
 combining the useful parts of JustinGuitar (structured curriculum + play-along), Yousician

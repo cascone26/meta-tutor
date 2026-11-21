@@ -51,61 +51,53 @@ export default function PlayAlong({ song, onComplete }: { song: Song; onComplete
 
   return (
     <div className="max-w-md mx-auto px-5 py-6 text-center">
-      <h3 className="text-lg font-semibold mb-1" style={{ color: "var(--foreground)" }}>{song.title}</h3>
-      <p className="text-xs mb-4" style={{ color: "var(--muted)" }}>{song.bpm} BPM · {song.beatsPerMeasure}/4 time · {song.notes}</p>
+      <h3 className="text-lg font-semibold mb-1" style={{ color: "var(--g-text)" }}>{song.title}</h3>
+      <p className="text-xs mb-4" style={{ color: "var(--g-muted)" }}>{song.bpm} BPM · {song.beatsPerMeasure}/4 time · {song.notes}</p>
 
-      <div className="flex justify-center gap-1.5 mb-5">
-        {Array.from({ length: song.beatsPerMeasure }).map((_, i) => (
-          <div
-            key={i}
-            className="w-4 h-4 rounded-full transition-all duration-75"
-            style={{ background: running && beatInMeasure === i ? "var(--accent)" : "var(--border)" }}
-          />
-        ))}
-      </div>
-
-      <div className="flex items-center justify-center gap-6 mb-4">
-        <div>
-          <p className="text-[10px] uppercase tracking-wide mb-1" style={{ color: "var(--muted)" }}>Now</p>
-          {current && <ChordDiagram chord={current} size={1.1} />}
-          <p className="text-sm font-semibold mt-1" style={{ color: "var(--foreground)" }}>{current?.display}</p>
+      <div className="g-card p-5">
+        <div className="flex justify-center gap-1.5 mb-5">
+          {Array.from({ length: song.beatsPerMeasure }).map((_, i) => (
+            <div
+              key={i}
+              className="w-4 h-4 rounded-full transition-all duration-75"
+              style={{ background: running && beatInMeasure === i ? "var(--g-accent)" : "var(--g-border)" }}
+            />
+          ))}
         </div>
-        <div style={{ opacity: 0.5 }}>
-          <p className="text-[10px] uppercase tracking-wide mb-1" style={{ color: "var(--muted)" }}>Next</p>
-          {next && <ChordDiagram chord={next} size={0.85} />}
-          <p className="text-xs mt-1" style={{ color: "var(--muted)" }}>{next?.display}</p>
-        </div>
-      </div>
 
-      {audio.status === "listening" && (
-        <div className="relative h-1.5 rounded-full mb-4 overflow-hidden max-w-[200px] mx-auto" style={{ background: "var(--border)" }}>
-          <div className="h-full transition-all duration-100" style={{ width: `${Math.round(liveScore * 100)}%`, background: "var(--success)" }} />
+        <div className="flex items-center justify-center gap-6 mb-4">
+          <div>
+            <p className="text-[10px] uppercase tracking-wide mb-1" style={{ color: "var(--g-muted)" }}>Now</p>
+            {current && <ChordDiagram chord={current} size={1.1} />}
+            <p className="text-sm font-semibold mt-1" style={{ color: "var(--g-text)" }}>{current?.display}</p>
+          </div>
+          <div style={{ opacity: 0.5 }}>
+            <p className="text-[10px] uppercase tracking-wide mb-1" style={{ color: "var(--g-muted)" }}>Next</p>
+            {next && <ChordDiagram chord={next} size={0.85} />}
+            <p className="text-xs mt-1" style={{ color: "var(--g-muted)" }}>{next?.display}</p>
+          </div>
         </div>
-      )}
 
-      <div className="flex items-center justify-center gap-3 mb-3">
-        <button
-          onClick={() => setRunning((r) => !r)}
-          className="rounded-full px-6 py-3 font-medium text-white"
-          style={{ background: running ? "#b8793a" : "var(--accent)" }}
-        >
-          {running ? "Stop" : "Start"}
-        </button>
-        {audio.status === "idle" && (
-          <button onClick={audio.start} className="text-xs underline" style={{ color: "var(--muted)" }}>
-            + live chord feedback
-          </button>
+        {audio.status === "listening" && (
+          <div className="relative h-1.5 rounded-full mb-4 overflow-hidden max-w-[200px] mx-auto" style={{ background: "var(--g-border)" }}>
+            <div className="h-full transition-all duration-100" style={{ width: `${Math.round(liveScore * 100)}%`, background: "var(--g-success)" }} />
+          </div>
         )}
+
+        <div className="flex items-center justify-center gap-3 mb-1">
+          <button onClick={() => setRunning((r) => !r)} className="g-btn">
+            {running ? "Stop" : "Start"}
+          </button>
+          {audio.status === "idle" && (
+            <button onClick={audio.start} className="g-btn-ghost">+ live feedback</button>
+          )}
+        </div>
       </div>
 
-      <p className="text-xs mb-3" style={{ color: "var(--muted)" }}>Loops completed: {loops}</p>
+      <p className="text-xs mt-3 mb-3" style={{ color: "var(--g-muted)" }}>Loops completed: {loops}</p>
 
       {onComplete && (
-        <button
-          onClick={onComplete}
-          className="text-sm underline"
-          style={{ color: "var(--accent)" }}
-        >
+        <button onClick={onComplete} className="g-btn-ghost">
           Mark this song practiced ✓
         </button>
       )}
