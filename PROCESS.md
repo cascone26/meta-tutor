@@ -1,5 +1,24 @@
 # Meta-Tutor Process Log
 
+## Guitar subject merge — manual `wrangler deploy` to reach the real live domain — 2026-11-20
+PR #30 (the new `/guitar` subject) merged to `main`, but per the 2026-11-17 entry below, a merge to
+`main` does NOT by itself reach `meta-tutor-workers` (the Cloudflare Worker actually bound to
+`tutor.lessondraft.com`'s Workers Route) — only the Olympus bridge host auto-updates from git. Ran
+the exact proven sequence from that entry: `npx opennextjs-cloudflare build` (clean) →
+`npx wrangler deploy --dry-run` (3.92MB gzip, same ballpark as the 11/17 deploy) →
+`npx wrangler dev --port 8787` local check (`/veritas` 302, `/login` 200, `/guitar` 302) →
+real `npx wrangler deploy` (Worker Startup Time 29ms) → checked the isolated
+`meta-tutor-workers.meta-tutor.workers.dev` preview first (clean) → only then the real domain:
+`tutor.lessondraft.com/guitar` now 302 (auth-gated, same as every other subject), `/login` 200 with
+correct title, and a full sweep of `/`, `/veritas`, `/chess`, `/latin-lab`, `/trivia`, `/riemann`,
+`/ethics`, `/metaphysics`, `/cris` all clean 302s — no regressions from the redeploy.
+
+**Reconfirms the standing gap this entry already flagged**: this is still a one-time manual deploy,
+not wired into CI/cron. Any future "why isn't my merge live" question on this repo should check
+`npx wrangler deployments list --name meta-tutor-workers` for the current version's age before
+touching Olympus/Caddy/DNS/Vercel — this is now the second time that exact check was the right first
+move.
+
 ## Found the REAL root cause of the 2026-11-16 staleness: an orphaned Cloudflare Workers Route — 2026-11-17
 
 **Corrects the entry directly below this one.** That entry's conclusion ("client-side Next.js Router
