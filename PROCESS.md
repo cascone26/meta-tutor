@@ -1,5 +1,12 @@
 # Meta-Tutor Process Log
 
+## Help-system merge — fourth manual `wrangler deploy` — 2026-11-21
+PR #36 (static help sheet + inline tips, no AI) merged to `main`, deployed the same proven way:
+build → dry-run (3.95MB gzip) → local `wrangler dev` check → real deploy (Worker Startup Time
+19ms) → isolated preview check → real-domain check — every `/guitar/*` route plus every other
+subject clean, no regressions. Same standing gap: still a manual deploy per change until this
+Worker gets a CI/cron hook.
+
 ## Guided-tuner + song-library merge — third manual `wrangler deploy` — 2026-11-21
 PR #34 (GuidedTuner, ChromaticTuner split, 18-song library, ChordSheet) merged to `main`, deployed
 the same proven way: build → dry-run (3.94MB gzip) → local `wrangler dev` check → real deploy
